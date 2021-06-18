@@ -436,7 +436,7 @@ vec3 getColor(vec3 ro, vec3 rd)
     int id=-1;
     int tm = -1;
     
-    for(int i=0; i<6; i++)
+    for(int i=0; i<4; i++)
     {
     	float t = 10000.0; //seed++;
 		

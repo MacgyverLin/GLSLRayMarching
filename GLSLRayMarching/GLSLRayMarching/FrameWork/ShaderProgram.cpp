@@ -124,6 +124,8 @@ bool ShaderProgram::CreateFromSource(const char* vShaderCode, const char* fShade
 	if (!CheckCompileErrors(vertex, "VERTEX"))
 	{
 		printf("failed to compile vertex shader\n");
+		printf("%s\n", vShaderCode);
+		
 		return false;
 	}
 
@@ -134,6 +136,7 @@ bool ShaderProgram::CreateFromSource(const char* vShaderCode, const char* fShade
 	if (!CheckCompileErrors(fragment, "FRAGMENT"))
 	{
 		printf("failed to compile fragment shader\n");
+		printf("%s\n", fShaderCode);
 		return false;
 	}
 
@@ -146,6 +149,7 @@ bool ShaderProgram::CreateFromSource(const char* vShaderCode, const char* fShade
 		if (!CheckCompileErrors(geometry, "GEOMETRY"))
 		{
 			printf("failed to compile geometry shader\n");
+			printf("%s\n", gShaderCode);
 			return false;
 		}
 	}

@@ -895,7 +895,7 @@ public:
 	bool SetShader(const char* folder_, const char* fShaderURL_, const char* commonShaderURL_)
 	{
 		std::string vShaderCode =
-			"#version 330 core\n"
+			"#version 420 core\n"
 			"layout(location = 0) in vec3 aPos;\n"
 			"out vec2 fragCoord;\n"
 			"uniform vec3 iResolution;\n"
@@ -914,7 +914,7 @@ public:
 			"}\n";
 
 		std::string fShaderHeader =
-			"#version 330 core\n"
+			"#version 420 core\n"
 			"precision highp float;\n"
 			"precision highp int;\n"
 			"in vec2 fragCoord;\n"
@@ -1708,7 +1708,7 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/PathTracings/Bidirectional path tracing");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Demofox Path Tracing 1");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Demofox Path Tracing 2");
-	return macShaderDemo->Initiate("Demos/PathTracings/Path Tracer MIS");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Path Tracer MIS");
 	//return macShaderDemo->Initiate("Demos/PathTracings/PBR Material Gold");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Room DI");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Monte Carlo path tracer");
@@ -1737,7 +1737,22 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/Scattering/VolumetricIntegration");
 	//return macShaderDemo->Initiate("Demos/Waters/Spout");
 
-	return true;
+	//return macShaderDemo->Initiate("Demos/PathTracings/Path Tracer MIS");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Bidirectional path tracing");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Room DI");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Spatiotemporal Variance-Guided Filtering");
+	//return macShaderDemo->Initiate("Demos/PathTracings/StepByStepTutorial");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Cornell MIS");	
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/5 Caustics");
+	
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/8 SubSurface");	
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/7 Disney Principled BRDF");
+	return macShaderDemo->Initiate("Demos/PathTracings/Course/6 PBR");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/5 Caustics");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/4 Bidirectional path tracing");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/2 Light Sampling");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
 }
 
 bool ShaderToyComponent::OnUpdate()

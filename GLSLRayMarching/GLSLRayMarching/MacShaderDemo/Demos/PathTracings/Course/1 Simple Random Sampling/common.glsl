@@ -36,10 +36,10 @@ const float c_skyboxBrightnessMultiplier = 1.0f;
 const float c_exposure = 1.0f; 
 
 // how many renders per frame - make this larger to get around the vsync limitation, and get a better image faster.
-const int c_numRendersPerFrame = 1;
+const int c_numRendersPerFrame = 20;
 
 // number of ray bounces allowed max
-const int c_numBounces = 1;
+const int c_numBounces = 10;
 
 // mouse camera control parameters
 const float c_minCameraAngle = 0.01f;

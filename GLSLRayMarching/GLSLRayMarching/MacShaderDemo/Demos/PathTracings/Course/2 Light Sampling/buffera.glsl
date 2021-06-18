@@ -62,20 +62,36 @@ vec3 cosine_weighted_hemi_sample(inout float seed)
     return normalize(vec3(sin(p.x) * p.y, cos(p.x) * p.y, sqrt(1. - p.y * p.y)));
 }
 
-
-Sphere spheres[SPHERE_COUNT] = Sphere[SPHERE_COUNT](Sphere(vec3(1., 3.2, -0.5), .5,vec3(1., 1., 1.), 1.45, GLASS),
+/*
+Sphere spheres[SPHERE_COUNT] = Sphere[SPHERE_COUNT](Sphere(vec3(1.0, 5.2, 0.5), .3, vec3(1., 1., 1.), 1.45, GLASS),
                                                     Sphere(vec3(0., 5.2, -0.5), .5,vec3(0.1, 0.5, 0.9), 1.45, DIFFUSE),
                                                     Sphere(vec3(-1., 4.2, -0.5), .5,vec3(1., 1., 1.), 1.45, MIRROR),
-                                                    Sphere(vec3(1.8, 5.2, 4.654), .1, vec3(1., 1, 1.) * 3.6, 0., EMISSION),
+                                                    Sphere(vec3(1.8, 5.2, 4.654), .3, vec3(1., 1, 1.) * 3.6, 0., EMISSION),
                                                     Sphere(vec3(0., 4., -1000), 999.,vec3(1, 1, 1), 0., DIFFUSE),
                                                     Sphere(vec3(1001., 0., 0.), 999.,vec3(.1, 0.9, 0.1), 0., DIFFUSE),
                                                     Sphere(vec3(-1001., 0., 0.), 999.,vec3(0.9, .1, 0.1), 0., DIFFUSE),
                                                     Sphere(vec3(0., 1005.5, 0.5), 999.,vec3(.9, 0.9, 0.9), 0., DIFFUSE),
                                                     Sphere(vec3(0., 0., 1001.7), 999.,vec3(.9, 0.9, 0.9), 0., DIFFUSE)
 
-                                                    , Sphere(vec3(0., 5.2, 1.5), .5,vec3(0.1, 0.5, 0.9), 1.45, DIFFUSE)
+                                                    , Sphere(vec3(0., 5.2, 1.5), .3, vec3(1.0, 1.0, 1.0), 1.45, GLASS)
                                                     );
 int lights[LIGHT_COUNT] = int[LIGHT_COUNT] (3);//index of the spheres to be directly sampled
+*/
+Sphere spheres[SPHERE_COUNT] = Sphere[SPHERE_COUNT](Sphere(vec3(1., 3.2, -0.5), .5,vec3(1., 1., 1.), 1.45, GLASS),
+                                                    Sphere(vec3(0., 5.2, -0.5), .5,vec3(0.1, 0.5, 0.9), 1.45, DIFFUSE),
+                                                    Sphere(vec3(-1., 4.2, -0.5), .5,vec3(1., 1., 1.), 1.45, MIRROR),
+                                                    Sphere(vec3(1.8, 5.2, 4.654), .4, vec3(1., 1, 1.) * 3.6, 0., EMISSION),
+                                                    Sphere(vec3(0., 4., -1000), 999.,vec3(1, 1, 1), 0., DIFFUSE),
+                                                    Sphere(vec3(1001., 0., 0.), 999.,vec3(.1, 0.9, 0.1), 0., DIFFUSE),
+                                                    Sphere(vec3(-1001., 0., 0.), 999.,vec3(0.9, .1, 0.1), 0., DIFFUSE),
+                                                    Sphere(vec3(0., 1005.5, 0.5), 999.,vec3(.9, 0.9, 0.9), 0., DIFFUSE),
+                                                    Sphere(vec3(0., 0., 1001.7), 999.,vec3(.9, 0.9, 0.9), 0., DIFFUSE)
+                                                    ,Sphere(vec3(0., 0., 1001.7), 999.,vec3(.9, 0.9, 0.9), 0., DIFFUSE)
+
+                                                    //, Sphere(vec3(0., 5.2, 1.5), .5,vec3(0.1, 0.5, 0.9), 1.45, DIFFUSE)
+                                                    );
+int lights[LIGHT_COUNT] = int[LIGHT_COUNT] (3);//index of the spheres to be directly sampled
+
 //#endif
 
 
@@ -269,7 +285,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     for (int s = 0; s < SAMPLES; s++){
         float seed = hash12(fragCoord.xy + iTime * M_PI + float(s) * 634.2342) + nrand(uv0 * iTime) * 52.2246 + hash2(uv0.x).x; //
         vec2 uv = (fragCoord + hash2(seed) - 1. - iResolution.xy /2.)/max(iResolution.x, iResolution.y);
-        col += get_radiance(ray_from_camera(uv, M_PI * 0.5, vec3(0., -4., .8), vec3(0.,0.,0.), vec3(0.,0.,0.)), seed);
+        col += get_radiance(ray_from_camera(uv, M_PI * 0.5, vec3(0., -6., .8), vec3(0.,0.,0.), vec3(0.,0.,0.)), seed);
     }
     col /= float(SAMPLES);
 #ifdef ACCUMULATE
