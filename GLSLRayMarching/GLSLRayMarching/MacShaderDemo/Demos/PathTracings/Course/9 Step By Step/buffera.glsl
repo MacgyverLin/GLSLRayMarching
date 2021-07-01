@@ -104,12 +104,21 @@ struct HitRecord
     int id;
 };
 
+vec3 background(vec3 dir) 
+{
+    dir = normalize(dir);
+    float theta = atan(dir.y, sqrt(dir.x*dir.x+dir.z*dir.z)) / 3.14 + 0.5;
+    float phi = acos(dir.x) / (2*3.14);
+
+    return texture(iChannel1, vec2(phi, theta)).rgb;
+}
+
 bool intersect(Ray ray, out HitRecord hit) 
 {
 	int id = -1;
 	hit.t = 1e5;
 
-	return true;
+	return false;
 }
 
 vec3 traceWorld(Ray ray) 
@@ -121,6 +130,14 @@ vec3 traceWorld(Ray ray)
     {
         HitRecord hitrec;
         bool hit = intersect(ray, hitrec);
+        if(hit)
+        {
+        }
+        else
+        {
+            radiance = reflectance * background(ray.dir);
+            break;
+        }
         
         ray.origin += ray.dir * RAY_EPSILON;
     }

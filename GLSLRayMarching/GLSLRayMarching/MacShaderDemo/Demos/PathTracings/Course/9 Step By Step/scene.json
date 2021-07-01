@@ -7,6 +7,11 @@
         "filter": "linear",
         "wrap": "clamp"
       },
+      "ichannel1": {
+        "texture2d": "envmap1.jpg",
+        "filter": "linear",
+        "wrap": "clamp"
+      },
       "rendertarget": "buffera"
     },
     {
