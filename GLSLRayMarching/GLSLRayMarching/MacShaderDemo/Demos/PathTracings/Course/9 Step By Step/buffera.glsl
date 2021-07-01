@@ -95,9 +95,37 @@ Ray generateRay(vec2 uv)
     return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
 }
 
+struct HitRecord
+{ 
+    float t;             // t for ray
+    vec3 normal;         // contact normal
+    vec3 position;       // contact pos
+    Material material;
+    int id;
+};
+
+bool intersect(Ray ray, out HitRecord hit) 
+{
+	int id = -1;
+	hit.t = 1e5;
+
+	return true;
+}
+
 vec3 traceWorld(Ray ray) 
 {
-    return vec3(rand(), rand(), rand());
+    vec3 radiance = vec3(0.0);
+    vec3 reflectance = vec3(1.0);
+
+    for (int depth = 0; depth < MAX_DEPTH; depth++) 
+    {
+        HitRecord hitrec;
+        bool hit = intersect(ray, hitrec);
+        
+        ray.origin += ray.dir * RAY_EPSILON;
+    }
+
+    return radiance;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
