@@ -78,6 +78,32 @@ Plane planes[NUM_PLANES] =
     Plane(vec3( 0.00, 90.00,   0.00), vec3( 0.00, -1.00,  0.00), Material(DIFF, vec3(0.75, 0.75, 0.75), vec3(0.0, 0.0, 0.0), 0.0))
 };
 
+vec3 getCameraDir(float length)
+{
+    vec2 p = iMouse.xy / iResolution.xy;
+    
+    float theta = (p.y * 3.14 - 3.14 / 2) * 0.5;
+    float phi = (p.x * 2 * 3.14 - 3.14);
+    return length * vec3(cos(theta) * sin(phi), sin(theta), cos(theta) * cos(phi));
+}
+
+Ray generateRayControlByMouse(vec2 uv)
+{
+    vec2 p = uv * 2.0 - 1.0;
+    
+    vec3 cameraPosition = vec3(50.0, 40.8, 172.0);
+    vec3 cameraTarget = cameraPosition + getCameraDir(90.4);
+    float near = 1.947;
+
+	vec3 cameraZ = normalize(cameraTarget - cameraPosition);
+	vec3 up = vec3(0.0, 1.0, 0.0);
+	vec3 cameraX = normalize(cross(up, cameraZ)); 
+    vec3 cameraY = cross(cameraZ, cameraX);
+    
+    float aspectRatio = iResolution.x / iResolution.y;
+    return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
+}
+
 Ray generateRay(vec2 uv) 
 {
     vec2 p = uv * 2.0 - 1.0;
@@ -161,7 +187,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         vec2 uv = fragCoord.xy / iResolution.xy;
 
         // Ray Generation
-        Ray camRay = generateRay(uv);
+        //Ray camRay = generateRay(uv);
+        Ray camRay = generateRayControlByMouse(uv);        
 
         // Trace the World
         color += traceWorld(camRay);
