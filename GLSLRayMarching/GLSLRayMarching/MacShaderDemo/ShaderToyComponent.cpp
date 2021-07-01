@@ -1747,12 +1747,13 @@ bool ShaderToyComponent::OnStart()
 	
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/8 SubSurface");	
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/7 Disney Principled BRDF");
-	return macShaderDemo->Initiate("Demos/PathTracings/Course/6 PBR");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/6 PBR");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/5 Caustics");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/4 Bidirectional path tracing");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/2 Light Sampling");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
+	return macShaderDemo->Initiate("Demos/PathTracings/Course/9 Step By Step");
 }
 
 bool ShaderToyComponent::OnUpdate()
