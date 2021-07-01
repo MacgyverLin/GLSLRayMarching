@@ -21,6 +21,41 @@ void rand_seek(in vec2 fragCoord)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
+// 4) Data structure
+struct Ray 
+{ 
+    vec3 origin;
+    vec3 dir;
+};
+
+// Material Types
+#define DIFF 0
+#define SPEC 1
+#define REFR 2
+#define GLOSSY 3
+struct Material 
+{
+    int refl;	    
+    vec3 albedo;	
+    vec3 emission;
+    float ior;		
+};
+    
+struct Sphere 
+{
+	vec3 pos;
+	float radius;
+    Material mat;	
+};
+
+struct Plane 
+{
+    vec3 pos;
+    vec3 normal;
+    Material mat;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////
 // 1) main function
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
