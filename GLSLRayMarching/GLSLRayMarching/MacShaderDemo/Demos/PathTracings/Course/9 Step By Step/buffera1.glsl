@@ -171,16 +171,19 @@ int intersect(Ray ray, out float t, out vec3 normal, out Material mat)
 
 Ray generateRay(vec2 uv) 
 {
-    vec2 p = uv * 2. - 1.;
+    vec2 p = uv * 2.0 - 1.0;
     
-    vec3 camPos = vec3(50., 40.8, 172.);
-	vec3 cz = normalize(vec3(50., 40., 81.6) - camPos);
-	vec3 cx = vec3(1., 0., 0.);
-	vec3 cy = normalize(cross(cx, cz)); 
-    cx = cross(cz, cy);
+    vec3 cameraPosition = vec3(50.0, 40.8, 172.0);
+    vec3 cameraTarget = vec3(50.0, 40.0, 81.6);
+    float near = 1.947;
+
+	vec3 cameraZ = normalize(cameraTarget - cameraPosition);
+	vec3 rightHandSide = vec3(1.0, 0.0, 0.0);
+	vec3 cameraY = normalize(cross(rightHandSide, cameraZ)); 
+    vec3 cameraX = cross(cameraZ, cameraY);
     
     float aspectRatio = iResolution.x / iResolution.y;
-    return Ray(camPos, normalize(.5135 * (aspectRatio * p.x * cx + p.y * cy) + cz));
+    return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
 }
 
 vec3 trace(Ray ray) 

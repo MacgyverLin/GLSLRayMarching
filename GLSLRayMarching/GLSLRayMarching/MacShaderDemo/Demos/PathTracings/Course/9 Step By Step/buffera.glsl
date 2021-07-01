@@ -78,6 +78,28 @@ Plane planes[NUM_PLANES] =
     Plane(vec3( 0.00, 90.00,   0.00), vec3( 0.00, -1.00,  0.00), Material(DIFF, vec3(0.75, 0.75, 0.75), vec3(0.0, 0.0, 0.0), 0.0))
 };
 
+Ray generateRay(vec2 uv) 
+{
+    vec2 p = uv * 2.0 - 1.0;
+    
+    vec3 cameraPosition = vec3(50.0, 40.8, 172.0);
+    vec3 cameraTarget = vec3(50.0, 40.0, 81.6);
+    float near = 1.947;
+
+	vec3 cameraZ = normalize(cameraTarget - cameraPosition);
+	vec3 rightHandSide = vec3(1.0, 0.0, 0.0);
+	vec3 cameraY = normalize(cross(rightHandSide, cameraZ)); 
+    vec3 cameraX = cross(cameraZ, cameraY);
+    
+    float aspectRatio = iResolution.x / iResolution.y;
+    return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
+}
+
+vec3 traceWorld(Ray ray) 
+{
+    return vec3(rand(), rand(), rand());
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // 1) main function
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
@@ -85,7 +107,21 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	// 4) Random function
 	rand_seek(fragCoord);
 
-	// 3) Test Color Output
+    // init color to zero
+    vec3 color = vec3(0.);
+
+    
+    {
+        // screen coordinate
+        vec2 uv = fragCoord.xy / iResolution.xy;
+
+        // Ray Generation
+        Ray camRay = generateRay(uv);
+
+        // Trace the World
+        color += traceWorld(camRay);
+    }
+
 	vec2 uv = fragCoord.xy / iResolution.xy;
-	fragColor = vec4(uv * vec2(rand(), rand()), 0.0, 1.0);
+	fragColor = vec4(color, 1.0);
 }
