@@ -123,11 +123,11 @@ Ray generateRay(vec2 uv)
 
 struct HitRecord
 { 
+    int id;
     float t;             // t for ray
     vec3 normal;         // contact normal
     vec3 position;       // contact pos
     Material material;
-    int id;
 };
 
 vec3 background(vec3 dir) 
@@ -139,12 +139,44 @@ vec3 background(vec3 dir)
     return texture(iChannel1, vec2(phi, theta)).rgb;
 }
 
+float intersectSphere(Ray r, Sphere s) 
+{
+    vec3 op = s.pos - r.origin;
+    float b = dot(op, r.dir);
+    
+    float delta = b * b - dot(op, op) + s.radius * s.radius;
+	if (delta < 0.)
+        return 0.; 		        
+    else
+        delta = sqrt(delta);
+    
+    float t;
+    if ((t = b - delta) > EPSILON)
+        return t;
+    else if ((t = b + delta) > EPSILON)
+        return t;
+    else
+        return 0.;
+}
+
 bool intersect(Ray ray, out HitRecord hit) 
 {
-	int id = -1;
+	hit.id = -1;
 	hit.t = 1e5;
-
-	return false;
+	for (int i = 0; i < NUM_SPHERES; i++) 
+    {
+		float sphere_t = intersectSphere(ray,  spheres[i]);
+		if (sphere_t != 0. && sphere_t < hit.t) 
+        { 
+            hit.id = i; 
+            hit.t = sphere_t; 
+            hit.position = ray.origin + ray.dir * hit.t;
+         	hit.normal = normalize(hit.position - spheres[i].pos);
+            hit.material = spheres[i].mat;
+        }
+	}
+    
+	return hit.id != -1;
 }
 
 vec3 traceWorld(Ray ray) 
@@ -158,6 +190,8 @@ vec3 traceWorld(Ray ray)
         bool hit = intersect(ray, hitrec);
         if(hit)
         {
+            radiance = hitrec.normal;
+            break;
         }
         else
         {
