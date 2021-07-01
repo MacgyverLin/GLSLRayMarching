@@ -113,9 +113,9 @@ Ray generateRay(vec2 uv)
     float near = 1.947;
 
 	vec3 cameraZ = normalize(cameraTarget - cameraPosition);
-	vec3 rightHandSide = vec3(1.0, 0.0, 0.0);
-	vec3 cameraY = normalize(cross(rightHandSide, cameraZ)); 
-    vec3 cameraX = cross(cameraZ, cameraY);
+	vec3 up = vec3(0.0, 1.0, 0.0);
+	vec3 cameraX = normalize(cross(up, cameraZ)); 
+    vec3 cameraY = cross(cameraZ, cameraX);
     
     float aspectRatio = iResolution.x / iResolution.y;
     return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
