@@ -67,7 +67,7 @@ const Material materials[NUM_MATERIALS] =
     Material(SPEC   , vec3(1.00, 1.00, 1.00), vec3(0.00, 0.00, 0.00), 0.0),
     Material(REFR   , vec3(0.75, 1.00, 0.75), vec3(0.00, 0.00, 0.00), 1.5),
     Material(DIFF   , vec3(0.00, 0.00, 0.00), vec3(4.00, 4.00, 4.00), 0.0),
-    Material(GLOSSY , vec3(0.00, 0.70, 0.70), vec3(0.00, 0.00, 0.00), 1.5),
+    Material(DIFF   , vec3(0.00, 0.70, 0.70), vec3(0.00, 0.00, 0.00), 1.5),
 
     Material(DIFF   , vec3(0.75, 0.75, 0.75), vec3(0.00, 0.00, 0.00), 0.0),
     Material(DIFF   , vec3(0.75, 0.25, 0.25), vec3(0.00, 0.00, 0.00), 0.0),
@@ -205,8 +205,21 @@ vec3 traceWorld(Ray ray)
         
         if(intersect(ray, hitRecord))
         {
+            Material mat = materials[hitRecord.mat];
+
             // hit shader
-            radiance = vec3(1.0, 0.0, 0.0);
+            if (mat.refl == DIFF)
+            {				
+                radiance = vec3(1.0, 0.0, 0.0);
+            } 
+            else if (mat.refl == SPEC)
+            {
+                radiance = vec3(0.0, 1.0, 0.0);
+            } 
+            else
+            {
+                radiance = vec3(0.0, 0.0, 1.0);
+            }
         }
         else
         {
