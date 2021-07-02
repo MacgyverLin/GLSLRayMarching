@@ -182,7 +182,7 @@ const Material materials[NUM_MATERIALS] =
     Material(SPEC   , -1, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
     Material(TRANS  , -1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 1.5),
     Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0),
-    Material(GLOSSY , -1, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
+    Material(GLOSSY ,  0, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
 
     Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
     Material(DIFF   , -1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0),
@@ -235,6 +235,7 @@ struct HitRecord
     vec3 position;
     vec3 normal;    
     int mat;
+    vec2 uv;
 };
 
 float intersectSphere(Ray r, Sphere s) 
@@ -264,6 +265,17 @@ float intersectPlane(Ray r, Plane p)
     return mix(0., t, float(t > EPSILON));
 }
 
+vec2 convertSpherePositionToUV(vec3 p)
+{
+    p = normalize(p);
+
+    vec2 uv;
+    uv.x = (atan(p.x, p.z) + (3.14)) / (2 * 3.14);
+    uv.y = (asin(p.y) + (3.14 / 2.0)) / (3.14);
+
+    return uv;
+}
+
 bool intersect(Ray ray, out HitRecord hitRecord) 
 {
 	hitRecord.id = -1;
@@ -278,6 +290,7 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.t = intersect_t;
             hitRecord.position = ray.origin + ray.dir * hitRecord.t;
          	hitRecord.normal = normalize(hitRecord.position - spheres[i].pos);
+            hitRecord.uv = convertSpherePositionToUV(hitRecord.position - spheres[i].pos);
             hitRecord.mat = spheres[i].mat;
         }
 	}
@@ -291,6 +304,7 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.t = intersect_t;
             hitRecord.position = ray.origin + ray.dir * hitRecord.t;
             hitRecord.normal = planes[i].normal;
+            hitRecord.uv = vec2(0, 0);
             hitRecord.mat = planes[i].mat;
         }
     }
@@ -367,7 +381,7 @@ vec3 randomSphereDir()
     return vec3(x, y, z);
 }
 
-vec3 getAlbedo(in Material mat)
+vec3 getAlbedo(in Material mat, vec2 uv)
 {
     if(mat.albedoTexture==-1)
         return mat.albedo;
@@ -375,7 +389,7 @@ vec3 getAlbedo(in Material mat)
         return mat.albedo;
 }
 
-vec3 getEmission(in Material mat)
+vec3 getEmission(in Material mat, vec2 uv)
 {
     if(mat.emissionTexture==-1)
         return mat.emission;
@@ -388,7 +402,7 @@ void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
     dir = cosWeightedSampleHemisphere(nl);
-    reflectance *= getAlbedo(mat);
+    reflectance *= getAlbedo(mat, hitRecord.uv);
 }
 
 void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
@@ -396,7 +410,7 @@ void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, 
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
     dir = reflect(dir, hitRecord.normal);
-    reflectance *= getAlbedo(mat);
+    reflectance *= getAlbedo(mat, hitRecord.uv);
 }
 
 void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
@@ -409,7 +423,7 @@ void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, in
     float rougness = getRougness();
     dir = normalize(rougness * dir1 + (1.0 - rougness) * dir2);
 
-    reflectance *= getAlbedo(mat);
+    reflectance *= getAlbedo(mat, hitRecord.uv);
 }
 
 void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
@@ -445,7 +459,7 @@ void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir
         } 
         else
         { 				        
-            reflectance *= getAlbedo(mat) * TP; 
+            reflectance *= getAlbedo(mat, hitRecord.uv) * TP; 
             dir = tdir; // refract
         }
     } 
@@ -487,7 +501,7 @@ vec3 traceWorld(Ray ray)
         if(intersect(ray, hitRecord))
         {
             // add emission
-            radiance += reflectance * getEmission(materials[hitRecord.mat]);
+            radiance += reflectance * getEmission(materials[hitRecord.mat], hitRecord.uv);
             
             // move ray origin to hit point
             ray.origin = hitRecord.position;
