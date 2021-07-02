@@ -142,7 +142,7 @@ const Material materials[NUM_MATERIALS] =
     Material(SPEC   , vec3(1.00, 1.00, 1.00), vec3(0.00, 0.00, 0.00), 0.0),
     Material(REFR   , vec3(0.75, 1.00, 0.75), vec3(0.00, 0.00, 0.00), 1.5),
     Material(DIFF   , vec3(0.00, 0.00, 0.00), vec3(4.00, 4.00, 4.00), 0.0),
-    Material(DIFF   , vec3(0.00, 0.70, 0.70), vec3(0.00, 0.00, 0.00), 1.5),
+    Material(GLOSSY , vec3(0.00, 0.70, 0.70), vec3(0.00, 0.00, 0.00), 1.5),
 
     Material(DIFF   , vec3(0.75, 0.75, 0.75), vec3(0.00, 0.00, 0.00), 0.0),
     Material(DIFF   , vec3(0.75, 0.25, 0.25), vec3(0.00, 0.00, 0.00), 0.0),
@@ -309,6 +309,18 @@ vec3 randomHemisphereDir(vec3 nl)
     return vec3(x, y, z);
 }
 
+vec3 randomSphereDir()
+{
+    float theta = 2.0*(rand()-0.5) * 3.14 / 2;
+    float phi   = 2.0*(rand()-0.5) * 3.14 * 2;
+    
+    float x = cos(theta) * cos(phi);
+    float y = sin(theta);
+    float z = cos(theta) * sin(phi);
+
+    return vec3(x, y, z);
+}
+
 void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
@@ -325,6 +337,19 @@ void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, 
     reflectance *= mat.albedo;
 }
 
+void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+{
+    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
+    
+    vec3 dir1 = reflect(dir, hitRecord.normal);
+    vec3 dir2 = randomSphereDir() * 0.2;
+    
+    float rougness = getRougness();
+    dir = normalize(rougness * dir1 + (1.0 - rougness) * dir2);
+
+    reflectance *= mat.albedo;
+}
+
 void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
     if (mat.refl == DIFF)
@@ -335,8 +360,9 @@ void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
     {
         material_specular(mat, hitRecord, dir, reflectance);
     } 
-    else
+    else if (mat.refl == GLOSSY)
     {
+        material_glossy(mat, hitRecord, dir, reflectance);
     }
 }
 
