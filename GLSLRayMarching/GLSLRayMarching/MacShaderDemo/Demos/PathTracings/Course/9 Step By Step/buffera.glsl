@@ -194,6 +194,46 @@ vec3 background(vec3 dir)
     return cubeMap(dir);
 }
 
+
+vec3 cosWeightedSampleHemisphere(vec3 n) 
+{
+    float u1 = rand(), u2 = rand();
+    float r = sqrt(u1);
+    float theta = 2. * PI * u2;
+    
+    float x = r * cos(theta);
+    float y = r * sin(theta);
+    float z = sqrt(max(0., 1. - u1));
+    
+    vec3 a = n;
+    vec3 b;
+    
+    if (abs(a.x) <= abs(a.y) && abs(a.x) <= abs(a.z))
+		a.x = 1.0;
+	else if (abs(a.y) <= abs(a.x) && abs(a.y) <= abs(a.z))
+		a.y = 1.0;
+	else
+		a.z = 1.0;
+        
+    a = normalize(cross(n, a));
+    b = normalize(cross(n, a));
+    
+    return normalize(a * x + b * y + n * z);
+}
+
+vec3 randomHemisphereDir(vec3 nl)
+{
+    float u1 = rand(), u2 = rand();
+    float r = sqrt(u1);
+    float theta = 2. * PI * u2;
+    
+    float x = r * cos(theta);
+    float y = r * sin(theta);
+    float z = sqrt(max(0., 1. - u1));
+
+    return vec3(x, y, z);
+}
+
 vec3 traceWorld(Ray ray) 
 {
     vec3 radiance = vec3(0.0);
@@ -205,15 +245,24 @@ vec3 traceWorld(Ray ray)
         
         if(intersect(ray, hitRecord))
         {
+            // get material
             Material mat = materials[hitRecord.mat];
 
-            // emission
+            // add emission
             radiance += reflectance * mat.emission;
+
+            // get albedo
+            vec3 color = mat.albedo;
+
+            // move ray origin to hit point
+            ray.origin += ray.dir * hitRecord.t;
+            vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, ray.dir));
 
             // hit shader
             if (mat.refl == DIFF)
             {				
-                radiance += vec3(0.0, 0.0, 0.0);
+                ray.dir = randomHemisphereDir(nl);
+                reflectance *= color;
             } 
             else if (mat.refl == SPEC)
             {
@@ -225,6 +274,8 @@ vec3 traceWorld(Ray ray)
                 radiance += reflectance * background(ray.dir);
                 break;
             }
+
+            ray.origin += ray.dir * RAY_EPSILON;
         }
         else
         {
