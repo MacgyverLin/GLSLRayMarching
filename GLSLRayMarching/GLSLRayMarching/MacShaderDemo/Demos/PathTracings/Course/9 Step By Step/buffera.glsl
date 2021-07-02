@@ -288,6 +288,29 @@ vec3 traceWorld(Ray ray)
     return radiance;
 }
 
+const vec2 acc_start_uv = vec2(0.0);
+vec3 outputColor(vec3 color, in vec2 fragCoord)
+{
+    vec2 coord = floor(fragCoord.xy);
+    if(all(equal(coord.xy, acc_start_uv)))
+    {
+	    if(iMouse.z > 0.0)
+            return vec3(iFrame); // save Start Frame in pixel
+        else 
+            return texture(iChannel0, (acc_start_uv + vec2(0.5, 0.5)) / iResolution.xy).rgb; // return Start Frame in pixel
+    }
+    else
+    {
+        int frame = iFrame - int(texture(iChannel0, (acc_start_uv + vec2(0.5, 0.5)) / iResolution.xy).x);
+        
+        vec3 oldcolor = texture(iChannel0, fragCoord.xy / iResolution.xy).rgb;
+        
+        color = oldcolor * float(frame) / float(frame + 1) + color / float(frame + 1);
+
+        return color;
+    }
+}
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
     rand_seek(fragCoord);
@@ -301,5 +324,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         color += traceWorld(camRay);
     }
 
-    fragColor = vec4(color, 1.0);
+    // blend with previous frame
+    // alpha = N / (N+1) 
+    // Cresult = Cn-1 * alpha + Cn * (1 - alpha)
+    fragColor = vec4(outputColor(color, fragCoord), 1);
 }
