@@ -19,6 +19,43 @@ void rand_seek(in vec2 fragCoord)
     seed = iTime + iResolution.y * fragCoord.x / iResolution.x + fragCoord.y / iResolution.y;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+// Data structure
+struct Ray 
+{ 
+    vec3 origin;
+    vec3 dir;
+};
+
+// Material Types
+#define DIFF 0
+#define SPEC 1
+#define REFR 2
+#define GLOSSY 3
+struct Material 
+{
+    int refl;    
+    vec3 albedo;
+    vec3 emission;
+    float ior;		
+};
+    
+struct Sphere 
+{
+	vec3 pos;		
+	float radius;
+    
+    int mat;	
+};
+    
+struct Plane 
+{
+    vec3 pos;		
+    vec3 normal;	
+
+    int mat;	
+};
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
     rand_seek(fragCoord);
