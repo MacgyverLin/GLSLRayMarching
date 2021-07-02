@@ -266,8 +266,8 @@ vec3 traceWorld(Ray ray)
             } 
             else if (mat.refl == SPEC)
             {
-                radiance += reflectance * background(ray.dir);
-                break;
+                ray.dir = reflect(ray.dir, hitRecord.normal);
+                reflectance *= color;
             } 
             else
             {
