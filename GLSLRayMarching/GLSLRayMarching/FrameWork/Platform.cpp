@@ -545,7 +545,7 @@ bool Platform::PreUpdate()
 	mouse.dy = (float)newMouseY - mouse.y;
 	mouse.x = (float)newMouseX;
 	mouse.y = (float)newMouseY;
-	//Debug("%f %f %f %f\n", mousex, mousey, mousedx, mousedy);
+	// Debug("%f %f %f %f\n", mouse.x, mouse.y, mouse.dx, mouse.dy);
 
 	///////////////////////////////////////////////////
 	// JoyStick
