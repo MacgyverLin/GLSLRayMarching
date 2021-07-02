@@ -118,6 +118,22 @@ Ray generateRay(vec2 uv)
     return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
 }
 
+struct HitRecord
+{
+    int id;
+    float t;
+    vec3 normal;
+    int mat;
+};
+
+bool intersect(Ray ray, out HitRecord hitRecord) 
+{
+	hitRecord.id = -1;
+	hitRecord.t = 1e5;
+
+	return hitRecord.id != -1;
+}
+
 vec3 traceWorld(Ray ray) 
 {
     vec3 radiance = vec3(0.0);
@@ -125,7 +141,19 @@ vec3 traceWorld(Ray ray)
 
     for (int depth = 0; depth < MAX_DEPTH; depth++) 
     {
-        radiance = vec3(rand(), rand(), rand());
+        HitRecord hitRecord;
+        
+        if(intersect(ray, hitRecord))
+        {
+            // hit shader
+            radiance = vec3(1.0, 0.0, 0.0);
+        }
+        else
+        {
+            // miss shader
+            radiance = vec3(0.0, 1.0, 0.0);
+            break;
+        }
     }
 
     return radiance;
