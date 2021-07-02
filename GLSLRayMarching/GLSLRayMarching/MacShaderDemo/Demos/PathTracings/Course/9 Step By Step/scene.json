@@ -12,6 +12,11 @@
         "filter": "linear",
         "wrap": "repeat"
       },
+      "ichannel2": {
+        "keyboard": "",
+        "filter": "nearest",
+        "wrap": "clamp"
+      },
       "rendertarget": "buffera"
     },
     {

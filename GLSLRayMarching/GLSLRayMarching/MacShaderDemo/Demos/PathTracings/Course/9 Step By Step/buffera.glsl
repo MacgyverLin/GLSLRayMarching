@@ -19,6 +19,81 @@ void rand_seek(in vec2 fragCoord)
     seed = iTime + iResolution.y * fragCoord.x / iResolution.x + fragCoord.y / iResolution.y;
 }
 
+const vec2 acc_start_coord       = vec2(0, 0);
+const vec2 metallic_coord        = vec2(1, 0);
+
+vec3 getStartFrame()
+{
+    return texture(iChannel0, (acc_start_coord + vec2(0.5, 0.5)) / iResolution.xy).rgb;
+}
+
+float getMetallic()
+{
+    return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).r;
+}
+
+float getRougness()
+{
+    return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).g;
+}
+
+#define KEY_DOWN(key)   (texture(iChannel2, vec2((float(key) + 0.5)/256, (0.0 + 0.5)/3)).r == 0)
+#define KEY_CLICK(key)  (texture(iChannel2, vec2((float(key) + 0.5)/256, (1.0 + 0.5)/3)).r == 0)
+#define KEY_TOGGLE(key) (texture(iChannel2, vec2((float(key) + 0.5)/256, (2.0 + 0.5)/3)).r == 0)
+
+vec3 outputColor(vec3 color, in vec2 fragCoord)
+{
+    if(all(equal(floor(fragCoord.xy).xy, acc_start_coord)))
+    {
+	    if(iMouse.z > 0.0 || KEY_DOWN(120) || KEY_DOWN(116) || KEY_DOWN(113) || KEY_DOWN(98))
+            return vec3(iFrame);    // save Start Frame in pixel
+        else 
+            return getStartFrame(); // return Start Frame in pixel
+    }
+    else if(all(equal(floor(fragCoord.xy).xy, metallic_coord)))
+    {
+        float metallic = getMetallic();
+	    if(KEY_DOWN(120))
+        {
+            metallic += 0.001;
+            if(metallic > 1.0)
+                metallic = 1.0;
+        }
+	    else if(KEY_DOWN(116))
+        {
+            metallic -= 0.001;
+            if(metallic < 0.0)
+                metallic = 0.0;
+        }
+
+        float roughness = getMetallic();
+	    if(KEY_DOWN(113))
+        {
+            roughness += 0.001;
+            if(roughness > 1.0)
+                roughness = 1.0;
+        }
+	    else if(KEY_DOWN(98))
+        {
+            roughness -= 0.001;
+            if(roughness < 0.0)
+                roughness = 0.0;
+        }
+        
+        return vec3(metallic, roughness, 1.0);
+    }
+    else
+    {
+        int frame = iFrame - int(getStartFrame().x);
+        
+        vec3 oldcolor = texture(iChannel0, fragCoord.xy / iResolution.xy).rgb;
+        
+        color = oldcolor * float(frame) / float(frame + 1) + color / float(frame + 1);
+
+        return color;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // Data structure
 struct Ray 
@@ -234,22 +309,31 @@ vec3 randomHemisphereDir(vec3 nl)
     return vec3(x, y, z);
 }
 
-void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 color = mat.albedo;
-
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
     
-    // hit shader
+    dir = randomHemisphereDir(nl);
+    reflectance *= mat.albedo;
+}
+
+void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+{
+    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
+    
+    dir = reflect(dir, hitRecord.normal);
+    reflectance *= mat.albedo;
+}
+
+void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+{
     if (mat.refl == DIFF)
     {
-        dir = randomHemisphereDir(nl);
-        reflectance *= color;
+        material_diffuse(mat, hitRecord, dir, reflectance);
     } 
     else if (mat.refl == SPEC)
     {
-        dir = reflect(dir, hitRecord.normal);
-        reflectance *= color;
+        material_specular(mat, hitRecord, dir, reflectance);
     } 
     else
     {
@@ -289,28 +373,6 @@ vec3 traceWorld(Ray ray)
     return radiance;
 }
 
-const vec2 acc_start_uv = vec2(0.0);
-vec3 outputColor(vec3 color, in vec2 fragCoord)
-{
-    vec2 coord = floor(fragCoord.xy);
-    if(all(equal(coord.xy, acc_start_uv)))
-    {
-	    if(iMouse.z > 0.0)
-            return vec3(iFrame); // save Start Frame in pixel
-        else 
-            return texture(iChannel0, (acc_start_uv + vec2(0.5, 0.5)) / iResolution.xy).rgb; // return Start Frame in pixel
-    }
-    else
-    {
-        int frame = iFrame - int(texture(iChannel0, (acc_start_uv + vec2(0.5, 0.5)) / iResolution.xy).x);
-        
-        vec3 oldcolor = texture(iChannel0, fragCoord.xy / iResolution.xy).rgb;
-        
-        color = oldcolor * float(frame) / float(frame + 1) + color / float(frame + 1);
-
-        return color;
-    }
-}
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
