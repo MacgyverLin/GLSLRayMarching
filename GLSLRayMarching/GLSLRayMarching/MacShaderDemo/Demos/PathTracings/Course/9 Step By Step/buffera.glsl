@@ -168,10 +168,22 @@ bool intersect(Ray ray, out HitRecord hitRecord)
 	return hitRecord.id != -1;
 }
 
+vec3 cubeMap(vec3 dir)
+{
+    dir = normalize(dir);
+
+    vec2 uv;
+    uv.x = (atan(dir.x, dir.z) + (3.14)) / (2 * 3.14);
+    uv.y = (asin(dir.y) + (3.14 / 2.0)) / (3.14);
+    return texture(iChannel1, uv).rgb;
+}
+
 vec3 background(vec3 dir) 
 {
-    return mix(vec3(0.), vec3(.9), .5 + .5 * dot(dir, vec3(0., 1., 0.)));
+    //return mix(vec3(0.), vec3(.9), .5 + .5 * dot(dir, vec3(0., 1., 0.)));
     //return texture(iChannel1, dir).rgb;
+
+    return cubeMap(dir);
 }
 
 vec3 traceWorld(Ray ray) 
@@ -191,7 +203,7 @@ vec3 traceWorld(Ray ray)
         else
         {
             // miss shader
-            radiance += background(ray.dir);
+            radiance += reflectance * background(ray.dir);
             break;
         }
     }

@@ -10,7 +10,7 @@
       "ichannel1": {
         "texture2d": "envmap1.jpg",
         "filter": "linear",
-        "wrap": "clamp"
+        "wrap": "repeat"
       },
       "rendertarget": "buffera"
     },
