@@ -182,7 +182,9 @@ const Material materials[NUM_MATERIALS] =
     Material(SPEC   , -1, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
     Material(TRANS  , -1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 1.5),
     Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0),
-    Material(GLOSSY ,  0, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
+    Material(DIFF   , -1, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
+    //Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    //Material(DIFF   , -1, vec3(0.00, 0.00, 0.00),  1, vec3(4.00, 4.00, 4.00), 1.5),
 
     Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
     Material(DIFF   , -1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0),
@@ -416,7 +418,7 @@ vec3 getEmission(in Material mat, vec2 uv)
     if(mat.emissionTexture==-1)
         return mat.emission;
     else
-        return getEmissionTexture(mat.emissionTexture, uv);
+        return getEmissionTexture(mat.emissionTexture, uv) * mat.emission;
 }
 
 void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
