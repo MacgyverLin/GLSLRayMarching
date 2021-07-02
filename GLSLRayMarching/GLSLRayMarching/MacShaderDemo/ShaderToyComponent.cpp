@@ -27,6 +27,7 @@ public:
 		: Texture2D()
 		, buffer(256 * 3)
 	{
+		MemSet(&buffer[0], 0, buffer.size());
 	}
 
 	virtual ~KeyboardTexture()
@@ -47,61 +48,44 @@ public:
 		return true;
 	}
 
-	void UpdateKey(int key)
+	void UpdateKey(Platform::KeyCode keycode)
 	{
-		char* keydown = &buffer[256 * 0];
-		char* keyclick = &buffer[256 * 1];
-		char* keytoggle = &buffer[256 * 2];
+		unsigned char* keydown = &buffer[256 * 0];
+		unsigned char* keyclick = &buffer[256 * 1];
+		unsigned char* keytoggle = &buffer[256 * 2];
 
-		int oldKeydown = keydown[key];
-
-		int keyState = GetAsyncKeyState(key);
-		keydown[key] = (keyState & 0x8000) != 0;
-		keyclick[key] = (keydown[key] != oldKeydown) && keydown[key];
-		keytoggle[key] = (keyState & 0x0001) != 0;
-
-		/*
-		bool release = (keydown[key] != oldKeydown) && !keydown[key];
-		if (key == 38)
-		{
-			//Debug("%d %d %d\n", keydown[key], keyclick[key], keytoggle[key]);
-			if (keyclick[key])
-			{
-				int a = 1;
-			}
-		}
-		*/
+		keydown[int(keycode)] = Platform::GetKey(keycode) ? 0 : 255;
+		keyclick[int(keycode)] = Platform::GetKeyDown(keycode) ? 0 : 255;
+		keytoggle[int(keycode)] = Platform::GetKeyHold(keycode) ? 0 : 255;
 	}
 
 	virtual void Tick()
 	{
-		for (int i = 'a'; i < 'z'; i++)
+		for(int keycode = (int)Platform::KeyCode::A; keycode <= (int)Platform::KeyCode::Z; keycode += 1)
 		{
-			UpdateKey(i);
+			UpdateKey((Platform::KeyCode)keycode);
 		}
 
-		for (int i = 'A'; i < 'Z'; i++)
-		{
-			UpdateKey(i);
-		}
+		UpdateKey(Platform::KeyCode::LeftArrow);
+		UpdateKey(Platform::KeyCode::RightArrow);
+		UpdateKey(Platform::KeyCode::UpArrow);
+		UpdateKey(Platform::KeyCode::DownArrow);
+		UpdateKey(Platform::KeyCode::End);
+		UpdateKey(Platform::KeyCode::Home);
+		UpdateKey(Platform::KeyCode::LeftShift);
+		UpdateKey(Platform::KeyCode::RightShift);
+		UpdateKey(Platform::KeyCode::LeftControl);
+		UpdateKey(Platform::KeyCode::RightControl);
+		UpdateKey(Platform::KeyCode::LeftAlt);
+		UpdateKey(Platform::KeyCode::RightAlt);
 
-		UpdateKey(VK_LEFT);
-		UpdateKey(VK_UP);
-		UpdateKey(VK_RIGHT);
-		UpdateKey(VK_DOWN);
-		UpdateKey(VK_PRIOR);
-		UpdateKey(VK_NEXT);
-		UpdateKey(VK_END);
-		UpdateKey(VK_HOME);
-		UpdateKey(VK_SHIFT);
-		UpdateKey(VK_CONTROL);
-		UpdateKey(VK_MENU);
+		Debug("%d\n", buffer[256 * 0 + 98]);
 
 		Texture2D::Update(&buffer[0]);
 	}
 private:
 private:
-	std::vector<char> buffer;
+	std::vector<unsigned char> buffer;
 };
 
 class UniformGUI
@@ -150,6 +134,10 @@ public:
 	{
 		Texture2D::Update(&buffer[0]);
 	}
+
+	virtual void Tick() override
+	{
+	}
 private:
 private:
 	std::vector<char> buffer;
@@ -176,6 +164,10 @@ public:
 	virtual void Update()
 	{
 		Texture2D::Update(&buffer[0]);
+	}
+
+	virtual void Tick() override
+	{
 	}
 private:
 private:
@@ -204,6 +196,10 @@ public:
 	{
 		Texture2D::Update(&buffer[0]);
 	}
+
+	virtual void Tick() override
+	{
+	}
 private:
 private:
 	std::vector<char> buffer;
@@ -230,6 +226,10 @@ public:
 	virtual void Update()
 	{
 		Texture2D::Update(&buffer[0]);
+	}
+
+	virtual void Tick() override
+	{
 	}
 private:
 private:
@@ -755,6 +755,8 @@ public:
 				}
 
 				texture->Bind(i);
+
+				texture->Tick();
 			}
 			else
 			{
