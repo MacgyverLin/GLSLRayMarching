@@ -3,7 +3,7 @@
 #define PI 3.14159265359
 #define EPSILON 1e-4
 #define RAY_EPSILON 1e-3
-#define SUB_SAMPLES 1
+#define SUB_SAMPLES 3
 #define MAX_DEPTH 64
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -37,15 +37,15 @@ float getRougness()
     return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).g;
 }
 
-#define KEY_DOWN(key)   (texture(iChannel2, vec2((float(key) + 0.5)/256, (0.0 + 0.5)/3)).r == 0)
-#define KEY_CLICK(key)  (texture(iChannel2, vec2((float(key) + 0.5)/256, (1.0 + 0.5)/3)).r == 0)
-#define KEY_TOGGLE(key) (texture(iChannel2, vec2((float(key) + 0.5)/256, (2.0 + 0.5)/3)).r == 0)
+#define KEY_DOWN(key)   (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (0.0 + 0.5)/3)).r == 0)
+#define KEY_CLICK(key)  (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (1.0 + 0.5)/3)).r == 0)
+#define KEY_TOGGLE(key) (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (2.0 + 0.5)/3)).r == 0)
 
 vec3 outputColor(vec3 color, in vec2 fragCoord)
 {
     if(all(equal(floor(fragCoord.xy).xy, acc_start_coord)))
     {
-	    if(iMouse.z > 0.0 || KEY_DOWN(120) || KEY_DOWN(116) || KEY_DOWN(113) || KEY_DOWN(98))
+	    if(iMouse.z > 0.0 || KEY_DOWN('r') || KEY_DOWN('f') || KEY_DOWN('t') || KEY_DOWN('g'))
             return vec3(iFrame);    // save Start Frame in pixel
         else 
             return getStartFrame(); // return Start Frame in pixel
@@ -53,13 +53,13 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
     else if(all(equal(floor(fragCoord.xy).xy, metallic_coord)))
     {
         float metallic = getMetallic();
-	    if(KEY_DOWN(120))
+	    if(KEY_DOWN('r'))
         {
             metallic += 0.001;
             if(metallic > 1.0)
                 metallic = 1.0;
         }
-	    else if(KEY_DOWN(116))
+	    else if(KEY_DOWN('f'))
         {
             metallic -= 0.001;
             if(metallic < 0.0)
@@ -67,13 +67,13 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
         }
 
         float roughness = getMetallic();
-	    if(KEY_DOWN(113))
+	    if(KEY_DOWN('t'))
         {
             roughness += 0.001;
             if(roughness > 1.0)
                 roughness = 1.0;
         }
-	    else if(KEY_DOWN(98))
+	    else if(KEY_DOWN('g'))
         {
             roughness -= 0.001;
             if(roughness < 0.0)
@@ -182,7 +182,6 @@ vec3 getViewDir()
 
     return vec3(cos(theta)*cos(phi), sin(theta), cos(theta)*sin(phi));
 }
-
 
 Ray generateRay(vec2 uv) 
 {
@@ -405,13 +404,22 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     rand_seek(fragCoord);
 
     vec3 color = vec3(0);
+
+    for (int x = 0; x < SUB_SAMPLES; x++) 
     {
-        vec2 uv = (fragCoord.xy) / iResolution.xy;
+        for (int y = 0; y < SUB_SAMPLES; y++) 
+        {
+            float du = rand() - 0.5;
+            float dv = rand() - 0.5;
+            vec2 uv = (fragCoord.xy + vec2(du, dv)) / iResolution.xy;
+            
+            Ray camRay = generateRay(uv);
         
-        Ray camRay = generateRay(uv);
-        
-        color += traceWorld(camRay);
+            color += traceWorld(camRay);
+        }
     }
+    
+    color /= float(SUB_SAMPLES * SUB_SAMPLES);
 
     // blend with previous frame
     // alpha = N / (N+1) 
