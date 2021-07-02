@@ -234,6 +234,31 @@ vec3 randomHemisphereDir(vec3 nl)
     return vec3(x, y, z);
 }
 
+void material_brdf(in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+{
+    // get material
+    Material mat = materials[hitRecord.mat];
+
+    vec3 color = mat.albedo;
+
+    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
+    
+    // hit shader
+    if (mat.refl == DIFF)
+    {
+        dir = randomHemisphereDir(nl);
+        reflectance *= color;
+    } 
+    else if (mat.refl == SPEC)
+    {
+        dir = reflect(dir, hitRecord.normal);
+        reflectance *= color;
+    } 
+    else
+    {
+    }
+}
+
 vec3 traceWorld(Ray ray) 
 {
     vec3 radiance = vec3(0.0);
@@ -255,25 +280,9 @@ vec3 traceWorld(Ray ray)
             vec3 color = mat.albedo;
 
             // move ray origin to hit point
-            ray.origin += ray.dir * hitRecord.t;
-            vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, ray.dir));
+            ray.origin = hitRecord.position;
 
-            // hit shader
-            if (mat.refl == DIFF)
-            {				
-                ray.dir = randomHemisphereDir(nl);
-                reflectance *= color;
-            } 
-            else if (mat.refl == SPEC)
-            {
-                ray.dir = reflect(ray.dir, hitRecord.normal);
-                reflectance *= color;
-            } 
-            else
-            {
-                radiance += reflectance * background(ray.dir);
-                break;
-            }
+            material_scatter(hitRecord, ray.dir, reflectance);
 
             ray.origin += ray.dir * RAY_EPSILON;
         }
