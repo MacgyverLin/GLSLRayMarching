@@ -122,14 +122,48 @@ struct HitRecord
 {
     int id;
     float t;
-    vec3 normal;
+    vec3 position;
+    vec3 normal;    
     int mat;
 };
+
+float intersectSphere(Ray r, Sphere s) 
+{
+    vec3 op = s.pos - r.origin;
+    float b = dot(op, r.dir);
+    
+    float delta = b * b - dot(op, op) + s.radius * s.radius;
+	if (delta < 0.)
+        return 0.; 		        
+    else
+        delta = sqrt(delta);
+    
+    float t;
+    if ((t = b - delta) > EPSILON)
+        return t;
+    else if ((t = b + delta) > EPSILON)
+        return t;
+    else
+        return 0.;
+}
 
 bool intersect(Ray ray, out HitRecord hitRecord) 
 {
 	hitRecord.id = -1;
 	hitRecord.t = 1e5;
+
+	for (int i = 0; i < NUM_SPHERES; i++) 
+    {
+		float intersect_t = intersectSphere(ray, spheres[i]);
+		if (intersect_t != 0. && intersect_t < hitRecord.t) 
+        { 
+            hitRecord.id = i; 
+            hitRecord.t = intersect_t;
+            hitRecord.position = ray.origin + ray.dir * hitRecord.t;
+         	hitRecord.normal = normalize(hitRecord.position - spheres[i].pos);
+            hitRecord.mat = spheres[i].mat;
+        }
+	}
 
 	return hitRecord.id != -1;
 }
