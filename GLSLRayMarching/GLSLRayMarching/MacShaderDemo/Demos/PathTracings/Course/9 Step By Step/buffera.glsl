@@ -207,18 +207,23 @@ vec3 traceWorld(Ray ray)
         {
             Material mat = materials[hitRecord.mat];
 
+            // emission
+            radiance += reflectance * mat.emission;
+
             // hit shader
             if (mat.refl == DIFF)
             {				
-                radiance = vec3(1.0, 0.0, 0.0);
+                radiance += vec3(0.0, 0.0, 0.0);
             } 
             else if (mat.refl == SPEC)
             {
-                radiance = vec3(0.0, 1.0, 0.0);
+                radiance += reflectance * background(ray.dir);
+                break;
             } 
             else
             {
-                radiance = vec3(0.0, 0.0, 1.0);
+                radiance += reflectance * background(ray.dir);
+                break;
             }
         }
         else
