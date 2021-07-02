@@ -234,11 +234,8 @@ vec3 randomHemisphereDir(vec3 nl)
     return vec3(x, y, z);
 }
 
-void material_brdf(in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    // get material
-    Material mat = materials[hitRecord.mat];
-
     vec3 color = mat.albedo;
 
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
@@ -270,19 +267,14 @@ vec3 traceWorld(Ray ray)
         
         if(intersect(ray, hitRecord))
         {
-            // get material
-            Material mat = materials[hitRecord.mat];
-
             // add emission
-            radiance += reflectance * mat.emission;
-
-            // get albedo
-            vec3 color = mat.albedo;
+            radiance += reflectance * materials[hitRecord.mat].emission;
 
             // move ray origin to hit point
             ray.origin = hitRecord.position;
 
-            material_scatter(hitRecord, ray.dir, reflectance);
+            // get material
+            material_scatter(materials[hitRecord.mat], hitRecord, ray.dir, reflectance);
 
             ray.origin += ray.dir * RAY_EPSILON;
         }
