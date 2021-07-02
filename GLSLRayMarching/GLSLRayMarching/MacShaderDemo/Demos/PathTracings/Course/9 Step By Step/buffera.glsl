@@ -21,10 +21,11 @@ void rand_seek(in vec2 fragCoord)
 
 const vec2 acc_start_coord       = vec2(0, 0);
 const vec2 metallic_coord        = vec2(1, 0);
+const vec2 camerapos_coord       = vec2(2, 0);
 
-vec3 getStartFrame()
+int getStartFrame()
 {
-    return texture(iChannel0, (acc_start_coord + vec2(0.5, 0.5)) / iResolution.xy).rgb;
+    return int(texture(iChannel0, (acc_start_coord + vec2(0.5, 0.5)) / iResolution.xy).r);
 }
 
 float getMetallic()
@@ -35,6 +36,23 @@ float getMetallic()
 float getRougness()
 {
     return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).g;
+}
+
+vec3 getViewDir()
+{
+    //return vec3(0.0, 0.0, -90.4);
+
+    vec2 p = iMouse.xy / iResolution.xy;
+
+    float phi = (2.0 * (p.x - 0.5)) * 3.14;
+    float theta = (2.0 * (p.y - 0.5)) * (3.14 / 2.0) * 0.6;
+
+    return vec3(cos(theta)*cos(phi), sin(theta), cos(theta)*sin(phi));
+}
+
+vec3 getCameraPos()
+{
+    return texture(iChannel0, (camerapos_coord + vec2(0.5, 0.5)) / iResolution.xy).rgb;
 }
 
 #define KEY_DOWN(key)   (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (0.0 + 0.5)/3)).r == 0)
@@ -48,7 +66,27 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
 	    if(iMouse.z > 0.0 || KEY_DOWN('r') || KEY_DOWN('f') || KEY_DOWN('t') || KEY_DOWN('g'))
             return vec3(iFrame);    // save Start Frame in pixel
         else 
-            return getStartFrame(); // return Start Frame in pixel
+            return vec3(getStartFrame()); // return Start Frame in pixel
+    }
+    else if(all(equal(floor(fragCoord.xy).xy, camerapos_coord)))
+    {
+        vec3 cameraPos = getCameraPos();
+
+        if(iFrame==0)
+        {
+            cameraPos = vec3(50.0, 40.8, 172.0);
+        }
+
+	    if(KEY_DOWN('w'))
+        {
+            cameraPos += getViewDir();
+        }
+	    else if(KEY_DOWN('s'))
+        {
+            cameraPos -= getViewDir();
+        }
+
+        return cameraPos;
     }
     else if(all(equal(floor(fragCoord.xy).xy, metallic_coord)))
     {
@@ -84,7 +122,7 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
     }
     else
     {
-        int frame = iFrame - int(getStartFrame().x);
+        int frame = iFrame - getStartFrame();
         
         vec3 oldcolor = texture(iChannel0, fragCoord.xy / iResolution.xy).rgb;
         
@@ -171,23 +209,11 @@ const Plane planes[NUM_PLANES] =
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-vec3 getViewDir()
-{
-    //return vec3(0.0, 0.0, -90.4);
-
-    vec2 p = iMouse.xy / iResolution.xy;
-
-    float phi = (2.0 * (p.x - 0.5)) * 3.14;
-    float theta = (2.0 * (p.y - 0.5)) * (3.14 / 2.0) * 0.6;
-
-    return vec3(cos(theta)*cos(phi), sin(theta), cos(theta)*sin(phi));
-}
-
 Ray generateRay(vec2 uv) 
 {
     vec2 p = uv * 2.0 - 1.0;
     
-    vec3 cameraPosition = vec3(50.0, 40.8, 172.0);
+    vec3 cameraPosition = getCameraPos();
     vec3 cameraTarget = cameraPosition + getViewDir();
     float near = 1.947;
 
@@ -397,7 +423,6 @@ vec3 traceWorld(Ray ray)
 
     return radiance;
 }
-
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
