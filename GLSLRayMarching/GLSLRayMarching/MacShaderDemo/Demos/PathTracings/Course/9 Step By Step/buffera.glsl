@@ -98,8 +98,16 @@ const Plane planes[NUM_PLANES] =
 ////////////////////////////////////////////////////////////////////////////////////////
 vec3 getViewDir()
 {
-    return vec3(0.0, 0.0, -90.4);
+    //return vec3(0.0, 0.0, -90.4);
+
+    vec2 p = iMouse.xy / iResolution.xy;
+
+    float phi = (2.0 * (p.x - 0.5)) * 3.14;
+    float theta = (2.0 * (p.y - 0.5)) * (3.14 / 2.0) * 0.6;
+
+    return vec3(cos(theta)*cos(phi), sin(theta), cos(theta)*sin(phi));
 }
+
 
 Ray generateRay(vec2 uv) 
 {
