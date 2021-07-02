@@ -95,9 +95,54 @@ const Plane planes[NUM_PLANES] =
     Plane(vec3( 0.00, 90.00,   0.00), vec3( 0.00, -1.00,  0.00), 9)
 };
 
+////////////////////////////////////////////////////////////////////////////////////////
+vec3 getViewDir()
+{
+    return vec3(0.0, 0.0, -90.4);
+}
+
+Ray generateRay(vec2 uv) 
+{
+    vec2 p = uv * 2.0 - 1.0;
+    
+    vec3 cameraPosition = vec3(50.0, 40.8, 172.0);
+    vec3 cameraTarget = cameraPosition + getViewDir();
+    float near = 1.947;
+
+	vec3 cameraZ = normalize(cameraTarget - cameraPosition);
+	vec3 up = vec3(0.0, 1.0, 0.0);
+	vec3 cameraX = normalize(cross(cameraZ, up)); 
+    vec3 cameraY = cross(cameraX, cameraZ);
+    
+    float aspectRatio = iResolution.x / iResolution.y;
+    return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
+}
+
+vec3 traceWorld(Ray ray) 
+{
+    vec3 radiance = vec3(0.0);
+    vec3 reflectance = vec3(1.0);
+
+    for (int depth = 0; depth < MAX_DEPTH; depth++) 
+    {
+        radiance = vec3(rand(), rand(), rand());
+    }
+
+    return radiance;
+}
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
     rand_seek(fragCoord);
 
-    fragColor = vec4(rand(), rand(), rand() , 1.0);
+    vec3 color = vec3(0);
+    {
+        vec2 uv = (fragCoord.xy) / iResolution.xy;
+        
+        Ray camRay = generateRay(uv);
+        
+        color += traceWorld(camRay);
+    }
+
+    fragColor = vec4(color, 1.0);
 }
