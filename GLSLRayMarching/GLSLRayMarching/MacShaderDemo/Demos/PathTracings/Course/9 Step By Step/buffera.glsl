@@ -3,7 +3,7 @@
 #define PI 3.14159265359
 #define EPSILON 1e-4
 #define RAY_EPSILON 1e-3
-#define SUB_SAMPLES 3
+#define SUB_SAMPLES 1
 #define MAX_DEPTH 64
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ struct Ray
 // Material Types
 #define DIFF 0
 #define SPEC 1
-#define REFR 2
+#define TRANS 2
 #define GLOSSY 3
 struct Material 
 {
@@ -178,7 +178,7 @@ struct Plane
 const Material materials[NUM_MATERIALS] =
 {
     Material(SPEC   , vec3(1.00, 1.00, 1.00), vec3(0.00, 0.00, 0.00), 0.0),
-    Material(REFR   , vec3(0.75, 1.00, 0.75), vec3(0.00, 0.00, 0.00), 1.5),
+    Material(TRANS  , vec3(0.75, 1.00, 0.75), vec3(0.00, 0.00, 0.00), 1.5),
     Material(DIFF   , vec3(0.00, 0.00, 0.00), vec3(4.00, 4.00, 4.00), 0.0),
     Material(GLOSSY , vec3(0.00, 0.70, 0.70), vec3(0.00, 0.00, 0.00), 1.5),
 
@@ -368,7 +368,7 @@ vec3 randomSphereDir()
 
 void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
+    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
     dir = randomHemisphereDir(nl);
     reflectance *= mat.albedo;
@@ -376,7 +376,7 @@ void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
 
 void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
+    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
     dir = reflect(dir, hitRecord.normal);
     reflectance *= mat.albedo;
@@ -384,7 +384,7 @@ void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, 
 
 void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir));
+    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
     vec3 dir1 = reflect(dir, hitRecord.normal);
     vec3 dir2 = randomSphereDir() * 0.2;
@@ -393,6 +393,49 @@ void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, in
     dir = normalize(rougness * dir1 + (1.0 - rougness) * dir2);
 
     reflectance *= mat.albedo;
+}
+
+void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+{
+    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
+
+    float ior = mat.ior;
+
+    // if normal is same as incident normal, ray travel from outside => into = 1
+    float into = float(dot(hitRecord.normal, nl) > 0.); 
+                                                        
+    float ddn = dot(nl, dir);
+    float nnt = mix(ior, 1. / ior, into);
+    vec3 rdir = reflect(dir, hitRecord.normal);
+    float cos2t = 1. - nnt * nnt * (1. - ddn * ddn);
+    if (cos2t > 0.)
+    {
+        vec3 tdir = normalize(dir * nnt - nl * (ddn * nnt + sqrt(cos2t)));
+        
+        float R0 = (ior-1.) * (ior-1.) / ((ior+1.) * (ior+1.));
+    	float c = 1. - mix(dot(tdir, hitRecord.normal), -ddn, into);	// 1 - cos¦È
+    	float Re = R0 + (1. - R0) * c * c * c * c * c;
+        
+        float P = .25 + .5 * Re;
+        float RP = Re / P;
+        float TP = (1. - Re) / (1. - P);
+        
+        // Russain roulette
+        if (rand() < P)
+        {				
+            reflectance *= RP;
+            dir = rdir;  // reflect
+        } 
+        else
+        { 				        
+            reflectance *= mat.albedo * TP; 
+            dir = tdir; // refract
+        }
+    } 
+    else
+    {
+        dir = rdir; // reflect
+    }
 }
 
 void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
@@ -408,6 +451,10 @@ void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
     else if (mat.refl == GLOSSY)
     {
         material_glossy(mat, hitRecord, dir, reflectance);
+    }
+    else if (mat.refl == TRANS)
+    {
+        material_transprent(mat, hitRecord, dir, reflectance);
     }
 }
 
