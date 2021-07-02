@@ -255,6 +255,13 @@ float intersectSphere(Ray r, Sphere s)
         return 0.;
 }
 
+float intersectPlane(Ray r, Plane p) 
+{
+    float t = dot(p.pos - r.origin, p.normal) / dot(r.dir, p.normal);
+
+    return mix(0., t, float(t > EPSILON));
+}
+
 bool intersect(Ray ray, out HitRecord hitRecord) 
 {
 	hitRecord.id = -1;
@@ -272,6 +279,19 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.mat = spheres[i].mat;
         }
 	}
+
+    for (int i = 0; i < NUM_PLANES; i++) 
+    {
+        float intersect_t = intersectPlane(ray, planes[i]);
+        if (intersect_t != 0. && intersect_t < hitRecord.t) 
+        {
+            hitRecord.id = i; 
+            hitRecord.t = intersect_t;
+            hitRecord.position = ray.origin + ray.dir * hitRecord.t;
+            hitRecord.normal = planes[i].normal;
+            hitRecord.mat = planes[i].mat;
+        }
+    }
 
 	return hitRecord.id != -1;
 }
