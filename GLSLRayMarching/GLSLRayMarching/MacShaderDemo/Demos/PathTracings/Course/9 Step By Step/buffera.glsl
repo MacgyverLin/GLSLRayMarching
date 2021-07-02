@@ -381,12 +381,34 @@ vec3 randomSphereDir()
     return vec3(x, y, z);
 }
 
+vec3 getTexelFromAtlas(int textureID, int row, vec2 uv)
+{
+    vec2 offset = vec2( (textureID % 4) * 0.25, row * 0.25);
+
+    return texture(iChannel3, offset + uv * 0.25).rgb;
+}
+
+vec3 getAlbedoFromAtlas(int textureID, vec2 uv)
+{
+    return getTexelFromAtlas(textureID, 3, uv);
+}
+
+vec3 getEmissionFromAtlas(int textureID, vec2 uv)
+{
+    return getTexelFromAtlas(textureID, 2, uv);
+}
+
+vec3 getNormalFromAtlas(int textureID, vec2 uv)
+{
+    return getTexelFromAtlas(textureID, 0, uv);
+}
+
 vec3 getAlbedo(in Material mat, vec2 uv)
 {
     if(mat.albedoTexture==-1)
         return mat.albedo;
     else
-        return mat.albedo;
+        return getAlbedoFromAtlas(mat.albedoTexture, uv);
 }
 
 vec3 getEmission(in Material mat, vec2 uv)
@@ -394,7 +416,7 @@ vec3 getEmission(in Material mat, vec2 uv)
     if(mat.emissionTexture==-1)
         return mat.emission;
     else
-        return mat.emission;
+        return getEmissionFromAtlas(mat.emissionTexture, uv);
 }
 
 void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
