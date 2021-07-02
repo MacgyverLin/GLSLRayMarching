@@ -168,6 +168,12 @@ bool intersect(Ray ray, out HitRecord hitRecord)
 	return hitRecord.id != -1;
 }
 
+vec3 background(vec3 dir) 
+{
+    return mix(vec3(0.), vec3(.9), .5 + .5 * dot(dir, vec3(0., 1., 0.)));
+    //return texture(iChannel1, dir).rgb;
+}
+
 vec3 traceWorld(Ray ray) 
 {
     vec3 radiance = vec3(0.0);
@@ -185,7 +191,7 @@ vec3 traceWorld(Ray ray)
         else
         {
             // miss shader
-            radiance = vec3(0.0, 1.0, 0.0);
+            radiance += background(ray.dir);
             break;
         }
     }
