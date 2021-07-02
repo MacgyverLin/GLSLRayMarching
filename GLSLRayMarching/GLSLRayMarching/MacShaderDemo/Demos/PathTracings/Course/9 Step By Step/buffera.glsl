@@ -147,8 +147,10 @@ struct Ray
 #define GLOSSY 3
 struct Material 
 {
-    int refl;    
-    vec3 albedo;
+    int refl;
+    int albedoTexture;
+    vec3 albedo;    
+    int emissionTexture;
     vec3 emission;
     float ior;		
 };
@@ -177,17 +179,17 @@ struct Plane
 
 const Material materials[NUM_MATERIALS] =
 {
-    Material(SPEC   , vec3(1.00, 1.00, 1.00), vec3(0.00, 0.00, 0.00), 0.0),
-    Material(TRANS  , vec3(0.75, 1.00, 0.75), vec3(0.00, 0.00, 0.00), 1.5),
-    Material(DIFF   , vec3(0.00, 0.00, 0.00), vec3(4.00, 4.00, 4.00), 0.0),
-    Material(GLOSSY , vec3(0.00, 0.70, 0.70), vec3(0.00, 0.00, 0.00), 1.5),
+    Material(SPEC   , -1, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(TRANS  , -1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 1.5),
+    Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0),
+    Material(GLOSSY , -1, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
 
-    Material(DIFF   , vec3(0.75, 0.75, 0.75), vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , vec3(0.75, 0.25, 0.25), vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , vec3(0.75, 0.75, 0.75), vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , vec3(0.25, 0.25, 0.75), vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , vec3(0.00, 0.00, 0.00), vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , vec3(0.75, 0.75, 0.75), vec3(0.00, 0.00, 0.00), 0.0)
+    Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   , -1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   , -1, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0)
 };
 
 const Sphere spheres[NUM_SPHERES] = 
@@ -314,7 +316,6 @@ vec3 background(vec3 dir)
     return cubeMap(dir);
 }
 
-
 vec3 cosWeightedSampleHemisphere(vec3 n) 
 {
     float u1 = rand(), u2 = rand();
@@ -366,12 +367,28 @@ vec3 randomSphereDir()
     return vec3(x, y, z);
 }
 
+vec3 getAlbedo(in Material mat)
+{
+    if(mat.albedoTexture==-1)
+        return mat.albedo;
+    else
+        return mat.albedo;
+}
+
+vec3 getEmission(in Material mat)
+{
+    if(mat.emissionTexture==-1)
+        return mat.emission;
+    else
+        return mat.emission;
+}
+
 void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
     dir = cosWeightedSampleHemisphere(nl);
-    reflectance *= mat.albedo;
+    reflectance *= getAlbedo(mat);
 }
 
 void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
@@ -379,7 +396,7 @@ void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, 
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
     dir = reflect(dir, hitRecord.normal);
-    reflectance *= mat.albedo;
+    reflectance *= getAlbedo(mat);
 }
 
 void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
@@ -392,7 +409,7 @@ void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, in
     float rougness = getRougness();
     dir = normalize(rougness * dir1 + (1.0 - rougness) * dir2);
 
-    reflectance *= mat.albedo;
+    reflectance *= getAlbedo(mat);
 }
 
 void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
@@ -428,7 +445,7 @@ void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir
         } 
         else
         { 				        
-            reflectance *= mat.albedo * TP; 
+            reflectance *= getAlbedo(mat) * TP; 
             dir = tdir; // refract
         }
     } 
@@ -470,8 +487,8 @@ vec3 traceWorld(Ray ray)
         if(intersect(ray, hitRecord))
         {
             // add emission
-            radiance += reflectance * materials[hitRecord.mat].emission;
-
+            radiance += reflectance * getEmission(materials[hitRecord.mat]);
+            
             // move ray origin to hit point
             ray.origin = hitRecord.position;
 

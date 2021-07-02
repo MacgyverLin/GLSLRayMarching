@@ -17,6 +17,11 @@
         "filter": "nearest",
         "wrap": "clamp"
       },
+      "ichannel3": {
+        "texture2d": "atlas.png",
+        "filter": "linear",
+        "wrap": "repeat"
+      },
       "rendertarget": "buffera"
     },
     {
