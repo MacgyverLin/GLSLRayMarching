@@ -370,7 +370,7 @@ void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
 {
     vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
     
-    dir = randomHemisphereDir(nl);
+    dir = cosWeightedSampleHemisphere(nl);
     reflectance *= mat.albedo;
 }
 
