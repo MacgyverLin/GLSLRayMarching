@@ -236,7 +236,7 @@ struct HitRecord
 {
     int id;
     float t;
-    vec3 position;
+    vec3 position; 
     vec3 normal;    
     int mat;
     vec2 uv;
