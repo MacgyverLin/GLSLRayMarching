@@ -44,7 +44,7 @@ vec3 getViewDir()
 
     vec2 p = iMouse.xy / iResolution.xy;
 
-    float phi = (2.0 * (p.x - 0.5)) * 3.14;
+    float phi = (2.0 * (p.x - 0.5) - 0.25) * 2 * 3.14;
     float theta = (2.0 * (p.y - 0.5)) * (3.14 / 2.0) * 0.6;
 
     return vec3(cos(theta)*cos(phi), sin(theta), cos(theta)*sin(phi));
@@ -74,7 +74,8 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
 
         if(iFrame==0)
         {
-            cameraPos = vec3(50.0, 40.8, 172.0);
+            // cameraPos = vec3(50.0, 40.8, 172.0);
+            cameraPos = vec3(0.0, 0.0, 142.0);
         }
 
 	    if(KEY_DOWN('w'))
@@ -160,21 +161,23 @@ struct Sphere
 	vec3 pos;		
 	float radius;
     
-    int mat;	
+    int mat;
 };
     
 struct Plane 
 {
-    vec3 pos;		
-    vec3 normal;	
+    vec3 pos;
+    vec3 right;
+    vec3 up;
+    //vec2 uvScale;
 
-    int mat;	
+    int mat;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Scene Description
 #define NUM_SPHERES 4
-#define NUM_PLANES 6
+#define NUM_PLANES 5
 #define NUM_MATERIALS 10
 
 const Material materials[NUM_MATERIALS] =
@@ -182,34 +185,33 @@ const Material materials[NUM_MATERIALS] =
     Material(SPEC   , -1, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
     Material(TRANS  , -1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 1.5),
     Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0),
-    Material(DIFF   , -1, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
+    Material(GLOSSY , 0, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
     //Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
     //Material(DIFF   , -1, vec3(0.00, 0.00, 0.00),  1, vec3(4.00, 4.00, 4.00), 1.5),
 
-    Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , -1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , -1, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   , -1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0)
+    Material(DIFF   ,  0, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   ,  0, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   ,  0, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   ,  0, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   ,  0, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
+    Material(DIFF   ,  0, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0)
 };
 
 const Sphere spheres[NUM_SPHERES] = 
 {
-    Sphere(vec3(27.0,  16.5, 47.0), 16.5, 0),
-    Sphere(vec3(73.0,  16.5, 78.0), 16.5, 1),
-    Sphere(vec3(50.0, 689.3, 50.0), 600., 2),
-    Sphere(vec3(80.0,  56.5, 37.0), 16.5, 3)
+    Sphere(vec3(27.0 - 50,  16.5-50.0, 47.0-50.0),  16.5, 0),
+    Sphere(vec3(73.0 - 50,  16.5-50.0, 78.0-50.0),  16.5, 1),
+    Sphere(vec3(50.0 - 50, 718.5-50.0, 50.0-50.0), 600.0, 2),
+    Sphere(vec3(80.0 - 50,  56.5-50.0, 37.0-50.0),  16.5, 3)
 };
 
 const Plane planes[NUM_PLANES] =
 {
-    Plane(vec3( 0.00,  0.00,   0.00), vec3( 0.00,  1.00,  0.00), 4),
-    Plane(vec3(-7.00,  0.00,   0.00), vec3( 1.00,  0.00,  0.00), 5),
-    Plane(vec3( 0.00,  0.00,   0.00), vec3( 0.00,  0.00, -1.00), 6),
-    Plane(vec3(107.00, 0.00,   0.00), vec3(-1.00,  0.00,  0.00), 7),
-    Plane(vec3( 0.00,  0.00, 180.00), vec3( 0.00,  0.00,  1.00), 8),
-    Plane(vec3( 0.00, 90.00,   0.00), vec3( 0.00, -1.00,  0.00), 9)
+    Plane(vec3(-70.00, -70.0, -50.0), vec3(  0.00, 140.00,  0.00), vec3( 0.00,   0.00, 140.00), 5),
+    Plane(vec3( 70.00, -70.0, -50.0), vec3(  0.00, 140.00,  0.00), vec3( 0.00,   0.00, 140.00), 6),
+    Plane(vec3(-70.00, -70.0, -50.0), vec3(140.00,   0.00,  0.00), vec3( 0.00, 140.00,   0.00), 7),
+    Plane(vec3(-70.00, -70.0, -50.0), vec3(140.00,   0.00,  0.00), vec3( 0.00,   0.00, 140.00), 4),
+    Plane(vec3(-70.00,  70.0, -50.0), vec3(140.00,   0.00,  0.00), vec3( 0.00,   0.00, 140.00), 9)
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -260,9 +262,16 @@ float intersectSphere(Ray r, Sphere s)
         return 0.;
 }
 
+vec3 getPlaneNormal(Plane p) 
+{
+    return normalize(cross(p.up, p.right));
+}
+
 float intersectPlane(Ray r, Plane p) 
 {
-    float t = dot(p.pos - r.origin, p.normal) / dot(r.dir, p.normal);
+    vec3 normal = getPlaneNormal(p);
+
+    float t = dot(p.pos - r.origin, normal) / dot(r.dir, normal);
 
     return mix(0., t, float(t > EPSILON));
 }
@@ -305,8 +314,15 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.id = i; 
             hitRecord.t = intersect_t;
             hitRecord.position = ray.origin + ray.dir * hitRecord.t;
-            hitRecord.normal = planes[i].normal;
-            hitRecord.uv = vec2(0, 0);
+            hitRecord.normal = getPlaneNormal(planes[i]);
+
+            vec3 diff = hitRecord.position - planes[i].pos;
+            
+            float lengthR = dot(planes[i].right, planes[i].right);
+            float lengthU = dot(planes[i].up, planes[i].up);
+            hitRecord.uv = vec2(dot(diff, planes[i].right) / lengthR, dot(diff, planes[i].up) / lengthU);
+            //hitRecord.uv = vec2(dot(diff, planes[i].right) / 35.0, dot(diff, planes[i].up) / 35.0);
+
             hitRecord.mat = planes[i].mat;
         }
     }
