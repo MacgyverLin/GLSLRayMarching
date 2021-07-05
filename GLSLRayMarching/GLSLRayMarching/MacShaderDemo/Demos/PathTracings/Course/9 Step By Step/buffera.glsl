@@ -230,7 +230,7 @@ Ray generateRay(vec2 uv)
     
     float aspectRatio = iResolution.x / iResolution.y;
     return Ray(cameraPosition, normalize(p.x * aspectRatio * cameraX + p.y * cameraY + cameraZ * near));
-}
+} 
 
 struct HitRecord
 {
