@@ -237,7 +237,9 @@ struct HitRecord
     int id;
     float t;
     vec3 position; 
-    vec3 normal;    
+    vec3 normal;
+    vec3 tangent;
+    vec3 binormal;
     int mat;
     vec2 uv;
 };
@@ -276,13 +278,25 @@ float intersectPlane(Ray r, Plane p)
     return mix(0., t, float(t > EPSILON));
 }
 
-vec2 convertSpherePositionToUV(vec3 p)
+vec2 convertSpherePositionToUV(Sphere sphere, vec3 position)
 {
-    p = normalize(p);
+    vec3 p = normalize(position - sphere.pos);
 
     vec2 uv;
     uv.x = (atan(p.x, p.z) + (3.14)) / (2 * 3.14);
     uv.y = (asin(p.y) + (3.14 / 2.0)) / (3.14);
+
+    return uv;
+}
+
+vec2 convertPlanePositionToUV(Plane plane, vec3 position)
+{
+    vec3 diff = position - plane.pos;
+    
+    float sqrLengthR = dot(plane.right, plane.right);
+    float sqrLengthU = dot(plane.up, plane.up);
+    
+    vec2 uv = vec2(dot(diff, plane.right) / sqrLengthR, dot(diff, plane.up) / sqrLengthU);
 
     return uv;
 }
@@ -301,7 +315,7 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.t = intersect_t;
             hitRecord.position = ray.origin + ray.dir * hitRecord.t;
          	hitRecord.normal = normalize(hitRecord.position - spheres[i].pos);
-            hitRecord.uv = convertSpherePositionToUV(hitRecord.position - spheres[i].pos);
+            hitRecord.uv = convertSpherePositionToUV(spheres[i], hitRecord.position);
             hitRecord.mat = spheres[i].mat;
         }
 	}
@@ -315,14 +329,7 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.t = intersect_t;
             hitRecord.position = ray.origin + ray.dir * hitRecord.t;
             hitRecord.normal = getPlaneNormal(planes[i]);
-
-            vec3 diff = hitRecord.position - planes[i].pos;
-            
-            float lengthR = dot(planes[i].right, planes[i].right);
-            float lengthU = dot(planes[i].up, planes[i].up);
-            hitRecord.uv = vec2(dot(diff, planes[i].right) / lengthR, dot(diff, planes[i].up) / lengthU);
-            //hitRecord.uv = vec2(dot(diff, planes[i].right) / 35.0, dot(diff, planes[i].up) / 35.0);
-
+            hitRecord.uv = convertPlanePositionToUV(planes[i], hitRecord.position);
             hitRecord.mat = planes[i].mat;
         }
     }
