@@ -512,7 +512,7 @@ bool material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
 {
     // russian roulette
     vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
-    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    float p = max(albedo.x, max(albedo.y, albedo.z));
     if (rand() < p)
         albedo /= p;
     else
@@ -543,7 +543,7 @@ bool material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, 
 {
     // russian roulette
     vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
-    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    float p = max(albedo.x, max(albedo.y, albedo.z));
     if (rand() < p)
         albedo /= p;
     else
@@ -571,7 +571,7 @@ bool material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, in
 {
     // russian roulette
     vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
-    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    float p = max(albedo.x, max(albedo.y, albedo.z));
     if (rand() < p)
         albedo /= p;
     else
@@ -602,7 +602,7 @@ bool material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir
 {
     // russian roulette
     vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
-    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    float p = max(albedo.x, max(albedo.y, albedo.z));
     if (rand() < p)
         albedo /= p;
     else
