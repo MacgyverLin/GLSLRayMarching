@@ -24,6 +24,7 @@ void rand_seek(in vec2 fragCoord)
 const vec2 acc_start_coord       = vec2(0, 0);
 const vec2 metallic_coord        = vec2(1, 0);
 const vec2 camerapos_coord       = vec2(2, 0);
+const vec2 params_coord          = vec2(3, 0);
 
 int getStartFrame()
 {
@@ -32,17 +33,28 @@ int getStartFrame()
 
 float getMetallic()
 {
-    return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).r;
+    if(iFrame==0)
+        return 0.5;
+    else
+        return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).r;
 }
 
 float getRoughness()
 {
-    return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).g;
+    if(iFrame==0)
+        return 0.5;
+    else
+        return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).g;
 }
 
 float getNormalMapEnabled()
 {
     return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).b;
+}
+
+float getIor()
+{
+    return texture(iChannel0, (params_coord + vec2(0.5, 0.5)) / iResolution.xy).r;
 }
 
 vec3 getViewDir()
@@ -59,18 +71,31 @@ vec3 getViewDir()
 
 vec3 getCameraPos()
 {
-    return texture(iChannel0, (camerapos_coord + vec2(0.5, 0.5)) / iResolution.xy).rgb;
+    if(iFrame==0)
+        return vec3(0.0, 0.0, 142.0);
+    else
+        return texture(iChannel0, (camerapos_coord + vec2(0.5, 0.5)) / iResolution.xy).rgb;
 }
 
 #define KEY_DOWN(key)   (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (0.0 + 0.5)/3)).r == 0)
 #define KEY_CLICK(key)  (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (1.0 + 0.5)/3)).r == 0)
 #define KEY_TOGGLE(key) (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (2.0 + 0.5)/3)).r == 0)
 
+bool needRedraw()
+{
+    return iMouse.z > 0.0 || 
+        KEY_DOWN('r') || KEY_DOWN('f') || 
+        KEY_DOWN('t') || KEY_DOWN('g') || 
+        KEY_DOWN('n') || 
+        KEY_DOWN('w') || KEY_DOWN('s') ||
+        KEY_DOWN('a') || KEY_DOWN('d');
+}
+
 vec3 outputColor(vec3 color, in vec2 fragCoord)
 {
     if(all(equal(floor(fragCoord.xy).xy, acc_start_coord)))
     {
-	    if(iMouse.z > 0.0 || KEY_DOWN('r') || KEY_DOWN('f') || KEY_DOWN('t') || KEY_DOWN('g') || KEY_DOWN('n'))
+	    if(needRedraw())
             return vec3(iFrame);    // save Start Frame in pixel
         else 
             return vec3(getStartFrame()); // return Start Frame in pixel
@@ -78,10 +103,6 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
     else if(all(equal(floor(fragCoord.xy).xy, camerapos_coord)))
     {
         vec3 cameraPos = getCameraPos();
-        if(iFrame==0)
-        {
-            cameraPos = vec3(0.0, 0.0, 142.0);
-        }
 
 	    if(KEY_DOWN('w'))
         {
@@ -95,6 +116,44 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
         return cameraPos;
     }
     else if(all(equal(floor(fragCoord.xy).xy, metallic_coord)))
+    {
+        float metallic = getMetallic();
+	    if(KEY_DOWN('r'))
+        {
+            metallic += 0.001;
+            if(metallic > 1.0)
+                metallic = 1.0;
+        }
+	    else if(KEY_DOWN('f'))
+        {
+            metallic -= 0.001;
+            if(metallic < 0.0)
+                metallic = 0.0;
+        }
+
+        float roughness = getRoughness();
+	    if(KEY_DOWN('t'))
+        {
+            roughness += 0.01;
+            if(roughness > 1.0)
+                roughness = 1.0;
+        }
+	    else if(KEY_DOWN('g'))
+        {
+            roughness -= 0.01;
+            if(roughness < 0.0)
+                roughness = 0.0;
+        }
+
+        float normalMapEnabled = getNormalMapEnabled();
+	    if(KEY_CLICK('n'))
+        {
+            normalMapEnabled = 1.0 - normalMapEnabled;
+        }
+        
+        return vec3(metallic, roughness, normalMapEnabled);
+    }
+    else if(all(equal(floor(fragCoord.xy).xy, params_coord)))
     {
         float metallic = getMetallic();
 	    if(KEY_DOWN('r'))
