@@ -52,9 +52,12 @@ float getNormalMapEnabled()
     return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).b;
 }
 
-float getIor()
+float getIOR()
 {
-    return texture(iChannel0, (params_coord + vec2(0.5, 0.5)) / iResolution.xy).r;
+    if(iFrame==0)
+        return 1.5;
+    else
+        return texture(iChannel0, (params_coord + vec2(0.5, 0.5)) / iResolution.xy).r;
 }
 
 vec3 getViewDir()
@@ -87,8 +90,8 @@ bool needRedraw()
         KEY_DOWN('r') || KEY_DOWN('f') || 
         KEY_DOWN('t') || KEY_DOWN('g') || 
         KEY_DOWN('n') || 
-        KEY_DOWN('w') || KEY_DOWN('s') ||
-        KEY_DOWN('a') || KEY_DOWN('d');
+        KEY_DOWN('w') || KEY_DOWN('s') || KEY_DOWN('a') || KEY_DOWN('d') ||
+        KEY_DOWN('y') || KEY_DOWN('h');
 }
 
 vec3 outputColor(vec3 color, in vec2 fragCoord)
@@ -155,41 +158,21 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
     }
     else if(all(equal(floor(fragCoord.xy).xy, params_coord)))
     {
-        float metallic = getMetallic();
-	    if(KEY_DOWN('r'))
+        float ior = getIOR();
+	    if(KEY_DOWN('y'))
         {
-            metallic += 0.001;
-            if(metallic > 1.0)
-                metallic = 1.0;
+            ior += 0.01;
+            if(ior > 3.0)
+                ior = 3.0;
         }
-	    else if(KEY_DOWN('f'))
+	    else if(KEY_DOWN('h'))
         {
-            metallic -= 0.001;
-            if(metallic < 0.0)
-                metallic = 0.0;
-        }
-
-        float roughness = getRoughness();
-	    if(KEY_DOWN('t'))
-        {
-            roughness += 0.01;
-            if(roughness > 1.0)
-                roughness = 1.0;
-        }
-	    else if(KEY_DOWN('g'))
-        {
-            roughness -= 0.01;
-            if(roughness < 0.0)
-                roughness = 0.0;
+            ior -= 0.01;
+            if(ior < 1.0)
+                ior = 1.0;
         }
 
-        float normalMapEnabled = getNormalMapEnabled();
-	    if(KEY_CLICK('n'))
-        {
-            normalMapEnabled = 1.0 - normalMapEnabled;
-        }
-        
-        return vec3(metallic, roughness, normalMapEnabled);
+        return vec3(ior, 0.0, 0.0);
     }
     else
     {
@@ -252,7 +235,7 @@ struct Plane
 #define NUM_PLANES 6
 #define NUM_MATERIALS 10
 
-const Material materials[NUM_MATERIALS] =
+Material materials[NUM_MATERIALS] =
 {
     Material(DIFF  , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0, -1),
     Material(SPEC  ,  0, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
@@ -261,8 +244,8 @@ const Material materials[NUM_MATERIALS] =
 
     Material(DIFF  ,  0, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
     Material(DIFF  ,  1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0,  1),
-    Material(DIFF  ,  2, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  2),
-    Material(DIFF  ,  3, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  3),
+    Material(DIFF  ,  3, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  3),
+    Material(DIFF  ,  2, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  2),
     Material(DIFF  ,  0, vec3(0.25, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
     Material(DIFF  ,  1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  1)
 };
@@ -743,6 +726,8 @@ vec3 traceWorld(Ray ray)
 {
     vec3 radiance = vec3(0.0);
     vec3 reflectance = vec3(1.0);
+
+    materials[2].ior = getIOR();
 
     for (int depth = 0; depth < MAX_DEPTH; depth++) 
     {
