@@ -299,7 +299,7 @@ Material materials[NUM_MATERIALS] =
 
 Sphere spheres[NUM_SPHERES] = 
 {
-    Sphere(vec3(50.0 - 50, 600.0 + 68.0, 50.0-50.0), 598.05, 0),
+    Sphere(vec3(27.0 - 50,  56.5 - 50.0, 50.0-50.0),   16.5, 0),
     Sphere(vec3(27.0 - 50,  16.5 - 50.0, 50.0-50.0),   16.5, 1),
     Sphere(vec3(73.0 - 50,  16.5 - 50.0, 50.0-50.0),   16.5, 2),
     Sphere(vec3(80.0 - 50,  56.5 - 50.0, 50.0-50.0),   16.5, 3)
@@ -783,7 +783,7 @@ vec3 traceWorld(Ray ray)
 
     materials[2].ior      = getIOR();
     materials[0].emission = vec3(4.0 + (1000.0 - 4.0) * getLightIntensity());
-    spheres[0].radius     = 598.01 + (600 - 598.01) * getLightSize();
+    spheres[0].radius     = 0.01 + (16 - 0.01) * getLightSize();
 
     for (int depth = 0; depth < MAX_DEPTH; depth++) 
     {
