@@ -204,7 +204,7 @@ const Material materials[NUM_MATERIALS] =
     Material(DIFF  ,  1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0,  1),
     Material(DIFF  ,  2, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  2),
     Material(DIFF  ,  3, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  3),
-    Material(DIFF  ,  0, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
+    Material(DIFF  ,  0, vec3(0.25, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
     Material(DIFF  ,  1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  1)
 };
 
@@ -508,8 +508,19 @@ vec3 getNormal(in Material mat, mat3 tbn, vec2 texcoord)
     }
 }
 
-void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+bool material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
+    // russian roulette
+    vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
+    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    if (rand() < p)
+        albedo /= p;
+    else
+        return false;
+
+
+
+
     mat3 tbn =
     mat3
     (
@@ -521,11 +532,25 @@ void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
     vec3 nl = normal * sign( -dot(normal, dir) );       // normal from the incident side
 
     dir = cosWeightedSampleHemisphere(nl);
-    reflectance *= getAlbedo(mat, hitRecord.texcoord);
+    reflectance *= albedo;
+
+    return true;
 }
 
-void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+
+
+bool material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
+    // russian roulette
+    vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
+    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    if (rand() < p)
+        albedo /= p;
+    else
+        return false;
+
+
+
     mat3 tbn =
     mat3
     (
@@ -537,11 +562,21 @@ void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, 
     vec3 nl = normal * sign(-dot(normal, dir));         // normal from the incident side
     
     dir = reflect(dir, nl);
-    reflectance *= getAlbedo(mat, hitRecord.texcoord);
+    reflectance *= albedo;
+
+    return true;
 }
 
-void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+bool material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
+    // russian roulette
+    vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
+    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    if (rand() < p)
+        albedo /= p;
+    else
+        return false;
+
     mat3 tbn =
     mat3
     (
@@ -558,11 +593,22 @@ void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, in
     float roughness = getRoughness();
     dir = normalize(roughness * dir1 + (1.0 - roughness) * dir2);
 
-    reflectance *= getAlbedo(mat, hitRecord.texcoord);
+    reflectance *= albedo;
+
+    return true;
 }
 
-void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+bool material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
+    // russian roulette
+    vec3 albedo = getAlbedo(mat, hitRecord.texcoord);
+    float p = 0.6;// max(albedo.x, max(albedo.y, albedo.z));
+    if (rand() < p)
+        albedo /= p;
+    else
+        return false;
+
+    
     mat3 tbn =
     mat3
     (
@@ -602,7 +648,7 @@ void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir
         } 
         else
         { 				        
-            reflectance *= getAlbedo(mat, hitRecord.texcoord) * TP; 
+            reflectance *= albedo * TP; 
             dir = tdir; // refract
         }
     } 
@@ -610,25 +656,27 @@ void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir
     {
         dir = rdir; // reflect
     }
+
+    return true;
 }
 
-void material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
+bool material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
     if (mat.refl == DIFF)
     {
-        material_diffuse(mat, hitRecord, dir, reflectance);
+        return material_diffuse(mat, hitRecord, dir, reflectance);
     } 
     else if (mat.refl == SPEC)
     {
-        material_specular(mat, hitRecord, dir, reflectance);
+        return material_specular(mat, hitRecord, dir, reflectance);
     } 
     else if (mat.refl == GLOSSY)
     {
-        material_glossy(mat, hitRecord, dir, reflectance);
+        return material_glossy(mat, hitRecord, dir, reflectance);
     }
-    else if (mat.refl == TRANS)
+    else// if (mat.refl == TRANS)
     {
-        material_transprent(mat, hitRecord, dir, reflectance);
+        return material_transprent(mat, hitRecord, dir, reflectance);
     }
 }
 
@@ -643,14 +691,17 @@ vec3 traceWorld(Ray ray)
         
         if(intersect(ray, hitRecord))
         {
+            Material mat = materials[hitRecord.mat];
+
             // add emission
-            radiance += reflectance * getEmission(materials[hitRecord.mat], hitRecord.texcoord);
-            
+            radiance += reflectance * getEmission(mat, hitRecord.texcoord);
+
             // move ray origin to hit point
             ray.origin = hitRecord.position;
 
-            // get material
-            material_scatter(materials[hitRecord.mat], hitRecord, ray.dir, reflectance);
+            // material -> ray.dir, reflectance
+            if(!material_scatter(mat, hitRecord, ray.dir, reflectance))
+                break;
 
             ray.origin += ray.dir * RAY_EPSILON;
         }
