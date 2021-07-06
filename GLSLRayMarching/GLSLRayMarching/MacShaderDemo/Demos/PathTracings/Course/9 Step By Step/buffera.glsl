@@ -423,7 +423,7 @@ void convertSpherePositionToUV(in Sphere sphere, in vec3 position, in vec3 norma
     tangent.x = -sin(texcoord.y * PI) * sin(texcoord.x * TWO_PI);
     tangent.y = 0.0;
     tangent.z = sin(texcoord.y * PI) * cos(texcoord.x * TWO_PI);
-    tangent = normalize(tangent);
+    tangent = -normalize(tangent);
 
     ///////////////////////////////////////////////////////////
     // Binormal
@@ -438,7 +438,7 @@ void convertSpherePositionToUV(in Sphere sphere, in vec3 position, in vec3 norma
     binormal.x = cos(texcoord.x * TWO_PI) * cos(texcoord.y * PI);
     binormal.y = -sin(texcoord.y * PI);
     binormal.z = sin(texcoord.x * TWO_PI) * cos(texcoord.y * PI);
-    binormal = normalize(binormal);
+    binormal = -normalize(binormal);
 }
 
 void convertPlanePositionToUV(in Plane plane, in vec3 position, in vec3 normal, out vec2 texcoord, out vec3 tangent, out vec3 binormal)
@@ -558,7 +558,9 @@ vec3 getTexelFromAtlas(int textureID, int row, vec2 texcoord)
 {
     vec2 offset = vec2( (textureID % 4) * 0.25, row * 0.25);
 
-    return texture(iChannel3, offset + texcoord * 0.25).rgb;
+    texcoord = mod(texcoord * 0.25, vec2(0.25, 0.25));
+
+    return texture(iChannel3, offset + texcoord).rgb;
 }
 
 vec3 getAlbedoTexture(int textureID, vec2 texcoord)
