@@ -80,6 +80,23 @@ vec3 getCameraPos()
         return texture(iChannel0, (camerapos_coord + vec2(0.5, 0.5)) / iResolution.xy).rgb;
 }
 
+float getLightSize()
+{
+    if(iFrame==0)
+        return 1.0;
+    else
+        return texture(iChannel0, (params_coord + vec2(0.5, 0.5)) / iResolution.xy).g;
+}
+
+float getLightIntensity()
+{
+    if(iFrame==0)
+        return 0.0;
+    else
+        return texture(iChannel0, (params_coord + vec2(0.5, 0.5)) / iResolution.xy).b;
+}
+
+
 #define KEY_DOWN(key)   (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (0.0 + 0.5)/3)).r == 0)
 #define KEY_CLICK(key)  (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (1.0 + 0.5)/3)).r == 0)
 #define KEY_TOGGLE(key) (texture(iChannel2, vec2((float(int(key)+1) + 0.5)/256, (2.0 + 0.5)/3)).r == 0)
@@ -91,7 +108,9 @@ bool needRedraw()
         KEY_DOWN('t') || KEY_DOWN('g') || 
         KEY_DOWN('n') || 
         KEY_DOWN('w') || KEY_DOWN('s') || KEY_DOWN('a') || KEY_DOWN('d') ||
-        KEY_DOWN('y') || KEY_DOWN('h');
+        KEY_DOWN('y') || KEY_DOWN('h') ||
+        KEY_DOWN('u') || KEY_DOWN('j') ||
+        KEY_DOWN('i') || KEY_DOWN('k');
 }
 
 vec3 outputColor(vec3 color, in vec2 fragCoord)
@@ -172,7 +191,35 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
                 ior = 1.0;
         }
 
-        return vec3(ior, 0.0, 0.0);
+        float lightSize = getLightSize();
+	    if(KEY_DOWN('u'))
+        {
+            lightSize += 0.01;
+            if(lightSize > 1.0)
+                lightSize = 1.0;
+        }
+	    else if(KEY_DOWN('j'))
+        {
+            lightSize -= 0.01;
+            if(lightSize < 0.0)
+                lightSize = 0.0;
+        }
+
+        float lightIntensity = getLightIntensity();
+	    if(KEY_DOWN('i'))
+        {
+            lightIntensity += 0.01;
+            if(lightIntensity > 1.0)
+                lightIntensity = 1.0;
+        }
+	    else if(KEY_DOWN('k'))
+        {
+            lightIntensity -= 0.01;
+            if(lightIntensity < 0.0)
+                lightIntensity = 0.0;
+        }
+
+        return vec3(ior, lightSize, lightIntensity);
     }
     else
     {
@@ -237,7 +284,7 @@ struct Plane
 
 Material materials[NUM_MATERIALS] =
 {
-    Material(DIFF  , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0, -1),
+    Material(DIFF  , -1, vec3(0.00, 0.00, 0.00), -1, vec3(100.00, 100.00, 100.00), 0.0, -1),
     Material(SPEC  ,  0, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
     Material(TRANS , -1, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 1.5,  2),
     Material(GLOSSY,  1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  1),
@@ -250,13 +297,12 @@ Material materials[NUM_MATERIALS] =
     Material(DIFF  ,  1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  1)
 };
 
-float light_intensity = 1.0;
-const Sphere spheres[NUM_SPHERES] = 
+Sphere spheres[NUM_SPHERES] = 
 {
-    Sphere(vec3(50.0 - 50, 600 + (68 + (69.95-68)*(1-light_intensity)), 50.0-50.0), 600.0, 0),
-    Sphere(vec3(27.0 - 50,  16.5-50.0, 50.0-50.0),  16.5, 1),
-    Sphere(vec3(73.0 - 50,  16.5-50.0, 50.0-50.0),  16.5, 2),
-    Sphere(vec3(80.0 - 50,  56.5-50.0, 50.0-50.0),  16.5, 3)
+    Sphere(vec3(50.0 - 50, 600.0 + 68.0, 50.0-50.0), 598.05, 0),
+    Sphere(vec3(27.0 - 50,  16.5 - 50.0, 50.0-50.0),   16.5, 1),
+    Sphere(vec3(73.0 - 50,  16.5 - 50.0, 50.0-50.0),   16.5, 2),
+    Sphere(vec3(80.0 - 50,  56.5 - 50.0, 50.0-50.0),   16.5, 3)
 };
 
 const Plane planes[NUM_PLANES] =
@@ -727,7 +773,9 @@ vec3 traceWorld(Ray ray)
     vec3 radiance = vec3(0.0);
     vec3 reflectance = vec3(1.0);
 
-    materials[2].ior = getIOR();
+    materials[2].ior      = getIOR();
+    materials[0].emission = vec3(4.0 + (100.0 - 4.0) * getLightIntensity());
+    spheres[0].radius     = 598.01 + (600 - 598.01) * getLightSize();
 
     for (int depth = 0; depth < MAX_DEPTH; depth++) 
     {
