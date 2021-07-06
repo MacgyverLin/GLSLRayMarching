@@ -378,6 +378,14 @@ float intersectPlane(Ray r, Plane p)
 
     float t = dot(p.pos - r.origin, normal) / dot(r.dir, normal);
 
+    /*
+    vec3 hp = r.origin + r.dir * t;
+    float u = dot(hp - p.pos, p.right) / p.uvScale.x;
+    float v = dot(hp - p.pos, p.up) / p.uvScale.y;
+    if(u>=1.0 || v>=1.0)
+        return 0.;
+    */
+
     return mix(0., t, float(t > EPSILON));
 }
 
@@ -774,7 +782,7 @@ vec3 traceWorld(Ray ray)
     vec3 reflectance = vec3(1.0);
 
     materials[2].ior      = getIOR();
-    materials[0].emission = vec3(4.0 + (100.0 - 4.0) * getLightIntensity());
+    materials[0].emission = vec3(4.0 + (1000.0 - 4.0) * getLightIntensity());
     spheres[0].radius     = 598.01 + (600 - 598.01) * getLightSize();
 
     for (int depth = 0; depth < MAX_DEPTH; depth++) 
