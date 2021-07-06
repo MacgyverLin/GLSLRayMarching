@@ -1,6 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Constants
 #define PI 3.14159265359
+#define HALF_PI (PI * 0.5)
+#define TWO_PI (PI * 2.0)
 #define EPSILON 1e-4
 #define RAY_EPSILON 1e-3
 #define SUB_SAMPLES 1
@@ -33,9 +35,14 @@ float getMetallic()
     return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).r;
 }
 
-float getRougness()
+float getRoughness()
 {
     return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).g;
+}
+
+float getNormalMapEnabled()
+{
+    return texture(iChannel0, (metallic_coord + vec2(0.5, 0.5)) / iResolution.xy).b;
 }
 
 vec3 getViewDir()
@@ -63,7 +70,7 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
 {
     if(all(equal(floor(fragCoord.xy).xy, acc_start_coord)))
     {
-	    if(iMouse.z > 0.0 || KEY_DOWN('r') || KEY_DOWN('f') || KEY_DOWN('t') || KEY_DOWN('g'))
+	    if(iMouse.z > 0.0 || KEY_DOWN('r') || KEY_DOWN('f') || KEY_DOWN('t') || KEY_DOWN('g') || KEY_DOWN('n'))
             return vec3(iFrame);    // save Start Frame in pixel
         else 
             return vec3(getStartFrame()); // return Start Frame in pixel
@@ -71,10 +78,8 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
     else if(all(equal(floor(fragCoord.xy).xy, camerapos_coord)))
     {
         vec3 cameraPos = getCameraPos();
-
         if(iFrame==0)
         {
-            // cameraPos = vec3(50.0, 40.8, 172.0);
             cameraPos = vec3(0.0, 0.0, 142.0);
         }
 
@@ -105,21 +110,27 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
                 metallic = 0.0;
         }
 
-        float roughness = getMetallic();
+        float roughness = getRoughness();
 	    if(KEY_DOWN('t'))
         {
-            roughness += 0.001;
+            roughness += 0.01;
             if(roughness > 1.0)
                 roughness = 1.0;
         }
 	    else if(KEY_DOWN('g'))
         {
-            roughness -= 0.001;
+            roughness -= 0.01;
             if(roughness < 0.0)
                 roughness = 0.0;
         }
+
+        float normalMapEnabled = getNormalMapEnabled();
+	    if(KEY_CLICK('n'))
+        {
+            normalMapEnabled = 1.0 - normalMapEnabled;
+        }
         
-        return vec3(metallic, roughness, 1.0);
+        return vec3(metallic, roughness, normalMapEnabled);
     }
     else
     {
@@ -150,10 +161,12 @@ struct Material
 {
     int refl;
     int albedoTexture;
-    vec3 albedo;    
+    vec3 albedo;
     int emissionTexture;
     vec3 emission;
-    float ior;		
+    float ior;
+
+    int normalTexture;
 };
     
 struct Sphere 
@@ -169,7 +182,7 @@ struct Plane
     vec3 pos;
     vec3 right;
     vec3 up;
-    //vec2 uvScale;
+    vec2 uvScale;
 
     int mat;
 };
@@ -177,41 +190,43 @@ struct Plane
 ////////////////////////////////////////////////////////////////////////////////////////
 // Scene Description
 #define NUM_SPHERES 4
-#define NUM_PLANES 5
+#define NUM_PLANES 6
 #define NUM_MATERIALS 10
 
 const Material materials[NUM_MATERIALS] =
 {
-    Material(SPEC   , 0, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(TRANS  , 1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 1.5),
-    Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0),
-    Material(GLOSSY , 0, vec3(0.00, 0.70, 0.70), -1, vec3(0.00, 0.00, 0.00), 1.5),
-    //Material(DIFF   , -1, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    //Material(DIFF   , -1, vec3(0.00, 0.00, 0.00),  1, vec3(4.00, 4.00, 4.00), 1.5),
+    Material(DIFF  , -1, vec3(0.00, 0.00, 0.00), -1, vec3(4.00, 4.00, 4.00), 0.0, -1),
+    Material(SPEC  ,  0, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
+    Material(TRANS , -1, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 1.5,  2),
+    Material(GLOSSY,  1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  1),
 
-    Material(DIFF   ,  0, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   ,  1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   ,  2, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   ,  3, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   ,  0, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0),
-    Material(DIFF   ,  1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0)
+    Material(DIFF  ,  0, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
+    Material(DIFF  ,  1, vec3(0.75, 0.25, 0.25), -1, vec3(0.00, 0.00, 0.00), 0.0,  1),
+    Material(DIFF  ,  2, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  2),
+    Material(DIFF  ,  3, vec3(0.25, 0.25, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  3),
+    Material(DIFF  ,  0, vec3(0.00, 0.00, 0.00), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
+    Material(DIFF  ,  1, vec3(0.75, 0.75, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  1)
 };
 
+float light_intensity = 1.0;
 const Sphere spheres[NUM_SPHERES] = 
 {
-    Sphere(vec3(27.0 - 50,  16.5-50.0, 47.0-50.0),  16.5, 0),
-    Sphere(vec3(73.0 - 50,  16.5-50.0, 78.0-50.0),  16.5, 1),
-    Sphere(vec3(50.0 - 50, 718.5-50.0, 50.0-50.0), 600.0, 2),
-    Sphere(vec3(80.0 - 50,  56.5-50.0, 37.0-50.0),  16.5, 3)
+    Sphere(vec3(50.0 - 50, 600 + (68 + (69.95-68)*(1-light_intensity)), 50.0-50.0), 600.0, 0),
+    Sphere(vec3(27.0 - 50,  16.5-50.0, 50.0-50.0),  16.5, 1),
+    Sphere(vec3(73.0 - 50,  16.5-50.0, 50.0-50.0),  16.5, 2),
+    Sphere(vec3(80.0 - 50,  56.5-50.0, 50.0-50.0),  16.5, 3)
 };
 
 const Plane planes[NUM_PLANES] =
 {
-    Plane(vec3(-70.00, -70.0, -50.0), vec3(  0.00, 140.00,  0.00), vec3( 0.00,   0.00, 140.00), 5),
-    Plane(vec3( 70.00, -70.0, -50.0), vec3(  0.00, 140.00,  0.00), vec3( 0.00,   0.00, 140.00), 6),
-    Plane(vec3(-70.00, -70.0, -50.0), vec3(140.00,   0.00,  0.00), vec3( 0.00, 140.00,   0.00), 7),
-    Plane(vec3(-70.00, -70.0, -50.0), vec3(140.00,   0.00,  0.00), vec3( 0.00,   0.00, 140.00), 4),
-    Plane(vec3(-70.00,  70.0, -50.0), vec3(140.00,   0.00,  0.00), vec3( 0.00,   0.00, 140.00), 9)
+    Plane(vec3(-70.00, -70.0, -50.0), vec3( 0.00,  1.00, 0.00), vec3( 0.00, 0.00, 1.00), vec2(140.0, 140.0), 4),
+    Plane(vec3( 70.00, -70.0, -50.0), vec3( 0.00, -1.00, 0.00), vec3( 0.00, 0.00, 1.00), vec2(140.0, 140.0), 5),
+
+    Plane(vec3(-70.00, -70.0, -50.0), vec3( 1.00,  0.00, 0.00), vec3( 0.00, 1.00, 0.00), vec2(140.0, 140.0), 6),
+    Plane(vec3(-70.00, -70.0, 150.0), vec3(-1.00,  0.00, 0.00), vec3( 0.00, 1.00, 0.00), vec2(140.0, 140.0), 7),
+
+    Plane(vec3(-70.00, -70.0, -50.0), vec3( 1.00,  0.00, 0.00), vec3( 0.00, 0.00, 1.00), vec2(140.0, 140.0), 8),
+    Plane(vec3(-70.00,  70.0, -50.0), vec3(-1.00,  0.00, 0.00), vec3( 0.00, 0.00, 1.00), vec2(140.0, 140.0), 9)
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +256,7 @@ struct HitRecord
     vec3 tangent;
     vec3 binormal;
     int mat;
-    vec2 uv;
+    vec2 texcoord;
 };
 
 float intersectSphere(Ray r, Sphere s) 
@@ -266,7 +281,7 @@ float intersectSphere(Ray r, Sphere s)
 
 vec3 getPlaneNormal(Plane p) 
 {
-    return normalize(cross(p.up, p.right));
+    return normalize(cross(p.right, p.up));
 }
 
 float intersectPlane(Ray r, Plane p) 
@@ -278,27 +293,71 @@ float intersectPlane(Ray r, Plane p)
     return mix(0., t, float(t > EPSILON));
 }
 
-vec2 convertSpherePositionToUV(Sphere sphere, vec3 position)
+void convertSpherePositionToUV(in Sphere sphere, in vec3 position, in vec3 normal, out vec2 texcoord, out vec3 tangent, out vec3 binormal)
 {
     vec3 p = normalize(position - sphere.pos);
+    
+    texcoord = vec2( (atan(p.x, p.z) + (3.14)) / (2 * 3.14), (asin(p.y) + (3.14 / 2.0)) / (3.14) );
 
-    vec2 uv;
-    uv.x = (atan(p.x, p.z) + (3.14)) / (2 * 3.14);
-    uv.y = (asin(p.y) + (3.14 / 2.0)) / (3.14);
+    ///////////////////////////////////////////////////////////
+    // because for a sphere
+    // x = sin(theta) * cos(phi)
+    // y = cos(theta)
+    // z = sin(theta) * sin(phi)
+    
+    // where
+    // phi = u * (TWO_PI)
+    // theta = v * PI
 
-    return uv;
+    // so
+    // x = sin(v * PI) * cos(u * TWO_PI)
+    // y = cos(v * PI)
+    // z = sin(v * PI) * sin(u * TWO_PI)
+
+    ///////////////////////////////////////////////////////////
+    // Tangent
+    // dx/du = d( sin(v * PI) * cos(u * TWO_PI) ) / du
+    // dy/du = d( cos(v * PI) ) / du
+    // dz/du = d( sin(v * PI) * sin(u * TWO_PI) ) / du
+
+    // dx/du = -sin(v * PI) * sin(u * TWO_PI)
+    // dy/du = 0;
+    // dz/du = sin(v * PI * cos(u * TWO_PI)
+
+    tangent.x = -sin(texcoord.y * PI) * sin(texcoord.x * TWO_PI);
+    tangent.y = 0.0;
+    tangent.z = sin(texcoord.y * PI) * cos(texcoord.x * TWO_PI);
+    tangent = normalize(tangent);
+
+    ///////////////////////////////////////////////////////////
+    // Binormal
+    // dx/dv = d( sin(v * PI) * cos(u * TWO_PI) ) / dv
+    // dy/dv = d( cos(v * PI) ) / dv
+    // dz/dv = d( sin(v * PI) * sin(u * TWO_PI) ) / dv
+
+    // dx/dv = cos(u * TWO_PI) * cos(v * PI)
+    // dy/dv = -sin(v * PI)
+    // dz/dv = sin(u * TWO_PI) * cos(v * PI)
+
+    binormal.x = cos(texcoord.x * TWO_PI) * cos(texcoord.y * PI);
+    binormal.y = -sin(texcoord.y * PI);
+    binormal.z = sin(texcoord.x * TWO_PI) * cos(texcoord.y * PI);
+    binormal = normalize(binormal);
 }
 
-vec2 convertPlanePositionToUV(Plane plane, vec3 position)
+void convertPlanePositionToUV(in Plane plane, in vec3 position, in vec3 normal, out vec2 texcoord, out vec3 tangent, out vec3 binormal)
 {
     vec3 diff = position - plane.pos;
     
-    float sqrLengthR = dot(plane.right, plane.right);
-    float sqrLengthU = dot(plane.up, plane.up);
-    
-    vec2 uv = vec2(dot(diff, plane.right) / sqrLengthR, dot(diff, plane.up) / sqrLengthU);
+    texcoord = vec2( dot(diff, plane.right) / plane.uvScale.x, dot(diff, plane.up) / plane.uvScale.y );
 
-    return uv;
+    ///////////////////////////////////////////////////////////
+    // Tangent
+    // p = N.x - d
+
+    // tangent
+    tangent = plane.right;
+    binormal = plane.up;
 }
 
 bool intersect(Ray ray, out HitRecord hitRecord) 
@@ -315,7 +374,9 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.t = intersect_t;
             hitRecord.position = ray.origin + ray.dir * hitRecord.t;
          	hitRecord.normal = normalize(hitRecord.position - spheres[i].pos);
-            hitRecord.uv = convertSpherePositionToUV(spheres[i], hitRecord.position);
+            convertSpherePositionToUV(spheres[i], hitRecord.position, hitRecord.normal, 
+                                        hitRecord.texcoord, hitRecord.tangent, hitRecord.binormal);
+
             hitRecord.mat = spheres[i].mat;
         }
 	}
@@ -329,7 +390,9 @@ bool intersect(Ray ray, out HitRecord hitRecord)
             hitRecord.t = intersect_t;
             hitRecord.position = ray.origin + ray.dir * hitRecord.t;
             hitRecord.normal = getPlaneNormal(planes[i]);
-            hitRecord.uv = convertPlanePositionToUV(planes[i], hitRecord.position);
+            convertPlanePositionToUV(planes[i], hitRecord.position, hitRecord.normal, 
+                                        hitRecord.texcoord, hitRecord.tangent, hitRecord.binormal);
+
             hitRecord.mat = planes[i].mat;
         }
     }
@@ -355,9 +418,10 @@ vec3 background(vec3 dir)
     return cubeMap(dir);
 }
 
-vec3 cosWeightedSampleHemisphere(vec3 n) 
+vec3 cosWeightedSampleHemisphere(vec3 n)
 {
-    float u1 = rand(), u2 = rand();
+    float u1 = rand();
+    float u2 = rand();
     float r = sqrt(u1);
     float theta = 2. * PI * u2;
     
@@ -394,104 +458,136 @@ vec3 randomHemisphereDir(vec3 nl)
     return vec3(x, y, z);
 }
 
-vec3 randomSphereDir()
-{
-    float theta = 2.0*(rand()-0.5) * 3.14 / 2;
-    float phi   = 2.0*(rand()-0.5) * 3.14 * 2;
-    
-    float x = cos(theta) * cos(phi);
-    float y = sin(theta);
-    float z = cos(theta) * sin(phi);
-
-    return vec3(x, y, z);
-}
-
-vec3 getTexelFromAtlas(int textureID, int row, vec2 uv)
+vec3 getTexelFromAtlas(int textureID, int row, vec2 texcoord)
 {
     vec2 offset = vec2( (textureID % 4) * 0.25, row * 0.25);
 
-    return texture(iChannel3, offset + uv * 0.25).rgb;
+    return texture(iChannel3, offset + texcoord * 0.25).rgb;
 }
 
-vec3 getAlbedoTexture(int textureID, vec2 uv)
+vec3 getAlbedoTexture(int textureID, vec2 texcoord)
 {
-    return getTexelFromAtlas(textureID, 3, uv);
+    return getTexelFromAtlas(textureID, 3, texcoord);
 }
 
-vec3 getEmissionTexture(int textureID, vec2 uv)
+vec3 getEmissionTexture(int textureID, vec2 texcoord)
 {
-    return getTexelFromAtlas(textureID, 2, uv);
+    return getTexelFromAtlas(textureID, 2, texcoord);
 }
 
-vec3 getNormalTexture(int textureID, vec2 uv)
+vec3 getNormalTexture(int textureID, vec2 texcoord)
 {
-    return getTexelFromAtlas(textureID, 0, uv);
+    return getTexelFromAtlas(textureID, 0, texcoord);
 }
 
-vec3 getAlbedo(in Material mat, vec2 uv)
+vec3 getAlbedo(in Material mat, vec2 texcoord)
 {
     if(mat.albedoTexture==-1)
         return mat.albedo;
     else
-        return getAlbedoTexture(mat.albedoTexture, uv);
+        return getAlbedoTexture(mat.albedoTexture, texcoord);
 }
 
-vec3 getEmission(in Material mat, vec2 uv)
+vec3 getEmission(in Material mat, vec2 texcoord)
 {
     if(mat.emissionTexture==-1)
         return mat.emission;
     else
-        return getEmissionTexture(mat.emissionTexture, uv) * mat.emission;
+        return getEmissionTexture(mat.emissionTexture, texcoord) * mat.emission;
+}
+
+vec3 getNormal(in Material mat, mat3 tbn, vec2 texcoord)
+{
+    if(mat.normalTexture!=-1 && getNormalMapEnabled()==1)
+    {
+        return tbn * (2.0 * getNormalTexture(mat.normalTexture, texcoord) - 1.0);
+    }
+    else
+    {
+        return tbn[2];
+    }
 }
 
 void material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
-    
+    mat3 tbn =
+    mat3
+    (
+        hitRecord.tangent,
+        hitRecord.binormal,
+        hitRecord.normal
+    );
+    vec3 normal = getNormal(mat, tbn, hitRecord.texcoord);
+    vec3 nl = normal * sign( -dot(normal, dir) );       // normal from the incident side
+
     dir = cosWeightedSampleHemisphere(nl);
-    reflectance *= getAlbedo(mat, hitRecord.uv);
+    reflectance *= getAlbedo(mat, hitRecord.texcoord);
 }
 
 void material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
+    mat3 tbn =
+    mat3
+    (
+        hitRecord.tangent,
+        hitRecord.binormal,
+        hitRecord.normal
+    );
+    vec3 normal = getNormal(mat, tbn, hitRecord.texcoord);
+    vec3 nl = normal * sign(-dot(normal, dir));         // normal from the incident side
     
-    dir = reflect(dir, hitRecord.normal);
-    reflectance *= getAlbedo(mat, hitRecord.uv);
+    dir = reflect(dir, nl);
+    reflectance *= getAlbedo(mat, hitRecord.texcoord);
 }
 
 void material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
+    mat3 tbn =
+    mat3
+    (
+        hitRecord.tangent,
+        hitRecord.binormal,
+        hitRecord.normal
+    );
+    vec3 normal = getNormal(mat, tbn, hitRecord.texcoord);
+    vec3 nl = normal * sign(-dot(normal, dir));         // normal from the incident side
     
-    vec3 dir1 = reflect(dir, hitRecord.normal);
-    vec3 dir2 = randomSphereDir() * 0.2;
+    vec3 dir1 = cosWeightedSampleHemisphere(nl);
+    vec3 dir2 = reflect(dir, nl);
     
-    float rougness = getRougness();
-    dir = normalize(rougness * dir1 + (1.0 - rougness) * dir2);
+    float roughness = getRoughness();
+    dir = normalize(roughness * dir1 + (1.0 - roughness) * dir2);
 
-    reflectance *= getAlbedo(mat, hitRecord.uv);
+    reflectance *= getAlbedo(mat, hitRecord.texcoord);
 }
 
 void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir, inout vec3 reflectance)
 {
-    vec3 nl = hitRecord.normal * sign(-dot(hitRecord.normal, dir)); // normal from the incident side
+    mat3 tbn =
+    mat3
+    (
+        hitRecord.tangent,
+        hitRecord.binormal,
+        hitRecord.normal
+    );
+    vec3 normal = getNormal(mat, tbn, hitRecord.texcoord);
+    vec3 nl = normal * sign(-dot(normal, dir));         // normal from the incident side
 
     float ior = mat.ior;
 
     // if normal is same as incident normal, ray travel from outside => into = 1
-    float into = float(dot(hitRecord.normal, nl) > 0.); 
+    float into = float(dot(normal, nl) > 0.); 
                                                         
     float ddn = dot(nl, dir);
     float nnt = mix(ior, 1. / ior, into);
-    vec3 rdir = reflect(dir, hitRecord.normal);
+    vec3 rdir = reflect(dir, normal);
     float cos2t = 1. - nnt * nnt * (1. - ddn * ddn);
     if (cos2t > 0.)
     {
         vec3 tdir = normalize(dir * nnt - nl * (ddn * nnt + sqrt(cos2t)));
         
         float R0 = (ior-1.) * (ior-1.) / ((ior+1.) * (ior+1.));
-    	float c = 1. - mix(dot(tdir, hitRecord.normal), -ddn, into);	// 1 - cos¦È
+    	float c = 1. - mix(dot(tdir, normal), -ddn, into);	// 1 - cos¦È
     	float Re = R0 + (1. - R0) * c * c * c * c * c;
         
         float P = .25 + .5 * Re;
@@ -506,7 +602,7 @@ void material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir
         } 
         else
         { 				        
-            reflectance *= getAlbedo(mat, hitRecord.uv) * TP; 
+            reflectance *= getAlbedo(mat, hitRecord.texcoord) * TP; 
             dir = tdir; // refract
         }
     } 
@@ -548,7 +644,7 @@ vec3 traceWorld(Ray ray)
         if(intersect(ray, hitRecord))
         {
             // add emission
-            radiance += reflectance * getEmission(materials[hitRecord.mat], hitRecord.uv);
+            radiance += reflectance * getEmission(materials[hitRecord.mat], hitRecord.texcoord);
             
             // move ray origin to hit point
             ray.origin = hitRecord.position;
