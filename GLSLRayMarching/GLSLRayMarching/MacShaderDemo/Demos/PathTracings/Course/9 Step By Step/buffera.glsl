@@ -6,7 +6,7 @@
 #define EPSILON 1e-4
 #define RAY_EPSILON 1e-3
 #define SUB_SAMPLES 1
-#define MAX_DEPTH 64
+#define MAX_DEPTH 16
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Util functions
@@ -180,13 +180,13 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
         float ior = getIOR();
 	    if(KEY_DOWN('y'))
         {
-            ior += 0.01;
+            ior += 0.001;
             if(ior > 3.0)
                 ior = 3.0;
         }
 	    else if(KEY_DOWN('h'))
         {
-            ior -= 0.01;
+            ior -= 0.001;
             if(ior < 1.0)
                 ior = 1.0;
         }
@@ -194,13 +194,13 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
         float lightSize = getLightSize();
 	    if(KEY_DOWN('u'))
         {
-            lightSize += 0.01;
+            lightSize += 0.001;
             if(lightSize > 1.0)
                 lightSize = 1.0;
         }
 	    else if(KEY_DOWN('j'))
         {
-            lightSize -= 0.01;
+            lightSize -= 0.001;
             if(lightSize < 0.0)
                 lightSize = 0.0;
         }
@@ -208,13 +208,13 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
         float lightIntensity = getLightIntensity();
 	    if(KEY_DOWN('i'))
         {
-            lightIntensity += 0.01;
+            lightIntensity += 0.001;
             if(lightIntensity > 1.0)
                 lightIntensity = 1.0;
         }
 	    else if(KEY_DOWN('k'))
         {
-            lightIntensity -= 0.01;
+            lightIntensity -= 0.001;
             if(lightIntensity < 0.0)
                 lightIntensity = 0.0;
         }
@@ -630,7 +630,7 @@ bool material_diffuse(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
     vec3 nl = normal * sign( -dot(normal, dir) );       // normal from the incident side
 
     dir = cosWeightedSampleHemisphere(nl);
-    reflectance *= albedo;
+    reflectance *= albedo * dot(nl, dir);
 
     return true;
 }
@@ -660,7 +660,7 @@ bool material_specular(in Material mat, in HitRecord hitRecord, inout vec3 dir, 
     vec3 nl = normal * sign(-dot(normal, dir));         // normal from the incident side
     
     dir = reflect(dir, nl);
-    reflectance *= albedo;
+    reflectance *= albedo * dot(nl, dir);
 
     return true;
 }
@@ -691,7 +691,7 @@ bool material_glossy(in Material mat, in HitRecord hitRecord, inout vec3 dir, in
     float roughness = getRoughness();
     dir = normalize(roughness * dir1 + (1.0 - roughness) * dir2);
 
-    reflectance *= albedo;
+    reflectance *= albedo * dot(nl, dir);
 
     return true;
 }
@@ -741,13 +741,13 @@ bool material_transprent(in Material mat, in HitRecord hitRecord, inout vec3 dir
         // Russain roulette
         if (rand() < P)
         {				
-            reflectance *= RP;
             dir = rdir;  // reflect
+            reflectance *= RP;
         } 
         else
         { 				        
-            reflectance *= albedo * TP; 
             dir = tdir; // refract
+            reflectance *= albedo * TP;
         }
     } 
     else
