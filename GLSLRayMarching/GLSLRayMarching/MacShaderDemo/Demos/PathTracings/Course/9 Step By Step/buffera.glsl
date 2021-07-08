@@ -194,13 +194,13 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
         float lightSize = getLightSize();
 	    if(KEY_DOWN('u'))
         {
-            lightSize += 0.001;
+            lightSize += 0.01;
             if(lightSize > 1.0)
                 lightSize = 1.0;
         }
 	    else if(KEY_DOWN('j'))
         {
-            lightSize -= 0.001;
+            lightSize -= 0.01;
             if(lightSize < 0.0)
                 lightSize = 0.0;
         }
@@ -226,7 +226,6 @@ vec3 outputColor(vec3 color, in vec2 fragCoord)
         int frame = iFrame - getStartFrame();
         
         vec3 oldcolor = texture(iChannel0, fragCoord.xy / iResolution.xy).rgb;
-        
         color = oldcolor * float(frame) / float(frame + 1) + color / float(frame + 1);
 
         return color;
@@ -246,6 +245,8 @@ struct Ray
 #define SPEC 1
 #define TRANS 2
 #define GLOSSY 3
+#define LIGHT 4
+
 struct Material 
 {
     int refl;
@@ -284,7 +285,7 @@ struct Plane
 
 Material materials[NUM_MATERIALS] =
 {
-    Material(DIFF  , -1, vec3(0.00, 0.00, 0.00), -1, vec3(100.00, 100.00, 100.00), 0.0, -1),
+    Material(LIGHT , -1, vec3(0.00, 0.00, 0.00), -1, vec3(100.00, 100.00, 100.00), 0.0, -1),
     Material(SPEC  ,  0, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 0.0,  0),
     Material(TRANS , -1, vec3(1.00, 1.00, 1.00), -1, vec3(0.00, 0.00, 0.00), 1.5,  2),
     Material(GLOSSY,  1, vec3(0.75, 1.00, 0.75), -1, vec3(0.00, 0.00, 0.00), 0.0,  1),
@@ -494,6 +495,24 @@ bool intersect(Ray ray, out HitRecord hitRecord)
     }
 
 	return hitRecord.id != -1;
+}
+
+bool intersectShadow(Ray ray) 
+{
+	int id = -1;
+	float t = 1e5;
+
+	for (int i = 1; i < NUM_SPHERES; i++) 
+    {
+		float intersect_t = intersectSphere(ray, spheres[i]);
+		if (intersect_t != 0. && intersect_t < t) 
+        { 
+            id = i; 
+            t = intersect_t;
+        }
+	}
+
+	return id != -1 && t>=0.0 && t<1.0;
 }
 
 vec3 cubeMap(vec3 dir)
@@ -778,6 +797,50 @@ bool material_scatter(in Material mat, in HitRecord hitRecord, inout vec3 dir, i
     }
 }
 
+vec3 randomSphereDirection()
+{
+    float phi = rand();
+    float theta = rand();
+
+    return vec3(sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
+}
+
+vec3 randomHemisphereDirection(const vec3 n) 
+{
+	vec3 dr = randomSphereDirection();
+	
+    return dot(dr, n) * dr;
+}
+
+int closestLight = 0;
+vec3 getLightPosition()
+{
+    return spheres[closestLight].pos;
+}
+
+vec3 getLightEmission()
+{
+    return materials[spheres[closestLight].mat].emission;
+}
+
+float getLightRadius()
+{
+    return spheres[closestLight].radius;
+}
+
+vec3 sampleLight(vec3 pos)
+{
+    return getLightPosition() + randomSphereDirection() * getLightRadius();
+}
+
+float misWeight( in float a, in float b ) 
+{
+    float a2 = a*a;
+    float b2 = b*b;
+    float a2b2 = a2 + b2;
+    return a2 / a2b2;
+}
+
 vec3 traceWorld(Ray ray) 
 {
     vec3 radiance = vec3(0.0);
@@ -796,8 +859,12 @@ vec3 traceWorld(Ray ray)
             Material mat = materials[hitRecord.mat];
 
             // add emission
-            radiance += reflectance * getEmission(mat, hitRecord.texcoord);
-
+            if(mat.refl==LIGHT)
+            {
+                radiance += reflectance * getEmission(mat, hitRecord.texcoord);
+                return radiance;
+            }
+            
             // move ray origin to hit point
             ray.origin = hitRecord.position;
 
@@ -805,7 +872,23 @@ vec3 traceWorld(Ray ray)
             if(!material_scatter(mat, hitRecord, ray.dir, reflectance))
                 break;
 
-            ray.origin += ray.dir * RAY_EPSILON;
+            /////////////////////////////
+            // smple direct light
+            vec3 ld = sampleLight(hitRecord.position) - hitRecord.position;
+            vec3 nld = normalize(ld);
+            Ray shadowRay = Ray(hitRecord.position + nld * RAY_EPSILON, nld);
+            
+            if((mat.refl != TRANS) && depth < MAX_DEPTH - 1 && !intersectShadow(shadowRay) ) 
+            {
+                float cos_a_max = 
+                    sqrt(1. - clamp(getLightRadius()*getLightRadius() / 
+                          dot(getLightPosition() - hitRecord.position, getLightPosition() - hitRecord.position), 0., 1.));
+                float weight = 2. * (1. - cos_a_max);
+            
+                radiance += reflectance * getLightEmission() * (weight * clamp(dot(nld, hitRecord.normal ), 0., 1.));
+            }
+
+            // ray.origin += ray.dir * RAY_EPSILON;
         }
         else
         {
@@ -844,4 +927,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     // alpha = N / (N+1) 
     // Cresult = Cn-1 * alpha + Cn * (1 - alpha)
     fragColor = vec4(outputColor(color, fragCoord), 1);
+    //fragColor = vec4(color, 1);
 }
