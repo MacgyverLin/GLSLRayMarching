@@ -12,6 +12,14 @@ const vec3 light_position = vec3(0.0, 0.90, 0.5);
 const vec3 light_normal = vec3(0, -1, 0);
 const vec4 light_albedo = vec4(1, 1, 1, 2.0 / (light_size * light_size));
 
+struct HitRecord
+{
+	float t;
+	vec3 position;
+	vec3 normal;
+	vec4 albedo;
+};
+
 ///////////////////////////////////////////////////////
 // random
 void encrypt_tea(inout uvec2 arg)
@@ -21,7 +29,8 @@ void encrypt_tea(inout uvec2 arg)
 	uint sum = 0u;
 	uint delta = 0x9e3779b9u;
 
-	for(int i = 0; i < 32; i++) {
+	for(int i = 0; i < 32; i++) 
+	{
 		sum += delta;
 		v0 += ((v1 << 4) + key[0]) ^ (v1 + sum) ^ ((v1 >> 5) + key[1]);
 		v1 += ((v0 << 4) + key[2]) ^ (v0 + sum) ^ ((v0 >> 5) + key[3]);
@@ -186,38 +195,37 @@ float intersect_light(Ray ray)
 }
 
 ///////////////////////////////////////////////////////////////////
-float intersect(Ray ray, inout vec3 p, inout vec3 normal, out vec4 albedo)
+float intersect(in Ray ray, inout HitRecord hitrecord)
 {
-	float t_min = INFINITY;
-
-	albedo = vec4(0.0);
+	hitrecord.t = INFINITY;
+	hitrecord.albedo = vec4(0.0);
 
 	{
 		float t = intersect_light(ray);
-		if(t < t_min) {
-			//albedo = vec3(100);
-			albedo = light_albedo;
-			//albedo = vec3(dot(ray.dir, light_normal) < 0.0 ? 1.0 : 0.0);
-			normal = light_normal;
-			t_min  = t;
-			p = ray_at(ray, t);
+		if(t < hitrecord.t) 
+		{
+			hitrecord.t			= t;
+			hitrecord.position	= ray_at(ray, hitrecord.t);
+			hitrecord.normal	= light_normal;
+			hitrecord.albedo	= light_albedo;
 		}
 	}
 
 	{
 		vec3 normal_tmp;
 		Ray ray_tmp = ray;
-		//mat4 r = rotate_y(scene_time);
 		mat4 r = rotate_y(0.3);
 		ray_tmp.origin -= vec3(-0.35, -0.5, -0.35);
 		ray_tmp.dir = vec3(r * vec4(ray_tmp.dir, 0));
 		ray_tmp.origin = vec3(r * vec4(ray_tmp.origin, 1.0));
 		float t = intersect_box(ray_tmp, normal_tmp, vec3(0.25, 0.5, 0.25));
-		if(t < t_min) {
-			t_min = t;
-			p = ray_at(ray, t);
-			albedo = vec4(0.7, 0.7, 0.7, 0);
-			normal = vec3(transpose(r) * vec4(normal_tmp, 0.0));
+
+		if(t < hitrecord.t) 
+		{
+			hitrecord.t			= t;
+			hitrecord.position	= ray_at(ray, hitrecord.t);
+			hitrecord.normal	= vec3(transpose(r) * vec4(normal_tmp, 0.0));
+			hitrecord.albedo	= vec4(0.7, 0.7, 0.7, 0);
 		}
 	}
 
@@ -226,11 +234,12 @@ float intersect(Ray ray, inout vec3 p, inout vec3 normal, out vec4 albedo)
 		Ray ray_tmp = ray;
 		ray_tmp.origin -= vec3(0.5, -0.75, 0.35);
 		float t = intersect_box(ray_tmp, normal_tmp, vec3(0.25, 0.25, 0.25));
-		if(t < t_min) {
-			t_min = t;
-			p = ray_at(ray, t);
-			albedo = vec4(0.7, 0.7, 0.7, 0);
-			normal = normal_tmp;
+		if(t < hitrecord.t) 
+		{
+			hitrecord.t			= t;
+			hitrecord.position	= ray_at(ray, hitrecord.t);
+			hitrecord.normal	= normal_tmp;
+			hitrecord.albedo	= vec4(0.7, 0.7, 0.7, 0);
 		}
 	}
 
@@ -238,94 +247,89 @@ float intersect(Ray ray, inout vec3 p, inout vec3 normal, out vec4 albedo)
 	{
 		vec3 n = vec3(1, 0, 0);
 		float t = intersect_plane(ray, vec3(-1, 0, 0), n);
-		if(t < t_min) {
+		if(t < hitrecord.t) 
+		{
 			vec3 p_tmp = ray_at(ray, t);
-			if(all(lessThanEqual(p_tmp.yz, vec2(1))) && all(greaterThanEqual(p_tmp.yz,
-							vec2(-1))))
+			if(all(lessThanEqual(p_tmp.yz, vec2(1))) && all(greaterThanEqual(p_tmp.yz, vec2(-1))))
 			{
-				normal = n;
-				p = p_tmp;
-
-				t_min = t;
-
-				albedo = vec4(0.9, 0.1, 0.1, 0);
+				hitrecord.t			= t;
+				hitrecord.position	= ray_at(ray, t);
+				hitrecord.normal	= n;
+				hitrecord.albedo	= vec4(0.9, 0.1, 0.1, 0);
 			}
 		}
 	}
+
 	// right
 	{
 		vec3 n = vec3(-1, 0, 0);
 		float t = intersect_plane(ray, vec3(1, 0, 0), n);
-		if(t < t_min) {
+		if(t < hitrecord.t)
+		{
 			vec3 p_tmp = ray_at(ray, t);
-			if(all(lessThanEqual(p_tmp.yz, vec2(1))) && all(greaterThanEqual(p_tmp.yz,
-							vec2(-1))))
+			if(all(lessThanEqual(p_tmp.yz, vec2(1))) && all(greaterThanEqual(p_tmp.yz, vec2(-1))))
 			{
-				normal = n;
-				p = p_tmp;
-
-				t_min = t;
-
-				albedo = vec4(0.1, 0.9, 0.1, 0);
+				hitrecord.t			= t;
+				hitrecord.position	= p_tmp;
+				hitrecord.normal	= n;
+				hitrecord.albedo	= vec4(0.1, 0.9, 0.1, 0);
 			}
 		}
 	}
+
 	// floor
 	{
 		vec3 n = vec3(0, 1, 0);
 		float t = intersect_plane(ray, vec3(0, -1, 0), n);
-		if(t < t_min) {
+		if(t < hitrecord.t) 
+		{
 			vec3 p_tmp = ray_at(ray, t);
-			if(all(lessThan(p_tmp.xz, vec2(1))) && all(greaterThan(p_tmp.xz,
-							vec2(-1))))
+			if(all(lessThan(p_tmp.xz, vec2(1))) && all(greaterThan(p_tmp.xz, vec2(-1))))
 			{
-				normal = n;
-				p = p_tmp;
-				albedo = vec4(0.7, 0.7, 0.7, 0);
-
-				t_min = t;
+				hitrecord.t			= t;
+				hitrecord.position	= p_tmp;
+				hitrecord.normal	= n;
+				hitrecord.albedo	= vec4(0.7, 0.7, 0.7, 0);
 			}
 		}
 	}
+
 	// ceiling
 	{
 		vec3 n = vec3(0, -1, 0);
 		float t = intersect_plane(ray, vec3(0, 1, 0), n);
-		if(t < t_min) {
+		if(t < hitrecord.t) 
+		{
 			vec3 p_tmp = ray_at(ray, t);
-			if(all(lessThan(p_tmp.xz, vec2(1))) && all(greaterThan(p_tmp.xz,
-							vec2(-1))))
+			if(all(lessThan(p_tmp.xz, vec2(1))) && all(greaterThan(p_tmp.xz, vec2(-1))))
 			{
-				normal = n;
-				p = p_tmp;
-				albedo = vec4(0.7, 0.7, 0.7, 0);
-
-				t_min = t;
+				hitrecord.t			= t;
+				hitrecord.position	= p_tmp;
+				hitrecord.normal	= n;
+				hitrecord.albedo	= vec4(0.7, 0.7, 0.7, 0);
 			}
 		}
 	}
+
 	// back wall
 	{
 		vec3 n = vec3(0, 0, 1);
 		float t = intersect_plane(ray, vec3(0, 0, -1), n);
-		if(t < t_min) {
+		if(t < hitrecord.t) 
+		{
 			vec3 p_tmp = ray_at(ray, t);
-			if(all(lessThan(p_tmp.xy, vec2(1))) && all(greaterThan(p_tmp.xy,
-							vec2(-1))))
+			if(all(lessThan(p_tmp.xy, vec2(1))) && all(greaterThan(p_tmp.xy, vec2(-1))))
 			{
-				normal = n;
-				p = p_tmp;
-				albedo = vec4(0.7, 0.7, 0.7, 0);
+				hitrecord.t			= t;
 
-				t_min = t;
+				hitrecord.position	= p_tmp;
+				hitrecord.normal	= n;
+				hitrecord.albedo	= vec4(0.7, 0.7, 0.7, 0);
 			}
 		}
 	}
 
-
-	normal = normalize(normal);
-
-	return t_min;
+	return hitrecord.t;
 }
 
 bool test_visibility(vec3 p1, vec3 p2)
@@ -335,104 +339,108 @@ bool test_visibility(vec3 p1, vec3 p2)
 	Ray r = Ray(p1, normalize(p2 - p1));
 	r.origin += eps * r.dir;
 
-	vec3 n, p;
-	vec4 a; // ignored
-	float t_shadow = intersect(r, p, n, a);
+	HitRecord hitrecord;
+	float t_shadow = intersect(r, hitrecord);
 
 	return t_shadow > distance(p1, p2) - 2.0 * eps;
 }
 
-vec3 pt_mis(Ray ray)
+bool sampleLight(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
+{ 
+	/* NEE */
+	vec3 pos_ls = sample_light(get_random());
+
+	vec3 l_nee = pos_ls - hitrecord.position;
+	float rr_nee = dot(l_nee, l_nee);
+	l_nee /= sqrt(rr_nee);
+	float G = max(0.0, dot(hitrecord.normal, l_nee)) * max(0.0, -dot(light_normal, l_nee)) / rr_nee;
+
+	if(G > 0.0) 
+	{
+		float light_pdf = 1.0 / (light_area * G);
+		float brdf_pdf = 1.0 / PI;
+
+		float w = light_pdf / (light_pdf + brdf_pdf);
+
+		vec3 brdf = hitrecord.albedo.rgb / PI;
+
+		if(test_visibility(hitrecord.position, pos_ls)) 
+		{
+			vec3 Le = light_albedo.rgb * light_albedo.a;
+			radiance += w * (throughput * (Le * brdf) / light_pdf);
+		}
+	}
+
+	return true;
+}
+
+bool sampleBRDF(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
+{ 
+	/* brdf */
+	mat3 onb = construct_ONB_frisvad(hitrecord.normal);
+
+	vec3 dir = normalize(onb * sample_cos_hemisphere(get_random()));
+
+	Ray rayNext = Ray(hitrecord.position, dir);
+	rayNext.origin += rayNext.dir * 1e-5;
+
+	HitRecord hitrecordNext;
+	float t = intersect(rayNext, hitrecordNext);
+	if(t == INFINITY)
+		return false;
+
+	vec3 brdf = hitrecord.albedo.rgb / PI;
+	float brdf_pdf = 1.0 / PI;
+
+	if(hitrecordNext.albedo.a > 0.0) 
+	{ 
+		/* hit light_source */
+		float G = max(0.0, dot(rayNext.dir / t, hitrecord.normal)) * max(0.0, -dot(rayNext.dir / t, hitrecordNext.normal));
+		if(G <= 0.0) /* hit back side of light source */
+			return false;
+
+		float light_pdf = 1.0 / (light_area * G);
+
+		float w = brdf_pdf / (light_pdf + brdf_pdf);
+
+		vec3 Le = light_albedo.rgb * light_albedo.a;
+		radiance += w * (throughput * (Le * brdf) / brdf_pdf);
+
+		return false;
+	}
+
+	throughput *= brdf / brdf_pdf;
+
+	hitrecord = hitrecordNext;
+
+	return true;
+}
+
+vec3 traceWorld(Ray ray)
 {
-	vec3 contrib = vec3(0);
-	vec3 tp = vec3(1.0);
+	vec3 radiance = vec3(0);
+	vec3 throughput = vec3(1.0);
 
-	vec3 position, normal;
-	vec4 albedo;
-	float t = intersect(ray, position, normal, albedo);
-
+	HitRecord hitrecord;
+	float t = intersect(ray, hitrecord);
 	if(t == INFINITY)
 		return vec3(0.0);
 
-	if(albedo.a > 0.0) 
+	if(hitrecord.albedo.a > 0.0)
 	{ 
-		/* hight light source */
-		return albedo.rgb * albedo.a;
+		return hitrecord.albedo.rgb * hitrecord.albedo.a;
 	}
 
 	for(int i = 0; i < NUM_BOUNCES; i++) 
 	{
-		mat3 onb = construct_ONB_frisvad(normal);
+		if( !sampleLight(hitrecord, radiance, throughput) )
+			break;
 
-		{ 
-			/* NEE */
-			vec3 pos_ls = sample_light(get_random());
-			vec3 l_nee = pos_ls - position;
-			float rr_nee = dot(l_nee, l_nee);
-			l_nee /= sqrt(rr_nee);
-			float G = max(0.0, dot(normal, l_nee)) * max(0.0, -dot(l_nee, light_normal)) / rr_nee;
-
-			if(G > 0.0) 
-			{
-				float light_pdf = 1.0 / (light_area * G);
-				float brdf_pdf = 1.0 / PI;
-
-				float w = light_pdf / (light_pdf + brdf_pdf);
-
-				vec3 brdf = albedo.rgb / PI;
-
-				if(test_visibility(position, pos_ls)) 
-				{
-					vec3 Le = light_albedo.rgb * light_albedo.a;
-					contrib += tp * (Le * w * brdf) / light_pdf;
-				}
-			}
-		}
-		
-		{ 
-			/* brdf */
-			vec3 dir = normalize(onb * sample_cos_hemisphere(get_random()));
-
-			vec3 brdf = albedo.rgb / PI;
-
-			Ray ray_next = Ray(position, dir);
-			ray_next.origin += ray_next.dir * 1e-5;
-
-			vec3 position_next, normal_next;
-			vec4 albedo_next;
-			float t = intersect(ray_next, position_next, normal_next, albedo_next);
-
-			if(t == INFINITY)
-				break;
-
-			float brdf_pdf = 1.0 / PI;
-
-			if(albedo_next.a > 0.0) 
-			{ 
-				/* hit light_source */
-				float G = max(0.0, dot(ray_next.dir / t, normal)) * max(0.0, -dot(ray_next.dir / t, normal_next));
-				if(G <= 0.0) /* hit back side of light source */
-					break;
-
-				float light_pdf = 1.0 / (light_area * G);
-
-				float w = brdf_pdf / (light_pdf + brdf_pdf);
-
-				vec3 Le = light_albedo.rgb * light_albedo.a;
-				contrib += tp * (Le * w * brdf) / brdf_pdf;
-
-				break;
-			}
-
-			tp *= brdf / brdf_pdf;
-
-			position = position_next;
-			normal = normal_next;
-			albedo = albedo_next;
-		}
+		if( !sampleBRDF(hitrecord, radiance, throughput) )
+			break;
 	}
 
-	return contrib;
+	return radiance;
 }
 
 //////////////////////////////////////////////////////
@@ -443,30 +451,36 @@ void init()
 	rand_seed();
 }
 
+struct Camera
+{
+	vec3 position;
+	vec3 forward;
+	vec3 right;
+	float aspect;
+};
+
+Ray generateRay(Camera camera, in vec2 fragCoord)
+{
+	vec2 p = (fragCoord.xy + get_random() - vec2(0.5, 0.5)) / vec2(iResolution) - vec2(0.5);
+
+	return Ray(camera.position, normalize(vec3(p.x * camera.aspect, p.y, -1.0)));
+}
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
 	init();
 
-	vec2 p = fragCoord.xy / vec2(iResolution) - vec2(0.5);
-	float a = float(iResolution.x) / float(iResolution.y);
-	if(a < 1.0)
-		p.y /= a;
-	else
-		p.x *= a;
+	Camera camera = Camera(vec3(0, 0, 3.125), vec3(0.0, 0.0, -1.0), vec3(1.0, 0.0, 0.0), iResolution.x / iResolution.y);
 
-	vec3 cam_center = vec3(0, 0, 3.125);
-
-	vec3 s = vec3(0);
+	vec3 radiance = vec3(0);
 	for(int i = 0; i < NUM_SAMPLES; i++) 
 	{
-		Ray ray;
-		ray.origin = cam_center;
-		vec2 r = get_random();
-		vec3 ray_dir = normalize(vec3(p + r.x * dFdx(p) + r.y * dFdy(p), -1));
-		ray.dir = ray_dir;
-		vec3 c = pt_mis(ray);
-		s += c;
+		Ray ray = generateRay(camera, fragCoord);
+
+		radiance += traceWorld(ray);
 	}
 
-	fragColor = vec4(pow(s / float(NUM_SAMPLES), vec3(1.0 / 2.2)), 1.0);
+	radiance = radiance / float(NUM_SAMPLES);
+
+	fragColor = vec4(pow(radiance, vec3(1.0 / 2.2)), 1.0);
 }
