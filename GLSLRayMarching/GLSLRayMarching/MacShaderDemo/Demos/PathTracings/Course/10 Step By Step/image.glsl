@@ -121,6 +121,7 @@ vec3 transformDir(vec3 p)
 struct HitRecord
 {
 	bool hit;
+	bool hitLight;
 	float t;
 	vec3 position;
 	vec3 normal;
@@ -142,9 +143,6 @@ struct Plane
 	vec2 size;
 
 	vec4 albedo;
-
-
-	int major_axis;
 };
 
 void intersect_plane(in Ray ray, in Plane plane, out HitRecord hitrecord)
@@ -163,6 +161,7 @@ void intersect_plane(in Ray ray, in Plane plane, out HitRecord hitrecord)
 		if(abs(u) < 1.0 && abs(v) < 1.0)
 		{
 			hitrecord.hit		= true;
+			hitrecord.hitLight	= false;
 			hitrecord.t			= t;
 			hitrecord.position	= p_tmp;
 			hitrecord.normal	= plane.normal;
@@ -218,6 +217,7 @@ void intersect_light(in Ray ray, in Light light, out HitRecord hitrecord)
 		if(abs(u) < 0.5 && abs(v) < 0.5)
 		{
 			hitrecord.hit		= true;
+			hitrecord.hitLight	= true;
 			hitrecord.t			= t;
 			hitrecord.position	= p_tmp;
 			hitrecord.normal	= light.normal;
@@ -315,6 +315,7 @@ void intersect_box(in Ray ray, in Box box, out HitRecord hitrecord)
 		}
 
 		hitrecord.hit		= true;
+		hitrecord.hitLight	= false;
 		hitrecord.t			= t_min;
 		hitrecord.position	= ray_at(ray, hitrecord.t);
 		hitrecord.normal	= vec3(transpose(r) * vec4(hitrecord.normal, 0.0));
@@ -347,6 +348,7 @@ Plane planes[NUM_PLANES];
 void intersect(in Ray ray, inout HitRecord hitrecord)
 {
 	hitrecord.hit		= false;
+	hitrecord.hitLight	= false;
 	hitrecord.t			= INFINITY;
 	hitrecord.albedo	= vec4(0.0);
 
@@ -447,7 +449,7 @@ bool sampleBRDF(in Light light, inout HitRecord hitrecord, inout vec3 radiance, 
 	if(!hitrecordNext.hit)
 		return false;
 
-	if(hitrecordNext.albedo.a > 0.0)	// if hit a light
+	if(hitrecordNext.hitLight)			// if hit a light
 	{ 
 		float G = max(0.0, dot(rayNext.dir / hitrecordNext.t, hitrecord.normal)) * max(0.0, -dot(rayNext.dir / hitrecordNext.t, hitrecordNext.normal));
 		if(G > 0.0)						// if hit back side of light source
@@ -489,7 +491,7 @@ vec3 traceWorld(Ray ray)
 	intersect(ray, hitrecord);
 	if(hitrecord.hit)					// hit shader
 	{
-		if(hitrecord.albedo.a > 0.0)	// if hit a light
+		if(hitrecord.hitLight)			// if hit a light
 		{ 
 			return hitrecord.albedo.rgb * hitrecord.albedo.a;
 		}
@@ -497,10 +499,13 @@ vec3 traceWorld(Ray ray)
 		{
 			for(int i = 0; i < NUM_BOUNCES; i++) 
 			{
-				sampleLight(lights[0], hitrecord, radiance, throughput);
+				for(int j = 0; j < NUM_LIGHTS; j++) 
+				{
+					sampleLight(lights[j], hitrecord, radiance, throughput);
 
-				if( !sampleBRDF(lights[0], hitrecord, radiance, throughput) )
-					break;
+					if( !sampleBRDF(lights[j], hitrecord, radiance, throughput) )
+						break;
+				}
 			}
 	
 			return radiance;
@@ -527,15 +532,19 @@ void init()
 	const vec3 light_normal = vec3(0, -1, 0);
 	const vec2 light_size = vec2(0.5, 0.5);
 	const float light_area = light_size.x * light_size.y;
-	const vec4 light_albedo = vec4(1, 1, 1, 2.0 / (light_area));
+	const vec4 light_albedo0 = vec4(1, 1, 1, 2.0 / (light_area));
+	const vec4 light_albedo1 = vec4(0, 1, 0, 2.0 / (light_area));
 
-	lights[0] = Light( Transform(vec3(light_position), vec3(0, 0, 0)), light_normal, vec3( 1,  0,  0), vec3( 0,  0,  1), light_size, light_albedo );
+	lights[0] = Light( Transform(vec3(light_position), vec3(0, 0, 0)), light_normal, vec3( 1,  0,  0), vec3( 0,  0,  1), light_size, light_albedo0 );
+	#if NUM_LIGHTS >1
+		lights[1] = Light( Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), light_size, light_albedo1 );
+	#endif
 
-	planes[0] = Plane(Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.9, 0.1, 0.1, 0), 0);
-	planes[1] = Plane(Transform(vec3( 1,  0,  0), vec3(0, 0, 0)), vec3(-1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.1, 0.9, 0.1, 0), 0);
-	planes[2] = Plane(Transform(vec3( 0, -1,  0), vec3(0, 0, 0)), vec3( 0,  1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 1);
-	planes[3] = Plane(Transform(vec3( 0,  1,  0), vec3(0, 0, 0)), vec3( 0, -1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 1);
-	planes[4] = Plane(Transform(vec3( 0,  0, -1), vec3(0, 0, 0)), vec3( 0,  0,  1), vec3( 1,  0,  0), vec3( 0,  1,  0), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 2);
+	planes[0] = Plane( Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.9, 0.1, 0.1, 0));
+	planes[1] = Plane( Transform(vec3( 1,  0,  0), vec3(0, 0, 0)), vec3(-1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.1, 0.9, 0.1, 0));
+	planes[2] = Plane( Transform(vec3( 0, -1,  0), vec3(0, 0, 0)), vec3( 0,  1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0));
+	planes[3] = Plane( Transform(vec3( 0,  1,  0), vec3(0, 0, 0)), vec3( 0, -1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0));
+	planes[4] = Plane( Transform(vec3( 0,  0, -1), vec3(0, 0, 0)), vec3( 0,  0,  1), vec3( 1,  0,  0), vec3( 0,  1,  0), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0));
 }
 
 Ray generateRay(Camera camera, in vec2 fragCoord)
