@@ -14,6 +14,7 @@ const vec4 light_albedo = vec4(1, 1, 1, 2.0 / (light_size * light_size));
 
 struct HitRecord
 {
+	bool hit;
 	float t;
 	vec3 position;
 	vec3 normal;
@@ -195,15 +196,17 @@ float intersect_light(Ray ray)
 }
 
 ///////////////////////////////////////////////////////////////////
-float intersect(in Ray ray, inout HitRecord hitrecord)
+bool intersect(in Ray ray, inout HitRecord hitrecord)
 {
-	hitrecord.t = INFINITY;
-	hitrecord.albedo = vec4(0.0);
+	hitrecord.hit		= false;
+	hitrecord.t			= INFINITY;
+	hitrecord.albedo	= vec4(0.0);
 
 	{
 		float t = intersect_light(ray);
 		if(t < hitrecord.t) 
 		{
+			hitrecord.hit		= true;
 			hitrecord.t			= t;
 			hitrecord.position	= ray_at(ray, hitrecord.t);
 			hitrecord.normal	= light_normal;
@@ -222,6 +225,7 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 
 		if(t < hitrecord.t) 
 		{
+			hitrecord.hit		= true;
 			hitrecord.t			= t;
 			hitrecord.position	= ray_at(ray, hitrecord.t);
 			hitrecord.normal	= vec3(transpose(r) * vec4(normal_tmp, 0.0));
@@ -236,6 +240,7 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 		float t = intersect_box(ray_tmp, normal_tmp, vec3(0.25, 0.25, 0.25));
 		if(t < hitrecord.t) 
 		{
+			hitrecord.hit		= true;
 			hitrecord.t			= t;
 			hitrecord.position	= ray_at(ray, hitrecord.t);
 			hitrecord.normal	= normal_tmp;
@@ -252,6 +257,7 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 			vec3 p_tmp = ray_at(ray, t);
 			if(all(lessThanEqual(p_tmp.yz, vec2(1))) && all(greaterThanEqual(p_tmp.yz, vec2(-1))))
 			{
+				hitrecord.hit		= true;
 				hitrecord.t			= t;
 				hitrecord.position	= ray_at(ray, t);
 				hitrecord.normal	= n;
@@ -269,6 +275,7 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 			vec3 p_tmp = ray_at(ray, t);
 			if(all(lessThanEqual(p_tmp.yz, vec2(1))) && all(greaterThanEqual(p_tmp.yz, vec2(-1))))
 			{
+				hitrecord.hit		= true;
 				hitrecord.t			= t;
 				hitrecord.position	= p_tmp;
 				hitrecord.normal	= n;
@@ -286,6 +293,7 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 			vec3 p_tmp = ray_at(ray, t);
 			if(all(lessThan(p_tmp.xz, vec2(1))) && all(greaterThan(p_tmp.xz, vec2(-1))))
 			{
+				hitrecord.hit		= true;
 				hitrecord.t			= t;
 				hitrecord.position	= p_tmp;
 				hitrecord.normal	= n;
@@ -303,6 +311,7 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 			vec3 p_tmp = ray_at(ray, t);
 			if(all(lessThan(p_tmp.xz, vec2(1))) && all(greaterThan(p_tmp.xz, vec2(-1))))
 			{
+				hitrecord.hit		= true;
 				hitrecord.t			= t;
 				hitrecord.position	= p_tmp;
 				hitrecord.normal	= n;
@@ -320,8 +329,8 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 			vec3 p_tmp = ray_at(ray, t);
 			if(all(lessThan(p_tmp.xy, vec2(1))) && all(greaterThan(p_tmp.xy, vec2(-1))))
 			{
+				hitrecord.hit		= true;
 				hitrecord.t			= t;
-
 				hitrecord.position	= p_tmp;
 				hitrecord.normal	= n;
 				hitrecord.albedo	= vec4(0.7, 0.7, 0.7, 0);
@@ -329,7 +338,7 @@ float intersect(in Ray ray, inout HitRecord hitrecord)
 		}
 	}
 
-	return hitrecord.t;
+	return hitrecord.hit;
 }
 
 bool test_visibility(vec3 p1, vec3 p2)
@@ -340,9 +349,9 @@ bool test_visibility(vec3 p1, vec3 p2)
 	r.origin += eps * r.dir;
 
 	HitRecord hitrecord;
-	float t_shadow = intersect(r, hitrecord);
+	intersect(r, hitrecord);
 
-	return t_shadow > distance(p1, p2) - 2.0 * eps;
+	return hitrecord.t > distance(p1, p2) - 2.0 * eps;
 }
 
 bool sampleLight(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
@@ -380,40 +389,46 @@ bool sampleBRDF(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throu
 	mat3 onb = construct_ONB_frisvad(hitrecord.normal);
 
 	vec3 dir = normalize(onb * sample_cos_hemisphere(get_random()));
-
 	Ray rayNext = Ray(hitrecord.position, dir);
 	rayNext.origin += rayNext.dir * 1e-5;
 
 	HitRecord hitrecordNext;
-	float t = intersect(rayNext, hitrecordNext);
-	if(t == INFINITY)
+	intersect(rayNext, hitrecordNext);
+	if(!hitrecordNext.hit)
 		return false;
 
-	vec3 brdf = hitrecord.albedo.rgb / PI;
-	float brdf_pdf = 1.0 / PI;
-
-	if(hitrecordNext.albedo.a > 0.0) 
+	if(hitrecordNext.albedo.a > 0.0)  /* if hit a light */
 	{ 
-		/* hit light_source */
-		float G = max(0.0, dot(rayNext.dir / t, hitrecord.normal)) * max(0.0, -dot(rayNext.dir / t, hitrecordNext.normal));
-		if(G <= 0.0) /* hit back side of light source */
+		float G = max(0.0, dot(rayNext.dir / hitrecordNext.t, hitrecord.normal)) * max(0.0, -dot(rayNext.dir / hitrecordNext.t, hitrecordNext.normal));
+		/* if hit back side of light source */
+		if(G <= 0.0)
 			return false;
 
+		vec3 brdf = hitrecord.albedo.rgb / PI;
+
+		float brdf_pdf = 1.0 / PI;
 		float light_pdf = 1.0 / (light_area * G);
 
 		float w = brdf_pdf / (light_pdf + brdf_pdf);
 
 		vec3 Le = light_albedo.rgb * light_albedo.a;
+
 		radiance += w * (throughput * (Le * brdf) / brdf_pdf);
 
 		return false;
 	}
+	else /* if hit an object */
+	{
+		vec3 brdf = hitrecord.albedo.rgb / PI;
 
-	throughput *= brdf / brdf_pdf;
+		float brdf_pdf = 1.0 / PI;
 
-	hitrecord = hitrecordNext;
+		throughput *= brdf / brdf_pdf;
 
-	return true;
+		hitrecord = hitrecordNext;
+
+		return true;
+	}
 }
 
 vec3 traceWorld(Ray ray)
@@ -422,25 +437,31 @@ vec3 traceWorld(Ray ray)
 	vec3 throughput = vec3(1.0);
 
 	HitRecord hitrecord;
-	float t = intersect(ray, hitrecord);
-	if(t == INFINITY)
-		return vec3(0.0);
-
-	if(hitrecord.albedo.a > 0.0)
-	{ 
-		return hitrecord.albedo.rgb * hitrecord.albedo.a;
-	}
-
-	for(int i = 0; i < NUM_BOUNCES; i++) 
+	intersect(ray, hitrecord);
+	if(!hitrecord.hit)
 	{
-		if( !sampleLight(hitrecord, radiance, throughput) )
-			break;
-
-		if( !sampleBRDF(hitrecord, radiance, throughput) )
-			break;
+		return vec3(0.0);
 	}
+	else
+	{
+		if(hitrecord.albedo.a > 0.0) /* if hit a light */
+		{ 
+			return hitrecord.albedo.rgb * hitrecord.albedo.a;
+		}
+		else /* if hit an object */
+		{
+			for(int i = 0; i < NUM_BOUNCES; i++) 
+			{
+				if( !sampleLight(hitrecord, radiance, throughput) )
+					break;
 
-	return radiance;
+				if( !sampleBRDF(hitrecord, radiance, throughput) )
+					break;
+			}
+	
+			return radiance;
+		}
+	}
 }
 
 //////////////////////////////////////////////////////
