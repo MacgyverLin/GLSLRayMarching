@@ -354,7 +354,7 @@ bool test_visibility(vec3 p1, vec3 p2)
 	return hitrecord.t > distance(p1, p2) - 2.0 * eps;
 }
 
-bool sampleLight(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
+void sampleLight(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
 { 
 	/* NEE */
 	vec3 pos_ls = sample_light(get_random());
@@ -379,8 +379,6 @@ bool sampleLight(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 thro
 			radiance += w * (throughput * (Le * brdf) / light_pdf);
 		}
 	}
-
-	return true;
 }
 
 bool sampleBRDF(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
@@ -388,8 +386,11 @@ bool sampleBRDF(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throu
 	/* brdf */
 	mat3 onb = construct_ONB_frisvad(hitrecord.normal);
 
-	vec3 dir = normalize(onb * sample_cos_hemisphere(get_random()));
-	Ray rayNext = Ray(hitrecord.position, dir);
+	Ray rayNext = Ray
+	(
+		hitrecord.position, 
+		normalize(onb * sample_cos_hemisphere(get_random()))
+	);
 	rayNext.origin += rayNext.dir * 1e-5;
 
 	HitRecord hitrecordNext;
@@ -400,22 +401,25 @@ bool sampleBRDF(inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throu
 	if(hitrecordNext.albedo.a > 0.0)  /* if hit a light */
 	{ 
 		float G = max(0.0, dot(rayNext.dir / hitrecordNext.t, hitrecord.normal)) * max(0.0, -dot(rayNext.dir / hitrecordNext.t, hitrecordNext.normal));
-		/* if hit back side of light source */
-		if(G <= 0.0)
+		if(G > 0.0) /* if hit back side of light source */
+		{
 			return false;
+		}
+		else
+		{
+			vec3 brdf = hitrecord.albedo.rgb / PI;
 
-		vec3 brdf = hitrecord.albedo.rgb / PI;
+			float brdf_pdf = 1.0 / PI;
+			float light_pdf = 1.0 / (light_area * G);
 
-		float brdf_pdf = 1.0 / PI;
-		float light_pdf = 1.0 / (light_area * G);
+			float w = brdf_pdf / (light_pdf + brdf_pdf);
 
-		float w = brdf_pdf / (light_pdf + brdf_pdf);
+			vec3 Le = light_albedo.rgb * light_albedo.a;
 
-		vec3 Le = light_albedo.rgb * light_albedo.a;
+			radiance += w * (throughput * (Le * brdf) / brdf_pdf);
 
-		radiance += w * (throughput * (Le * brdf) / brdf_pdf);
-
-		return false;
+			return false;
+		}
 	}
 	else /* if hit an object */
 	{
@@ -448,8 +452,7 @@ vec3 traceWorld(Ray ray)
 		{
 			for(int i = 0; i < NUM_BOUNCES; i++) 
 			{
-				if( !sampleLight(hitrecord, radiance, throughput) )
-					break;
+				sampleLight(hitrecord, radiance, throughput);
 
 				if( !sampleBRDF(hitrecord, radiance, throughput) )
 					break;
