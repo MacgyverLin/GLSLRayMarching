@@ -438,11 +438,7 @@ vec3 traceWorld(Ray ray)
 
 	HitRecord hitrecord;
 	intersect(ray, hitrecord);
-	if(!hitrecord.hit)
-	{
-		return vec3(0.0);
-	}
-	else
+	if(hitrecord.hit) // hit shader
 	{
 		if(hitrecord.albedo.a > 0.0) /* if hit a light */
 		{ 
@@ -461,6 +457,10 @@ vec3 traceWorld(Ray ray)
 	
 			return radiance;
 		}
+	}
+	else // miss shader
+	{
+		return vec3(0.0);
 	}
 }
 
