@@ -1,0 +1,37 @@
+{
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "ichannel0": {
+        "buffer": "buffera",
+        "filter": "linear",
+        "wrap": "clamp"
+      },
+      "ichannel1": {
+        "texture2d": "envmap1.jpg",
+        "filter": "linear",
+        "wrap": "repeat"
+      },
+      "ichannel2": {
+        "keyboard": "",
+        "filter": "nearest",
+        "wrap": "clamp"
+      },
+      "ichannel3": {
+        "texture2d": "atlas.png",
+        "filter": "linear",
+        "wrap": "repeat"
+      },
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "image.glsl",
+      "ichannel0": {
+        "buffer": "buffera",
+        "filter": "linear",
+        "wrap": "clamp"
+      },
+      "rendertarget": "image"
+    }
+  ]
+}

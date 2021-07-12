@@ -73,8 +73,8 @@ private:
 int main(int argc, char** argv)
 {
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
-
-	if (!macShaderDemoApp.Instantiate(800*2, 400 * 2, "MacShaderDemo", "ShaderToy"))
+#define SCALE 2
+	if (!macShaderDemoApp.Instantiate(800* SCALE, 400 * SCALE, "MacShaderDemo", "ShaderToy"))
 		return -1;
 
 	macShaderDemoApp.Start();
