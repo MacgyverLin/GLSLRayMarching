@@ -83,6 +83,14 @@ mat4 rotate_y(float a)
 
 /////////////////////////////////////////////////////
 // Ray
+struct Camera
+{
+	vec3 position;
+	vec3 forward;
+	vec3 right;
+	float aspect;
+};
+
 struct Ray
 {
 	vec3 origin, dir;
@@ -299,6 +307,8 @@ void intersect_box(in Ray ray, in Box box, out HitRecord hitrecord)
 
 ///////////////////////////////////////////////////////////////////
 // Scene Description
+Camera camera;
+
 #define NUM_BOXES 2
 Box boxes[NUM_BOXES];
 
@@ -479,8 +489,9 @@ vec3 traceWorld(Ray ray)
 void init()
 {
 	seed = 0;
-
 	rand_seed();
+
+	camera = Camera(vec3(0, 0, 3.125), vec3(0.0, 0.0, -1.0), vec3(1.0, 0.0, 0.0), iResolution.x / iResolution.y);
 
 	boxes[0] = Box( Transform(vec3(-0.35, -0.50, -0.35), vec3(0.0, 0.3, 0.0)), vec3(0.25, 0.50, 0.25),  vec4(0.7, 0.7, 0.7, 0) );
 	boxes[1] = Box( Transform(vec3( 0.50, -0.75,  0.35), vec3(0.0, 0.0, 0.0)), vec3(0.25, 0.25, 0.25),  vec4(0.7, 0.7, 0.7, 0) );
@@ -500,14 +511,6 @@ void init()
 	planes[4] = Plane(Transform(vec3( 0,  0, -1), vec3(0, 0, 0)), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 2);
 }
 
-struct Camera
-{
-	vec3 position;
-	vec3 forward;
-	vec3 right;
-	float aspect;
-};
-
 Ray generateRay(Camera camera, in vec2 fragCoord)
 {
 	vec2 p = (fragCoord.xy + get_random() - vec2(0.5, 0.5)) / vec2(iResolution) - vec2(0.5);
@@ -515,11 +518,22 @@ Ray generateRay(Camera camera, in vec2 fragCoord)
 	return Ray(camera.position, normalize(vec3(p.x * camera.aspect, p.y, -1.0)));
 }
 
+void moveLight(inout Light l)
+{
+	l.transform.position  = vec3(0.5 * sin(iTime), 0.90, 0.5 * cos(iTime));
+}
+
+void moveCamera(inout Camera c)
+{
+	c.position = vec3(0, 0, 3.125) + vec3(0.5 * sin(iTime), 0.5 * cos(iTime), 0.00);
+}
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
 	init();
 
-	Camera camera = Camera(vec3(0, 0, 3.125), vec3(0.0, 0.0, -1.0), vec3(1.0, 0.0, 0.0), iResolution.x / iResolution.y);
+	moveLight(lights[0]);
+	moveCamera(camera);
 
 	vec3 radiance = vec3(0);
 	for(int i = 0; i < NUM_SAMPLES; i++) 
