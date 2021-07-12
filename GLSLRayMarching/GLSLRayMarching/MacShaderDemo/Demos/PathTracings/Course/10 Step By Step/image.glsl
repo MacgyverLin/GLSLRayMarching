@@ -407,23 +407,24 @@ vec3 getLightLe(in Light light)
 void sampleLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
 { 
 	/* NEE */
-	vec3 pos_ls = randomSampleLight(light);
+	vec3 lightPosition = randomSampleLight(light);
+	vec3 lightDirection = lightPosition - hitrecord.position;
 
-	vec3 l_nee = pos_ls - hitrecord.position;
-	float rr_nee = dot(l_nee, l_nee);
-	l_nee /= sqrt(rr_nee);
-	float G = max(0.0, dot(hitrecord.normal, l_nee)) * max(0.0, -dot(light.normal, l_nee)) / rr_nee;
+	float sqrR = dot(lightDirection, lightDirection);
+	lightDirection = normalize(lightDirection);
 	
+	float G = max(0.0, dot(hitrecord.normal, lightDirection)) * max(0.0, -dot(light.normal, lightDirection)) / sqrR;
 	if(G > 0.0) 
 	{
 		float light_pdf = 1.0 / (getLightArea(light) * G);
-		float brdf_pdf = 1.0 / PI;
+		float brdf_pdf	= 1.0 / PI;
 		float w = light_pdf / (light_pdf + brdf_pdf);
-		vec3 brdf = hitrecord.albedo.rgb / PI;
 
-		if(test_visibility(hitrecord.position, pos_ls)) 
+		vec3 brdf = hitrecord.albedo.rgb / PI;
+		vec3 Le = getLightLe(light);
+
+		if(test_visibility(hitrecord.position, lightPosition)) 
 		{
-			vec3 Le = getLightLe(light);
 			radiance += w * (throughput * (Le * brdf) / light_pdf);
 		}
 	}
@@ -455,9 +456,10 @@ bool sampleBRDF(in Light light, inout HitRecord hitrecord, inout vec3 radiance, 
 		}
 		else
 		{
-			float brdf_pdf = 1.0 / PI;
 			float light_pdf = 1.0 / (getLightArea(light) * G);
+			float brdf_pdf = 1.0 / PI;
 			float w = brdf_pdf / (light_pdf + brdf_pdf);
+
 			vec3 brdf = hitrecord.albedo.rgb / PI;
 			vec3 Le = getLightLe(light);
 
@@ -470,8 +472,8 @@ bool sampleBRDF(in Light light, inout HitRecord hitrecord, inout vec3 radiance, 
 	{
 		vec3 brdf = hitrecord.albedo.rgb / PI;
 		float brdf_pdf = 1.0 / PI;
-		throughput *= brdf / brdf_pdf;
 
+		throughput *= brdf / brdf_pdf;
 		hitrecord = hitrecordNext;
 
 		return true;
@@ -520,14 +522,14 @@ void init()
 
 	boxes[0] = Box( Transform(vec3(-0.35, -0.50, -0.35), vec3(0.0, 0.3, 0.0)), vec3(0.25, 0.50, 0.25),  vec4(0.7, 0.7, 0.7, 0) );
 	boxes[1] = Box( Transform(vec3( 0.50, -0.75,  0.35), vec3(0.0, 0.0, 0.0)), vec3(0.25, 0.25, 0.25),  vec4(0.7, 0.7, 0.7, 0) );
-
-	const float light_size = 0.5;
-	const float light_area = light_size * light_size;
+	
 	const vec3 light_position = vec3(0.0, 0.90, 0.5);
 	const vec3 light_normal = vec3(0, -1, 0);
-	const vec4 light_albedo = vec4(1, 1, 1, 2.0 / (light_size * light_size));
+	const vec2 light_size = vec2(0.5, 0.5);
+	const float light_area = light_size.x * light_size.y;
+	const vec4 light_albedo = vec4(1, 1, 1, 2.0 / (light_area));
 
-	lights[0] = Light( Transform(vec3(light_position), vec3(0, 0, 0)), light_normal, vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(light_size), light_albedo );
+	lights[0] = Light( Transform(vec3(light_position), vec3(0, 0, 0)), light_normal, vec3( 1,  0,  0), vec3( 0,  0,  1), light_size, light_albedo );
 
 	planes[0] = Plane(Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.9, 0.1, 0.1, 0), 0);
 	planes[1] = Plane(Transform(vec3( 1,  0,  0), vec3(0, 0, 0)), vec3(-1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.1, 0.9, 0.1, 0), 0);
