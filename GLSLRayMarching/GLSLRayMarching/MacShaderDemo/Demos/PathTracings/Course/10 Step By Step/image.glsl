@@ -124,6 +124,9 @@ struct HitRecord
 	float t;
 	vec3 position;
 	vec3 normal;
+	vec3 tangent;
+	vec3 binormal;
+
 	vec4 albedo;
 };
 
@@ -133,9 +136,13 @@ struct Plane
 {
 	Transform transform;
 	vec3 normal;
+	vec3 tangent;
+	vec3 binormal;
+
 	vec2 size;
 
 	vec4 albedo;
+
 
 	int major_axis;
 };
@@ -150,20 +157,18 @@ void intersect_plane(in Ray ray, in Plane plane, out HitRecord hitrecord)
 	{
 		vec3 p_tmp = ray_at(ray, t);
 
-		vec2 p_swizzle;
-		if(plane.major_axis==0)
-			p_swizzle = p_tmp.yz; // x major
-		else if(plane.major_axis==1)
-			p_swizzle = p_tmp.xz; // y major
-		else
-			p_swizzle = p_tmp.xy; // z major
-
-		if(all(lessThanEqual(p_swizzle, vec2(1))) && all(greaterThanEqual(p_swizzle, vec2(-1))))
+		vec3 diff = p_tmp - plane.transform.position;
+		float u = dot(diff, plane.tangent) / plane.size.x;
+		float v = dot(diff, plane.binormal) / plane.size.y;
+		if(abs(u) < 1.0 && abs(v) < 1.0)
 		{
 			hitrecord.hit		= true;
 			hitrecord.t			= t;
 			hitrecord.position	= p_tmp;
 			hitrecord.normal	= plane.normal;
+			hitrecord.tangent	= plane.tangent;
+			hitrecord.binormal	= plane.binormal;
+			
 			hitrecord.albedo	= plane.albedo;
 		}
 		else
@@ -185,7 +190,10 @@ struct Light
 {
 	Transform transform;
 	vec3 normal;
-	float size;
+	vec3 tangent;
+	vec3 binormal;
+
+	vec2 size;
 
 	vec4 albedo;
 };
@@ -193,7 +201,7 @@ struct Light
 vec3 randomSampleLight(in Light light)
 {
 	vec2 rng = get_random();
-	return light.transform.position + vec3(rng.x - 0.5, 0, rng.y - 0.5) * light.size;
+	return light.transform.position + vec3((rng.x - 0.5) * light.size.x, 0, (rng.y - 0.5) * light.size.y);
 }
 
 void intersect_light(in Ray ray, in Light light, out HitRecord hitrecord)
@@ -204,12 +212,18 @@ void intersect_light(in Ray ray, in Light light, out HitRecord hitrecord)
 	vec3 p_tmp = ray_at(ray, t);
 	if(t > 0.0)
 	{
-		if(all(lessThan(abs(light.transform.position - p_tmp).xz, vec2(light.size * 0.5)))) 
+		vec3 diff = p_tmp - light.transform.position;
+		float u = dot(diff, light.tangent) / light.size.x;
+		float v = dot(diff, light.binormal) / light.size.y;
+		if(abs(u) < 0.5 && abs(v) < 0.5)
 		{
 			hitrecord.hit		= true;
 			hitrecord.t			= t;
 			hitrecord.position	= p_tmp;
 			hitrecord.normal	= light.normal;
+			hitrecord.tangent	= light.tangent;
+			hitrecord.binormal	= light.binormal;
+
 			hitrecord.albedo	= light.albedo;
 		}
 		else
@@ -277,25 +291,36 @@ void intersect_box(in Ray ray, in Box box, out HitRecord hitrecord)
 			if(abs(p.x) > abs(p.z)) 
 			{
 				hitrecord.normal = vec3(p.x > 0.0 ? 1.0 : -1.0, 0, 0);
+				hitrecord.tangent = vec3(0, 1, 0);
+				hitrecord.binormal = vec3(0, 0, 1);
 			}
 			else 
 			{
 				hitrecord.normal = vec3(0, 0, p.z > 0.0 ? 1.0 : -1.0);
+				hitrecord.tangent = vec3(0, 1, 0);
+				hitrecord.binormal = vec3(1, 0, 0);
 			}
 		}
 		else if(abs(p.y) > abs(p.z)) 
 		{
 			hitrecord.normal = vec3(0, p.y > 0.0 ? 1.0 : -1.0, 0);
+			hitrecord.tangent = vec3(0, 0, 1);
+			hitrecord.binormal = vec3(1, 0, 0);
 		}
 		else 
 		{
 			hitrecord.normal = vec3(0, 0, p.z > 0.0 ? 1.0 : -1.0);
+			hitrecord.tangent = vec3(0, 1, 0);
+			hitrecord.binormal = vec3(1, 0, 0);
 		}
 
 		hitrecord.hit		= true;
 		hitrecord.t			= t_min;
 		hitrecord.position	= ray_at(ray, hitrecord.t);
 		hitrecord.normal	= vec3(transpose(r) * vec4(hitrecord.normal, 0.0));
+		hitrecord.tangent	= vec3(transpose(r) * vec4(hitrecord.tangent, 0.0));
+		hitrecord.binormal	= vec3(transpose(r) * vec4(hitrecord.binormal, 0.0));
+
 		hitrecord.albedo	= box.albedo;
 	}
 	else
@@ -371,7 +396,7 @@ bool test_visibility(vec3 p1, vec3 p2)
 
 float getLightArea(in Light light)
 {
-	return light.size * light.size;
+	return light.size.x * light.size.y;
 }
 
 vec3 getLightLe(in Light light)
@@ -388,7 +413,7 @@ void sampleLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance,
 	float rr_nee = dot(l_nee, l_nee);
 	l_nee /= sqrt(rr_nee);
 	float G = max(0.0, dot(hitrecord.normal, l_nee)) * max(0.0, -dot(light.normal, l_nee)) / rr_nee;
-
+	
 	if(G > 0.0) 
 	{
 		float light_pdf = 1.0 / (getLightArea(light) * G);
@@ -502,13 +527,13 @@ void init()
 	const vec3 light_normal = vec3(0, -1, 0);
 	const vec4 light_albedo = vec4(1, 1, 1, 2.0 / (light_size * light_size));
 
-	lights[0] = Light( Transform(vec3(light_position), vec3(0, 0, 0)), light_normal, light_size, light_albedo );
+	lights[0] = Light( Transform(vec3(light_position), vec3(0, 0, 0)), light_normal, vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(light_size), light_albedo );
 
-	planes[0] = Plane(Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec2(1, 1), vec4(0.9, 0.1, 0.1, 0), 0);
-	planes[1] = Plane(Transform(vec3( 1,  0,  0), vec3(0, 0, 0)), vec3(-1,  0,  0), vec2(1, 1), vec4(0.1, 0.9, 0.1, 0), 0);
-	planes[2] = Plane(Transform(vec3( 0, -1,  0), vec3(0, 0, 0)), vec3( 0,  1,  0), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 1);
-	planes[3] = Plane(Transform(vec3( 0,  1,  0), vec3(0, 0, 0)), vec3( 0, -1,  0), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 1);
-	planes[4] = Plane(Transform(vec3( 0,  0, -1), vec3(0, 0, 0)), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 2);
+	planes[0] = Plane(Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.9, 0.1, 0.1, 0), 0);
+	planes[1] = Plane(Transform(vec3( 1,  0,  0), vec3(0, 0, 0)), vec3(-1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.1, 0.9, 0.1, 0), 0);
+	planes[2] = Plane(Transform(vec3( 0, -1,  0), vec3(0, 0, 0)), vec3( 0,  1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 1);
+	planes[3] = Plane(Transform(vec3( 0,  1,  0), vec3(0, 0, 0)), vec3( 0, -1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 1);
+	planes[4] = Plane(Transform(vec3( 0,  0, -1), vec3(0, 0, 0)), vec3( 0,  0,  1), vec3( 1,  0,  0), vec3( 0,  1,  0), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0), 2);
 }
 
 Ray generateRay(Camera camera, in vec2 fragCoord)
@@ -532,8 +557,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
 	init();
 
-	moveLight(lights[0]);
-	moveCamera(camera);
+	//moveLight(lights[0]);
+	//moveCamera(camera);
 
 	vec3 radiance = vec3(0);
 	for(int i = 0; i < NUM_SAMPLES; i++) 
