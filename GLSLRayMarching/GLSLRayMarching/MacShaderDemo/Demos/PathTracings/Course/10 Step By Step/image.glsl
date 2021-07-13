@@ -82,6 +82,15 @@ mat4 rotate_y(float a)
 }
 
 /////////////////////////////////////////////////////
+// Material
+struct Material
+{
+	vec3 albedo;
+	float metallic;
+	float roughness;
+};
+
+/////////////////////////////////////////////////////
 // Ray
 struct Camera
 {
@@ -128,7 +137,7 @@ struct HitRecord
 	vec3 tangent;
 	vec3 binormal;
 
-	vec4 albedo;
+	vec3 albedo;
 };
 
 ////////////////////////////////////////////////////
@@ -142,7 +151,7 @@ struct Plane
 
 	vec2 size;
 
-	vec4 albedo;
+	vec3 albedo;
 };
 
 void intersect_plane(in Ray ray, in Plane plane, out HitRecord hitrecord)
@@ -194,7 +203,7 @@ struct Light
 
 	vec2 size;
 
-	vec4 albedo;
+	vec3 albedo;
 };
 
 vec3 randomSampleLight(in Light light)
@@ -269,7 +278,7 @@ struct Box
 	Transform transform;
 	vec3 size;
 
-	vec4 albedo;
+	vec3 albedo;
 };
 
 void intersect_box(in Ray ray, in Box box, out HitRecord hitrecord)
@@ -350,7 +359,7 @@ void intersect(in Ray ray, inout HitRecord hitrecord)
 	hitrecord.hit		= false;
 	hitrecord.hitLight	= false;
 	hitrecord.t			= INFINITY;
-	hitrecord.albedo	= vec4(0.0);
+	hitrecord.albedo	= vec3(0.0);
 
 	for(int i=0; i<NUM_LIGHTS; i++)
 	{
@@ -403,20 +412,19 @@ float getLightArea(in Light light)
 
 vec3 getLightLe(in Light light)
 {
-	return light.albedo.rgb * light.albedo.a;
+	return light.albedo.rgb;
 }
 
-void sampleLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
+void sampleDirectLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
 { 
-	/* NEE */
 	vec3 lightPosition = randomSampleLight(light);
 	vec3 lightDirection = lightPosition - hitrecord.position;
 
 	float sqrR = dot(lightDirection, lightDirection);
 	lightDirection = normalize(lightDirection);
 	
-	float G = max(0.0, dot(hitrecord.normal, lightDirection)) * max(0.0, -dot(light.normal, lightDirection)) / sqrR;
-	if(G > 0.0) 
+	float G = max(0.0, dot(hitrecord.normal, lightDirection)) * max(0.0, dot(light.normal, -lightDirection)) / sqrR;
+	if(G > 0.0) 						// if hit in front of light and ray cast from outside surface
 	{
 		float light_pdf = 1.0 / (getLightArea(light) * G);
 		float brdf_pdf	= 1.0 / PI;
@@ -427,14 +435,13 @@ void sampleLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance,
 
 		if(test_visibility(hitrecord.position, lightPosition)) 
 		{
-			radiance += w * (throughput * (Le * brdf) / light_pdf);
+			radiance += throughput * w * (Le * brdf) / light_pdf;
 		}
 	}
 }
 
-bool sampleBRDF(in Light light, inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
+bool sampleIndirectLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
 { 
-	/* brdf */
 	mat3 onb = construct_ONB_frisvad(hitrecord.normal);
 
 	Ray rayNext = Ray
@@ -449,34 +456,37 @@ bool sampleBRDF(in Light light, inout HitRecord hitrecord, inout vec3 radiance, 
 	if(!hitrecordNext.hit)
 		return false;
 
-	if(hitrecordNext.hitLight)			// if hit a light
+	if(hitrecordNext.hitLight)			// will hit a light next time?
 	{ 
-		float G = max(0.0, dot(rayNext.dir / hitrecordNext.t, hitrecord.normal)) * max(0.0, -dot(rayNext.dir / hitrecordNext.t, hitrecordNext.normal));
-		if(G > 0.0)						// if hit back side of light source
+		float G = max(0.0, dot(hitrecord.normal, rayNext.dir)) * max(0.0, dot(hitrecordNext.normal, -rayNext.dir)) / (hitrecordNext.t * hitrecordNext.t);
+		if(G <= 0.0)					// if hit back of light and ray cast from inside surface
 		{
 			return false;
 		}
-		else
+		else							// if hit in front of light and ray cast from outside surface
 		{
-			float light_pdf = 1.0 / (getLightArea(light) * G);
-			float brdf_pdf = 1.0 / PI;
-			float w = brdf_pdf / (light_pdf + brdf_pdf);
+			float light_pdf		= 1.0 / (getLightArea(light) * G);
+			float brdf_pdf		= 1.0 / PI;
+			float w				= brdf_pdf / (light_pdf + brdf_pdf);
 
-			vec3 brdf = hitrecord.albedo.rgb / PI;
-			vec3 Le = getLightLe(light);
+			vec3 brdf			= hitrecord.albedo.rgb / PI;
+			vec3 Le				= getLightLe(light);
 
-			radiance += w * (throughput * (Le * brdf) / brdf_pdf);
+			radiance			+= throughput * w * (Le * brdf) / brdf_pdf;
 
 			return false;
 		}
+
+		return false;
 	}
 	else								// if hit an object
 	{
-		vec3 brdf = hitrecord.albedo.rgb / PI;
-		float brdf_pdf = 1.0 / PI;
+		vec3 brdf				= hitrecord.albedo.rgb / PI;
+		float brdf_pdf			= 1.0 / PI;
 
-		throughput *= brdf / brdf_pdf;
-		hitrecord = hitrecordNext;
+		throughput				*= brdf / brdf_pdf;
+
+		hitrecord				= hitrecordNext;
 
 		return true;
 	}
@@ -493,19 +503,16 @@ vec3 traceWorld(Ray ray)
 	{
 		if(hitrecord.hitLight)			// if hit a light
 		{ 
-			return hitrecord.albedo.rgb * hitrecord.albedo.a;
+			return hitrecord.albedo.rgb;
 		}
 		else							// if hit an object
 		{
 			for(int i = 0; i < NUM_BOUNCES; i++) 
 			{
-				for(int j = 0; j < NUM_LIGHTS; j++) 
-				{
-					sampleLight(lights[j], hitrecord, radiance, throughput);
+				sampleDirectLight(lights[0], hitrecord, radiance, throughput);
 
-					if( !sampleBRDF(lights[j], hitrecord, radiance, throughput) )
-						break;
-				}
+				if( !sampleIndirectLight(lights[0], hitrecord, radiance, throughput) )
+					break;
 			}
 	
 			return radiance;
@@ -525,26 +532,26 @@ void init()
 
 	camera = Camera(vec3(0, 0, 3.125), vec3(0.0, 0.0, -1.0), vec3(1.0, 0.0, 0.0), iResolution.x / iResolution.y);
 
-	boxes[0] = Box( Transform(vec3(-0.35, -0.50, -0.35), vec3(0.0, 0.3, 0.0)), vec3(0.25, 0.50, 0.25),  vec4(0.7, 0.7, 0.7, 0) );
-	boxes[1] = Box( Transform(vec3( 0.50, -0.75,  0.35), vec3(0.0, 0.0, 0.0)), vec3(0.25, 0.25, 0.25),  vec4(0.7, 0.7, 0.7, 0) );
+	boxes[0] = Box( Transform(vec3(-0.35, -0.50, -0.35), vec3(0.0, 0.3, 0.0)), vec3(0.25, 0.50, 0.25),  vec3(0.7, 0.7, 0.7) );
+	boxes[1] = Box( Transform(vec3( 0.50, -0.75,  0.35), vec3(0.0, 0.0, 0.0)), vec3(0.25, 0.25, 0.25),  vec3(0.7, 0.7, 0.7) );
 	
 	const vec3 light_position = vec3(0.0, 0.90, 0.5);
 	const vec3 light_normal = vec3(0, -1, 0);
 	const vec2 light_size = vec2(0.5, 0.5);
 	const float light_area = light_size.x * light_size.y;
-	const vec4 light_albedo0 = vec4(1, 1, 1, 2.0 / (light_area));
-	const vec4 light_albedo1 = vec4(0, 1, 0, 2.0 / (light_area));
+	const vec3 light_albedo0 = vec3(1, 1, 1) * 2.0 / (light_area);
+	const vec3 light_albedo1 = vec3(0, 1, 0) * 2.0 / (light_area);
 
 	lights[0] = Light( Transform(vec3(light_position), vec3(0, 0, 0)), light_normal, vec3( 1,  0,  0), vec3( 0,  0,  1), light_size, light_albedo0 );
 	#if NUM_LIGHTS >1
 		lights[1] = Light( Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), light_size, light_albedo1 );
 	#endif
 
-	planes[0] = Plane( Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.9, 0.1, 0.1, 0));
-	planes[1] = Plane( Transform(vec3( 1,  0,  0), vec3(0, 0, 0)), vec3(-1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.1, 0.9, 0.1, 0));
-	planes[2] = Plane( Transform(vec3( 0, -1,  0), vec3(0, 0, 0)), vec3( 0,  1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0));
-	planes[3] = Plane( Transform(vec3( 0,  1,  0), vec3(0, 0, 0)), vec3( 0, -1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0));
-	planes[4] = Plane( Transform(vec3( 0,  0, -1), vec3(0, 0, 0)), vec3( 0,  0,  1), vec3( 1,  0,  0), vec3( 0,  1,  0), vec2(1, 1), vec4(0.7, 0.7, 0.7, 0));
+	planes[0] = Plane( Transform(vec3(-1,  0,  0), vec3(0, 0, 0)), vec3( 1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec3(0.9, 0.1, 0.1));
+	planes[1] = Plane( Transform(vec3( 1,  0,  0), vec3(0, 0, 0)), vec3(-1,  0,  0), vec3( 0,  1,  0), vec3( 0,  0,  1), vec2(1, 1), vec3(0.1, 0.9, 0.1));
+	planes[2] = Plane( Transform(vec3( 0, -1,  0), vec3(0, 0, 0)), vec3( 0,  1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec3(0.7, 0.7, 0.7));
+	planes[3] = Plane( Transform(vec3( 0,  1,  0), vec3(0, 0, 0)), vec3( 0, -1,  0), vec3( 1,  0,  0), vec3( 0,  0,  1), vec2(1, 1), vec3(0.7, 0.7, 0.7));
+	planes[4] = Plane( Transform(vec3( 0,  0, -1), vec3(0, 0, 0)), vec3( 0,  0,  1), vec3( 1,  0,  0), vec3( 0,  1,  0), vec2(1, 1), vec3(0.7, 0.7, 0.7));
 }
 
 Ray generateRay(Camera camera, in vec2 fragCoord)
@@ -568,7 +575,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
 	init();
 
-	//moveLight(lights[0]);
+	moveLight(lights[0]);
 	//moveCamera(camera);
 
 	vec3 radiance = vec3(0);
