@@ -445,16 +445,23 @@ void sampleDirectLight(in Light light, inout HitRecord hitrecord, inout vec3 rad
 	}
 }
 
-bool sampleIndirectLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
-{ 
-	mat3 onb = construct_ONB_frisvad(hitrecord.normal);
+Ray cosineHemiSphereSampling(vec3 position, vec3 normal)
+{
+	mat3 onb = construct_ONB_frisvad(normal);
 
 	Ray rayNext = Ray
 	(
-		hitrecord.position, 
+		position, 
 		normalize(onb * sample_cos_hemisphere(get_random()))
 	);
 	rayNext.origin += rayNext.dir * 1e-5;
+
+	return rayNext;
+}
+
+bool sampleIndirectLight(in Light light, inout HitRecord hitrecord, inout vec3 radiance, inout vec3 throughput)
+{ 
+	Ray rayNext = cosineHemiSphereSampling(hitrecord.position, hitrecord.normal);
 
 	HitRecord hitrecordNext;
 	intersect(rayNext, hitrecordNext);
