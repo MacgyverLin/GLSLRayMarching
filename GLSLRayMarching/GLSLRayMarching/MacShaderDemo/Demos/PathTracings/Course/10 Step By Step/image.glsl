@@ -431,12 +431,12 @@ void sampleDirectLight(in Light light, inout HitRecord hitrecord, inout vec3 rad
 	float G = max(0.0, dot(hitrecord.normal, lightDirection)) * max(0.0, dot(light.normal, -lightDirection)) / sqrR;
 	if(G > 0.0) 						// if hit in front of light and ray cast from outside surface
 	{
-		float light_pdf = 1.0 / (getLightArea(light) * G);		// 
-		float brdf_pdf	= 1.0 / PI;								// 
-		float w = light_pdf / (light_pdf + brdf_pdf);
+		float light_pdf				= 1.0 / (getLightArea(light) * G);		// 
+		float brdf_pdf				= 1.0 / PI;								// 
+		float w						= light_pdf / (light_pdf + brdf_pdf);
 
-		vec3 brdf = materials[hitrecord.material].albedo.rgb / PI;
-		vec3 Le = getLightLe(light);
+		vec3 brdf					= materials[hitrecord.material].albedo.rgb / PI;
+		vec3 Le						= getLightLe(light);
 
 		if(test_visibility(hitrecord.position, lightPosition))
 		{
