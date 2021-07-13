@@ -431,14 +431,14 @@ void sampleDirectLight(in Light light, inout HitRecord hitrecord, inout vec3 rad
 	float G = max(0.0, dot(hitrecord.normal, lightDirection)) * max(0.0, dot(light.normal, -lightDirection)) / sqrR;
 	if(G > 0.0) 						// if hit in front of light and ray cast from outside surface
 	{
-		float light_pdf = 1.0 / (getLightArea(light) * G);
-		float brdf_pdf	= 1.0 / PI;
+		float light_pdf = 1.0 / (getLightArea(light) * G);		// 
+		float brdf_pdf	= 1.0 / PI;								// 
 		float w = light_pdf / (light_pdf + brdf_pdf);
 
 		vec3 brdf = materials[hitrecord.material].albedo.rgb / PI;
 		vec3 Le = getLightLe(light);
 
-		if(test_visibility(hitrecord.position, lightPosition)) 
+		if(test_visibility(hitrecord.position, lightPosition))
 		{
 			radiance += throughput * w * (Le * brdf) / light_pdf;
 		}
@@ -471,11 +471,7 @@ bool sampleIndirectLight(in Light light, inout HitRecord hitrecord, inout vec3 r
 	if(hitrecordNext.hitLight)			// will hit a light next time?
 	{ 
 		float G = max(0.0, dot(hitrecord.normal, rayNext.dir)) * max(0.0, dot(hitrecordNext.normal, -rayNext.dir)) / (hitrecordNext.t * hitrecordNext.t);
-		if(G <= 0.0)					// if hit back of light and ray cast from inside surface
-		{
-			return false;
-		}
-		else							// if hit in front of light and ray cast from outside surface
+		if(G > 0.0)						// if hit in front of light and ray cast from outside surface
 		{
 			float light_pdf		= 1.0 / (getLightArea(light) * G);
 			float brdf_pdf		= 1.0 / PI;
@@ -488,8 +484,10 @@ bool sampleIndirectLight(in Light light, inout HitRecord hitrecord, inout vec3 r
 
 			return false;
 		}
-
-		return false;
+		else							// if hit back of light and ray cast from inside surface
+		{
+			return false;
+		}
 	}
 	else								// if hit an object
 	{
