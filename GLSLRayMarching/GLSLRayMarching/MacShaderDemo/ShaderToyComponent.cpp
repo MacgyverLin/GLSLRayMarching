@@ -1755,8 +1755,8 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/2 Light Sampling");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
-	// return macShaderDemo->Initiate("Demos/PathTracings/Course/9 Step By Step");
-	return macShaderDemo->Initiate("Demos/PathTracings/Course/10 Step By Step");
+	return macShaderDemo->Initiate("Demos/PathTracings/Course/9 Step By Step");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/10 Step By Step");
 }
 
 bool ShaderToyComponent::OnUpdate()
