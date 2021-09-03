@@ -1,5 +1,5 @@
-REM git clone --recursive https://github.com/MacgyverLin/GLSLRayMarching.git
-REM GLSLRayMarching
+git clone --recursive https://github.com/MacgyverLin/GLSLRayMarching.git
+cd GLSLRayMarching
 @echo off
 cd 3rdparty
 
