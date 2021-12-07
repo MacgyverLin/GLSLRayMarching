@@ -88,30 +88,6 @@ private:
 	std::vector<unsigned char> buffer;
 };
 
-class UniformGUI
-{
-public:
-	UniformGUI()
-	{
-	}
-
-	virtual ~UniformGUI()
-	{
-	}
-
-	bool Initiate()
-	{
-		return true;
-	}
-
-	virtual void Update(ShaderProgram& shaderProgram)
-	{
-		GUI::UpdateShader(shaderProgram);
-	}
-private:
-private:
-};
-
 class WebcamTexture : public Texture2D
 {
 public:
@@ -376,201 +352,6 @@ private:
 
 #define CHANNEL_COUNT 4
 
-template<class ValueType>
-class Parameter
-{
-public:
-	Parameter()
-	{
-	}
-
-	~Parameter()
-	{
-	}
-
-	void SetValue(const ValueType& value_)
-	{
-		value = value_;
-	}
-
-	const ValueType& GetValue() const
-	{
-		return value;
-	}
-protected:
-	std::string name;
-	ValueType value;
-};
-
-template<class ValueType, class RangeType>
-class ParameterWithRange : public Parameter<ValueType>
-{
-public:
-	ParameterWithRange()
-	{
-	}
-
-	~ParameterWithRange()
-	{
-	}
-
-	void SetMin(const RangeType& min_)
-	{
-		min = min_;
-	}
-
-	void SetMax(const RangeType& max_)
-	{
-		max = max_;
-	}
-
-	const RangeType& GetMin() const
-	{
-		return min;
-	}
-
-	const RangeType& GetMax() const
-	{
-		return max;
-	}
-protected:
-	RangeType min;
-	RangeType max;
-};
-
-class Parameters
-{
-public:
-	Parameters()
-	{
-	}
-
-	~Parameters()
-	{
-	}
-
-	bool CreateBool(const Value& boolParamJson)
-	{
-		return true;
-	}
-
-	bool CreateBVector2(const Value& bVector2ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateBVector3(const Value& bVector3ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateBVector4(const Value& bVector4ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateInt(const Value& intParamJson)
-	{
-		return true;
-	}
-
-	bool CreateIVector2(const Value& int2ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateIVector3(const Value& int3ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateIVector4(const Value& int4ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateUInt(const Value& uintParamJson)
-	{
-		return true;
-	}
-
-	bool CreateUVector2(const Value& uint2ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateUVector3(const Value& uint3ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateUVector4(const Value& uint4ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateFloat(const Value& floatParamJson)
-	{
-		return true;
-	}
-
-	bool CreateVector2(const Value& vec2ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateVector3(const Value& vec3ParamJson)
-	{
-		return true;
-	}
-
-	bool CreateVector4(const Value& vec4ParamJson)
-	{
-		return true;
-	}
-
-	bool Initiate(const Value& parametersJson)
-	{
-		for (auto iter = parametersJson.MemberBegin(); iter != parametersJson.MemberEnd(); ++iter)
-		{
-			auto name = (iter->name).GetString();
-			const Value& parameterJson = parametersJson[name];
-
-			const char* s;
-			float v;
-			if (parameterJson.IsObject())
-			{
-				if (parameterJson.HasMember("type"))
-				{
-					s = parameterJson["type"].GetString();
-				}
-			}
-		}
-
-		return true;
-	}
-protected:
-	std::vector<Parameter<bool>> boolParams;
-	std::vector<Parameter<BVector2>> bVector2Params;
-	std::vector<Parameter<BVector3>> bVector3Params;
-	std::vector<Parameter<BVector4>> bVector4Params;
-
-	std::vector<ParameterWithRange<int, int>> intParams;
-	std::vector<ParameterWithRange<IVector2, int>> iVector2Params;
-	std::vector<ParameterWithRange<IVector3, int>> iVector3Params;
-	std::vector<ParameterWithRange<IVector4, int>> iVector4Params;
-
-	std::vector<ParameterWithRange<unsigned int, unsigned int>> uintParams;
-	std::vector<ParameterWithRange<IVector2, unsigned int>> uVector2Params;
-	std::vector<ParameterWithRange<IVector3, unsigned int>> uVector3Params;
-	std::vector<ParameterWithRange<IVector4, unsigned int>> uVector4Params;
-
-	std::vector<ParameterWithRange<float, float>> floatParams;
-	std::vector<ParameterWithRange<Vector2, float>> fVector2Params;
-	std::vector<ParameterWithRange<Vector3, float>> fVector3Params;
-	std::vector<ParameterWithRange<Vector4, float>> fVector4Params;
-};
-
 class Pass
 {
 public:
@@ -620,7 +401,6 @@ public:
 		, primitives()
 		, shaderProgram()
 		, iChannels(CHANNEL_COUNT)
-		//, uniformGUI()
 		, frameBuffer(nullptr)
 	{
 	}
@@ -775,8 +555,6 @@ public:
 
 			shaderProgram.SetUniform1i(name.c_str(), i);
 		}
-
-		//uniformGUI.Update(shaderProgram);
 
 		primitives.Bind();
 		primitives.DrawArray(Primitives::Mode::TRIANGLES, 0, primitives.GetCount());
@@ -1316,11 +1094,6 @@ public:
 		shaderToyDoc.Parse(shaderToyCode.c_str());
 
 		const char* commonShaderURL = CreateCommon(shaderToyDoc);
-
-		std::string customUniform;
-		if (!CreateParameters(shaderToyDoc))
-			return false;
-
 		if (!CreatePasses(shaderToyDoc, folder, commonShaderURL))
 			return false;
 
@@ -1340,21 +1113,6 @@ public:
 		}
 
 		return nullptr;
-	}
-
-	bool CreateParameters(rapidjson::Document& shaderToyDoc)
-	{
-		if (shaderToyDoc.HasMember("parameters"))
-		{
-			Value& parametersJson = shaderToyDoc["parameters"];
-			if (parametersJson.IsObject())
-			{
-				if (!parameters.Initiate(parametersJson))
-					return false;
-			}
-		}
-
-		return true;
 	}
 
 	bool CreatePasses(rapidjson::Document& shaderToyDoc, std::string& folder, const char* commonShaderURL)
@@ -1623,7 +1381,6 @@ private:
 	FlipTextureCubeMapFrameBuffer cubeMapDFrameBuffer;
 
 	std::vector<Pass> passes;
-	Parameters parameters;
 };
 
 //////////////////////////////////////////////////////////////
