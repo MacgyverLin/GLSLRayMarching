@@ -1,0 +1,14 @@
+{
+  "passes": [
+    {
+      "shader": "image1.glsl",
+      "ichannel0": {
+        "texture2d": "envmap3.jpg",
+        "filter": "mipmap",
+        "wrap": "clamp",
+        "vflip": true
+      },
+      "rendertarget": "image"
+    }
+  ]
+}
