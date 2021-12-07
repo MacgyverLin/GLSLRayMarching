@@ -69,6 +69,8 @@ public:
 	ShaderProgram();
 	virtual ~ShaderProgram();
 
+	static void AddCommonShaderFile(const std::string& fileName);
+
 	bool Initiate(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
 	void Terminate();
 	bool CreateFromSource(const char* vShaderCode, const char* fShaderCode, const char* gShaderCode = nullptr);

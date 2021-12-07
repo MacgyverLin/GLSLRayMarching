@@ -12,7 +12,6 @@
 #define ENABLE_WATER_RECEIVE_SHADOW
 #define ENABLE_CONE_STEPPING
 
-
 // Textureless version
 //#define ENABLE_NIMITZ_TRIANGLE_NOISE
 

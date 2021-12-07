@@ -897,7 +897,8 @@ public:
 	bool SetShader(const char* folder_, const char* fShaderURL_, const char* commonShaderURL_)
 	{
 		std::string vShaderCode =
-			"#version 420 core\n"
+			"#version 430 core\n"
+			"#extension GL_ARB_shading_language_include : require\n"
 			"layout(location = 0) in vec3 aPos;\n"
 			"out vec2 fragCoord;\n"
 			"uniform vec3 iResolution;\n"
@@ -916,7 +917,8 @@ public:
 			"}\n";
 
 		std::string fShaderHeader =
-			"#version 420 core\n"
+			"#version 430 core\n"
+			"#extension GL_ARB_shading_language_include : require\n"
 			"precision highp float;\n"
 			"precision highp int;\n"
 			"in vec2 fragCoord;\n"
@@ -1250,6 +1252,9 @@ public:
 
 	bool InitiateScene(const char* folder_, const char* scenefile_)
 	{
+		ShaderProgram::AddCommonShaderFile("ffx_a.h");
+		ShaderProgram::AddCommonShaderFile("ffx_fsr1.h");
+
 		std::vector<char> colors(32 * 32 * 4);
 		memset(&colors[0], 0, (32 * 32 * 4));
 
@@ -1729,7 +1734,7 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/Terrains/Rainforest");
 	//return macShaderDemo->Initiate("Demos/Terrains/Sirenian Dawn");
 
-	//return macShaderDemo->Initiate("Demos/Waters/RiverGo");
+	return macShaderDemo->Initiate("Demos/Waters/RiverGo");
 	//return macShaderDemo->Initiate("Demos/Waters/Oceanic");
 	//return macShaderDemo->Initiate("Demos/Waters/Ocean");
 	//return macShaderDemo->Initiate("Demos/Waters/Very fast procedural ocean");
@@ -1755,7 +1760,7 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/2 Light Sampling");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
-	return macShaderDemo->Initiate("Demos/PathTracings/Course/9 Step By Step");
+	//return macShaderDemo->Initiate("Demos/PathTracings/Course/9 Step By Step");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/10 Step By Step");
 }
 

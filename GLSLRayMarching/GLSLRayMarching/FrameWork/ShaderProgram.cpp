@@ -40,6 +40,42 @@ ShaderProgram::~ShaderProgram()
 	}
 }
 
+void ShaderProgram::AddCommonShaderFile(const std::string& fileName)
+{
+	if (fileName.empty())
+		return;
+
+	std::string shaderPath = "Demos/AMD_FSR/" + fileName;
+
+	/// 读common shader文件
+	std::string code;
+	std::ifstream shaderFile;
+	shaderFile.exceptions(std::ifstream::badbit);
+	try
+	{
+		/// 打开文件
+		shaderFile.open(shaderPath);
+		std::stringstream shaderStream;
+		/// 读取文件的缓冲内容到流中；
+		shaderStream << shaderFile.rdbuf();
+		/// 关闭文件
+		shaderFile.close();
+		/// 转换流至GLchar数组
+		code = shaderStream.str();
+	}
+	catch (std::ifstream::failure e) 
+	{
+		std::cout << "init shader error: failed to read shader file";
+	}
+
+	/// 将common shader文件通过glNamedStringARB函数传入GL的虚拟文件系统
+	/// 例如传入的shader文件名为 commonFunction.glsl
+	/// 那么glNamedStringARB的第二个参数为："/commonFunction.glsl"， "/"是一定需要的
+	/// 第四个参数为 代码的字符串
+	std::string fullFileName = "/" + fileName;
+	glNamedStringARB(GL_SHADER_INCLUDE_ARB, fullFileName.size(), fullFileName.c_str(), code.size(), code.c_str());
+}
+
 bool ShaderProgram::Initiate(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
 	Assert(impl);
@@ -118,8 +154,11 @@ bool ShaderProgram::CreateFromSource(const char* vShaderCode, const char* fShade
 	// 2. compile shaders
 	unsigned int vertex, fragment, geometry;
 	// vertex shader
+
+	static const char* const searchPath = "/";
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vShaderCode, NULL);
+	glCompileShaderIncludeARB(vertex, 1, &searchPath, nullptr);
 	glCompileShader(vertex);
 	if (!CheckCompileErrors(vertex, "VERTEX"))
 	{
