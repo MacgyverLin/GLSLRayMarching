@@ -20,7 +20,7 @@ void computeSize(out vec2 outputTexCoord, out vec2 viewportSize, out vec2 source
     outputSize = iResolution.xy;
 }
 
-void EASU( out vec4 fragColor, in vec2 fragCoord )
+vec4 EASU(in vec2 fragCoord)
 {
     vec2 outputTexCoord;
     vec2 viewportSize;
@@ -38,10 +38,10 @@ void EASU( out vec4 fragColor, in vec2 fragCoord )
     AF3 Gamma2Color = AF3(0, 0, 0);
     FsrEasuF(Gamma2Color, gxy, con0, con1, con2, con3);
 
-    fragColor = vec4(Gamma2Color, 1.0);
+    return vec4(Gamma2Color, 1.0);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    EASU(fragColor, fragCoord);
+    fragColor = EASU(fragCoord);
 }

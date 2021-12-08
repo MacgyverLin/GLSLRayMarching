@@ -54,7 +54,7 @@ void computeSize(out vec2 outputTexCoord, out vec2 viewportSize, out vec2 source
     outputSize = iResolution.xy;
 }
 
-void RCAS( out vec4 fragColor, in vec2 fragCoord )
+vec4 RCAS(in vec2 fragCoord)
 {
     vec2 outputTexCoord;
     vec2 viewportSize;
@@ -86,10 +86,10 @@ void RCAS( out vec4 fragColor, in vec2 fragCoord )
     }
     */
 
-    fragColor = vec4(Gamma2Color, 1.0);
+    return vec4(Gamma2Color, 1.0);
 }
 
-void mainImage( out vec4 fragColor, in vec2 fragCoord)
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
-    RCAS(fragColor, fragCoord);
+    fragColor = RCAS(fragCoord);
 }

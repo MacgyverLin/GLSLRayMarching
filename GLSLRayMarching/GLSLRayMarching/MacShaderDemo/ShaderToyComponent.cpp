@@ -1254,11 +1254,14 @@ public:
 					)
 					return false;
 				*/
-				bool useFSR = false;
+				bool useFSR = true;
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 0], 
 					{ "image", "default", "default", "default" }, 
+					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp    },
+					// Pass::Filter::Linear Pass::Wrap::Clamp
 					"scaledimage.glsl", 
 					"scaledimage", 
 					commonShaderURL, 
@@ -1269,7 +1272,9 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 1],
-					{ "scaledimage", "default", "default", "default" },
+					{ "scaledimage", "image", "default", "default" },
+					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
 					"easu.glsl",
 					"easu",
 					commonShaderURL,
@@ -1280,7 +1285,9 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 2],
-					{ "easu", "default", "default", "default" },
+					{ "easu", "image", "default", "default" },
+					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
 					"rcas.glsl",
 					"rcas",
 					commonShaderURL,
@@ -1291,7 +1298,9 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 3],
-					{ "rcas", "default", "default", "default" },
+					{ "image", "scaledimage", "easu", "rcas" },
+					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
 					"copy.glsl",
 					"default",
 					commonShaderURL,
@@ -1302,7 +1311,9 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 4],
-					{ "image", "default", "default", "default" },
+					{ "image", "scaledimage", "easu", "rcas" },
+					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
 					"copy.glsl",
 					"default",
 					commonShaderURL,
@@ -1316,7 +1327,9 @@ public:
 	}
 
 	bool CreatePostprocessPass(Pass& pass, 
-								const std::vector<const char*> channelTextureNames,
+								const std::vector<const char*> channelBufferNames,
+								const std::vector<Pass::Filter> channelFilters,
+								const std::vector<Pass::Wrap> channelWraps,
 								const char* shaderFileName, const char* renderTargetName, const char* commonShaderURL, bool enable)
 	{
 		if (!pass.Initiate())
@@ -1329,11 +1342,10 @@ public:
 
 		for (int i = 0; i < CHANNEL_COUNT; i++)
 		{
-			pass.SetChannelTexture(i, &black);
-			pass.SetFilter(i, Pass::Filter::Linear);
-			pass.SetWrap(i, Pass::Wrap::Clamp);
-			pass.SetVFlip(i, false);
-			pass.SetChannelFrameBuffer(i, GetFrameBuffer(channelTextureNames[i]));
+			pass.SetChannelFrameBuffer(i, GetFrameBuffer(channelBufferNames[i]));
+			pass.SetFilter(i, channelFilters[i]);
+			pass.SetWrap(i, channelWraps[i]); 
+			pass.SetVFlip(i, false);		
 		}
 		
 		if (!pass.SetShader("Demos/AMD_FSR", shaderFileName, commonShaderURL))

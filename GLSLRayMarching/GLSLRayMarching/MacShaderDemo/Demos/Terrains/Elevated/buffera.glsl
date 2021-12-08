@@ -291,7 +291,7 @@ void moveCamera( float time, out vec3 oRo, out vec3 oTa, out float oCr, out floa
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    float time = iTime*0.1 - 0.1 + 0.3 + 4.0*iMouse.x/iResolution.x;
+    float time = iTime*0.1 - 0.1 + 0.3;// + 4.0*iMouse.x/iResolution.x;
 
     // camera position
     vec3 ro, ta; float cr, fl;
