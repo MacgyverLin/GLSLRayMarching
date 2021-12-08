@@ -61,7 +61,7 @@ public:
 
 	virtual void Tick()
 	{
-		for(int keycode = (int)Platform::KeyCode::A; keycode <= (int)Platform::KeyCode::Z; keycode += 1)
+		for (int keycode = (int)Platform::KeyCode::A; keycode <= (int)Platform::KeyCode::Z; keycode += 1)
 		{
 			UpdateKey((Platform::KeyCode)keycode);
 		}
@@ -410,12 +410,12 @@ public:
 		Terminate();
 	}
 
-	bool Initiate(const rapidjson::Value& json)
+	bool Initiate()
 	{
 		float vertices[] =
 		{
-			1.0f,  1.0f, 0.0f,  // top right
 			1.0f, -1.0f, 0.0f,  // bottom right
+			1.0f,  1.0f, 0.0f,  // top right
 			-1.0f, -1.0f, 0.0f,  // bottom left
 
 			-1.0f, -1.0f, 0.0f,  // bottom left
@@ -439,7 +439,7 @@ public:
 	bool Update(unsigned int width, unsigned height, double time, double deltaTime, Vector4 mouse, Vector2 mouseDelta, int frameCounter)
 	{
 		//int facecount = 1;
-		Vector3 resolution = Vector3(Platform::GetWidth(), Platform::GetHeight(), 1.0);
+		Vector3 resolution;
 		if (frameBuffer)
 		{
 			//if (frameBuffer->GetColorAttachment(GL_COLOR_ATTACHMENT0)->GetType() == GL_TEXTURE_CUBE_MAP)
@@ -450,9 +450,7 @@ public:
 			unsigned int h;
 			unsigned int d;
 			frameBuffer->GetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0)->GetResolution(&w, &h, &d);
-			resolution[0] = w;
-			resolution[1] = h;
-			resolution[2] = d;
+			resolution = Vector3(w, h, d);
 
 			renderStates.viewportState.pos = Vector2(0, 0);
 			renderStates.viewportState.size = Vector2(resolution[0], resolution[1]);
@@ -463,6 +461,8 @@ public:
 		}
 		else
 		{
+			resolution = Vector3(Platform::GetWidth(), Platform::GetHeight(), 1.0);
+
 			renderStates.viewportState.pos = Vector2(0, 0);
 			renderStates.viewportState.size = Vector2(width, height);
 
@@ -470,6 +470,8 @@ public:
 			renderStates.scissorTestState.pos = Vector2(0, 0);
 			renderStates.scissorTestState.size = Vector2(width, height);
 		}
+
+		renderStates.Apply();
 
 		shaderProgram.Bind();
 		shaderProgram.SetUniform3f("iResolution", resolution[0], resolution[1], resolution[2]);
@@ -547,6 +549,9 @@ public:
 
 		shaderProgram.SetUniform3fv("iChannelResolution", CHANNEL_COUNT, &channelResolutions[0][0]);
 		shaderProgram.SetUniform1fv("iChannelTime", CHANNEL_COUNT, &channelTimes[0]);
+
+		float easuScale = 1.4f;
+		shaderProgram.SetUniform1f("iEasuScale", easuScale);
 
 		for (int i = 0; i < CHANNEL_COUNT; i++)
 		{
@@ -709,7 +714,9 @@ public:
 			"uniform vec4 iMouse;\n"
 			"uniform vec4 iDate;\n"
 			"uniform float iSampleRate;\n"
-			"uniform vec3 iChannelResolution[4];\n";
+			"uniform vec3 iChannelResolution[4];\n"
+			"uniform float iEasuScale;\n"
+			;
 
 		std::string fShaderChannels = "";
 		for (int i = 0; i < iChannels.size(); i++)
@@ -815,6 +822,12 @@ public:
 		, cubeMapBFrameBuffer()
 		, cubeMapCFrameBuffer()
 		, cubeMapDFrameBuffer()
+
+		, imageFrameBuffer()
+		, scaledImageFrameBuffer()
+		, easuFrameBuffer()
+		, rcasFrameBuffer()
+
 		, passes()
 	{
 	}
@@ -906,6 +919,26 @@ public:
 		else if (s == "cubemapd")
 		{
 			return &cubeMapDFrameBuffer;
+		}
+		else if (s == "image")
+		{
+			return &imageFrameBuffer;
+		}
+		else if (s == "scaledimage")
+		{
+			return &scaledImageFrameBuffer;
+		}
+		else if (s == "easu")
+		{
+			return &easuFrameBuffer;
+		}
+		else if (s == "rcas")
+		{
+			return &rcasFrameBuffer;
+		}		
+		else if (s == "default")
+		{
+			return nullptr;
 		}
 		else
 			return nullptr;
@@ -1030,33 +1063,6 @@ public:
 
 	bool InitiateScene(const char* folder_, const char* scenefile_)
 	{
-		ShaderProgram::AddCommonShaderFile("ffx_a.h");
-		ShaderProgram::AddCommonShaderFile("ffx_fsr1.h");
-
-		std::vector<char> colors(32 * 32 * 4);
-		memset(&colors[0], 0, (32 * 32 * 4));
-
-		if (!black.Initiate(32, 32, 4, Texture::DynamicRange::LOW, &colors[0]))
-			return false;
-		if (!soundFrameBuffer.Initiate(512, 2, 1, Texture::DynamicRange::LOW))
-			return false;
-		if (!bufferAFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!bufferBFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!bufferCFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!bufferDFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!cubeMapAFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!cubeMapBFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!cubeMapCFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!cubeMapDFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
-			return false;
-
 		std::string folder = folder_;
 
 		// 1. retrieve the vertex/fragment source code from filePath
@@ -1090,10 +1096,49 @@ public:
 			return false;
 		}
 
+		///////////////////////////////////
+		// glsl include file
+		ShaderProgram::AddCommonShaderFile("ffx_a.h");
+		ShaderProgram::AddCommonShaderFile("ffx_fsr1.h");
+
+		///////////////////////////////////
+		// shadertoy config
 		Document shaderToyDoc;
 		shaderToyDoc.Parse(shaderToyCode.c_str());
-
 		const char* commonShaderURL = CreateCommon(shaderToyDoc);
+
+		std::vector<char> colors(32 * 32 * 4);
+		memset(&colors[0], 0, (32 * 32 * 4));
+		if (!black.Initiate(32, 32, 4, Texture::DynamicRange::LOW, &colors[0]))
+			return false;
+		if (!soundFrameBuffer.Initiate(512, 2, 1, Texture::DynamicRange::LOW))
+			return false;
+		if (!bufferAFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!bufferBFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!bufferCFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!bufferDFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!cubeMapAFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!cubeMapBFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!cubeMapCFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!cubeMapDFrameBuffer.Initiate(1024, 4, Texture::DynamicRange::HIGH))
+			return false;
+
+		if (!imageFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!scaledImageFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!easuFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		if (!rcasFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+		
 		if (!CreatePasses(shaderToyDoc, folder, commonShaderURL))
 			return false;
 
@@ -1115,6 +1160,28 @@ public:
 		return nullptr;
 	}
 
+	/*
+	void CreateFSRParam(rapidjson::Document& shaderToyDoc, bool& useFSR, float &scale)
+	{
+		if (shaderToyDoc.HasMember("FSR"))
+		{
+			Value& fsrJson = shaderToyDoc["FSR"];
+
+			if (fsrJson.HasMember("scale"))
+			{
+				scale = fsrJson["scale"].GetFloat();
+			}
+
+			useFSR = true;
+		}
+		else
+		{
+			scale = 1.0;
+			useFSR = false;
+		}
+	}
+	*/
+
 	bool CreatePasses(rapidjson::Document& shaderToyDoc, std::string& folder, const char* commonShaderURL)
 	{
 		if (shaderToyDoc.HasMember("passes"))
@@ -1122,54 +1189,171 @@ public:
 			Value& passesJson = shaderToyDoc["passes"];
 			if (passesJson.IsArray())
 			{
-				passes.resize(passesJson.Size());
-				for (int i = 0; i < passes.size(); i++)
+				passes.resize(passesJson.Size() + 5);
+
+				for (int i = 0; i < passesJson.Size(); i++)
 				{
 					if (!CreatePass(i, passesJson, folder, commonShaderURL))
 						return false;
 				}
+
+				/*
+				bool useFSR = true;
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 0],
+					{ "image", "default", "default", "default" },
+					"scaledimage.glsl",
+					"scaledimage",
+					commonShaderURL,
+					useFSR)
+				)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 1],
+					{ "scaledimage", "default", "default", "default" },
+					"easu.glsl",
+					"easu",
+					commonShaderURL,
+					useFSR)
+					)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 2],
+					{ "easu", "default", "default", "default" },
+					"rcas.glsl",
+					"rcas",
+					commonShaderURL,
+					useFSR)
+					)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 3],
+					{ "rcas", "default", "default", "default" },
+					"copy.glsl",
+					"default",
+					commonShaderURL,
+					useFSR)
+					)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 4],
+					{ "image", "default", "default", "default" },
+					"copy.glsl",
+					"default",
+					commonShaderURL,
+					!useFSR)
+					)
+					return false;
+				*/
+				bool useFSR = false;
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 0], 
+					{ "image", "default", "default", "default" }, 
+					"scaledimage.glsl", 
+					"scaledimage", 
+					commonShaderURL, 
+					useFSR)
+				)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 1],
+					{ "scaledimage", "default", "default", "default" },
+					"easu.glsl",
+					"easu",
+					commonShaderURL,
+					useFSR)
+					)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 2],
+					{ "easu", "default", "default", "default" },
+					"rcas.glsl",
+					"rcas",
+					commonShaderURL,
+					useFSR)
+					)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 3],
+					{ "rcas", "default", "default", "default" },
+					"copy.glsl",
+					"default",
+					commonShaderURL,
+					useFSR)
+					)
+					return false;
+
+				if (!CreatePostprocessPass
+				(
+					passes[passesJson.Size() + 4],
+					{ "image", "default", "default", "default" },
+					"copy.glsl",
+					"default",
+					commonShaderURL,
+					!useFSR)
+					)
+					return false;
 			}
 		}
 
 		return true;
 	}
 
-	bool CreatePass(int i, rapidjson::Value& passesJson, std::string& folder, const char* commonShaderURL)
+	bool CreatePostprocessPass(Pass& pass, 
+								const std::vector<const char*> channelTextureNames,
+								const char* shaderFileName, const char* renderTargetName, const char* commonShaderURL, bool enable)
 	{
-		if (!passes[i].Initiate(passesJson[i]))
+		if (!pass.Initiate())
 		{
-			Debug("Failed to Create Pass %d\n", i);
+			Debug("Failed to CreatePostprocessPass %d\n");
 			return false;
 		}
 
+		pass.SetEnabled(enable);
+
+		for (int i = 0; i < CHANNEL_COUNT; i++)
+		{
+			pass.SetChannelTexture(i, &black);
+			pass.SetFilter(i, Pass::Filter::Linear);
+			pass.SetWrap(i, Pass::Wrap::Clamp);
+			pass.SetVFlip(i, false);
+			pass.SetChannelFrameBuffer(i, GetFrameBuffer(channelTextureNames[i]));
+		}
+		
+		if (!pass.SetShader("Demos/AMD_FSR", shaderFileName, commonShaderURL))
+			return false;
+
+		pass.SetFrameBuffer(GetFrameBuffer(renderTargetName));
+	}
+
+	bool CreatePass(int i, rapidjson::Value& passesJson, std::string& folder, const char* commonShaderURL)
+	{
 		Value& passJson = passesJson[i];
 		if (passJson.IsObject())
 		{
-			if (passJson.HasMember("rendertarget"))
+			if (!passes[i].Initiate())
 			{
-				std::string rendertargetname = passJson["rendertarget"].GetString();
-
-				if (rendertargetname != "image")
-				{
-					FlipFrameBuffer* rendertarget = this->GetFrameBuffer(rendertargetname.c_str());
-					if (!rendertarget)
-					{
-						Debug("rendertarget=%s not supported\n", rendertargetname.c_str());
-						return false;
-					}
-
-					passes[i].SetFrameBuffer(rendertarget);
-				}
-				else
-				{
-					passes[i].SetFrameBuffer(nullptr);
-				}
-			}
-			else
-			{
-				Debug("Pass must have Render Target\n");
+				Debug("Failed to Create Pass %d\n", i);
 				return false;
 			}
+
+			passes[i].SetEnabled(true);
 
 			for (int j = 0; j < CHANNEL_COUNT; j++)
 			{
@@ -1292,6 +1476,7 @@ public:
 					}
 				}
 			}
+
 			if (passJson.HasMember("shader"))
 			{
 				const char* shaderURL = passJson["shader"].GetString();
@@ -1303,6 +1488,32 @@ public:
 			else
 			{
 				Debug("channel%d: must have shader specified\n", i);
+			}
+
+			if (passJson.HasMember("rendertarget"))
+			{
+				std::string rendertargetname = passJson["rendertarget"].GetString();
+
+				if (rendertargetname != "default")
+				{
+					FlipFrameBuffer* rendertarget = this->GetFrameBuffer(rendertargetname.c_str());
+					if (!rendertarget)
+					{
+						Debug("rendertarget=%s not supported\n", rendertargetname.c_str());
+						return false;
+					}
+
+					passes[i].SetFrameBuffer(rendertarget);
+				}
+				else
+				{
+					passes[i].SetFrameBuffer(nullptr);
+				}
+			}
+			else
+			{
+				Debug("Pass must have Render Target\n");
+				return false;
 			}
 		}
 
@@ -1330,6 +1541,9 @@ public:
 	{
 		for (auto& pass : passes)
 		{
+			if (!pass.GetEnabled())
+				continue;
+
 			if (!pass.Update(width, height, time, deltaTime, mouse, mouseDelta, frameCounter))
 				return false;
 
@@ -1364,6 +1578,11 @@ public:
 		cubeMapBFrameBuffer.Terminate();
 		cubeMapCFrameBuffer.Terminate();
 		cubeMapDFrameBuffer.Terminate();
+
+		imageFrameBuffer.Terminate();
+		scaledImageFrameBuffer.Terminate();
+		easuFrameBuffer.Terminate();
+		rcasFrameBuffer.Terminate();
 	}
 protected:
 private:
@@ -1380,12 +1599,17 @@ private:
 	FlipTextureCubeMapFrameBuffer cubeMapCFrameBuffer;
 	FlipTextureCubeMapFrameBuffer cubeMapDFrameBuffer;
 
+	FlipTexture2DFrameBuffer imageFrameBuffer;
+	FlipTexture2DFrameBuffer scaledImageFrameBuffer;
+	FlipTexture2DFrameBuffer easuFrameBuffer;
+	FlipTexture2DFrameBuffer rcasFrameBuffer;
+
 	std::vector<Pass> passes;
 };
 
 //////////////////////////////////////////////////////////////
 ShaderToyComponent::ShaderToyComponent(GameObject& gameObject_)
-: Graphics3Component(gameObject_)
+	: Graphics3Component(gameObject_)
 {
 	macShaderDemo = new MacShaderDemo();
 }
@@ -1407,7 +1631,7 @@ Vector4 ShaderToyComponent::GetMouse()
 	{
 		r.Z() = 1;
 		r.W() = 1;
-		
+
 		r.X() = Platform::GetMouseX();
 		r.Y() = Platform::GetMouseY();
 	}
@@ -1438,9 +1662,9 @@ void ShaderToyComponent::OnRender()
 		Platform::GetHeight(),
 		Platform::GetTime(),
 		Platform::GetDeltaTime(),
-		GetMouse(), 
-		Vector2(Platform::GetMouseDX(), Platform::GetMouseDY()), 
-		Platform::GetSceneFrameCounter()-1
+		GetMouse(),
+		Vector2(Platform::GetMouseDX(), Platform::GetMouseDY()),
+		Platform::GetSceneFrameCounter() - 1
 	);
 }
 
@@ -1485,13 +1709,13 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/Scattering/RealySimpleAtmosphericScatter");
 	//return macShaderDemo->Initiate("Demos/Terrains/Cloudy Terrain");
 	//return macShaderDemo->Initiate("Demos/Terrains/Desert Sand");
-	//return macShaderDemo->Initiate("Demos/Terrains/Elevated");
+	return macShaderDemo->Initiate("Demos/Terrains/Elevated");
 	//return macShaderDemo->Initiate("Demos/Terrains/Lake in highland");
 	//return macShaderDemo->Initiate("Demos/Terrains/Mountains");
 	//return macShaderDemo->Initiate("Demos/Terrains/Rainforest");
 	//return macShaderDemo->Initiate("Demos/Terrains/Sirenian Dawn");
 
-	return macShaderDemo->Initiate("Demos/Waters/RiverGo");
+	//return macShaderDemo->Initiate("Demos/Waters/RiverGo");
 	//return macShaderDemo->Initiate("Demos/Waters/Oceanic");
 	//return macShaderDemo->Initiate("Demos/Waters/Ocean");
 	//return macShaderDemo->Initiate("Demos/Waters/Very fast procedural ocean");
@@ -1508,7 +1732,7 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/PathTracings/StepByStepTutorial");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Cornell MIS");	
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/5 Caustics");
-	
+
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/8 SubSurface");	
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/7 Disney Principled BRDF");
 	//return macShaderDemo->Initiate("Demos/PathTracings/Course/6 PBR");
