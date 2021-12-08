@@ -1,54 +1,73 @@
-vec4 getOriginalImage(in vec2 vTexCoord)
+vec4 getScaledOriginalImage(in vec2 texcoord)
 {
-    return texture(iChannel0, vTexCoord);
+    vec2 newTexcoord = texcoord / iEasuScale;
+
+    return texture(iChannel1, newTexcoord);
 }
 
-vec4 getScaledimage(in vec2 vTexCoord)
+vec4 getOriginalImage(in vec2 texcoord)
 {
-    return texture(iChannel1, vTexCoord / iEasuScale);
+    vec2 newTexcoord = texcoord / iEasuScale;
+
+    if(newTexcoord.x > 1.0 || newTexcoord.y > 1.0)
+        return vec4(1.0, 1.0, 1.0, 1.0);
+    else
+        return texture(iChannel1, texcoord);
 }
 
-vec4 getEASUImage(in vec2 vTexCoord)
+vec4 getEASUImage(in vec2 texcoord)
 {
-    return texture(iChannel2, vTexCoord);
+    return texture(iChannel2, texcoord);
 }
 
-vec4 getEASURCASImage(in vec2 vTexCoord)
+vec4 getEASURCASImage(in vec2 texcoord)
 {
-    return texture(iChannel3, vTexCoord);
+    return texture(iChannel3, texcoord);
+}
+
+float getSide(in vec2 fragCoord)
+{
+    vec2 texcoord = fragCoord / iResolution.xy;
+    vec2 normal = vec2(-1.0, 1.0);
+    vec2 p0 = iMouse.xy / iResolution.xy;
+    
+    float side = dot(normal, texcoord - p0);
+    return side;
 }
 
 void showAllBuffer(out vec4 fragColor, in vec2 fragCoord)
 {
-    vec2 vTexCoord = fragCoord / iResolution.xy;
+    vec2 texcoord = fragCoord / iResolution.xy;
+    float side = getSide(fragCoord);
 
-    if(vTexCoord.x >= 0.00 && vTexCoord.x < 0.249)
-        fragColor = getScaledimage(vTexCoord);
-    else if(vTexCoord.x >= 0.25 && vTexCoord.x < 0.499)
-        fragColor = getEASUImage(vTexCoord);
-    else if(vTexCoord.x >= 0.50 && vTexCoord.x < 0.749)
-        fragColor = getEASURCASImage(vTexCoord);
-    else if(vTexCoord.x >= 0.750 && vTexCoord.x < 0.999)
-        fragColor = getOriginalImage(vTexCoord);
+    float slotSize = 0.8;
+    float lineSize = 0.001;
+
+    if(side < -slotSize - lineSize)
+        fragColor = getScaledOriginalImage(texcoord);
+    else if(side > -slotSize && side < 0.0 - lineSize)
+        fragColor = getEASUImage(texcoord);
+    else if(side > 0.0)// && side < slotSize - lineSize)
+        fragColor = getEASURCASImage(texcoord);
     else
         fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 
 void showFSROnOff(out vec4 fragColor, in vec2 fragCoord)
 {
-    vec2 vTexCoord = fragCoord / iResolution.xy;
-	float div_pos = iMouse.x / iResolution.x;
+    vec2 texcoord = fragCoord / iResolution.xy;
+    float side = getSide(fragCoord);
 
-    if(vTexCoord.x >= 0.00 && vTexCoord.x < div_pos-0.001)
-        fragColor = getOriginalImage(vTexCoord);
-    else if(vTexCoord.x >= div_pos && vTexCoord.x < 0.999)
-        fragColor = getEASURCASImage(vTexCoord);
+    if(side > 0.001)
+        fragColor = getScaledOriginalImage(texcoord);
+    else if(side < -0.001)
+        fragColor = getEASURCASImage(texcoord);
     else
         fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
-    //showAllBuffer(fragColor, fragCoord);
-    showFSROnOff(fragColor, fragCoord);
+    showAllBuffer(fragColor, fragCoord);
+    //showFSROnOff(fragColor, fragCoord);
 }

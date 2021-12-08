@@ -550,7 +550,7 @@ public:
 		shaderProgram.SetUniform3fv("iChannelResolution", CHANNEL_COUNT, &channelResolutions[0][0]);
 		shaderProgram.SetUniform1fv("iChannelTime", CHANNEL_COUNT, &channelTimes[0]);
 
-		float easuScale = 1.4f;
+		float easuScale = 1.8f;
 		shaderProgram.SetUniform1f("iEasuScale", easuScale);
 
 		for (int i = 0; i < CHANNEL_COUNT; i++)
