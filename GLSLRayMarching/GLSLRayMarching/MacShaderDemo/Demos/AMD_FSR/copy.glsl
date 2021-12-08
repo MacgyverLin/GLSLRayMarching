@@ -1,8 +1,6 @@
-vec4 getScaledOriginalImage(in vec2 texcoord)
+vec4 getGroundTruth(in vec2 texcoord)
 {
-    vec2 newTexcoord = texcoord / iEasuScale;
-
-    return texture(iChannel1, newTexcoord);
+    return texture(iChannel0, texcoord);
 }
 
 vec4 getOriginalImage(in vec2 texcoord)
@@ -15,12 +13,19 @@ vec4 getOriginalImage(in vec2 texcoord)
         return texture(iChannel1, texcoord);
 }
 
+vec4 getOriginalScaledImage(in vec2 texcoord)
+{
+    vec2 newTexcoord = texcoord / iEasuScale;
+
+    return texture(iChannel1, newTexcoord);
+}
+
 vec4 getEASUImage(in vec2 texcoord)
 {
     return texture(iChannel2, texcoord);
 }
 
-vec4 getEASURCASImage(in vec2 texcoord)
+vec4 getFSRImage(in vec2 texcoord)
 {
     return texture(iChannel3, texcoord);
 }
@@ -43,31 +48,38 @@ void showAllBuffer(out vec4 fragColor, in vec2 fragCoord)
     float slotSize = 0.8;
     float lineSize = 0.001;
 
-    if(side < -slotSize - lineSize)
-        fragColor = getScaledOriginalImage(texcoord);
+    if(side < -slotSize-lineSize)
+        fragColor = getOriginalScaledImage(texcoord);
     else if(side > -slotSize && side < 0.0 - lineSize)
         fragColor = getEASUImage(texcoord);
-    else if(side > 0.0)// && side < slotSize - lineSize)
-        fragColor = getEASURCASImage(texcoord);
+    else if(side > 0.0 && side < slotSize - lineSize)
+        fragColor = getFSRImage(texcoord);
+    else if(side > slotSize)
+        fragColor = getGroundTruth(texcoord);
     else
         fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 
-void showFSROnOff(out vec4 fragColor, in vec2 fragCoord)
+void showFSRComparision(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 texcoord = fragCoord / iResolution.xy;
     float side = getSide(fragCoord);
 
-    if(side > 0.001)
-        fragColor = getScaledOriginalImage(texcoord);
-    else if(side < -0.001)
-        fragColor = getEASURCASImage(texcoord);
+    float slotSize = 0.8;
+    float lineSize = 0.001;
+
+    if(side < -slotSize-lineSize)
+        fragColor = getOriginalScaledImage(texcoord);
+    else if(side > -slotSize && side < slotSize - lineSize)
+        fragColor = getFSRImage(texcoord);
+    else if(side > slotSize)
+        fragColor = getGroundTruth(texcoord);
     else
         fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
-    showAllBuffer(fragColor, fragCoord);
-    //showFSROnOff(fragColor, fragCoord);
+    //showAllBuffer(fragColor, fragCoord);
+    showFSRComparision(fragColor, fragCoord);
 }
