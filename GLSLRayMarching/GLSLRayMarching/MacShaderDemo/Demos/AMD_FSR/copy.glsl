@@ -80,6 +80,6 @@ void showFSRComparision(out vec4 fragColor, in vec2 fragCoord)
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
-    //showAllBuffer(fragColor, fragCoord);
-    showFSRComparision(fragColor, fragCoord);
+    showAllBuffer(fragColor, fragCoord);
+    //showFSRComparision(fragColor, fragCoord);
 }

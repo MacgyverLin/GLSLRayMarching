@@ -37,6 +37,12 @@ vec4 EASU(in vec2 fragCoord)
     AU2 gxy = AU2(outputTexCoord.xy * outputSize.xy); // Integer pixel position in output.
     AF3 Gamma2Color = AF3(0, 0, 0);
     FsrEasuF(Gamma2Color, gxy, con0, con1, con2, con3);
+  /*  
+    float x2 = 2 * 2;
+    vec4 a = vec4(1, x2, x2, x2);
+    a = a.xyzw * a.xyzx;
+    a = a.xyzw * a.xyzx; 
+*/
 
     return vec4(Gamma2Color, 1.0);
 }
