@@ -550,8 +550,6 @@ public:
 		shaderProgram.SetUniform3fv("iChannelResolution", CHANNEL_COUNT, &channelResolutions[0][0]);
 		shaderProgram.SetUniform1fv("iChannelTime", CHANNEL_COUNT, &channelTimes[0]);
 
-		float easuScale = 1.8f;
-		shaderProgram.SetUniform1f("iEasuScale", easuScale);
 
 		for (int i = 0; i < CHANNEL_COUNT; i++)
 		{
@@ -715,7 +713,6 @@ public:
 			"uniform vec4 iDate;\n"
 			"uniform float iSampleRate;\n"
 			"uniform vec3 iChannelResolution[4];\n"
-			"uniform float iEasuScale;\n"
 			;
 
 		std::string fShaderChannels = "";
@@ -1048,6 +1045,7 @@ public:
 		textures.push_back(texture);
 		return texture;
 	}
+
 	void DebugLog(const char* msg)
 	{
 		Debug("Error: %s\n", msg);
@@ -1178,9 +1176,9 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 0],
-					{ "image", "keyboard", "default", "scaledimage" },															// input texture
-					{ Pass::Filter::Linear, Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest },				// input filter
-					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },					// input wrap
+					{ "image", "keyboard", "default", "scaledimage" },																// input texture
+					{ Pass::Filter::Linear, Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Linear },					// input filter
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },						// input wrap
 					"scaledimage.glsl",
 					"scaledimage",
 					commonShaderURL))
@@ -1189,9 +1187,9 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 1],
-					{ "scaledimage", "default", "default", "scaledimage" },														// input texture
-					{ Pass::Filter::Linear /* Nearest? */, Pass::Filter::Nearest, Pass::Filter::Linear, Pass::Filter::Linear },	// input filter
-					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },					// input wrap
+					{ "scaledimage", "default", "default", "scaledimage" },															// input texture
+					{ Pass::Filter::Linear /* Linear? */, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },		// input filter
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },						// input wrap
 					"easu.glsl",
 					"easu",
 					commonShaderURL))
@@ -1200,9 +1198,9 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 2],
-					{ "easu", "default", "default", "scaledimage" },															// input texture
-					{ Pass::Filter::Linear, Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest },				// input filter
-					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },					// input wrap
+					{ "easu", "default", "default", "scaledimage" },																// input texture
+					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },						// input filter
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },						// input wrap
 					"rcas.glsl",
 					"rcas",
 					commonShaderURL))
@@ -1211,8 +1209,8 @@ public:
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 3],
-					{ "image", "scaledimage", "easu", "rcas" },
-					{ Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest },
+					{ "image", "easu", "rcas", "scaledimage"},
+					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
 					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
 					"copy.glsl",
 					"default",

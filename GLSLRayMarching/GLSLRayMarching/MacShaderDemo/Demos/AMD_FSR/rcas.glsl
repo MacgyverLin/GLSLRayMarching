@@ -1,14 +1,66 @@
+struct AppState
+{
+	float easuScale;		// = 2.0;
+	float rcasShapening;	// = 0.2;
+	bool showOrginalThumbnail; // false
+};
+
+#define valueChannel iChannel3
+
+vec4 LoadValue(int x, int y)
+{
+	return texelFetch(valueChannel, ivec2(x, y), 0);
+}
+
+void LoadState(out AppState s)
+{
+	vec4 data;
+
+	data = LoadValue(0, 0);
+	s.easuScale = data.x;
+	s.rcasShapening = data.y;
+	s.showOrginalThumbnail = (data.z==1.0) ? true : false;
+
+	data = LoadValue(1, 0);
+}
+
+void StoreValue(vec2 fragCoord, vec2 re, vec4 va, inout vec4 fragColor)
+{
+	fragCoord = floor(fragCoord);
+
+	fragColor = ((fragCoord.x == re.x && fragCoord.y == re.y) ? va : fragColor);
+}
+
+void SaveState(in AppState s, in vec2 fragCoord, inout vec4 fragColor)
+{
+    StoreValue(fragCoord, vec2(0., 0.), vec4(s.easuScale, s.rcasShapening, (s.showOrginalThumbnail) ? 1.0 : 0.0, 0.0), fragColor);
+}
+
+void InitializeState(out AppState s)
+{
+	LoadState(s);
+
+    if(iFrame<=1)
+    {
+	    s.easuScale = 1.8;
+	    s.rcasShapening = 0.2;
+		s.showOrginalThumbnail = false;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // #pragma parameter uFSR_SHARPENING "FSR RCAS Sharpening Amount (Lower = Sharper)" 0.2 0.0 2.0 0.1
-const float uFSR_SHARPENING = 0.2;
+// const float uFSR_SHARPENING = 0.2;
 
 // #pragma parameter uFSR_FILMGRAIN "FSR LFGA Film Grain Intensity" 0.3 0.0 2.0 0.02
-const float uFSR_FILMGRAIN = 0.3;
+// const float uFSR_FILMGRAIN = 0.3;
 
 // #pragma parameter uFSR_GRAINCOLOR "FSR LFGA Film Grain Color: Gray | RGB" 1.0 0.0 1.0 1.0
-const float uFSR_GRAINCOLOR = 1.0;
+// const float uFSR_GRAINCOLOR = 1.0;
 
 // #pragma parameter uFSR_GRAINPDF "FSR LFGA Grain PDF Curve (0.5 = Triangular, Lower = Gaussian)" 0.3 0.1 0.5 0.05
-const float uFSR_GRAINPDF = 0.5;
+// const float uFSR_GRAINPDF = 0.5;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 #define A_GPU 1
@@ -45,25 +97,23 @@ float pdf(float noise, float shape)
     return noise * 0.5;
 }
 
-void computeSize(out vec2 outputTexCoord, out vec2 viewportSize, out vec2 sourceSize, out vec2 outputSize, in vec2 fragCoord)
+void computeSize(out vec2 outputTexCoord, out vec2 sourceSize, out vec2 outputSize, in vec2 fragCoord)
 {
     outputTexCoord  = fragCoord / iResolution.xy;
 
-    viewportSize = iResolution.xy / iEasuScale;
     sourceSize = iResolution.xy;
     outputSize = iResolution.xy;
 }
 
-vec4 RCAS(in vec2 fragCoord)
+vec4 RCAS(in vec2 fragCoord, in float rcasSharpening)
 {
     vec2 outputTexCoord;
-    vec2 viewportSize;
     vec2 sourceSize;
     vec2 outputSize;
-    computeSize(outputTexCoord, viewportSize, sourceSize, outputSize, fragCoord);
+    computeSize(outputTexCoord, sourceSize, outputSize, fragCoord);
 
     /////////////////////////////////////////////////////
-    FsrRcasCon(con0, uFSR_SHARPENING);
+    FsrRcasCon(con0, rcasSharpening);
 
     AU2 gxy = AU2(outputTexCoord.xy * outputSize.xy); // Integer pixel position in output.
     AF3 Gamma2Color = AF3(0, 0, 0);
@@ -91,5 +141,8 @@ vec4 RCAS(in vec2 fragCoord)
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
-    fragColor = RCAS(fragCoord);
+	AppState s;
+	InitializeState(s);
+
+    fragColor = RCAS(fragCoord, s.rcasShapening);
 }
