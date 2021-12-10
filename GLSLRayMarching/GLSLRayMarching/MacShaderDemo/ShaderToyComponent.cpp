@@ -1160,28 +1160,6 @@ public:
 		return nullptr;
 	}
 
-	/*
-	void CreateFSRParam(rapidjson::Document& shaderToyDoc, bool& useFSR, float &scale)
-	{
-		if (shaderToyDoc.HasMember("FSR"))
-		{
-			Value& fsrJson = shaderToyDoc["FSR"];
-
-			if (fsrJson.HasMember("scale"))
-			{
-				scale = fsrJson["scale"].GetFloat();
-			}
-
-			useFSR = true;
-		}
-		else
-		{
-			scale = 1.0;
-			useFSR = false;
-		}
-	}
-	*/
-
 	bool CreatePasses(rapidjson::Document& shaderToyDoc, std::string& folder, const char* commonShaderURL)
 	{
 		if (shaderToyDoc.HasMember("passes"))
@@ -1189,7 +1167,7 @@ public:
 			Value& passesJson = shaderToyDoc["passes"];
 			if (passesJson.IsArray())
 			{
-				passes.resize(passesJson.Size() + 5);
+				passes.resize(passesJson.Size() + 4);
 
 				for (int i = 0; i < passesJson.Size(); i++)
 				{
@@ -1197,127 +1175,48 @@ public:
 						return false;
 				}
 
-				/*
-				bool useFSR = true;
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 0],
-					{ "image", "default", "default", "default" },
+					{ "image", "keyboard", "default", "scaledimage" },															// input texture
+					{ Pass::Filter::Linear, Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest },				// input filter
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },					// input wrap
 					"scaledimage.glsl",
 					"scaledimage",
-					commonShaderURL,
-					useFSR)
-				)
+					commonShaderURL))
 					return false;
 
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 1],
-					{ "scaledimage", "default", "default", "default" },
+					{ "scaledimage", "default", "default", "scaledimage" },														// input texture
+					{ Pass::Filter::Linear /* Nearest? */, Pass::Filter::Nearest, Pass::Filter::Linear, Pass::Filter::Linear },	// input filter
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },					// input wrap
 					"easu.glsl",
 					"easu",
-					commonShaderURL,
-					useFSR)
-					)
+					commonShaderURL))
 					return false;
 
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 2],
-					{ "easu", "default", "default", "default" },
+					{ "easu", "default", "default", "scaledimage" },															// input texture
+					{ Pass::Filter::Linear, Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest },				// input filter
+					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },					// input wrap
 					"rcas.glsl",
 					"rcas",
-					commonShaderURL,
-					useFSR)
-					)
-					return false;
-
-				if (!CreatePostprocessPass
-				(
-					passes[passesJson.Size() + 3],
-					{ "rcas", "default", "default", "default" },
-					"copy.glsl",
-					"default",
-					commonShaderURL,
-					useFSR)
-					)
-					return false;
-
-				if (!CreatePostprocessPass
-				(
-					passes[passesJson.Size() + 4],
-					{ "image", "default", "default", "default" },
-					"copy.glsl",
-					"default",
-					commonShaderURL,
-					!useFSR)
-					)
-					return false;
-				*/
-				bool useFSR = true;
-				if (!CreatePostprocessPass
-				(
-					passes[passesJson.Size() + 0], 
-					{ "image", "default", "default", "default" }, 
-					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
-					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp    },
-					// Pass::Filter::Linear Pass::Wrap::Clamp
-					"scaledimage.glsl", 
-					"scaledimage", 
-					commonShaderURL, 
-					useFSR)
-				)
-					return false;
-
-				if (!CreatePostprocessPass
-				(
-					passes[passesJson.Size() + 1],
-					{ "scaledimage", "image", "default", "default" },
-					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
-					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
-					"easu.glsl",
-					"easu",
-					commonShaderURL,
-					useFSR)
-					)
-					return false;
-
-				if (!CreatePostprocessPass
-				(
-					passes[passesJson.Size() + 2],
-					{ "easu", "image", "default", "default" },
-					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
-					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
-					"rcas.glsl",
-					"rcas",
-					commonShaderURL,
-					useFSR)
-					)
+					commonShaderURL))
 					return false;
 
 				if (!CreatePostprocessPass
 				(
 					passes[passesJson.Size() + 3],
 					{ "image", "scaledimage", "easu", "rcas" },
-					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
+					{ Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest, Pass::Filter::Nearest },
 					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
 					"copy.glsl",
 					"default",
-					commonShaderURL,
-					useFSR)
-					)
-					return false;
-
-				if (!CreatePostprocessPass
-				(
-					passes[passesJson.Size() + 4],
-					{ "image", "scaledimage", "easu", "rcas" },
-					{ Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear, Pass::Filter::Linear },
-					{ Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp   , Pass::Wrap::Clamp },
-					"copy.glsl",
-					"default",
-					commonShaderURL,
-					!useFSR)
+					commonShaderURL)
 					)
 					return false;
 			}
@@ -1330,7 +1229,7 @@ public:
 								const std::vector<const char*> channelBufferNames,
 								const std::vector<Pass::Filter> channelFilters,
 								const std::vector<Pass::Wrap> channelWraps,
-								const char* shaderFileName, const char* renderTargetName, const char* commonShaderURL, bool enable)
+								const char* shaderFileName, const char* renderTargetName, const char* commonShaderURL)
 	{
 		if (!pass.Initiate())
 		{
@@ -1338,16 +1237,106 @@ public:
 			return false;
 		}
 
-		pass.SetEnabled(enable);
+		pass.SetEnabled(true);
 
 		for (int i = 0; i < CHANNEL_COUNT; i++)
 		{
-			pass.SetChannelFrameBuffer(i, GetFrameBuffer(channelBufferNames[i]));
 			pass.SetFilter(i, channelFilters[i]);
 			pass.SetWrap(i, channelWraps[i]); 
 			pass.SetVFlip(i, false);		
+			if (channelBufferNames[i]=="keyboard")
+			{
+				Texture* texture = AddKeyboardTexture();
+				if (!texture)
+					return false;
+
+				pass.SetChannelTexture(i, texture);
+			}
+			else if (channelBufferNames[i] == "webcam")
+			{
+				Texture* texture = AddWebcamTexture(pass.GetChannel(i).vFlip);
+				if (!texture)
+					return false;
+
+				pass.SetChannelTexture(i, texture);
+			}
+			else if (channelBufferNames[i] == "microphone")
+			{
+				Texture* texture = AddMicrophoneTexture();
+				if (!texture)
+					return false;
+
+				pass.SetChannelTexture(i, texture);
+			}
+			else if (channelBufferNames[i] == "soundcloud")
+			{
+				/*
+				std::string url = channelJson["soundcloud"].GetString();
+
+				Texture* texture = AddSoundCloudTexture(url.c_str(), pass.GetChannel(j).vFlip);
+				if (!texture)
+				{
+					Debug("channel %d: failed to load soundcloud %s\n", j, url.c_str());
+					return false;
+				}
+
+				pass.SetChannelTexture(i, texture);
+				*/
+			}
+			else if (channelBufferNames[i] == "texture2d")
+			{
+				/*
+				Texture* texture = LoadTexture2D(folder, channelJson, i, j);
+				if (!texture)
+				{
+					Debug("channel %d: failed to load texture2d %s\n", i, url.c_str());
+					return false;
+				}
+
+				pass.SetChannelTexture(i, texture);
+				return true;
+				*/
+				return false;
+			}
+			else if (channelBufferNames[i] == "texturecubemap")
+			{
+				/*
+				std::string url = folder;
+				url += "/";
+				url += channelJson["texturecubemap"].GetString();
+
+				Texture* texture = AddTextureCubemap(url.c_str(), pass.GetChannel(i).vFlip);
+				if (!texture)
+				{
+					Debug("channel %d: failed to load texturecubemap %s\n", i, url.c_str());
+					return false;
+				}
+
+				pass.SetChannelTexture(i, texture);
+				*/
+			}
+			else if (channelBufferNames[i] == "texturevideo")
+			{
+				/*
+				std::string url = folder;
+				url += "/";
+				url += channelJson["texturevideo"].GetString();
+
+				Texture* texture = AddVideoTexture(url.c_str(), pass.GetChannel(i).vFlip);
+				if (!texture)
+				{
+					Debug("channel %d: failed to load texture video %s\n", j, url.c_str());
+					return false;
+				}
+
+				pass.SetChannelTexture(i, texture);
+				*/
+			}
+			else
+			{
+				pass.SetChannelFrameBuffer(i, GetFrameBuffer(channelBufferNames[i]));
+			}
 		}
-		
 		if (!pass.SetShader("Demos/AMD_FSR", shaderFileName, commonShaderURL))
 			return false;
 
