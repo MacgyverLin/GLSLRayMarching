@@ -1708,12 +1708,14 @@ bool ShaderToyComponent::OnStart()
 	//return macShaderDemo->Initiate("Demos/Scattering/RealySimpleAtmosphericScatter");
 	//return macShaderDemo->Initiate("Demos/Terrains/Cloudy Terrain");
 	//return macShaderDemo->Initiate("Demos/Terrains/Desert Sand");
-	return macShaderDemo->Initiate("Demos/Terrains/Elevated");
+	//return macShaderDemo->Initiate("Demos/Terrains/Elevated");
 	//return macShaderDemo->Initiate("Demos/Terrains/Lake in highland");
 	//return macShaderDemo->Initiate("Demos/Terrains/Mountains");
 	//return macShaderDemo->Initiate("Demos/Terrains/Rainforest");
 	//return macShaderDemo->Initiate("Demos/Terrains/Sirenian Dawn");
+	return macShaderDemo->Initiate("Demos/SimpleTexture");	
 
+	//return macShaderDemo->Initiate("Demos/Waters/RiverGo");
 	//return macShaderDemo->Initiate("Demos/Waters/RiverGo");
 	//return macShaderDemo->Initiate("Demos/Waters/Oceanic");
 	//return macShaderDemo->Initiate("Demos/Waters/Ocean");

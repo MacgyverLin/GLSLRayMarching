@@ -133,17 +133,27 @@ void showFSRComparision(out vec4 fragColor, in vec2 fragCoord, in float easuScal
 
     if(side < -slotSize-lineSize)
         fragColor = getGroundTruth(texcoord);
-    else if(side > -slotSize && side < -0.1 - lineSize)
+    else if(side > -slotSize && side < -0.05 - lineSize)
         fragColor = getOriginalImageBilinearSuperSampled(texcoord, easuScale);
-    else if(side > -0.1 && side < slotSize - lineSize)
+    else if(side > -0.05 && side < slotSize - lineSize)
         fragColor = getFSRImage(texcoord);
     else if(side > slotSize)
         fragColor = getGroundTruth(texcoord);
     else
         fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 
-    if(texcoord.x < (1.0/easuScale) && texcoord.y < (1.0/easuScale) && showOrginalThumbnail)
-        fragColor = getOriginalImage(texcoord, easuScale);
+    if(showOrginalThumbnail)
+    {
+        vec2 texcoord2 = texcoord;
+        if(texcoord2.x < 1.0 / easuScale && texcoord2.y < 1.0 / easuScale)
+        {
+            fragColor = getOriginalImage(texcoord2, easuScale);
+        }
+        if( (texcoord2.x < 1.0 && texcoord2.x > 1.0 - lineSize) || (texcoord2.y < 1.0  && texcoord2.y > 1.0 - lineSize) )
+        {
+            //fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+    }    
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -151,6 +161,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 	AppState s;
 	InitializeState(s);
 
-    //showAllBuffer(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    showFSRComparision(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
+    showAllBuffer(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
+    //showFSRComparision(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
 }

@@ -56,28 +56,28 @@ void ControlStateValue(inout AppState s)
 {
 	if(KEY_DOWN('w'))
     {
-		s.easuScale			+= 0.1;
+		s.easuScale			+= 0.01;
 		if(s.easuScale < 1.0)
 			s.easuScale = 1.0;
 	}
 	else if(KEY_DOWN('s'))
     {
-		s.easuScale			-= 0.1;
+		s.easuScale			-= 0.01;
 		if(s.easuScale > 4.0)
 			s.easuScale = 4.0;
 	}
 	
 	if(KEY_DOWN('q'))
     {
-		s.rcasShapening		+= 0.1;
-		if(s.rcasShapening < 2.0)
+		s.rcasShapening		+= 0.001;
+		if(s.rcasShapening > 2.0)
 			s.rcasShapening = 2.0;
 	}
 	else if(KEY_DOWN('a'))
     {
-		s.rcasShapening		-= 0.1;
-		if(s.rcasShapening < 0.01)
-			s.rcasShapening = 0.01;
+		s.rcasShapening		-= 0.001;
+		if(s.rcasShapening < 0.001)
+			s.rcasShapening = 0.001;
 	}
 
 	if(KEY_CLICK('r'))

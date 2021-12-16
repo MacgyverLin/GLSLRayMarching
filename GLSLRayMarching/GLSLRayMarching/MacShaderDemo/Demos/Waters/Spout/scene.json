@@ -4,7 +4,7 @@
       "shader": "image.glsl",
       "ichannel0": {
         "texture2d": "tex0.png",
-        "filter": "mipmap",
+        "filter": "linear",
         "wrap": "repeat",
         "vflip": true
       },
