@@ -119,8 +119,14 @@ void showAllBuffer(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bo
     else
         fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 
-    if(texcoord.x < 1.0/easuScale && texcoord.y < 1.0/easuScale && showOrginalThumbnail)
-        fragColor = getOriginalImage(texcoord, easuScale);
+    if(showOrginalThumbnail)
+    {
+        if(texcoord.x < 1.0/easuScale && texcoord.y < 1.0/easuScale)
+            fragColor = getOriginalImage(texcoord, easuScale);
+
+        if((texcoord.x > 1.0/0.5-lineSize*10 && texcoord.y > 1.0/0.5-lineSize*10) &&  (texcoord.x < 1.0/0.5 && texcoord.y < 1.0/0.5))
+            fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
 }
 
 void showFSRComparision(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
@@ -142,18 +148,15 @@ void showFSRComparision(out vec4 fragColor, in vec2 fragCoord, in float easuScal
     else
         fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 
+
     if(showOrginalThumbnail)
     {
-        vec2 texcoord2 = texcoord;
-        if(texcoord2.x < 1.0 / easuScale && texcoord2.y < 1.0 / easuScale)
-        {
-            fragColor = getOriginalImage(texcoord2, easuScale);
-        }
-        if( (texcoord2.x < 1.0 && texcoord2.x > 1.0 - lineSize) || (texcoord2.y < 1.0  && texcoord2.y > 1.0 - lineSize) )
-        {
-            //fragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        }
-    }    
+        if(texcoord.x < 1.0/easuScale && texcoord.y < 1.0/easuScale)
+            fragColor = getOriginalImage(texcoord, easuScale);
+
+        if((texcoord.x > 1.0/0.5-lineSize && texcoord.y > 1.0/0.5-lineSize) &&  (texcoord.x < 1.0/0.5 && texcoord.y < 1.0/0.5))
+            fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)

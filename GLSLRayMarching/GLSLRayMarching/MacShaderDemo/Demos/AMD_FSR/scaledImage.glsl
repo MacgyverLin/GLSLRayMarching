@@ -56,15 +56,15 @@ void ControlStateValue(inout AppState s)
 {
 	if(KEY_DOWN('w'))
     {
-		s.easuScale			+= 0.01;
-		if(s.easuScale < 1.0)
-			s.easuScale = 1.0;
+		s.easuScale			-= 0.01;
+		if(s.easuScale < 1.3)
+			s.easuScale = 1.3;
 	}
 	else if(KEY_DOWN('s'))
     {
-		s.easuScale			-= 0.01;
-		if(s.easuScale > 4.0)
-			s.easuScale = 4.0;
+		s.easuScale			+= 0.01;
+		if(s.easuScale > 2.0)
+			s.easuScale = 2.0;
 	}
 	
 	if(KEY_DOWN('q'))
@@ -100,7 +100,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 	if(vTexCoord.x>1 || vTexCoord.y>1)
 		fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 	else
+	{
 		fragColor = texture(iChannel0, vTexCoord);
+	}
 
 	SaveState(s, fragCoord, fragColor);
 }
