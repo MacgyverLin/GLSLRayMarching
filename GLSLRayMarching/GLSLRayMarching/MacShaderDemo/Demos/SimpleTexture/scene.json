@@ -1,0 +1,14 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "ichannel0": {
+        "texture2d": "tex1.png",
+        "filter": "linear",
+        "wrap": "repeat",
+        "vflip": true
+      },
+      "rendertarget": "image"
+    }
+  ]
+}
