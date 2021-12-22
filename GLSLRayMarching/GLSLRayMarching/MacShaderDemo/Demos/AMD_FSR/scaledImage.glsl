@@ -43,7 +43,7 @@ void InitializeState(out AppState s)
     if(iFrame<=1)
     {
 	    s.easuScale = 1.8;
-	    s.rcasShapening = 0.2;
+	    s.rcasShapening = 0.01;
 		s.showOrginalThumbnail = false;
     }
 }
@@ -52,35 +52,97 @@ void InitializeState(out AppState s)
 #define KEY_DOWN(key)   (texture(keyboard, vec2((float(int(key)+1) + 0.5)/256, (0.0 + 0.5)/3)).r == 0)
 #define KEY_CLICK(key)  (texture(keyboard, vec2((float(int(key)+1) + 0.5)/256, (1.0 + 0.5)/3)).r == 0)
 #define KEY_TOGGLE(key) (texture(keyboard, vec2((float(int(key)+1) + 0.5)/256, (2.0 + 0.5)/3)).r == 0)
+
+#define ULTRA_QUALITY			1.3
+#define QUALITY					1.5
+#define BALANCED				1.7
+#define PERFORMANCE				2.0
+#define ULTRA_PERFORMANCE		2.5
+
+#define RCAS_SHARP_LEVEL5		0.001
+#define RCAS_SHARP_LEVEL4		0.010
+#define RCAS_SHARP_LEVEL3		0.100
+#define RCAS_SHARP_LEVEL2		1.000
+#define RCAS_SHARP_LEVEL1		2.000
+#define RCAS_MAX_SHARP			RCAS_SHARP_LEVEL5
+#define RCAS_MIN_SHARP			RCAS_SHARP_LEVEL1
+
+#define MORE_SHARP_THAN(a, b)		(a < b)
+#define LESS_SHARP_THAN(a, b)		(a > b)
+#define MAKE_SHARPER(a, b)			(a = a - b)
+#define MAKE_BLURER(a, b)			(a = a + b)
+
 void ControlStateValue(inout AppState s)
 {
-	if(KEY_DOWN('w'))
+	if(KEY_DOWN('w'))  // better quality
     {
 		s.easuScale			-= 0.001;
-		if(s.easuScale < 1.3)
-			s.easuScale = 1.3;
+		if(s.easuScale < ULTRA_QUALITY)
+			s.easuScale = ULTRA_QUALITY;
+	}
+	else if(KEY_DOWN('q')) // lower quality
+    {
+		s.easuScale			+= 0.001;
+		if(s.easuScale > ULTRA_PERFORMANCE)
+			s.easuScale = ULTRA_PERFORMANCE;
+	}
+	if(KEY_DOWN('e'))
+    {
+		s.easuScale			= ULTRA_PERFORMANCE;
+	}
+	else if(KEY_DOWN('r'))
+    {
+		s.easuScale			= PERFORMANCE;
+	}
+	else if(KEY_DOWN('t'))
+    {
+		s.easuScale			= BALANCED;
+	}
+	else if(KEY_DOWN('y'))
+    {
+		s.easuScale			= QUALITY;
+	}
+	else if(KEY_DOWN('u'))
+    {
+		s.easuScale			= ULTRA_QUALITY;
+	}
+
+	if(KEY_DOWN('a'))
+    {
+		MAKE_BLURER(s.rcasShapening, 0.001);
+		
+		if(LESS_SHARP_THAN(s.rcasShapening, RCAS_MIN_SHARP))
+			s.rcasShapening = RCAS_MIN_SHARP;
 	}
 	else if(KEY_DOWN('s'))
     {
-		s.easuScale			+= 0.001;
-		if(s.easuScale > 2.0)
-			s.easuScale = 2.0;
+		MAKE_SHARPER(s.rcasShapening, 0.001);
+
+		if(MORE_SHARP_THAN(s.rcasShapening, RCAS_MAX_SHARP))
+			s.rcasShapening = RCAS_MAX_SHARP;
 	}
-	
-	if(KEY_DOWN('q'))
+	if(KEY_DOWN('d'))
     {
-		s.rcasShapening		+= 0.001;
-		if(s.rcasShapening > 2.0)
-			s.rcasShapening = 2.0;
+		s.rcasShapening			= RCAS_SHARP_LEVEL5;
 	}
-	else if(KEY_DOWN('a'))
+	else if(KEY_DOWN('f'))
     {
-		s.rcasShapening		-= 0.001;
-		if(s.rcasShapening < 0.001)
-			s.rcasShapening = 0.001;
+		s.rcasShapening			= RCAS_SHARP_LEVEL4;
+	}
+	else if(KEY_DOWN('g'))
+    {
+		s.rcasShapening			= RCAS_SHARP_LEVEL3;
+	}
+	else if(KEY_DOWN('h'))
+    {
+		s.rcasShapening			= RCAS_SHARP_LEVEL2;
+	}
+	else if(KEY_DOWN('j'))
+    {
+		s.rcasShapening			= RCAS_SHARP_LEVEL1;
 	}
 
-	if(KEY_CLICK('r'))
+	if(KEY_CLICK('p'))
     {
 		if(s.showOrginalThumbnail)
 			s.showOrginalThumbnail = false;

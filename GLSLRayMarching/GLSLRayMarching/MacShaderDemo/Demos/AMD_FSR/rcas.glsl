@@ -50,7 +50,7 @@ void InitializeState(out AppState s)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// #pragma parameter uFSR_SHARPENING "FSR RCAS Sharpening Amount (Lower = Sharper)" 0.2 0.0 2.0 0.1
+// #pragma parameter uFSR_SHARPENING "FSR RCAS Sharpening Amount (Lower = Sharper)" 0.2 0.0 2.0
 // const float uFSR_SHARPENING = 0.2;
 
 // #pragma parameter uFSR_FILMGRAIN "FSR LFGA Film Grain Intensity" 0.3 0.0 2.0 0.02
