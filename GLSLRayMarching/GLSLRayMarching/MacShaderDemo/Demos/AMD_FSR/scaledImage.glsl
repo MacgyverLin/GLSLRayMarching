@@ -56,13 +56,13 @@ void ControlStateValue(inout AppState s)
 {
 	if(KEY_DOWN('w'))
     {
-		s.easuScale			-= 0.01;
+		s.easuScale			-= 0.001;
 		if(s.easuScale < 1.3)
 			s.easuScale = 1.3;
 	}
 	else if(KEY_DOWN('s'))
     {
-		s.easuScale			+= 0.01;
+		s.easuScale			+= 0.001;
 		if(s.easuScale > 2.0)
 			s.easuScale = 2.0;
 	}

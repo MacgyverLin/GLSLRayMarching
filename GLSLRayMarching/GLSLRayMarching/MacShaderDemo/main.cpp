@@ -70,11 +70,37 @@ public:
 private:
 };
 
+#define A_CPU 1
+#define FSR_EASU_F 1
+#include "G:/Play/GLSLRayMarching/GLSLRayMarching/GLSLRayMarching/MacShaderDemo/Demos/AMD_FSR/ffx_a.h"
+#include "G:/Play/GLSLRayMarching/GLSLRayMarching/GLSLRayMarching/MacShaderDemo/Demos/AMD_FSR/ffx_fsr1.h"
+#define WIDTH 1600
+#define HEIGHT 800
+
+void test()
+{
+	float easuScale = 1.8f;
+	AU1 con0[4] = { 0, 0, 0, 0 };
+	AU1 con1[4] = { 0, 0, 0, 0 };
+	AU1 con2[4] = { 0, 0, 0, 0 };
+	AU1 con3[4] = { 0, 0, 0, 0 };
+
+	AF1 inputViewportInPixelsX = WIDTH / easuScale;
+	AF1 inputSizeInPixelsX = WIDTH;
+	AF1 outputSizeInPixelsX = WIDTH;
+	AF1 inputViewportInPixelsY = HEIGHT / easuScale;
+	AF1 inputSizeInPixelsY = HEIGHT;
+	AF1 outputSizeInPixelsY = HEIGHT;
+
+	FsrEasuCon(con0, con1, con2, con3,
+		inputViewportInPixelsX, inputViewportInPixelsY,  // Viewport size (top left aligned) in the input image which is to be scaled.
+		inputSizeInPixelsX, inputSizeInPixelsY,      // The size of the input image.
+		outputSizeInPixelsX, outputSizeInPixelsY);     // The output resolution.
+}
+
 int main(int argc, char** argv)
 {
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
-#define WIDTH 1600
-#define HEIGHT 800
 	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "ShaderToy"))
 		return -1;
 

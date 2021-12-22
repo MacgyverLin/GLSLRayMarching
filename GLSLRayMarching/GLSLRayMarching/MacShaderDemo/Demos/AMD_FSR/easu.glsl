@@ -60,6 +60,8 @@ AF4 FsrEasuRF(AF2 p) { return textureGather(iChannel0, p, 0); }
 AF4 FsrEasuGF(AF2 p) { return textureGather(iChannel0, p, 1); }
 AF4 FsrEasuBF(AF2 p) { return textureGather(iChannel0, p, 2); }
 
+AF3 FsrEasuSampleF(AF2 p) { return textureLod(iChannel0, p, 0).xyz; }
+
 #include "/ffx_fsr1.h"
 
 void computeSize(out vec2 outputTexCoord, out vec2 viewportSize, out vec2 sourceSize, out vec2 outputSize, in vec2 fragCoord, in float easuScale)
@@ -87,7 +89,7 @@ vec4 EASU(in vec2 fragCoord, in float easuScale)
 
     AU2 gxy = AU2(outputTexCoord.xy * outputSize.xy); // Integer pixel position in output.
     AF3 Gamma2Color = AF3(0, 0, 0);
-    FsrEasuF(Gamma2Color, gxy, con0, con1, con2, con3);
+    FsrEasuL(Gamma2Color, gxy, con0, con1, con2, con3);
 
     return vec4(Gamma2Color, 1.0);
 }
