@@ -516,9 +516,6 @@ A_STATIC void FsrEasuConOffset(
       AF3 sD = FsrEasuSampleF(tc + AF2(AF1_AU1(con1.x), 0));
       AF3 sE = FsrEasuSampleF(tc + AF2(0, AF1_AU1(con1.y)));
 
-      pix = sC;
-
-      return;
       AF1 lA = sA.r * AF1_(0.5) + sA.g;
       AF1 lB = sB.r * AF1_(0.5) + sB.g;
       AF1 lC = sC.r * AF1_(0.5) + sC.g;

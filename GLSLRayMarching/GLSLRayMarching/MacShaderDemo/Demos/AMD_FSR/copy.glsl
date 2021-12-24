@@ -1,80 +1,6 @@
-#define EASU_ULTRA_QUALITY			1.3
-#define EASU_QUALITY				1.5
-#define EASU_BALANCED				1.7
-#define EASU_PERFORMANCE			2.0
-#define EASU_ULTRA_PERFORMANCE		2.5
+#include "/savestate.h"
 
-#define RCAS_SHARP_LEVEL5			0.001
-#define RCAS_SHARP_LEVEL4			0.010
-#define RCAS_SHARP_LEVEL3			0.100
-#define RCAS_SHARP_LEVEL2			1.000
-#define RCAS_SHARP_LEVEL1			2.000
-#define RCAS_MAX_SHARP				RCAS_SHARP_LEVEL5
-#define RCAS_MIN_SHARP				RCAS_SHARP_LEVEL1
-
-#define MORE_SHARP_THAN(a, b)		(a < b)
-#define LESS_SHARP_THAN(a, b)		(a > b)
-#define MAKE_SHARPER(a, b)			(a = a - b)
-#define MAKE_BLURER(a, b)			(a = a + b)
-
-#define GFMB_GROUND_TRUTH			0
-#define GFMB_FSR					1
-#define GFMB_MFSR					2
-#define GFMB_BILINEAR				3
-#define GFMB_COMPARE_ALL			4
-
-struct AppState
-{
-	float easuScale;		// = 2.0;
-	float rcasShapening;	// = 0.2;
-	bool showOrginalThumbnail; // false
-	int show_GROUNDTRUTH_FSR_MFSR_BILINEAR;
-};
-
-#define valueChannel iChannel3
-vec4 LoadValue(int x, int y)
-{
-	return texelFetch(valueChannel, ivec2(x, y), 0);
-}
-
-void LoadState(out AppState s)
-{
-	vec4 data;
-
-	data = LoadValue(0, 0);
-	s.easuScale = data.x;
-	s.rcasShapening = data.y;
-	s.showOrginalThumbnail = (data.z==1.0) ? true : false;
-	s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR = int(data.w);
-
-	data = LoadValue(1, 0);
-}
-
-void StoreValue(vec2 fragCoord, vec2 re, vec4 va, inout vec4 fragColor)
-{
-	fragCoord = floor(fragCoord);
-
-	fragColor = ((fragCoord.x == re.x && fragCoord.y == re.y) ? va : fragColor);
-}
-
-void SaveState(in AppState s, in vec2 fragCoord, inout vec4 fragColor)
-{
-    StoreValue(fragCoord, vec2(0., 0.), vec4(s.easuScale, s.rcasShapening, (s.showOrginalThumbnail) ? 1.0 : 0.0, float(s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR)), fragColor);
-}
-
-void InitializeState(out AppState s)
-{
-	LoadState(s);
-
-    if(iFrame<=1)
-    {
-	    s.easuScale = 1.8;
-	    s.rcasShapening = 0.2;
-		s.showOrginalThumbnail = false;
-		s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR = GFMB_FSR;
-    }
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////
 #define imageChannel iChannel0
 #define easuChannel iChannel1
 #define rcasChannel iChannel2
@@ -125,6 +51,7 @@ float getSide(in vec2 fragCoord, bool vertical)
     return side;
 }
 
+/*
 void showFSRComparision(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
 {
     vec2 texcoord = fragCoord / iResolution.xy;
@@ -153,6 +80,35 @@ void showFSRComparision(out vec4 fragColor, in vec2 fragCoord, in float easuScal
         if((texcoord.x > 1.0/0.5-lineSize && texcoord.y > 1.0/0.5-lineSize) &&  (texcoord.x < 1.0/0.5 && texcoord.y < 1.0/0.5))
             fragColor = vec4(1.0, 1.0, 1.0, 1.0);
     }
+}
+*/
+
+void showGroundTruth(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
+{
+    vec2 texcoord = fragCoord / iResolution.xy;
+   
+    fragColor = getGroundTruth(texcoord);
+}
+
+void showFSR(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
+{
+    vec2 texcoord = fragCoord / iResolution.xy;
+   
+    fragColor = getFSRImage(texcoord);
+}
+
+void showMFSR(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
+{
+    vec2 texcoord = fragCoord / iResolution.xy;
+   
+    fragColor = getFSRImage(texcoord);
+}
+
+void showBilinearFiltered(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
+{
+    vec2 texcoord = fragCoord / iResolution.xy;
+   
+    fragColor = getOriginalImageBilinearSuperSampled(texcoord, easuScale);
 }
 
 void compareAll(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
@@ -186,32 +142,45 @@ void compareAll(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool 
     }
 }
 
-void showGroundTruth(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
+void showSSIM(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
 {
     vec2 texcoord = fragCoord / iResolution.xy;
-   
-    fragColor = getGroundTruth(texcoord);
-}
+    vec2 texelOffset = vec2(1.0) / float(iResolution.xy);
 
-void showFSR(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
-{
-    vec2 texcoord = fragCoord / iResolution.xy;
-   
-    fragColor = getFSRImage(texcoord);
-}
+    float k1 = 0.01;                    // default SSIM
+    float k2 = 0.03;                    // default SSIM
+    float L = 1.0;                      // 
+    float ux = 0.0;                     // average x
+    float uy = 0.0;                     // average y
+    float ox = 0.0;                     // var x ^ 2
+    float oy = 0.0;                     // var y ^ 2
+    float oxy = 0.0;                    // covar x y
+    float c1 = (k1 * L) * (k1 * L);     // c1
+    float c2 = (k2 * L) * (k2 * L);     // c2
+    float c3 = c2 / 2;                  // c3
+    for(int j=0; j<8; j++)
+    {
+        for(int i=0; i<8; i++)
+        {
+            vec2 uv = texcoord + vec2(texelOffset.x * i, texelOffset.y * j);
+            vec4 fragColor1 = getGroundTruth(uv);
+            vec4 fragColor2 = getFSRImage(uv);
+            ux += fragColor1.r * 0.3 + fragColor1.g * 0.5 + fragColor1.b * 0.1;
+            uy += fragColor2.r * 0.3 + fragColor2.g * 0.5 + fragColor2.b * 0.1;
+        }
+    }
+    ux /= 64;
+    uy /= 64;
+    float l = (2 * ux * uy + c1) / (ux * ux + uy * uy + c1);    // luma
+    float c = (2 * ox * oy + c2) / (ox * ox + oy * oy + c1);    // contrast
+    float s = (oxy + c3) / (ox + oy + c3);                      // structure
+    
+    float alpha = 1.0;
+    float beta = 1.0;
+    float gamma = 1.0;
+    float ssim = (l-0.999)/0.001;
 
-void showMFSR(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
-{
-    vec2 texcoord = fragCoord / iResolution.xy;
-   
-    fragColor = getFSRImage(texcoord);
-}
-
-void showBilinearFiltered(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
-{
-    vec2 texcoord = fragCoord / iResolution.xy;
-   
-    fragColor = getOriginalImageBilinearSuperSampled(texcoord, easuScale);
+    fragColor = vec4(ssim, ssim, ssim, 1.0);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -219,16 +188,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 	AppState s;
 	InitializeState(s);
 
-    if(s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR			        == GFMB_GROUND_TRUTH)
+    if(s.displayMode			        == GFMB_GROUND_TRUTH)
         showGroundTruth(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    else if(s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR			== GFMB_FSR)
+    else if(s.displayMode			== GFMB_FSR)
         showFSR(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    else if(s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR			== GFMB_MFSR)
+    else if(s.displayMode			== GFMB_MFSR)
         showMFSR(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    else if(s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR			== GFMB_BILINEAR)
+    else if(s.displayMode			== GFMB_BILINEAR)
         showBilinearFiltered(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    else if(s.show_GROUNDTRUTH_FSR_MFSR_BILINEAR			== GFMB_COMPARE_ALL)
+    else if(s.displayMode			== GFMB_SSIM)
         compareAll(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    
-    //showFSRComparision(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
+    else if(s.displayMode			== GFMB_COMPARE_ALL)
+        showSSIM(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
 }

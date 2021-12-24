@@ -1098,6 +1098,7 @@ public:
 		// glsl include file
 		ShaderProgram::AddCommonShaderFile("ffx_a.h");
 		ShaderProgram::AddCommonShaderFile("ffx_fsr1.h");
+		ShaderProgram::AddCommonShaderFile("savestate.h");
 
 		///////////////////////////////////
 		// shadertoy config
@@ -1339,6 +1340,8 @@ public:
 			return false;
 
 		pass.SetFrameBuffer(GetFrameBuffer(renderTargetName));
+
+		return true;
 	}
 
 	bool CreatePass(int i, rapidjson::Value& passesJson, std::string& folder, const char* commonShaderURL)
