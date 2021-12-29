@@ -502,7 +502,9 @@ A_STATIC void FsrEasuConOffset(
       AU4 con0,
       AU4 con1,
       AU4 con2,
-      AU4 con3) {
+      AU4 con3,
+      AF1 threshold) 
+  {
       //------------------------------------------------------------------------------------------------------------------------------
         // Direction is the '+' diff.
         //    A
@@ -542,10 +544,18 @@ A_STATIC void FsrEasuConOffset(
       //------------------------------------------------------------------------------------------------------------------------------ 
       AF2 dir2 = dir * dir;
       AF1 dirR = dir2.x + dir2.y;
-      if (dirR < AF1_(1.0 / 64.0)) {
+      if (dirR < AF1_(1.0 / threshold)) 
+      {
           pix = sC;
+          //pix = AF3(1.0, 1.0, 1.0);
           return;
       }
+      else
+      {
+          //pix = AF3(0.0, 0.0, 0.0);
+          //return;
+      }
+
       dirR = ARsqF1(dirR);
       dir *= AF2_(dirR);
       len = len * AF1_(0.5);

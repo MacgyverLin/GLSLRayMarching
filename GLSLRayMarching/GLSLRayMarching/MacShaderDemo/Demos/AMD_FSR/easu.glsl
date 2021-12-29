@@ -25,7 +25,7 @@ void computeSize(out vec2 outputTexCoord, out vec2 viewportSize, out vec2 source
     outputSize = resolution.xy;
 }
 
-vec4 EASU(in vec2 fragCoord, in float easuScale)
+vec4 EASU(in vec2 fragCoord, in float easuScale, in bool optimizeEASU, in float edgeThreshold)
 {
     vec2 outputTexCoord;
     vec2 viewportSize;
@@ -41,7 +41,11 @@ vec4 EASU(in vec2 fragCoord, in float easuScale)
 
     AU2 gxy = AU2(outputTexCoord.xy * outputSize.xy); // Integer pixel position in output.
     AF3 Gamma2Color = AF3(0, 0, 0);
-    FsrEasuL(Gamma2Color, gxy, con0, con1, con2, con3);
+
+    if(optimizeEASU)
+        FsrEasuL(Gamma2Color, gxy, con0, con1, con2, con3, edgeThreshold);
+    else
+        FsrEasuF(Gamma2Color, gxy, con0, con1, con2, con3);        
 
     return vec4(Gamma2Color, 1.0);
 }
@@ -51,5 +55,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	AppState s;
 	InitializeState(s);
 
-    fragColor = EASU(fragCoord, s.easuScale);
+    fragColor = EASU(fragCoord, s.easuScale, s.optimizeEASU, s.edgeThreshold);
 }

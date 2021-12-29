@@ -7,6 +7,7 @@
 #define KEY_TOGGLE(key) (texture(keyboard, vec2((float(int(key)+1) + 0.5)/256, (2.0 + 0.5)/3)).r == 0)
 void ControlStateValue(inout AppState s)
 {
+	// ESAU
 	if(KEY_DOWN('x'))  // better quality
     {
 		s.easuScale			-= 0.001;
@@ -40,6 +41,7 @@ void ControlStateValue(inout AppState s)
 		s.easuScale			= EASU_ULTRA_QUALITY;
 	}
 
+	// RCAS
 	if(KEY_DOWN('a')) // more sharp
     {
 		MAKE_BLURER(s.rcasShapening, 0.001);
@@ -75,6 +77,7 @@ void ControlStateValue(inout AppState s)
 		s.rcasShapening			= RCAS_SHARP_LEVEL5;
 	}
 
+	// Mode
 	if(KEY_CLICK('q'))
     {
 		s.displayMode	-= 1;
@@ -120,6 +123,27 @@ void ControlStateValue(inout AppState s)
 		else
 			s.showOrginalThumbnail = true;
 	}
+
+	if(KEY_CLICK('o'))
+    {
+		if(s.optimizeEASU)
+			s.optimizeEASU = false;
+		else
+			s.optimizeEASU = true;
+	}
+
+	if(KEY_DOWN('k'))  // better quality
+    {
+		s.edgeThreshold			-= 0.1;
+		if(s.edgeThreshold < 2)
+			s.edgeThreshold = 2;
+	}
+	else if(KEY_DOWN('l')) // lower quality
+    {
+		s.edgeThreshold			+= 0.1;
+		if(s.edgeThreshold > 256)
+			s.edgeThreshold = 256;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +155,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     vec2 vTexCoord = fragCoord * s.easuScale / iResolution.xy;
 	if(vTexCoord.x>1 || vTexCoord.y>1)
+	{
 		fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	}
 	else
 	{
 		fragColor = texture(iChannel0, vTexCoord);

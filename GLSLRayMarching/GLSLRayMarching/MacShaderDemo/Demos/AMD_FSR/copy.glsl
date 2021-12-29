@@ -144,6 +144,8 @@ void compareAll(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool 
 
 void showSSIM(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
 {
+    vec2 window_size = vec2(8, 8);
+
     vec2 texcoord = fragCoord / iResolution.xy;
     vec2 texelOffset = vec2(1.0) / float(iResolution.xy);
 
@@ -158,9 +160,9 @@ void showSSIM(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool sh
     float c1 = (k1 * L) * (k1 * L);     // c1
     float c2 = (k2 * L) * (k2 * L);     // c2
     float c3 = c2 / 2;                  // c3
-    for(int j=0; j<8; j++)
+    for(int j=0; j<window_size.y; j++)
     {
-        for(int i=0; i<8; i++)
+        for(int i=0; i<window_size.x; i++)
         {
             vec2 uv = texcoord + vec2(texelOffset.x * i, texelOffset.y * j);
             vec4 fragColor1 = getGroundTruth(uv);
@@ -169,8 +171,8 @@ void showSSIM(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool sh
             uy += fragColor2.r * 0.3 + fragColor2.g * 0.5 + fragColor2.b * 0.1;
         }
     }
-    ux /= 64;
-    uy /= 64;
+    ux /= (window_size.x * window_size.y);
+    uy /= (window_size.x * window_size.y);
     float l = (2 * ux * uy + c1) / (ux * ux + uy * uy + c1);    // luma
     float c = (2 * ox * oy + c2) / (ox * ox + oy * oy + c1);    // contrast
     float s = (oxy + c3) / (ox + oy + c3);                      // structure
@@ -178,7 +180,8 @@ void showSSIM(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool sh
     float alpha = 1.0;
     float beta = 1.0;
     float gamma = 1.0;
-    float ssim = (l-0.999)/0.001;
+    float ssim = l;
+    ssim = 1.0 - (ssim-0.999)/0.001;
 
     fragColor = vec4(ssim, ssim, ssim, 1.0);
 }

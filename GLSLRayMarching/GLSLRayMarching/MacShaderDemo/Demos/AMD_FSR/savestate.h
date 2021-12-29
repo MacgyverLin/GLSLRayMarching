@@ -30,6 +30,9 @@ struct AppState
 	float rcasShapening;	// = 0.2;
 	bool showOrginalThumbnail; // false
 	int displayMode;
+
+	bool optimizeEASU;
+	float edgeThreshold;
 };
 
 #define valueChannel iChannel3
@@ -49,6 +52,8 @@ void LoadState(out AppState s)
 	s.displayMode = int(data.w);
 
 	data = LoadValue(1, 0);
+	s.optimizeEASU = (data.x == 1.0) ? true : false;
+	s.edgeThreshold = data.y;
 }
 
 void StoreValue(vec2 fragCoord, vec2 re, vec4 va, inout vec4 fragColor)
@@ -61,6 +66,7 @@ void StoreValue(vec2 fragCoord, vec2 re, vec4 va, inout vec4 fragColor)
 void SaveState(in AppState s, in vec2 fragCoord, inout vec4 fragColor)
 {
     StoreValue(fragCoord, vec2(0., 0.), vec4(s.easuScale, s.rcasShapening, (s.showOrginalThumbnail) ? 1.0 : 0.0, float(s.displayMode)), fragColor);
+	StoreValue(fragCoord, vec2(1., 0.), vec4((s.optimizeEASU) ? 1.0 : 0.0, s.edgeThreshold, 0.0, 0.0), fragColor);
 }
 
 void InitializeState(out AppState s)
@@ -73,6 +79,9 @@ void InitializeState(out AppState s)
 	    s.rcasShapening = 0.2;
 		s.showOrginalThumbnail = false;
 		s.displayMode = GFMB_FSR;
+
+		s.optimizeEASU = false;
+		s.edgeThreshold = 64;
     }
 }
 
