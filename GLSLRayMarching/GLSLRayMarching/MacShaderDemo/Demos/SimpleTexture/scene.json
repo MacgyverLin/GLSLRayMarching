@@ -3,7 +3,7 @@
     {
       "shader": "image.glsl",
       "ichannel0": {
-        "texture2d": "tex1.png",
+        "texture2d": "tex4.png",
         "filter": "linear",
         "wrap": "repeat",
         "vflip": true

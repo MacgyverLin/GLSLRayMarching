@@ -40,7 +40,7 @@ ShaderProgram::~ShaderProgram()
 	}
 }
 
-void ShaderProgram::AddCommonShaderFile(const std::string& fileName)
+void ShaderProgram::AddShaderHeaderFile(const std::string& fileName)
 {
 	if (fileName.empty())
 		return;
@@ -68,10 +68,6 @@ void ShaderProgram::AddCommonShaderFile(const std::string& fileName)
 		std::cout << "init shader error: failed to read shader file";
 	}
 
-	/// 将common shader文件通过glNamedStringARB函数传入GL的虚拟文件系统
-	/// 例如传入的shader文件名为 commonFunction.glsl
-	/// 那么glNamedStringARB的第二个参数为："/commonFunction.glsl"， "/"是一定需要的
-	/// 第四个参数为 代码的字符串
 	std::string fullFileName = "/" + fileName;
 	glNamedStringARB(GL_SHADER_INCLUDE_ARB, fullFileName.size(), fullFileName.c_str(), code.size(), code.c_str());
 }
