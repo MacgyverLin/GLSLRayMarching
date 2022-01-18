@@ -18,11 +18,10 @@
 #define MAKE_BLURER(a, b)			(a = a + b)
 
 #define GFMB_GROUND_TRUTH			0
+#define GFMB_BILINEAR				2
 #define GFMB_FSR					1
-#define GFMB_MFSR					2
-#define GFMB_BILINEAR				3
-#define GFMB_SSIM					4
-#define GFMB_COMPARE_ALL			5
+#define GFMB_SSIM					3
+#define GFMB_COMPARE_ALL			4
 
 struct AppState
 {

@@ -96,25 +96,20 @@ void ControlStateValue(inout AppState s)
 	}
 	else if(KEY_CLICK('r'))
     {
-		s.displayMode			= GFMB_FSR;
+		s.displayMode			= GFMB_BILINEAR;
 	}
 	else if(KEY_CLICK('t'))
     {
-		s.displayMode			= GFMB_MFSR;
+		s.displayMode			= GFMB_FSR;
 	}
 	else if(KEY_CLICK('y'))
     {
-		s.displayMode			= GFMB_BILINEAR;
+		s.displayMode			= GFMB_SSIM;
 	}
 	else if(KEY_CLICK('u'))
     {
-		s.displayMode			= GFMB_SSIM;
-	}
-	else if(KEY_CLICK('i'))
-    {
 		s.displayMode			= GFMB_COMPARE_ALL;
 	}
-
 
 	if(KEY_CLICK('p'))
     {

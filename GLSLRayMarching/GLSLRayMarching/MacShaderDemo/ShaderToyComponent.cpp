@@ -1096,9 +1096,9 @@ public:
 
 		///////////////////////////////////
 		// glsl include file
-		ShaderProgram::AddCommonShaderFile("ffx_a.h");
-		ShaderProgram::AddCommonShaderFile("ffx_fsr1.h");
-		ShaderProgram::AddCommonShaderFile("savestate.h");
+		ShaderProgram::AddShaderHeaderFile("ffx_a.h");
+		ShaderProgram::AddShaderHeaderFile("ffx_fsr1.h");
+		ShaderProgram::AddShaderHeaderFile("savestate.h");
 
 		///////////////////////////////////
 		// shadertoy config

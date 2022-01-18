@@ -51,38 +51,6 @@ float getSide(in vec2 fragCoord, bool vertical)
     return side;
 }
 
-/*
-void showFSRComparision(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
-{
-    vec2 texcoord = fragCoord / iResolution.xy;
-    float side = getSide(fragCoord, true);
-
-    float slotSize = 0.4;
-    float lineSize = 0.001;
-
-    if(side < -slotSize-lineSize)
-        fragColor = getGroundTruth(texcoord);
-    else if(side > -slotSize && side < -0.05 - lineSize)
-        fragColor = getOriginalImageBilinearSuperSampled(texcoord, easuScale);
-    else if(side > -0.05 && side < slotSize - lineSize)
-        fragColor = getFSRImage(texcoord);
-    else if(side > slotSize)
-        fragColor = getGroundTruth(texcoord);
-    else
-        fragColor = vec4(1.0, 1.0, 1.0, 1.0);
-
-
-    if(showOrginalThumbnail)
-    {
-        if(texcoord.x < 1.0/easuScale && texcoord.y < 1.0/easuScale)
-            fragColor = getOriginalImage(texcoord, easuScale);
-
-        if((texcoord.x > 1.0/0.5-lineSize && texcoord.y > 1.0/0.5-lineSize) &&  (texcoord.x < 1.0/0.5 && texcoord.y < 1.0/0.5))
-            fragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    }
-}
-*/
-
 void showGroundTruth(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
 {
     vec2 texcoord = fragCoord / iResolution.xy;
@@ -91,13 +59,6 @@ void showGroundTruth(out vec4 fragColor, in vec2 fragCoord, in float easuScale, 
 }
 
 void showFSR(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
-{
-    vec2 texcoord = fragCoord / iResolution.xy;
-   
-    fragColor = getFSRImage(texcoord);
-}
-
-void showMFSR(out vec4 fragColor, in vec2 fragCoord, in float easuScale, bool showOrginalThumbnail)
 {
     vec2 texcoord = fragCoord / iResolution.xy;
    
@@ -191,16 +152,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 	AppState s;
 	InitializeState(s);
 
-    if(s.displayMode			        == GFMB_GROUND_TRUTH)
+    if(s.displayMode		        == GFMB_GROUND_TRUTH)
         showGroundTruth(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
     else if(s.displayMode			== GFMB_FSR)
         showFSR(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    else if(s.displayMode			== GFMB_MFSR)
-        showMFSR(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
     else if(s.displayMode			== GFMB_BILINEAR)
         showBilinearFiltered(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
     else if(s.displayMode			== GFMB_SSIM)
-        compareAll(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
-    else if(s.displayMode			== GFMB_COMPARE_ALL)
         showSSIM(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
+    else if(s.displayMode			== GFMB_COMPARE_ALL)
+        compareAll(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);        
 }
