@@ -5,7 +5,7 @@
 #include "RenderStates.h"
 #include "ShaderProgram.h"
 #include "Buffer.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"

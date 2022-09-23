@@ -1,5 +1,5 @@
 #include "Platform.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "Graphics.h"
 
 static int vaElementSizes[] =

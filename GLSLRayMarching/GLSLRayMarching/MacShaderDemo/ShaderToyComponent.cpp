@@ -3,7 +3,7 @@
 #include "FrameBuffer.h"
 #include "RenderStates.h"
 #include "ShaderProgram.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "GUI.h"
 #include "FrameWork.h"
 
@@ -560,7 +560,7 @@ public:
 		}
 
 		primitives.Bind();
-		primitives.DrawArray(Primitives::Mode::TRIANGLES, 0, primitives.GetCount());
+		primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, 0, primitives.GetCount());
 
 		if (frameBuffer)
 		{
@@ -801,7 +801,7 @@ private:
 	ShaderProgram shaderProgram;
 	std::vector<Channel> iChannels;
 	FlipFrameBuffer* frameBuffer;
-	Primitives primitives;
+	VertexBuffer primitives;
 };
 
 class MacShaderDemo

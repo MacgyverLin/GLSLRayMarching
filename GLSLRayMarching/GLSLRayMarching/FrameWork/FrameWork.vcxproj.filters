@@ -157,7 +157,7 @@
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Primitives.cpp">
+    <ClCompile Include="VertexBuffer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="RenderStates.cpp">
@@ -357,7 +357,7 @@
     <ClInclude Include="Graphics.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Primitives.h">
+    <ClInclude Include="VertexBuffer.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="RenderStates.h">

@@ -12,7 +12,7 @@
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "FrameBuffer.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "RenderStates.h"
 #include "Vector2.h"
 #include "Vector3.h"

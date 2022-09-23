@@ -5,7 +5,7 @@
 #include "RenderStates.h"
 #include "ShaderProgram.h"
 #include "Buffer.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
@@ -46,7 +46,7 @@ public:
 		return shaderProgram;
 	}
 
-	Primitives& GetPrimitives()
+	VertexBuffer& GetPrimitives()
 	{
 		return primitives;
 	}
@@ -189,7 +189,7 @@ public:
 		shaderProgram.SetUniform4fv("color", 1, &uniformBlockData.color[0]);
 #endif
 		primitives.Bind();
-		primitives.DrawArray(Primitives::Mode::TRIANGLES, 0, primitives.GetCount());
+		primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, 0, primitives.GetCount());
 	}
 
 	void Terminate()
@@ -208,7 +208,7 @@ private:
 	Buffer uniformBlockBuffer;
 	Buffer shaderStorageBlockBuffer;
 	ShaderProgram shaderProgram;
-	Primitives primitives;
+	VertexBuffer primitives;
 
 	std::vector<Vector3> vertices;
 };

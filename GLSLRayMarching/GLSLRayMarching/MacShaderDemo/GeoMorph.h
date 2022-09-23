@@ -5,7 +5,7 @@
 #include "RenderStates.h"
 #include "ShaderProgram.h"
 #include "Buffer.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
@@ -495,7 +495,7 @@ public:
 				shaderProgram.SetUniform1f("alpha", alpha);
 
 				RenderInfo& info = terrainRenderInfos[i];
-				primitives.DrawIndices(Primitives::Mode::TRIANGLES, 0, 96);
+				primitives.DrawIndices(VertexBuffer::Mode::TRIANGLES, 0, 96);
 			}
 		}
 	}
@@ -535,7 +535,7 @@ private:
 	RenderStates renderStates;
 	ShaderProgram shaderProgram;
 	Buffer uniformBlockBuffer;
-	Primitives primitives;
+	VertexBuffer primitives;
 };
 
 #endif

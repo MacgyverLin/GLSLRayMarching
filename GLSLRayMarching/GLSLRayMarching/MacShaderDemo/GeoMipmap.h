@@ -5,7 +5,7 @@
 #include "RenderStates.h"
 #include "ShaderProgram.h"
 #include "Buffer.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
@@ -736,7 +736,7 @@ public:
 					shaderProgram.SetUniform1i("useTexture", true);
 					shaderProgram.SetUniform2i("offset", info.offset.X(), info.offset.Z());
 
-					primitives.DrawArray(Primitives::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
+					primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
 				}
 			}
 		}
@@ -758,7 +758,7 @@ public:
 					shaderProgram.SetUniform1i("useTexture", false);
 					shaderProgram.SetUniform2i("offset", info.offset.X(), info.offset.Z());
 
-					primitives.DrawArray(Primitives::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
+					primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
 				}
 			}
 		}
@@ -881,7 +881,7 @@ public:
 			shaderProgram.SetUniform1i("useTexture", false);
 			shaderProgram.SetUniform2i("offset", info.offset.X(), info.offset.Z());
 
-			primitives.DrawArray(Primitives::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
+			primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
 		}
 	}
 
@@ -936,7 +936,7 @@ private:
 	RenderStates renderStates;
 	ShaderProgram shaderProgram;
 	Buffer uniformBlockBuffer;
-	Primitives primitives;
+	VertexBuffer primitives;
 };
 
 #endif

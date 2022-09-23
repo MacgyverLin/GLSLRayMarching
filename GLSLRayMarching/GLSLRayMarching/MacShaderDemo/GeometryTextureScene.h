@@ -8,7 +8,7 @@
 #include "RenderStates.h"
 #include "ShaderProgram.h"
 #include "Buffer.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
@@ -316,7 +316,7 @@ public:
 		Debug("%f: %f %f %d\n", lod, floor(lod), scale, triangleCount);
 
 		primitives.Bind();
-		primitives.DrawArrayInstanced(Primitives::Mode::TRIANGLES, 0, primitives.GetCount(), triangleCount);
+		primitives.DrawArrayInstanced(VertexBuffer::Mode::TRIANGLES, 0, primitives.GetCount(), triangleCount);
 	}
 
 	GeometryTextureCameraComponent& geometryTextureCameraComponent;
@@ -329,7 +329,7 @@ public:
 	Buffer shaderStorageBlockBuffer;
 	Buffer uniformBlockBuffer;
 	RenderStates renderStates;
-	Primitives primitives;
+	VertexBuffer primitives;
 };
 
 class GeometryTextureScene : public Scene
