@@ -48,7 +48,7 @@ public:
 		static float test1 = 0.0f;
 		test1 += 1;
 		//worldTransform.SetTranslate(test1, 0, 0);
-		worldTransform.SetTranslateRotXYZScale(0, 0, 0, 0, test1, 0, 6.0);
+		worldTransform.SetTranslateEulerAngleXYZScale(0, 0, 0, 0, test1, 0, 6.0);
 		camera.SetLocalTransform(worldTransform);
 
 		Matrix4 cameraTransform;

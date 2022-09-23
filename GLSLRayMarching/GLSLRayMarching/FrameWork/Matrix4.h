@@ -78,7 +78,7 @@ public:
     }
 
     // input Mrc is in row r, column c.
-    void Set(const T& m00, const T& m01, const T& m02, const T& m03,
+    TMatrix4& Set(const T& m00, const T& m01, const T& m02, const T& m03,
              const T& m10, const T& m11, const T& m12, const T& m13,
              const T& m20, const T& m21, const T& m22, const T& m23,
              const T& m30, const T& m31, const T& m32, const T& m33)
@@ -87,31 +87,39 @@ public:
         m[4] = m10; m[5] = m11; m[6] = m12; m[7] = m13;
         m[8] = m20; m[9] = m21; m[10] = m22; m[11] = m23;
         m[12] = m30; m[13] = m31; m[14] = m32; m[15] = m33;
+
+        return *this;
     }
 
-    void SetZero()
+    TMatrix4& SetZero()
     {
         size_t uiSize = 16 * sizeof(T);
         memset(m, 0, uiSize);
+
+        return *this;
     }
 
-    void SetIdentity()
+    TMatrix4& SetIdentity()
     {
         m[0] = 1; m[1] = 0; m[2] = 0; m[3] = 0;
         m[4] = 0; m[5] = 1; m[6] = 0; m[7] = 0;
         m[8] = 0; m[9] = 0; m[10] = 1; m[11] = 0;
         m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
+
+        return *this;
     }
 
-    void SetTranslate(const T& x, const T& y, const T& z)
+    TMatrix4& SetTranslate(const T& x, const T& y, const T& z)
     {
         m[0] = 1; m[1] = 0; m[2] = 0; m[3] = x;
         m[4] = 0; m[5] = 1; m[6] = 0; m[7] = y;
         m[8] = 0; m[9] = 0; m[10] = 1; m[11] = z;
         m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
+
+        return *this;
     }
 
-    void SetRotateX(const T& angle)
+    TMatrix4& SetEulerAngleX(const T& angle)
     {
         SetIdentity();
 
@@ -123,9 +131,11 @@ public:
         m[9] = sine;
         m[6] = -sine;
         m[10] = cosine;
+
+        return *this;
     }
 
-    void SetRotateY(const T& angle)
+    TMatrix4& SetEulerAngleY(const T& angle)
     {
         SetIdentity();
 
@@ -137,9 +147,11 @@ public:
         m[8] = -sine;
         m[2] = sine;
         m[10] = cosine;
+
+        return *this;
     }
 
-    void SetRotateZ(const T& angle)
+    TMatrix4& SetEulerAngleZ(const T& angle)
     {
         SetIdentity();
 
@@ -151,19 +163,209 @@ public:
         m[4] = sine;
         m[1] = -sine;
         m[5] = cosine;
+
+        return *this;
     }
 
-    void SetRotateZXY(const T& zAngle, const T& xAngle, const T& yAngle)
+    TMatrix4& SetEulerAngleXYZ(const T& xAngle, const T& yAngle, const T& zAngle)
     {
-        SetTranslateRotZXYScale(0, 0, 0, zAngle, xAngle, yAngle, 1);
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
+
+        T fCos, fSin;
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
+        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
+            0.0, fCos, -fSin, 0.0,
+            0.0, fSin, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
+        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -fSin, 0.0, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
+        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
+            fSin, fCos, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        *this = kXMat * kYMat * kZMat;
+
+        return *this;
     }
 
-    void SetRotateZYX(const T& zAngle, const T& yAngle, const T& xAngle)
+    TMatrix4& SetEulerAngleXZY(const T& xAngle, const T& zAngle, const T& yAngle)
     {
-        SetTranslateRotZYXScale(0, 0, 0, zAngle, yAngle, xAngle, 1);
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
+
+        T fCos, fSin;
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
+        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
+            0.0, fCos, -fSin, 0.0,
+            0.0, fSin, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
+        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -fSin, 0.0, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
+        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
+            fSin, fCos, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        *this = kXMat * kZMat * kYMat;
+
+        return *this;
     }
 
-    void SetRotateAxisAngle(const TVector3<T>& axis, const T& angle)
+    TMatrix4& SetEulerAngleYXZ(const T& yAngle, const T& xAngle, const T& zAngle)
+    {
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
+
+        T fCos, fSin;
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
+        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
+            0.0, fCos, -fSin, 0.0,
+            0.0, fSin, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
+        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -fSin, 0.0, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
+        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
+            fSin, fCos, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        *this = kYMat * kXMat * kZMat;
+
+        return *this;
+    }
+
+    TMatrix4& SetEulerAngleYZX(const T& yAngle, const T& zAngle, const T& xAngle)
+    {
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
+
+        T fCos, fSin;
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
+        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
+            0.0, fCos, -fSin, 0.0,
+            0.0, fSin, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
+        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -fSin, 0.0, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(zAngle);
+        fSin = Math::Sin(zAngle);
+        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
+            fSin, fCos, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        *this = kYMat * kZMat * kXMat;
+
+        return *this;
+    }
+
+    TMatrix4& SetEulerAngleZXY(const T& zAngle, const T& xAngle, const T& yAngle)
+    {
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
+
+        T fCos, fSin;
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
+        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
+            0.0, fCos, -fSin, 0.0,
+            0.0, fSin, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
+        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -fSin, 0.0, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
+        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
+            fSin, fCos, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        *this = kZMat * kXMat * kYMat;
+
+        return *this;
+    }
+
+    TMatrix4& SetEulerAngleZYX(const T& zAngle, const T& yAngle, const T& xAngle)
+    {
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
+
+        T fCos, fSin;
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
+        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
+            0.0, fCos, -fSin, 0.0,
+            0.0, fSin, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
+        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -fSin, 0.0, fCos, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
+        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
+            fSin, fCos, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        *this = kZMat * kYMat * kXMat;
+
+        return *this;
+    }
+
+    TMatrix4& SetAxisAngle(const TVector3<T>& axis, const T& angle)
     {
         SetIdentity();
 
@@ -192,25 +394,29 @@ public:
         m[8] = xzM + ySin;
         m[9] = yzM - xSin;
         m[10] = z2 * oneMinusCos + cos;
+
+        return *this;
     }
 
-    void SetScale(const T& scale)
+    TMatrix4& SetScale(const T& scale)
     {
-        SetScale(scale, scale, scale);
+        return SetScale(scale, scale, scale);
     }
 
-    void SetScale(const T& x, const T& y, const T& z)
+    TMatrix4& SetScale(const T& x, const T& y, const T& z)
     {
         SetIdentity();
 
         m[0] = x;
         m[5] = y;
         m[10] = z;
+
+        return *this;
     }
 
-    void SetTranslateRotZXYScale(const T& tx, const T& ty, const T& tz, const T& rz, const T& rx, const T& ry, const T& scale)
+    TMatrix4& SetTranslateEulerAngleXYZScale(const T& tx, const T& ty, const T& tz, const T& rx, const T& ry, const T& rz, const T& scale)
     {
-        SetRotationZXY(rz, rx, ry);
+        SetEulerAngleXYZ(rx, ry, rz);
 
         m[0] *= scale;
         m[4] *= scale;
@@ -227,11 +433,13 @@ public:
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetTranslateRotZYXScale(const T& tx, const T& ty, const T& tz, const T& rz, const T& ry, const T& rx, const T& scale)
+    TMatrix4& SetTranslateEulerAngleXZYScale(const T& tx, const T& ty, const T& tz, const T& rx, const T& rz, const T& ry, const T& scale)
     {
-        SetRotationZYX(rz, ry, rx);
+        SetEulerAngleXZY(rx, rz, ry);
 
         m[0] *= scale;
         m[4] *= scale;
@@ -248,11 +456,13 @@ public:
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetTranslateRotYXZScale(const T& tx, const T& ty, const T& tz, const T& ry, const T& rx, const T& rz, const T& scale)
+    TMatrix4& SetTranslateEulerAngleYXZScale(const T& tx, const T& ty, const T& tz, const T& ry, const T& rx, const T& rz, const T& scale)
     {
-        SetRotationYXZ(ry, rx, rz);
+        SetEulerAngleYXZ(ry, rx, rz);
 
         m[0] *= scale;
         m[4] *= scale;
@@ -269,11 +479,13 @@ public:
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetTranslateRotYZXScale(const T& tx, const T& ty, const T& tz, const T& ry, const T& rz, const T& rx, const T& scale)
+    TMatrix4& SetTranslateEulerAngleYZXScale(const T& tx, const T& ty, const T& tz, const T& ry, const T& rz, const T& rx, const T& scale)
     {
-        SetRotationYZX(ry, rz, rx);
+        SetEulerAngleYZX(ry, rz, rx);
 
         m[0] *= scale;
         m[4] *= scale;
@@ -290,11 +502,13 @@ public:
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetTranslateRotXYZScale(const T& tx, const T& ty, const T& tz, const T& rx, const T& ry, const T& rz, const T& scale)
+    TMatrix4& SetTranslateEulerAngleZXYScale(const T& tx, const T& ty, const T& tz, const T& rz, const T& rx, const T& ry, const T& scale)
     {
-        SetRotationXYZ(rx, ry, rz);
+        SetEulerAngleZXY(rz, rx, ry);
 
         m[0] *= scale;
         m[4] *= scale;
@@ -311,11 +525,13 @@ public:
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetTranslateRotXZYScale(const T& tx, const T& ty, const T& tz, const T& rx, const T& rz, const T& ry, const T& scale)
+    TMatrix4& SetTranslateEulerAngleZYXScale(const T& tx, const T& ty, const T& tz, const T& rz, const T& ry, const T& rx, const T& scale)
     {
-        SetRotationXZY(rx, rz, ry);
+        SetEulerAngleZYX(rz, ry, rx);
 
         m[0] *= scale;
         m[4] *= scale;
@@ -332,11 +548,13 @@ public:
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetTranslateRotateAxisAngleScale(const T& tx, const T& ty, const T& tz, const TVector3<T>& axis, const T& angle, const T& scale)
+    TMatrix4& SetTranslateAxisAngleScale(const T& tx, const T& ty, const T& tz, const TVector3<T>& axis, const T& angle, const T& scale)
     {
-        SetRotateAxisAngle(axis, angle);
+        SetAxisAngle(axis, angle);
 
         m[0] *= scale;
         m[4] *= scale;
@@ -353,23 +571,27 @@ public:
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetTranslateScale(const T& tx, const T& ty, const T& tz, const T& scale)
+    TMatrix4& SetTranslateScale(const T& tx, const T& ty, const T& tz, const T& scale)
     {
         SetScale(scale);
 
         m[3] = tx;
         m[7] = ty;
         m[11] = tz;
+
+        return *this;
     }
 
-    void SetLookAt(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up)
+    TMatrix4& SetLookAt(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up)
     {
-        SetLookAtScale(position, objective, up, 1);
+        return SetLookAtScale(position, objective, up, 1);
     }
 
-    void SetLookAtScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, const T& scale)
+    TMatrix4& SetLookAtScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, const T& scale)
     {
         // Right Hand
         TVector3<T> zaxis = position - objective; zaxis.Normalize();
@@ -396,14 +618,16 @@ public:
         m[13] = 0;
         m[14] = 0;
         m[15] = 1;
+
+        return *this;
     }
 
-    void SetStandOn(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up)
+    TMatrix4& SetStandOn(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up)
     {
-        SetStandOnScale(position, objective, up, 1);
+        return SetStandOnScale(position, objective, up, 1);
     }
 
-    void SetStandOnScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, const T& scale)
+    TMatrix4& SetStandOnScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, const T& scale)
     {
         Vector3 yaxis = up; yaxis.Normalize();
         Vector3 zaxis = position - objective;
@@ -430,14 +654,16 @@ public:
         m[13] = 0;
         m[14] = 0;
         m[15] = 1;
+
+        return *this;
     }
 
-    void SetPerspective(const T& w, const T& h, const T& n, const T& f)
+    TMatrix4& SetPerspective(const T& w, const T& h, const T& n, const T& f)
     {
-        SetPerspectiveOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
+        return SetPerspectiveOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
     }
 
-    void SetPerspectiveFov(const T& fovY, const T& aspect, const T& n, const T& f)
+    TMatrix4& SetPerspectiveFov(const T& fovY, const T& aspect, const T& n, const T& f)
     {
         assert(fovY < 180);
 
@@ -446,10 +672,10 @@ public:
         T t = n * tanHalfFovY;
         T r = t * aspect;
 
-        SetPerspectiveOffCenter(-r, r, -t, t, n, f);
+        return SetPerspectiveOffCenter(-r, r, -t, t, n, f);
     }
 
-    void SetPerspectiveOffCenter(const T& l, const T& r, const T& b, const T& t, const T& n, const T& f)
+    TMatrix4& SetPerspectiveOffCenter(const T& l, const T& r, const T& b, const T& t, const T& n, const T& f)
     {
         m[0] = 2 * n / (r - l);
         m[1] = 0;
@@ -470,14 +696,16 @@ public:
         m[13] = 0;
         m[14] = -1;
         m[15] = 0;
+
+        return *this;
     }
 
-    void SetOrthogonal(const T& w, const T& h, const T& n, const T& f)
+    TMatrix4& SetOrthogonal(const T& w, const T& h, const T& n, const T& f)
     {
-        SetOrthogonalOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
+        return SetOrthogonalOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
     }
 
-    void SetOrthogonalOffCenter(const T& l, const T& r, const T& b, const T& t, const T& n, const T& f)
+    TMatrix4& SetOrthogonalOffCenter(const T& l, const T& r, const T& b, const T& t, const T& n, const T& f)
     {
         m[0] = 2 / (r - l);
         m[1] = 0;
@@ -498,7 +726,212 @@ public:
         m[13] = 0;
         m[14] = 0;
         m[15] = 1;
+
+        return *this;
     }
+
+    bool GetRotationXYZ(T& xAngle, T& yAngle, T& zAngle) const
+    {
+        // rot =  cy*cz          -cy*sz           sy
+        //        cz*sx*sy+cx*sz  cx*cz-sx*sy*sz -cy*sx
+        //       -cx*cz*sy+sx*sz  cz*sx+cx*sy*sz  cx*cy
+        if (m[2] < 1.0)
+        {
+            if (m[2] > -1.0)
+            {
+                xAngle = Math::ATan2(-m[6], m[10]) * Math::Degree2Radian;
+                yAngle = Math::ASin(m[2]) * Math::Degree2Radian;
+                zAngle = Math::ATan2(-m[1], m[0]) * Math::Degree2Radian;
+                return true;
+            }
+            else
+            {
+                // WARNING.  Not unique.  XA - ZA = -atan2(r10,r11)
+                xAngle = -Math::ATan2(m[4], m[5]) * Math::Degree2Radian;
+                yAngle = -Math::HalfPi * Math::Degree2Radian;
+                zAngle = 0.0 * Math::Degree2Radian;
+                return false;
+            }
+        }
+        else
+        {
+            // WARNING.  Not unique.  XAngle + ZAngle = atan2(r10,r11)
+            xAngle = Math::ATan2(m[4], m[5]) * Math::Degree2Radian;
+            yAngle = Math::HalfPi * Math::Degree2Radian;
+            zAngle = 0.0 * Math::Degree2Radian;
+            return false;
+        }
+    }
+
+    bool GetRotationXZY(T& xAngle, T& zAngle, T& yAngle) const
+    {
+        // rot =  cy*cz          -sz              cz*sy
+        //        sx*sy+cx*cy*sz  cx*cz          -cy*sx+cx*sy*sz
+        //       -cx*sy+cy*sx*sz  cz*sx           cx*cy+sx*sy*sz
+        if (m[1] < 1.0)
+        {
+            if (m[1] > -1.0)
+            {
+                xAngle = Math::ATan2(m[9], m[5]) * Math::Degree2Radian;
+                zAngle = Math::Asin(-m[1]) * Math::Degree2Radian;
+                yAngle = Math::ATan2(m[2], m[0]) * Math::Degree2Radian;
+                return true;
+            }
+            else
+            {
+                // WARNING.  Not unique.  XA - YA = atan2(r20,r22)
+                xAngle = Math::ATan2(m[8], m[10]) * Math::Degree2Radian;
+                zAngle = Math::HalfPi * Math::Degree2Radian;
+                yAngle = 0.0 * Math::Degree2Radian;
+                return false;
+            }
+        }
+        else
+        {
+            // WARNING.  Not unique.  XA + YA = atan2(-r20,r22)
+            xAngle = Math::ATan2(-m[8], m[10]) * Math::Degree2Radian;
+            zAngle = -Math::HalfPi * Math::Degree2Radian;
+            yAngle = 0.0 * Math::Degree2Radian;
+            return false;
+        }
+    }
+
+    bool GetRotationYXZ(T& yAngle, T& xAngle, T& zAngle) const
+    {
+        // rot =  cy*cz+sx*sy*sz  cz*sx*sy-cy*sz  cx*sy
+        //        cx*sz           cx*cz          -sx
+        //       -cz*sy+cy*sx*sz  cy*cz*sx+sy*sz  cx*cy
+
+        if (m[6] < 1.0)
+        {
+            if (m[6] > -1.0)
+            {
+                yAngle = Math::ATan2(m[2], m[10]) * Math::Degree2Radian;
+                xAngle = Math::ASin(-m[6]) * Math::Degree2Radian;
+                zAngle = Math::ATan2(m[4], m[5]) * Math::Degree2Radian;
+                return true;
+            }
+            else
+            {
+                // WARNING.  Not unique.  YA - ZA = atan2(r01,r00)
+                yAngle = Math::ATan2(m[1], m[0]) * Math::Degree2Radian;
+                xAngle = Math::HalfPi * Math::Degree2Radian;
+                zAngle = 0.0 * Math::Degree2Radian;
+                return false;
+            }
+        }
+        else
+        {
+            // WARNING.  Not unique.  YA + ZA = atan2(-r01,r00)
+            yAngle = Math::ATan2(-m[1], m[0]) * Math::Degree2Radian;
+            xAngle = -Math::HalfPi * Math::Degree2Radian;
+            zAngle = 0.0 * Math::Degree2Radian;
+            return false;
+        }
+    }
+
+    bool GetRotationYZX(T& yAngle, T& zAngle, T& xAngle) const
+    {
+        // rot =  cy*cz           sx*sy-cx*cy*sz  cx*sy+cy*sx*sz
+        //        sz              cx*cz          -cz*sx
+        //       -cz*sy           cy*sx+cx*sy*sz  cx*cy-sx*sy*sz
+
+        if (m[4] < 1.0)
+        {
+            if (m[4] > -1.0)
+            {
+                yAngle = Math::ATan2(-m[8], m[0]) * Math::Degree2Radian;
+                zAngle = Math::Asin(m[4]) * Math::Degree2Radian;
+                xAngle = Math::ATan2(-m[6], m[5]) * Math::Degree2Radian;
+                return true;
+            }
+            else
+            {
+                // WARNING.  Not unique.  YA - XA = -atan2(r21,r22);
+                yAngle = -Math::ATan2(m[9], m[10]) * Math::Degree2Radian;
+                zAngle = -Math::HalfPi * Math::Degree2Radian;
+                xAngle = 0.0 * Math::Degree2Radian;
+                return false;
+            }
+        }
+        else
+        {
+            // WARNING.  Not unique.  YA + XA = atan2(r21,r22)
+            yAngle = Math::ATan2(m[9], m[10]) * Math::Degree2Radian;
+            zAngle = Math::HalfPi * Math::Degree2Radian;
+            xAngle = 0.0 * Math::Degree2Radian;
+            return false;
+        }
+    }
+
+    bool GetRotationZXY(T& zAngle, T& xAngle, T& yAngle) const
+    {
+        // rot =  cy*cz-sx*sy*sz -cx*sz           cz*sy+cy*sx*sz
+        //        cz*sx*sy+cy*sz  cx*cz          -cy*cz*sx+sy*sz
+        //       -cx*sy           sx              cx*cy
+
+        if (m[9] < 1.0)
+        {
+            if (m[9] > -1.0)
+            {
+                zAngle = Math::ATan2(-m[1], m[5]) * Math::Degree2Radian;
+                xAngle = Math::Asin(m[9]) * Math::Degree2Radian;
+                yAngle = Math::ATan2(-m[8], m[10]) * Math::Degree2Radian;
+                return true;
+            }
+            else
+            {
+                // WARNING.  Not unique.  ZA - YA = -atan(r02,r00)
+                zAngle = -Math::ATan2(m[2], m[0]) * Math::Degree2Radian;
+                xAngle = -Math::HalfPi * Math::Degree2Radian;
+                yAngle = 0.0 * Math::Degree2Radian;
+                return false;
+            }
+        }
+        else
+        {
+            // WARNING.  Not unique.  ZA + YA = atan2(r02,r00)
+            zAngle = Math::ATan2(m[2], m[0]) * Math::Degree2Radian;
+            xAngle = Math::HalfPi * Math::Degree2Radian;
+            yAngle = 0.0 * Math::Degree2Radian;
+            return false;
+        }
+    }
+
+    bool GetRotationZYX(T& zAngle, T& yAngle, T& xAngle) const
+    {
+        // rot =  cy*cz           cz*sx*sy-cx*sz  cx*cz*sy+sx*sz
+        //        cy*sz           cx*cz+sx*sy*sz -cz*sx+cx*sy*sz
+        //       -sy              cy*sx           cx*cy
+
+        if (m[8] < 1.0)
+        {
+            if (m[8] > -1.0)
+            {
+                zAngle = Math::ATan2(m[4], m[0]) * Math::Degree2Radian;
+                yAngle = Math::Asin(-m[8]) * Math::Degree2Radian;
+                xAngle = Math::ATan2(m[9], m[10]) * Math::Degree2Radian;
+                return true;
+            }
+            else
+            {
+                // WARNING.  Not unique.  ZA - XA = -atan2(r01,r02)
+                zAngle = -Math::ATan2(m[1], m[2]) * Math::Degree2Radian;
+                yAngle = Math::HalfPi * Math::Degree2Radian;
+                xAngle = 0.0 * Math::Degree2Radian;
+                return false;
+            }
+        }
+        else
+        {
+            // WARNING.  Not unique.  ZA + XA = atan2(-r01,-r02)
+            zAngle = Math::ATan2(-m[1], -m[2]) * Math::Degree2Radian;
+            yAngle = -Math::HalfPi * Math::Degree2Radian;
+            xAngle = 0.0 * Math::Degree2Radian;
+            return false;
+        }
+    }
+
 
     void Orthonormalize()
     {
@@ -984,400 +1417,6 @@ public:
     T QForm(const TVector4<T>& u, const TVector4<T>& v) const
     {
         return u.Dot((*this) * v);
-    }
-
-    void SetRotationXYZ(const T& xAngle, const T& yAngle, const T& zAngle)
-    {
-        T xAngle1 = xAngle * Math::Degree2Radian;
-        T yAngle1 = yAngle * Math::Degree2Radian;
-        T zAngle1 = zAngle * Math::Degree2Radian;
-
-        T fCos, fSin;
-        fCos = Math::Cos(xAngle1);
-        fSin = Math::Sin(xAngle1);
-        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
-                      0.0, fCos, -fSin, 0.0,
-                      0.0, fSin, fCos, 0.0,
-                      0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(yAngle1);
-        fSin = Math::Sin(yAngle1);
-        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
-                      0.0, 1.0, 0.0, 0.0,
-                     -fSin, 0.0, fCos, 0.0,
-                      0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(zAngle1);
-        fSin = Math::Sin(zAngle1);
-        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
-            fSin, fCos, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        *this = kXMat * kYMat * kZMat;
-    }
-
-    void SetRotationXZY(const T& xAngle, const T& zAngle, const T& yAngle)
-    {
-        T xAngle1 = xAngle * Math::Degree2Radian;
-        T yAngle1 = yAngle * Math::Degree2Radian;
-        T zAngle1 = zAngle * Math::Degree2Radian;
-
-        T fCos, fSin;
-        fCos = Math::Cos(xAngle1);
-        fSin = Math::Sin(xAngle1);
-        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
-            0.0, fCos, -fSin, 0.0,
-            0.0, fSin, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(yAngle1);
-        fSin = Math::Sin(yAngle1);
-        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            -fSin, 0.0, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(zAngle1);
-        fSin = Math::Sin(zAngle1);
-        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
-            fSin, fCos, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        *this = kXMat * kZMat * kYMat;
-
-        return *this;
-    }
-
-    void SetRotationYXZ(const T& yAngle, const T& xAngle, const T& zAngle)
-    {
-        T xAngle1 = xAngle * Math::Degree2Radian;
-        T yAngle1 = yAngle * Math::Degree2Radian;
-        T zAngle1 = zAngle * Math::Degree2Radian;
-
-        T fCos, fSin;
-        fCos = Math::Cos(xAngle1);
-        fSin = Math::Sin(xAngle1);
-        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
-            0.0, fCos, -fSin, 0.0,
-            0.0, fSin, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(yAngle1);
-        fSin = Math::Sin(yAngle1);
-        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            -fSin, 0.0, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(zAngle1);
-        fSin = Math::Sin(zAngle1);
-        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
-            fSin, fCos, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        *this = kYMat * kXMat * kZMat;
-
-        return *this;
-    }
-
-    void SetRotationYZX(const T& yAngle, const T& zAngle, const T& xAngle)
-    {
-        T xAngle1 = xAngle * Math::Degree2Radian;
-        T yAngle1 = yAngle * Math::Degree2Radian;
-        T zAngle1 = zAngle * Math::Degree2Radian;
-
-        T fCos, fSin;
-        fCos = Math::Cos(xAngle1);
-        fSin = Math::Sin(xAngle1);
-        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
-            0.0, fCos, -fSin, 0.0,
-            0.0, fSin, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(yAngle1);
-        fSin = Math::Sin(yAngle1);
-        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            -fSin, 0.0, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(zAngle);
-        fSin = Math::Sin(zAngle);
-        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
-            fSin, fCos, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        *this = kYMat * kZMat * kXMat;
-
-        return *this;
-    }
-
-    void SetRotationZXY(const T& zAngle, const T& xAngle, const T& yAngle)
-    {
-        T xAngle1 = xAngle * Math::Degree2Radian;
-        T yAngle1 = yAngle * Math::Degree2Radian;
-        T zAngle1 = zAngle * Math::Degree2Radian;
-
-        T fCos, fSin;
-        fCos = Math::Cos(xAngle1);
-        fSin = Math::Sin(xAngle1);
-        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
-            0.0, fCos, -fSin, 0.0,
-            0.0, fSin, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(yAngle1);
-        fSin = Math::Sin(yAngle1);
-        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            -fSin, 0.0, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(zAngle1);
-        fSin = Math::Sin(zAngle1);
-        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
-            fSin, fCos, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        *this = kZMat * kXMat * kYMat;
-    }
-
-    void SetRotationZYX(const T& zAngle, const T& yAngle, const T& xAngle)
-    {
-        T xAngle1 = xAngle * Math::Degree2Radian;
-        T yAngle1 = yAngle * Math::Degree2Radian;
-        T zAngle1 = zAngle * Math::Degree2Radian;
-
-        T fCos, fSin;
-        fCos = Math::Cos(xAngle1);
-        fSin = Math::Sin(xAngle1);
-        TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
-            0.0, fCos, -fSin, 0.0,
-            0.0, fSin, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(yAngle1);
-        fSin = Math::Sin(yAngle1);
-        TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            -fSin, 0.0, fCos, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        fCos = Math::Cos(zAngle1);
-        fSin = Math::Sin(zAngle1);
-        TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
-            fSin, fCos, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-        *this = kZMat * kYMat * kXMat;
-    }
-
-    bool GetRotationXYZ(T& xAngle, T& yAngle, T& zAngle) const
-    {
-        // rot =  cy*cz          -cy*sz           sy
-        //        cz*sx*sy+cx*sz  cx*cz-sx*sy*sz -cy*sx
-        //       -cx*cz*sy+sx*sz  cz*sx+cx*sy*sz  cx*cy
-        if (m[2] < 1.0)
-        {
-            if (m[2] > -1.0)
-            {
-                xAngle = Math::ATan2(-m[6], m[10]) * Math::Degree2Radian;
-                yAngle = Math::ASin(m[2]) * Math::Degree2Radian;
-                zAngle = Math::ATan2(-m[1], m[0]) * Math::Degree2Radian;
-                return true;
-            }
-            else
-            {
-                // WARNING.  Not unique.  XA - ZA = -atan2(r10,r11)
-                xAngle = -Math::ATan2(m[4], m[5]) * Math::Degree2Radian;
-                yAngle = -Math::HalfPi * Math::Degree2Radian;
-                zAngle = 0.0 * Math::Degree2Radian;
-                return false;
-            }
-        }
-        else
-        {
-            // WARNING.  Not unique.  XAngle + ZAngle = atan2(r10,r11)
-            xAngle = Math::ATan2(m[4], m[5]) * Math::Degree2Radian;
-            yAngle = Math::HalfPi * Math::Degree2Radian;
-            zAngle = 0.0 * Math::Degree2Radian;
-            return false;
-        }
-    }
-
-    bool GetRotationXZY(T& xAngle, T& zAngle, T& yAngle) const
-    {
-        // rot =  cy*cz          -sz              cz*sy
-        //        sx*sy+cx*cy*sz  cx*cz          -cy*sx+cx*sy*sz
-        //       -cx*sy+cy*sx*sz  cz*sx           cx*cy+sx*sy*sz
-        if (m[1] < 1.0)
-        {
-            if (m[1] > -1.0)
-            {
-                xAngle = Math::ATan2(m[9], m[5]) * Math::Degree2Radian;
-                zAngle = Math::Asin(-m[1]) * Math::Degree2Radian;
-                yAngle = Math::ATan2(m[2], m[0]) * Math::Degree2Radian;
-                return true;
-            }
-            else
-            {
-                // WARNING.  Not unique.  XA - YA = atan2(r20,r22)
-                xAngle = Math::ATan2(m[8], m[10]) * Math::Degree2Radian;
-                zAngle = Math::HalfPi * Math::Degree2Radian;
-                yAngle = 0.0 * Math::Degree2Radian;
-                return false;
-            }
-        }
-        else
-        {
-            // WARNING.  Not unique.  XA + YA = atan2(-r20,r22)
-            xAngle = Math::ATan2(-m[8], m[10]) * Math::Degree2Radian;
-            zAngle = -Math::HalfPi * Math::Degree2Radian;
-            yAngle = 0.0 * Math::Degree2Radian;
-            return false;
-        }
-    }
-
-    bool GetRotationYXZ(T& yAngle, T& xAngle, T& zAngle) const
-    {
-        // rot =  cy*cz+sx*sy*sz  cz*sx*sy-cy*sz  cx*sy
-        //        cx*sz           cx*cz          -sx
-        //       -cz*sy+cy*sx*sz  cy*cz*sx+sy*sz  cx*cy
-
-        if (m[6] < 1.0)
-        {
-            if (m[6] > -1.0)
-            {
-                yAngle = Math::ATan2(m[2], m[10]) * Math::Degree2Radian;
-                xAngle = Math::ASin(-m[6]) * Math::Degree2Radian;
-                zAngle = Math::ATan2(m[4], m[5]) * Math::Degree2Radian;
-                return true;
-            }
-            else
-            {
-                // WARNING.  Not unique.  YA - ZA = atan2(r01,r00)
-                yAngle = Math::ATan2(m[1], m[0]) * Math::Degree2Radian;
-                xAngle = Math::HalfPi * Math::Degree2Radian;
-                zAngle = 0.0 * Math::Degree2Radian;
-                return false;
-            }
-        }
-        else
-        {
-            // WARNING.  Not unique.  YA + ZA = atan2(-r01,r00)
-            yAngle = Math::ATan2(-m[1], m[0]) * Math::Degree2Radian;
-            xAngle = -Math::HalfPi * Math::Degree2Radian;
-            zAngle = 0.0 * Math::Degree2Radian;
-            return false;
-        }
-    }
-
-    bool GetRotationYZX(T& yAngle, T& zAngle, T& xAngle) const
-    {
-        // rot =  cy*cz           sx*sy-cx*cy*sz  cx*sy+cy*sx*sz
-        //        sz              cx*cz          -cz*sx
-        //       -cz*sy           cy*sx+cx*sy*sz  cx*cy-sx*sy*sz
-
-        if (m[4] < 1.0)
-        {
-            if (m[4] > -1.0)
-            {
-                yAngle = Math::ATan2(-m[8], m[0]) * Math::Degree2Radian;
-                zAngle = Math::Asin(m[4]) * Math::Degree2Radian;
-                xAngle = Math::ATan2(-m[6], m[5]) * Math::Degree2Radian;
-                return true;
-            }
-            else
-            {
-                // WARNING.  Not unique.  YA - XA = -atan2(r21,r22);
-                yAngle = -Math::ATan2(m[9], m[10]) * Math::Degree2Radian;
-                zAngle = -Math::HalfPi * Math::Degree2Radian;
-                xAngle = 0.0 * Math::Degree2Radian;
-                return false;
-            }
-        }
-        else
-        {
-            // WARNING.  Not unique.  YA + XA = atan2(r21,r22)
-            yAngle = Math::ATan2(m[9], m[10]) * Math::Degree2Radian;
-            zAngle = Math::HalfPi * Math::Degree2Radian;
-            xAngle = 0.0 * Math::Degree2Radian;
-            return false;
-        }
-    }
-
-    bool GetRotationZXY(T& zAngle, T& xAngle, T& yAngle) const
-    {
-        // rot =  cy*cz-sx*sy*sz -cx*sz           cz*sy+cy*sx*sz
-        //        cz*sx*sy+cy*sz  cx*cz          -cy*cz*sx+sy*sz
-        //       -cx*sy           sx              cx*cy
-
-        if (m[9] < 1.0)
-        {
-            if (m[9] > -1.0)
-            {
-                zAngle = Math::ATan2(-m[1], m[5]) * Math::Degree2Radian;
-                xAngle = Math::Asin(m[9]) * Math::Degree2Radian;
-                yAngle = Math::ATan2(-m[8], m[10]) * Math::Degree2Radian;
-                return true;
-            }
-            else
-            {
-                // WARNING.  Not unique.  ZA - YA = -atan(r02,r00)
-                zAngle = -Math::ATan2(m[2], m[0]) * Math::Degree2Radian;
-                xAngle = -Math::HalfPi * Math::Degree2Radian;
-                yAngle = 0.0 * Math::Degree2Radian;
-                return false;
-            }
-        }
-        else
-        {
-            // WARNING.  Not unique.  ZA + YA = atan2(r02,r00)
-            zAngle = Math::ATan2(m[2], m[0]) * Math::Degree2Radian;
-            xAngle = Math::HalfPi * Math::Degree2Radian;
-            yAngle = 0.0 * Math::Degree2Radian;
-            return false;
-        }
-    }
-
-    bool GetRotationZYX(T& zAngle, T& yAngle, T& xAngle) const
-    {
-        // rot =  cy*cz           cz*sx*sy-cx*sz  cx*cz*sy+sx*sz
-        //        cy*sz           cx*cz+sx*sy*sz -cz*sx+cx*sy*sz
-        //       -sy              cy*sx           cx*cy
-
-        if (m[8] < 1.0)
-        {
-            if (m[8] > -1.0)
-            {
-                zAngle = Math::ATan2(m[4], m[0]) * Math::Degree2Radian;
-                yAngle = Math::Asin(-m[8]) * Math::Degree2Radian;
-                xAngle = Math::ATan2(m[9], m[10]) * Math::Degree2Radian;
-                return true;
-            }
-            else
-            {
-                // WARNING.  Not unique.  ZA - XA = -atan2(r01,r02)
-                zAngle = -Math::ATan2(m[1], m[2]) * Math::Degree2Radian;
-                yAngle = Math::HalfPi * Math::Degree2Radian;
-                xAngle = 0.0 * Math::Degree2Radian;
-                return false;
-            }
-        }
-        else
-        {
-            // WARNING.  Not unique.  ZA + XA = atan2(-r01,-r02)
-            zAngle = Math::ATan2(-m[1], -m[2]) * Math::Degree2Radian;
-            yAngle = -Math::HalfPi * Math::Degree2Radian;
-            xAngle = 0.0 * Math::Degree2Radian;
-            return false;
-        }
     }
 
     static const TMatrix4 Zero;

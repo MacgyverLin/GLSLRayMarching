@@ -73,7 +73,7 @@ public:
 	Vector2 Rotate(float angle, const Vector2& hand)
 	{
 		Matrix4 m;
-		m.SetRotateZ(angle);
+		m.SetEulerAngleZ(angle);
 
 		Vector3 r = m * Vector3(hand.X(), hand.Y(), 0.0);
 		return Vector2(r.X(), r.Y());

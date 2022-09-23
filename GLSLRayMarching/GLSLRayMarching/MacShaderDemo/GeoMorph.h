@@ -441,7 +441,7 @@ public:
 		shaderProgram.SetUniform2i("splatMapSize", splatMap.GetWidth(), splatMap.GetHeight());
 
 		Matrix4 worldTransform;
-		worldTransform.SetTranslateRotXYZScale(0, -30, 0, 0, 0, 0, 1.0);
+		worldTransform.SetTranslateEulerAngleXYZScale(0, -30, 0, 0, 0, 0, 1.0);
 		shaderProgram.SetUniformMatrix4x4fv("worldTransform", 1, worldTransform);
 
 #define USE_UNIFORM_BLOCK

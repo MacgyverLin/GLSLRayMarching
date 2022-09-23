@@ -4,7 +4,6 @@
 #include "Platform.h"
 #include "Vector3.h"
 #include "Matrix4.h"
-#include <vector>
 
 /**
 * Frame3 is a base class for describing tree structure of the scene graph.
@@ -27,10 +26,28 @@ public:
 	*/
 	virtual ~Frame3();
 
+	/**
+	* Set all element of of the local transform as 0
+	*/
+	void Set(const Matrix4& mat);
+
+	/**
+	* Set all element of the local transform
+	*/
+	void Set(float m00, float m01, float m02, float m03,
+		float m10, float m11, float m12, float m13,
+		float m20, float m21, float m22, float m23,
+		float m30, float m31, float m32, float m33);
+
+	/**
+	* Set all element of the local transform
+	*/
+	void Set(const float entry[16], bool rowMajor = true);
+
 	// init
-		/**
-		* Set all element of of the local transform as 0
-		*/
+	/**
+	* Set all element of of the local transform as 0
+	*/
 	void SetZero();
 
 	/**
@@ -50,19 +67,19 @@ public:
 	* Set the Frame3's local transform rotation around X Axis
 	* @param x, float, rotation in radian
 	*/
-	void SetRotateX(float x);
+	void SetEulerAngleX(float angle);
 
 	/**
 	* Set the Frame3's local transform rotation around Y Axis
 	* @param y, float, rotation in radian
 	*/
-	void SetRotateY(float y);
+	void SetEulerAngleY(float angle);
 
 	/**
 	* Set the Frame3's local transform rotation around Z Axis
 	* @param z, float, rotation in radian
 	*/
-	void SetRotateZ(float z);
+	void SetEulerAngleZ(float angle);
 
 	/**
 	* Set the Frame3's local transform rotation around Y Axis, X Axis, Z Axis consecutively
@@ -70,7 +87,7 @@ public:
 	* @param x, float, rotation around X Axis in radian
 	* @param y, float, rotation around Y Axis in radian
 	*/
-	void SetRotateZXY(float z, float x, float y);
+	void SetEulerAngleXYZ(float xAngle, float yAngle, float zAngle);
 
 	/**
 	* Set the Frame3's local transform rotation around Z Axis, Y Axis, X Axis consecutively
@@ -78,14 +95,46 @@ public:
 	* @param y, float, rotation around Y Axis in radian
 	* @param x, float, rotation around X Axis in radian
 	*/
-	void SetRotateZYX(float z, float y, float x);
+	void SetEulerAngleXZY(float xAngle, float zAngle, float yAngle);
 
 	/**
 	* Set the Frame3's local transform rotation about an axis and an angle in radian
+	* @param z, float, rotation around Z Axis in radian
+	* @param y, float, rotation around Y Axis in radian
+	* @param x, float, rotation around X Axis in radian
+	*/
+	void SetEulerAngleYXZ(float yAngle, float xAngle, float zAngle);
+
+	/**
+	* Set the Frame3's local transform rotation about an axis and an angle in radian
+	* @param z, float, rotation around Z Axis in radian
+	* @param y, float, rotation around Y Axis in radian
+	* @param x, float, rotation around X Axis in radian
+	*/
+	void SetEulerAngleYZX(float yAngle, float zAngle, float xAngle);
+
+	/**
+	* Set the Frame3's local transform rotation about an axis and an angle in radian
+	* @param z, float, rotation around Z Axis in radian
+	* @param y, float, rotation around Y Axis in radian
+	* @param x, float, rotation around X Axis in radian
+	*/
+	void SetEulerAngleZXY(float zAngle, float xAngle, float yAngle);
+
+	/**
+	* Set the Frame3's local transform rotation about an axis and an angle in radian
+	* @param z, float, rotation around Z Axis in radian
+	* @param y, float, rotation around Y Axis in radian
+	* @param x, float, rotation around X Axis in radian
+	*/
+	void SetEulerAngleZYX(float zAngle, float yAngle, float xAngle);
+
+	/**
+	* Set the Frame3's local transform for uniform scale
 	* @param axis, Vector3, a unit vector for axis of rotation
 	* @param angle, float, rotation around the axis in radian
 	*/
-	void SetRotateAxisAngle(const Vector3& axis, float radian);
+	void SetAxisAngle(const Vector3& axis, float angle);
 
 	/**
 	* Set the Frame3's local transform for uniform scale
@@ -111,7 +160,7 @@ public:
 	* @param ry, float, rotation around Y Axis in radian
 	* @param scale, float, the uniform scale in all direction
 	*/
-	void SetTranslateRotZXYScale(float tx, float ty, float tz, float rz, float rx, float ry, float scale);
+	void SetTranslateEulerAngleXYZScale(float tx, float ty, float tz, float rx, float ry, float rz, float scale);
 
 	/**
 	* Set the Frame3's local transform. First by scale, then rotation around Z Axis, Y Axis, X Axis consecutively, then translate
@@ -123,7 +172,7 @@ public:
 	* @param rx, float, rotation around X Axis in radian
 	* @param scale, float, the uniform scale in all direction
 	*/
-	void SetTranslateRotZYXScale(float tx, float ty, float tz, float rz, float ry, float rx, float scale);
+	void SetTranslateEulerAngleXZYScale(float tx, float ty, float tz, float rx, float rz, float ry, float scale);
 
 	/**
 	* Set the Frame3's local transform. First by scale, then rotate about an axis and an angle in radian, then translate
@@ -134,8 +183,52 @@ public:
 	* @param angle, float, rotation around the axis in radian
 	* @param scale, float, the uniform scale in all direction
 	*/
-	void SetTranslateRotateAxisAngleScale(float tx, float ty, float tz, const Vector3& axis, const float angle, float scale);
+	void SetTranslateEulerAngleYXZScale(float tx, float ty, float tz, float ry, float rx, float rz, float scale);
 
+	/**
+	* Set the Frame3's local transform. First by scale, then rotate about an axis and an angle in radian, then translate
+	* @param tx, float, translation in X direction
+	* @param ty, float, translation in Y direction
+	* @param tz, float, translation in Z direction
+	* @param axis, Vector3, a unit vector for axis of rotation
+	* @param angle, float, rotation around the axis in radian
+	* @param scale, float, the uniform scale in all direction
+	*/
+	void SetTranslateEulerAngleYZXScale(float tx, float ty, float tz, float ry, float rz, float rx, float scale);
+
+	/**
+	* Set the Frame3's local transform. First by scale, then rotate about an axis and an angle in radian, then translate
+	* @param tx, float, translation in X direction
+	* @param ty, float, translation in Y direction
+	* @param tz, float, translation in Z direction
+	* @param axis, Vector3, a unit vector for axis of rotation
+	* @param angle, float, rotation around the axis in radian
+	* @param scale, float, the uniform scale in all direction
+	*/
+	void SetTranslateEulerAngleZXYScale(float tx, float ty, float tz, float rz, float rx, float ry, float scale);
+
+	/**
+	* Set the Frame3's local transform. First by scale, then rotate about an axis and an angle in radian, then translate
+	* @param tx, float, translation in X direction
+	* @param ty, float, translation in Y direction
+	* @param tz, float, translation in Z direction
+	* @param axis, Vector3, a unit vector for axis of rotation
+	* @param angle, float, rotation around the axis in radian
+	* @param scale, float, the uniform scale in all direction
+	*/
+	void SetTranslateEulerAngleZYXScale(float tx, float ty, float tz, float rz, float ry, float rx, float scale);
+
+	/**
+	* Set the Frame3's local transform for uniform scale
+	* @param tx, float, translation in X direction
+	* @param ty, float, translation in Y direction
+	* @param tz, float, translation in Z direction
+	* @param axis, Vector3, a unit vector for axis of rotation
+	* @param angle, float, rotation around the axis in radian
+	* @param scale, float, the uniform scale in all direction* 
+	*/
+	void SetTranslateAxisAngleScale(float tx, float ty, float tz, const Vector3& axis, float angle, float scale);
+	
 	/**
 	* Set the Frame3's local transform. First by scale, then translate
 	* @param tx, float, translation in X direction
@@ -151,7 +244,7 @@ public:
 	* @param target, Vector3, Observer's target
 	* @param up, Vector3, upward direction
 	*/
-	void SetLookAt(const Vector3& position, const Vector3& target, const Vector3& up);
+	void SetLookAt(const Vector3& position, const Vector3& objective, const Vector3& up);
 
 	/**
 	* Set the Frame3's local transform. Look At objective from position, head point up, then uniformly scale
@@ -160,7 +253,7 @@ public:
 	* @param up, Vector3, upward direction
 	* @param scale, float, the uniform scale
 	*/
-	void SetLookAtScale(const Vector3& position, const Vector3& target, const Vector3& up, float scale);
+	void SetLookAtScale(const Vector3& position, const Vector3& objective, const Vector3& up, float scale);
 
 	/**
 	* Set the Frame3's local transform. Stand on a surface with normal vector up. Look At objective from position
@@ -168,7 +261,7 @@ public:
 	* @param target, Vector3, Observer's target
 	* @param up, Vector3, upward direction the Observer stand on
 	*/
-	void SetStandOn(const Vector3& position, const Vector3& target, const Vector3& up);
+	void SetStandOn(const Vector3& position, const Vector3& objective, const Vector3& up);
 
 	/**
 	* Set the Frame3's local transform. Stand on a surface with normal vector up. Look At objective from position, then uniformly scale
@@ -178,12 +271,12 @@ public:
 	* @param scale, float, the uniform scale
 	*/
 	void SetStandOnScale(const Vector3& position, const Vector3& objective, const Vector3& up, float scale);
-	// setter
 
-		/**
-		* Set the Frame3's local transform by directly setting the Local Transform Matrix
-		* @param localtransform_, Matrix4, the local transform
-		*/
+	// setter
+	/**
+	* Set the Frame3's local transform by directly setting the Local Transform Matrix
+	* @param localtransform_, Matrix4, the local transform
+	*/
 	void SetLocalTransform(const Matrix4& localtransform_);
 
 	/**
@@ -205,10 +298,10 @@ public:
 	void SetGlobalPosition(const Vector3& globalposition_);
 	// getter
 
-		/**
-		* Get the Frame3's local transform
-		* @return const Matrix4 &, the global transform
-		*/
+	/**
+	* Get the Frame3's local transform
+	* @return const Matrix4 &, the global transform
+	*/
 	const Matrix4& GetLocalTransform() const;
 
 	/**

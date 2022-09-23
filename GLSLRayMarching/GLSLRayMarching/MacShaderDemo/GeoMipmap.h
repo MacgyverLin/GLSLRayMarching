@@ -703,7 +703,7 @@ public:
 #define USE_UNIFORM_BLOCK
 #ifdef USE_UNIFORM_BLOCK
 		Matrix4 worldTransform;
-		worldTransform.SetTranslateRotXYZScale(0, -30, 0, 0, 0, 0, 1.0);
+		worldTransform.SetTranslateEulerAngleXYZScale(0, -30, 0, 0, 0, 0, 1.0);
 		shaderProgram.SetUniformMatrix4x4fv("worldTransform", 1, worldTransform);
 
 		TransformData transformData;
@@ -825,7 +825,7 @@ public:
 #define USE_UNIFORM_BLOCK
 #ifdef USE_UNIFORM_BLOCK
 		Matrix4 worldTransform;
-		worldTransform.SetTranslateRotXYZScale(0, -30, 0, 0, 0, 0, 1.0);
+		worldTransform.SetTranslateEulerAngleXYZScale(0, -30, 0, 0, 0, 0, 1.0);
 		shaderProgram.SetUniformMatrix4x4fv("worldTransform", 1, worldTransform);
 
 		TransformData transformData;

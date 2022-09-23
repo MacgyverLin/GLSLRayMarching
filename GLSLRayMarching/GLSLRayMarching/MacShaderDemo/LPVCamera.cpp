@@ -157,19 +157,19 @@ bool LPVCamera::Update()
 			{
 				// Rotate around global up (0, 1, 0)
 				Matrix4 yRot = Matrix4();
-				yRot.SetRotateY(-dx * this->rotationSpeed);
+				yRot.SetEulerAngleY(-dx * this->rotationSpeed);
 
 				// Rotate around local right-axis
 				Vector3 rightAxis(1, 0, 0);
 				vec3transformQuat(rightAxis, rightAxis, this->orientation);
 				Matrix4 xRot = Matrix4();
-				xRot.SetRotateAxisAngle(rightAxis, -dy * this->rotationSpeed);
+				xRot.SetAxisAngle(rightAxis, -dy * this->rotationSpeed);
 
 				// Rotate around local forward-axis
 				Vector3 forwardAxis(0, 0, -1);
 				vec3transformQuat(forwardAxis, forwardAxis, this->orientation);
 				Matrix4 zRot = Matrix4();
-				zRot.SetRotateAxisAngle(forwardAxis, dz * this->rotationSpeed * 2.0);
+				zRot.SetAxisAngle(forwardAxis, dz * this->rotationSpeed * 2.0);
 
 				// Apply rotation
 				quatmultiply(this->orientation, yRot, this->orientation);

@@ -14,7 +14,43 @@ Frame3::~Frame3()
 {
 }
 
-// init
+void Frame3::Set(const Matrix4& mat)
+{
+	localTransform = mat;
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::Set(float m00, float m01, float m02, float m03,
+					 float m10, float m11, float m12, float m13,
+					 float m20, float m21, float m22, float m23,
+					 float m30, float m31, float m32, float m33)
+{
+	localTransform.Set
+	(
+		m00, m01, m02, m03,
+		m10, m11, m12, m13,
+		m20, m21, m22, m23,
+		m30, m31, m32, m33
+	);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::Set(const float entry[16], bool rowMajor)
+{
+	localTransform = Matrix4
+	(
+		entry,
+		rowMajor
+	);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
 void Frame3::SetZero()
 {
 	localTransform.SetZero();
@@ -39,49 +75,81 @@ void Frame3::SetTranslate(float x, float y, float z)
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetRotateX(float angle)
+void Frame3::SetEulerAngleX(float angle)
 {
-	localTransform.SetRotateX(angle);
+	localTransform.SetEulerAngleX(angle);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetRotateY(float angle)
+void Frame3::SetEulerAngleY(float angle)
 {
-	localTransform.SetRotateY(angle);
+	localTransform.SetEulerAngleY(angle);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetRotateZ(float angle)
+void Frame3::SetEulerAngleZ(float angle)
 {
-	localTransform.SetRotateZ(angle);
+	localTransform.SetEulerAngleZ(angle);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetRotateZXY(float z, float x, float y)
+void Frame3::SetEulerAngleXYZ(float xAngle, float yAngle, float zAngle)
 {
-	localTransform.SetRotateZXY(z, x, y);
+	localTransform.SetEulerAngleXYZ(xAngle, yAngle, zAngle);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetRotateZYX(float z, float y, float x)
+void Frame3::SetEulerAngleXZY(float xAngle, float zAngle, float yAngle)
 {
-	localTransform.SetRotateZYX(z, y, x);
+	localTransform.SetEulerAngleXZY(xAngle, zAngle, yAngle);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetRotateAxisAngle(const Vector3& axis, float angle)
+void Frame3::SetEulerAngleYXZ(float yAngle, float xAngle, float zAngle)
 {
-	localTransform.SetRotateAxisAngle(axis, angle);
+	localTransform.SetEulerAngleYXZ(yAngle, xAngle, zAngle);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetEulerAngleYZX(float yAngle, float zAngle, float xAngle)
+{
+	localTransform.SetEulerAngleYZX(yAngle, zAngle, xAngle);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetEulerAngleZXY(float zAngle, float xAngle, float yAngle)
+{
+	localTransform.SetEulerAngleZXY(zAngle, xAngle, yAngle);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetEulerAngleZYX(float zAngle, float yAngle, float xAngle)
+{
+	localTransform.SetEulerAngleZYX(zAngle, yAngle, xAngle);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetAxisAngle(const Vector3& axis, float angle)
+{
+	localTransform.SetAxisAngle(axis, angle);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
@@ -103,25 +171,57 @@ void Frame3::SetScale(float x, float y, float z)
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetTranslateRotZXYScale(float tx, float ty, float tz, float rz, float rx, float ry, float scale)
+void Frame3::SetTranslateEulerAngleXYZScale(float tx, float ty, float tz, float rx, float ry, float rz, float scale)
 {
-	localTransform.SetTranslateRotZXYScale(tx, ty, tz, rz, rx, ry, scale);
+	localTransform.SetTranslateEulerAngleXYZScale(tx, ty, tz, rx, ry, rz, scale);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetTranslateRotZYXScale(float tx, float ty, float tz, float rz, float ry, float rx, float scale)
+void Frame3::SetTranslateEulerAngleXZYScale(float tx, float ty, float tz, float rx, float rz, float ry, float scale)
 {
-	localTransform.SetTranslateRotZYXScale(tx, ty, tz, rz, ry, rx, scale);
+	localTransform.SetTranslateEulerAngleXZYScale(tx, ty, tz, rx, rz, ry, scale);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
 }
 
-void Frame3::SetTranslateRotateAxisAngleScale(float tx, float ty, float tz, const Vector3& axis, const float angle, float scale)
+void Frame3::SetTranslateEulerAngleYXZScale(float tx, float ty, float tz, float ry, float rx, float rz, float scale)
 {
-	localTransform.SetTranslateRotateAxisAngleScale(tx, ty, tz, axis, angle, scale);
+	localTransform.SetTranslateEulerAngleYXZScale(tx, ty, tz, ry, rx, rz, scale);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetTranslateEulerAngleYZXScale(float tx, float ty, float tz, float ry, float rz, float rx, float scale)
+{
+	localTransform.SetTranslateEulerAngleYZXScale(tx, ty, tz, ry, rz, rx, scale);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetTranslateEulerAngleZXYScale(float tx, float ty, float tz, float rz, float rx, float ry, float scale)
+{
+	localTransform.SetTranslateEulerAngleZXYScale(tx, ty, tz, rz, rx, ry, scale);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetTranslateEulerAngleZYXScale(float tx, float ty, float tz, float rz, float ry, float rx, float scale)
+{
+	localTransform.SetTranslateEulerAngleZYXScale(tx, ty, tz, rz, ry, rx, scale);
+
+	InValidateGlobal();
+	InValidateGlobalInverse();
+}
+
+void Frame3::SetTranslateAxisAngleScale(float tx, float ty, float tz, const Vector3& axis, float angle, float scale)
+{
+	localTransform.SetTranslateAxisAngleScale(tx, ty, tz, axis, angle, scale);
 
 	InValidateGlobal();
 	InValidateGlobalInverse();
@@ -294,7 +394,7 @@ Matrix4 Frame3::GetInverseGlobalTransform()
 {
 	ValidateGlobal();
 	ValidateGlobalInverse();
-	
+
 	return globalTransformInverse;
 }
 
@@ -327,7 +427,7 @@ bool Frame3::IsValidGlobal()
 
 void Frame3::ValidateGlobalInverse()
 {
-	if( validGlobalInverse )
+	if (validGlobalInverse)
 		return;
 
 	globalTransformInverse = GetGlobalTransform().Inverse();
@@ -337,7 +437,7 @@ void Frame3::ValidateGlobalInverse()
 void Frame3::InValidateGlobalInverse()
 {
 	validGlobalInverse = false;
-	for (int i=0; i<children.size(); i++)
+	for (int i = 0; i < children.size(); i++)
 	{
 		children[i]->InValidateGlobalInverse();
 	}
