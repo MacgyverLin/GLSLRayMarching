@@ -1,5 +1,5 @@
-#ifndef _Primitives_h_
-#define _Primitives_h_
+#ifndef _VertexBuffer_h_
+#define _VertexBuffer_h_
 
 #include "Platform.h"
 #include <map>
