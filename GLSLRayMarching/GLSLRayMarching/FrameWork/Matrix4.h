@@ -38,10 +38,10 @@ public:
         memcpy(m, mat.m, uiSize);
     }
 
-    TMatrix4(T m00, T m01, T m02, T m03,
-        T m10, T m11, T m12, T m13,
-        T m20, T m21, T m22, T m23,
-        T m30, T m31, T m32, T m33)
+    TMatrix4(const T& m00, const T& m01, const T& m02, const T& m03,
+             const T& m10, const T& m11, const T& m12, const T& m13,
+             const T& m20, const T& m21, const T& m22, const T& m23,
+             const T& m30, const T& m31, const T& m32, const T& m33)
     {
         m[0] = m00;
         m[1] = m01;
@@ -70,30 +70,18 @@ public:
         }
         else
         {
-            m[0] = entry[0];
-            m[1] = entry[4];
-            m[2] = entry[8];
-            m[3] = entry[12];
-            m[4] = entry[1];
-            m[5] = entry[5];
-            m[6] = entry[9];
-            m[7] = entry[13];
-            m[8] = entry[2];
-            m[9] = entry[6];
-            m[10] = entry[10];
-            m[11] = entry[14];
-            m[12] = entry[3];
-            m[13] = entry[7];
-            m[14] = entry[11];
-            m[15] = entry[15];
+            m[ 0] = entry[0]; m[ 1] = entry[4]; m[ 2] = entry[ 8]; m[ 3] = entry[12];
+            m[ 4] = entry[1]; m[ 5] = entry[5]; m[ 6] = entry[ 9]; m[ 7] = entry[13];
+            m[ 8] = entry[2]; m[ 9] = entry[6]; m[10] = entry[10]; m[11] = entry[14];
+            m[12] = entry[3]; m[13] = entry[7]; m[14] = entry[11]; m[15] = entry[15];
         }
     }
 
     // input Mrc is in row r, column c.
-    void Set(T m00, T m01, T m02, T m03,
-        T m10, T m11, T m12, T m13,
-        T m20, T m21, T m22, T m23,
-        T m30, T m31, T m32, T m33)
+    void Set(const T& m00, const T& m01, const T& m02, const T& m03,
+             const T& m10, const T& m11, const T& m12, const T& m13,
+             const T& m20, const T& m21, const T& m22, const T& m23,
+             const T& m30, const T& m31, const T& m32, const T& m33)
     {
         m[0] = m00; m[1] = m01; m[2] = m02; m[3] = m03;
         m[4] = m10; m[5] = m11; m[6] = m12; m[7] = m13;
@@ -115,7 +103,7 @@ public:
         m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
     }
 
-    void SetTranslate(T x, T y, T z)
+    void SetTranslate(const T& x, const T& y, const T& z)
     {
         m[0] = 1; m[1] = 0; m[2] = 0; m[3] = x;
         m[4] = 0; m[5] = 1; m[6] = 0; m[7] = y;
@@ -123,7 +111,7 @@ public:
         m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
     }
 
-    void SetRotateX(T angle)
+    void SetRotateX(const T& angle)
     {
         SetIdentity();
 
@@ -137,7 +125,7 @@ public:
         m[10] = cosine;
     }
 
-    void SetRotateY(T angle)
+    void SetRotateY(const T& angle)
     {
         SetIdentity();
 
@@ -151,7 +139,7 @@ public:
         m[10] = cosine;
     }
 
-    void SetRotateZ(T angle)
+    void SetRotateZ(const T& angle)
     {
         SetIdentity();
 
@@ -165,17 +153,17 @@ public:
         m[5] = cosine;
     }
 
-    void SetRotateZXY(T zAngle, T xAngle, T yAngle)
+    void SetRotateZXY(const T& zAngle, const T& xAngle, const T& yAngle)
     {
         SetTranslateRotZXYScale(0, 0, 0, zAngle, xAngle, yAngle, 1);
     }
 
-    void SetRotateZYX(T zAngle, T yAngle, T xAngle)
+    void SetRotateZYX(const T& zAngle, const T& yAngle, const T& xAngle)
     {
         SetTranslateRotZYXScale(0, 0, 0, zAngle, yAngle, xAngle, 1);
     }
 
-    void SetRotateAxisAngle(const TVector3<T>& axis, T angle)
+    void SetRotateAxisAngle(const TVector3<T>& axis, const T& angle)
     {
         SetIdentity();
 
@@ -206,12 +194,12 @@ public:
         m[10] = z2 * oneMinusCos + cos;
     }
 
-    void SetScale(T scale)
+    void SetScale(const T& scale)
     {
         SetScale(scale, scale, scale);
     }
 
-    void SetScale(T x, T y, T z)
+    void SetScale(const T& x, const T& y, const T& z)
     {
         SetIdentity();
 
@@ -220,7 +208,7 @@ public:
         m[10] = z;
     }
 
-    void SetTranslateRotZXYScale(T tx, T ty, T tz, T rz, T rx, T ry, T scale)
+    void SetTranslateRotZXYScale(const T& tx, const T& ty, const T& tz, const T& rz, const T& rx, const T& ry, const T& scale)
     {
         SetRotationZXY(rz, rx, ry);
 
@@ -241,7 +229,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotZYXScale(T tx, T ty, T tz, T rz, T ry, T rx, T scale)
+    void SetTranslateRotZYXScale(const T& tx, const T& ty, const T& tz, const T& rz, const T& ry, const T& rx, const T& scale)
     {
         SetRotationZYX(rz, ry, rx);
 
@@ -262,7 +250,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotYXZScale(T tx, T ty, T tz, T ry, T rx, T rz, T scale)
+    void SetTranslateRotYXZScale(const T& tx, const T& ty, const T& tz, const T& ry, const T& rx, const T& rz, const T& scale)
     {
         SetRotationYXZ(ry, rx, rz);
 
@@ -283,7 +271,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotYZXScale(T tx, T ty, T tz, T ry, T rz, T rx, T scale)
+    void SetTranslateRotYZXScale(const T& tx, const T& ty, const T& tz, const T& ry, const T& rz, const T& rx, const T& scale)
     {
         SetRotationYZX(ry, rz, rx);
 
@@ -304,7 +292,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotXYZScale(T tx, T ty, T tz, T rx, T ry, T rz, T scale)
+    void SetTranslateRotXYZScale(const T& tx, const T& ty, const T& tz, const T& rx, const T& ry, const T& rz, const T& scale)
     {
         SetRotationXYZ(rx, ry, rz);
 
@@ -325,7 +313,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotXZYScale(T tx, T ty, T tz, T rx, T rz, T ry, T scale)
+    void SetTranslateRotXZYScale(const T& tx, const T& ty, const T& tz, const T& rx, const T& rz, const T& ry, const T& scale)
     {
         SetRotationXZY(rx, rz, ry);
 
@@ -346,7 +334,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotateAxisAngleScale(T tx, T ty, T tz, const TVector3<T>& axis, const T angle, T scale)
+    void SetTranslateRotateAxisAngleScale(const T& tx, const T& ty, const T& tz, const TVector3<T>& axis, const T& angle, const T& scale)
     {
         SetRotateAxisAngle(axis, angle);
 
@@ -367,7 +355,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateScale(T tx, T ty, T tz, T scale)
+    void SetTranslateScale(const T& tx, const T& ty, const T& tz, const T& scale)
     {
         SetScale(scale);
 
@@ -381,7 +369,7 @@ public:
         SetLookAtScale(position, objective, up, 1);
     }
 
-    void SetLookAtScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, T scale)
+    void SetLookAtScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, const T& scale)
     {
         // Right Hand
         TVector3<T> zaxis = position - objective; zaxis.Normalize();
@@ -415,7 +403,7 @@ public:
         SetStandOnScale(position, objective, up, 1);
     }
 
-    void SetStandOnScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, T scale)
+    void SetStandOnScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, const T& scale)
     {
         Vector3 yaxis = up; yaxis.Normalize();
         Vector3 zaxis = position - objective;
@@ -444,12 +432,12 @@ public:
         m[15] = 1;
     }
 
-    void SetPerspective(T w, T h, T n, T f)
+    void SetPerspective(const T& w, const T& h, const T& n, const T& f)
     {
         SetPerspectiveOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
     }
 
-    void SetPerspectiveFov(T fovY, T aspect, T n, T f)
+    void SetPerspectiveFov(const T& fovY, const T& aspect, const T& n, const T& f)
     {
         assert(fovY < 180);
 
@@ -461,7 +449,7 @@ public:
         SetPerspectiveOffCenter(-r, r, -t, t, n, f);
     }
 
-    void SetPerspectiveOffCenter(T l, T r, T b, T t, T n, T f)
+    void SetPerspectiveOffCenter(const T& l, const T& r, const T& b, const T& t, const T& n, const T& f)
     {
         m[0] = 2 * n / (r - l);
         m[1] = 0;
@@ -484,12 +472,12 @@ public:
         m[15] = 0;
     }
 
-    void SetOrthogonal(T w, T h, T n, T f)
+    void SetOrthogonal(const T& w, const T& h, const T& n, const T& f)
     {
         SetOrthogonalOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
     }
 
-    void SetOrthogonalOffCenter(T l, T r, T b, T t, T n, T f)
+    void SetOrthogonalOffCenter(const T& l, const T& r, const T& b, const T& t, const T& n, const T& f)
     {
         m[0] = 2 / (r - l);
         m[1] = 0;
@@ -721,7 +709,7 @@ public:
         return result;
     }
 
-    TMatrix4 operator* (T scale) const
+    TMatrix4 operator* (const T& scale) const
     {
         TMatrix4 result;
         for (int i = 0; i < 16; i++)
@@ -731,7 +719,7 @@ public:
         return result;
     }
 
-    TMatrix4 operator/ (T scale) const
+    TMatrix4 operator/ (const T& scale) const
     {
         TMatrix4 result;
         int i;
@@ -783,7 +771,7 @@ public:
         return *this;
     }
 
-    TMatrix4& operator*= (T scalar)
+    TMatrix4& operator*= (const T& scalar)
     {
         for (int i = 0; i < 16; i++)
         {
@@ -792,7 +780,7 @@ public:
         return *this;
     }
 
-    TMatrix4& operator/= (T scalar)
+    TMatrix4& operator/= (const T& scalar)
     {
         int i;
 
@@ -998,29 +986,29 @@ public:
         return u.Dot((*this) * v);
     }
 
-    void SetRotationXYZ(T xAngle, T yAngle, T zAngle)
+    void SetRotationXYZ(const T& xAngle, const T& yAngle, const T& zAngle)
     {
-        xAngle *= Math::Degree2Radian;
-        yAngle *= Math::Degree2Radian;
-        zAngle *= Math::Degree2Radian;
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
 
         T fCos, fSin;
-        fCos = Math::Cos(xAngle);
-        fSin = Math::Sin(xAngle);
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
                       0.0, fCos, -fSin, 0.0,
                       0.0, fSin, fCos, 0.0,
                       0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(yAngle);
-        fSin = Math::Sin(yAngle);
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
         TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
                       0.0, 1.0, 0.0, 0.0,
                      -fSin, 0.0, fCos, 0.0,
                       0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(zAngle);
-        fSin = Math::Sin(zAngle);
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
         TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
             fSin, fCos, 0.0, 0.0,
             0.0, 0.0, 1.0, 0.0,
@@ -1029,29 +1017,29 @@ public:
         *this = kXMat * kYMat * kZMat;
     }
 
-    void SetRotationXZY(T xAngle, T zAngle, T yAngle)
+    void SetRotationXZY(const T& xAngle, const T& zAngle, const T& yAngle)
     {
-        xAngle *= Math::Degree2Radian;
-        yAngle *= Math::Degree2Radian;
-        zAngle *= Math::Degree2Radian;
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
 
         T fCos, fSin;
-        fCos = Math::Cos(xAngle);
-        fSin = Math::Sin(xAngle);
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
             0.0, fCos, -fSin, 0.0,
             0.0, fSin, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(yAngle);
-        fSin = Math::Sin(yAngle);
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
         TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
             0.0, 1.0, 0.0, 0.0,
             -fSin, 0.0, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(zAngle);
-        fSin = Math::Sin(zAngle);
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
         TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
             fSin, fCos, 0.0, 0.0,
             0.0, 0.0, 1.0, 0.0,
@@ -1062,29 +1050,29 @@ public:
         return *this;
     }
 
-    void SetRotationYXZ(T yAngle, T xAngle, T zAngle)
+    void SetRotationYXZ(const T& yAngle, const T& xAngle, const T& zAngle)
     {
-        xAngle *= Math::Degree2Radian;
-        yAngle *= Math::Degree2Radian;
-        zAngle *= Math::Degree2Radian;
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
 
         T fCos, fSin;
-        fCos = Math::Cos(xAngle);
-        fSin = Math::Sin(xAngle);
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
             0.0, fCos, -fSin, 0.0,
             0.0, fSin, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(yAngle);
-        fSin = Math::Sin(yAngle);
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
         TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
             0.0, 1.0, 0.0, 0.0,
             -fSin, 0.0, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(zAngle);
-        fSin = Math::Sin(zAngle);
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
         TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
             fSin, fCos, 0.0, 0.0,
             0.0, 0.0, 1.0, 0.0,
@@ -1095,22 +1083,22 @@ public:
         return *this;
     }
 
-    void SetRotationYZX(T yAngle, T zAngle, T xAngle)
+    void SetRotationYZX(const T& yAngle, const T& zAngle, const T& xAngle)
     {
-        xAngle *= Math::Degree2Radian;
-        yAngle *= Math::Degree2Radian;
-        zAngle *= Math::Degree2Radian;
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
 
         T fCos, fSin;
-        fCos = Math::Cos(xAngle);
-        fSin = Math::Sin(xAngle);
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
             0.0, fCos, -fSin, 0.0,
             0.0, fSin, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(yAngle);
-        fSin = Math::Sin(yAngle);
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
         TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
             0.0, 1.0, 0.0, 0.0,
             -fSin, 0.0, fCos, 0.0,
@@ -1128,29 +1116,29 @@ public:
         return *this;
     }
 
-    void SetRotationZXY(T zAngle, T xAngle, T yAngle)
+    void SetRotationZXY(const T& zAngle, const T& xAngle, const T& yAngle)
     {
-        xAngle *= Math::Degree2Radian;
-        yAngle *= Math::Degree2Radian;
-        zAngle *= Math::Degree2Radian;
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
 
         T fCos, fSin;
-        fCos = Math::Cos(xAngle);
-        fSin = Math::Sin(xAngle);
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
             0.0, fCos, -fSin, 0.0,
             0.0, fSin, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(yAngle);
-        fSin = Math::Sin(yAngle);
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
         TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
             0.0, 1.0, 0.0, 0.0,
             -fSin, 0.0, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(zAngle);
-        fSin = Math::Sin(zAngle);
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
         TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
             fSin, fCos, 0.0, 0.0,
             0.0, 0.0, 1.0, 0.0,
@@ -1159,29 +1147,29 @@ public:
         *this = kZMat * kXMat * kYMat;
     }
 
-    void SetRotationZYX(T zAngle, T yAngle, T xAngle)
+    void SetRotationZYX(const T& zAngle, const T& yAngle, const T& xAngle)
     {
-        xAngle *= Math::Degree2Radian;
-        yAngle *= Math::Degree2Radian;
-        zAngle *= Math::Degree2Radian;
+        T xAngle1 = xAngle * Math::Degree2Radian;
+        T yAngle1 = yAngle * Math::Degree2Radian;
+        T zAngle1 = zAngle * Math::Degree2Radian;
 
         T fCos, fSin;
-        fCos = Math::Cos(xAngle);
-        fSin = Math::Sin(xAngle);
+        fCos = Math::Cos(xAngle1);
+        fSin = Math::Sin(xAngle1);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
             0.0, fCos, -fSin, 0.0,
             0.0, fSin, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(yAngle);
-        fSin = Math::Sin(yAngle);
+        fCos = Math::Cos(yAngle1);
+        fSin = Math::Sin(yAngle1);
         TMatrix4 kYMat(fCos, 0.0, fSin, 0.0,
             0.0, 1.0, 0.0, 0.0,
             -fSin, 0.0, fCos, 0.0,
             0.0, 0.0, 0.0, 1.0);
 
-        fCos = Math::Cos(zAngle);
-        fSin = Math::Sin(zAngle);
+        fCos = Math::Cos(zAngle1);
+        fSin = Math::Sin(zAngle1);
         TMatrix4 kZMat(fCos, -fSin, 0.0, 0.0,
             fSin, fCos, 0.0, 0.0,
             0.0, 0.0, 1.0, 0.0,
