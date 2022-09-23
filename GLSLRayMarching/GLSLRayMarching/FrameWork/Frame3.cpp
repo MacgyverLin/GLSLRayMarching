@@ -385,9 +385,11 @@ Vector3 Frame3::GetGlobalZAxis()
 {
 	ValidateGlobal();
 
-	return Vector3(globalTransform[0][2],
+	return Vector3
+	(	globalTransform[0][2],
 		globalTransform[1][2],
-		globalTransform[2][2]);
+		globalTransform[2][2]
+	);
 }
 
 Matrix4 Frame3::GetInverseGlobalTransform()
