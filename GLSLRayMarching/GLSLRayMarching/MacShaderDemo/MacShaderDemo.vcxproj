@@ -114,8 +114,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FrameWork.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/zlib/build/Debug; ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FrameWork.lib; zlibd.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -159,7 +159,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FrameWork.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FrameWork.lib; zlibd.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -172,6 +172,14 @@
     <ClCompile Include="LightFieldCamera.cpp" />
     <ClCompile Include="LightFieldComponent.cpp" />
     <ClCompile Include="LightFieldRendererScene.cpp" />
+    <ClCompile Include="LPVCamera.cpp" />
+    <ClCompile Include="LPVCommon.cpp" />
+    <ClCompile Include="LPVDirectionLight.cpp" />
+    <ClCompile Include="LPVLight.cpp" />
+    <ClCompile Include="LPVMtlLoader.cpp" />
+    <ClCompile Include="LPVObjLoader.cpp" />
+    <ClCompile Include="LPVShaderLoader.cpp" />
+    <ClCompile Include="LPVSpotLight.cpp" />
     <ClCompile Include="n-sided-polygon.cpp" />
     <ClCompile Include="phase-detection-autofocus.cpp" />
     <ClCompile Include="quad.cpp" />
@@ -203,6 +211,14 @@
     <ClInclude Include="LightFieldCamera.h" />
     <ClInclude Include="LightFieldComponent.h" />
     <ClInclude Include="LightFieldRendererScene.h" />
+    <ClInclude Include="LPVCamera.h" />
+    <ClInclude Include="LPVCommon.h" />
+    <ClInclude Include="LPVDirectionLight.h" />
+    <ClInclude Include="LPVLight.h" />
+    <ClInclude Include="LPVMtlLoader.h" />
+    <ClInclude Include="LPVObjLoader.h" />
+    <ClInclude Include="LPVShaderLoader.h" />
+    <ClInclude Include="LPVSpotLight.h" />
     <ClInclude Include="n-sided-polygon.h" />
     <ClInclude Include="quad.h" />
     <ClInclude Include="shader.h" />

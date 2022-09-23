@@ -259,16 +259,18 @@ Vector2 Input::Manager::GetMouseMovement()
 	return Vector2(Platform::GetMouseDX(), Platform::GetMouseDY());
 }
 
-/*
-// Retrieves a list of input device names corresponding to the index of an Axis configured within Input Manager.
-//const std::vector<std::string>& Input::Manager::GetJoystickNames()
-// Touch GetTouch(int index);									// Call Input.GetTouch to obtain a Touch struct.
-const Input::AccelerationEvent& Input::Manager::GetAccelerationEvent(int i) const
+void Input::Manager::AddEventListener(const char* name, EventCallBack eventCallBack)
 {
-	// Returns specific acceleration measurement which occurred during last frame. (Does not allocate temporary variables).
-	return accelerationEvents[i];
+	eventCallBacksMap[name].push_back(&eventCallBack);
 }
-*/
+
+void Input::Manager::RemoveEventListener(EventCallBack eventCallBack)
+{
+	for (auto& eventCallBacks : eventCallBacksMap)
+	{
+		eventCallBacks.second.remove(&eventCallBack);
+	}
+}
 
 bool Input::Manager::Initialize()
 {
@@ -277,6 +279,15 @@ bool Input::Manager::Initialize()
 
 bool Input::Manager::Update()
 {
+	for (auto& eventCallBacks : eventCallBacksMap)
+	{
+		for (auto& eventCallBack : eventCallBacks.second)
+		{
+			Input::Event e;
+			(*eventCallBack)(e);
+		}
+	}
+
 	return true;
 }
 

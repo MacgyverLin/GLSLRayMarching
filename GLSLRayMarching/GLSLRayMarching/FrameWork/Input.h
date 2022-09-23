@@ -163,18 +163,6 @@ public:
 	// static bool touchSupported;											// Returns whether the device on which application is currently running supports touch input.
 	*/
 
-	class AccelerationEvent
-	{
-	public:
-		Vector3 acceleration;
-		float deltaTime;
-	};
-
-	class Touch
-	{
-	public:
-	};
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	Input();
 	Input(const std::string& name_,
@@ -225,6 +213,17 @@ private:
 public:
 	class Service;
 
+	class Event
+	{
+	public:
+		float x;
+		float y;
+		int keyCode;
+		int scanCode;
+		int action;
+		int mods;
+	};
+
 	class Manager
 	{
 		friend class Input;
@@ -256,8 +255,11 @@ public:
 
 		const std::vector<std::string>& GetJoystickNames();				// Retrieves a list of input device axisNames corresponding to the index of an Axis configured within Input Manager.
 
-		// Touch GetTouch(int index);									// Call Input.GetTouch to obtain a Touch struct.
-		// const AccelerationEvent& GetAccelerationEvent(int i) const;		// Returns specific acceleration measurement which occurred during last frame. (Does not allocate temporary variables).
+		typedef std::function<void(const Input::Event&)> EventCallBack;
+		typedef std::list<EventCallBack *> EventCallBacks;
+
+		void AddEventListener(const char *name, EventCallBack eventCallBack);
+		void RemoveEventListener(EventCallBack eventCallBack);
 	private:
 		bool Initialize();
 		bool Update();
@@ -266,7 +268,8 @@ public:
 		void Terminate();
 	private:
 		std::map<const char*, Input> inputs;
-		std::vector<AccelerationEvent> accelerationEvents;
+
+		std::map<const char*, EventCallBacks> eventCallBacksMap;
 	};
 
 	///////////////////////////////////////////////////////////////////////

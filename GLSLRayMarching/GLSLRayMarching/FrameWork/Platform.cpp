@@ -327,6 +327,27 @@ std::map<int, Platform::KeyCode> glfwMouseKeyCode2keyCodes =
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	Platform::InputEvent e;
+
+	if (action == 1)
+	{
+		e.x = 0;
+		e.y = 0;
+		e.keyCode = key;
+		e.scanCode = key;
+		e.action = 1;
+		e.mods = mods;
+	}
+	if (action == 0)
+	{
+		e.x = 0;
+		e.y = 0;
+		e.keyCode = key;
+		e.scanCode = key;
+		e.action = 2;
+		e.mods = mods;
+	}
+
 	/*
 	auto itr = glfwKeyCode2keyCodes.find(key);
 	if (itr != glfwKeyCode2keyCodes.end())
@@ -343,6 +364,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			keystates[idx] = 0x04;
 	}
 	*/
+	// Debug("%d %d %d %d\n", key, scancode, action, mods);
 }
 
 std::vector<Platform::KeyCode> mouseButtonCodeMaps =
@@ -356,9 +378,31 @@ std::vector<Platform::KeyCode> mouseButtonCodeMaps =
 	Platform::KeyCode::Mouse6,
 };
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+std::vector<Platform::InputEvent> inputEvents;
+
+void mouse_button_callback(GLFWwindow* window, int key, int action, int mods)
 {
-	/*
+	Platform::InputEvent e;
+
+	if (action == 1)
+	{
+		e.x = 0;
+		e.y = 0;
+		e.keyCode = key;
+		e.scanCode = key;
+		e.action = 1;
+		e.mods = mods;
+	}
+	if (action == 0)
+	{
+		e.x = 0;
+		e.y = 0;
+		e.keyCode = key;
+		e.scanCode = key;
+		e.action = 2;
+		e.mods = mods;
+	}
+		/*
 	if (button < mouseButtonCodeMaps.size())
 	{
 		int idx = (int)mouseButtonCodeMaps[button];
@@ -371,6 +415,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			keystates[idx] = 0x02;
 	}
 	*/
+	// Debug("%d %d %d", button, action, mods);
 }
 
 void joystick_callback(int jid, int event)
@@ -425,8 +470,10 @@ bool Platform::Instantiate(int width_, int height_, const char* appName_, const 
 	glfwMakeContextCurrent((GLFWwindow*)handle);
 	glfwSetErrorCallback(glfw_error_callback);
 	glfwSetFramebufferSizeCallback((GLFWwindow*)handle, (void (*)(GLFWwindow*, int, int))(framebuffer_size_callback));
-	//glfwSetKeyCallback((GLFWwindow*)handle, key_callback);
-	//glfwSetMouseButtonCallback((GLFWwindow*)handle, mouse_button_callback);
+	
+	glfwSetKeyCallback((GLFWwindow*)handle, key_callback);
+	glfwSetMouseButtonCallback((GLFWwindow*)handle, mouse_button_callback);
+
 	glfwSetJoystickCallback(joystick_callback);
 	glfwSetDropCallback((GLFWwindow*)handle, drop_callback);
 

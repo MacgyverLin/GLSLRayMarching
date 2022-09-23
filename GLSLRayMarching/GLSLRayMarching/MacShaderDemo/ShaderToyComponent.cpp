@@ -79,7 +79,7 @@ public:
 		UpdateKey(Platform::KeyCode::LeftAlt);
 		UpdateKey(Platform::KeyCode::RightAlt);
 
-		Debug("%d\n", buffer[256 * 0 + 98]);
+		//Debug("%d\n", buffer[256 * 0 + 98]);
 
 		Texture2D::Update(&buffer[0]);
 	}

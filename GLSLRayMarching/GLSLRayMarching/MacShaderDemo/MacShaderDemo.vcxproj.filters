@@ -57,6 +57,30 @@
     <ClCompile Include="LightFieldCamera.cpp">
       <Filter>LightFieldRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="LPVDirectionLight.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVLight.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVSpotLight.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVCamera.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVCommon.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVMtlLoader.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVObjLoader.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVShaderLoader.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DefaultScene.h" />
@@ -127,6 +151,30 @@
       <Filter>GeoMorphTerrainScene</Filter>
     </ClInclude>
     <ClInclude Include="TerrainCameraComponent.h" />
+    <ClInclude Include="LPVDirectionLight.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVLight.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVSpotLight.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVCamera.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVCommon.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVMtlLoader.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVObjLoader.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVShaderLoader.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PathTrace">
@@ -149,6 +197,9 @@
     </Filter>
     <Filter Include="GeoMorphTerrainScene">
       <UniqueIdentifier>{0e73d360-6ed2-4e48-9c34-7711ae57c1a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightPropagationVolumesScene">
+      <UniqueIdentifier>{df23f298-f559-4f9d-a89f-ae6bd82a862c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

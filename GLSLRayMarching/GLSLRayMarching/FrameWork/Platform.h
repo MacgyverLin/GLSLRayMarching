@@ -411,6 +411,18 @@ public:
 		float dx;
 		float dy;
 	};
+
+	class InputEvent
+	{
+	public:
+		float x;
+		float y;
+		int keyCode;
+		int scanCode;
+		int action;
+		int mods;
+	};
+
 	static bool Instantiate(int width_, int height_, const char* appName_, const char* InitalizeScene_);
 	static bool PreUpdate();
 	static bool PostUpdate();
