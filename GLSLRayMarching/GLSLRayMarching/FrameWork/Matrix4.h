@@ -90,10 +90,10 @@ public:
     }
 
     // input Mrc is in row r, column c.
-    void Set(float m00, float m01, float m02, float m03,
-        float m10, float m11, float m12, float m13,
-        float m20, float m21, float m22, float m23,
-        float m30, float m31, float m32, float m33)
+    void Set(T m00, T m01, T m02, T m03,
+        T m10, T m11, T m12, T m13,
+        T m20, T m21, T m22, T m23,
+        T m30, T m31, T m32, T m33)
     {
         m[0] = m00; m[1] = m01; m[2] = m02; m[3] = m03;
         m[4] = m10; m[5] = m11; m[6] = m12; m[7] = m13;
@@ -115,7 +115,7 @@ public:
         m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
     }
 
-    void SetTranslate(float x, float y, float z)
+    void SetTranslate(T x, T y, T z)
     {
         m[0] = 1; m[1] = 0; m[2] = 0; m[3] = x;
         m[4] = 0; m[5] = 1; m[6] = 0; m[7] = y;
@@ -123,13 +123,13 @@ public:
         m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
     }
 
-    void SetRotateX(float angle)
+    void SetRotateX(T angle)
     {
         SetIdentity();
 
-        float radian = angle * Math::Degree2Radian;
-        float cosine = Math::Cos(radian);
-        float sine = Math::Sin(radian);
+        T radian = angle * Math::Degree2Radian;
+        T cosine = Math::Cos(radian);
+        T sine = Math::Sin(radian);
 
         m[5] = cosine;
         m[9] = sine;
@@ -137,13 +137,13 @@ public:
         m[10] = cosine;
     }
 
-    void SetRotateY(float angle)
+    void SetRotateY(T angle)
     {
         SetIdentity();
 
-        float radian = angle * Math::Degree2Radian;
-        float cosine = Math::Cos(radian);
-        float sine = Math::Sin(radian);
+        T radian = angle * Math::Degree2Radian;
+        T cosine = Math::Cos(radian);
+        T sine = Math::Sin(radian);
 
         m[0] = cosine;
         m[8] = -sine;
@@ -151,13 +151,13 @@ public:
         m[10] = cosine;
     }
 
-    void SetRotateZ(float angle)
+    void SetRotateZ(T angle)
     {
         SetIdentity();
 
-        float radian = angle * Math::Degree2Radian;
-        float cosine = Math::Cos(radian);
-        float sine = Math::Sin(radian);
+        T radian = angle * Math::Degree2Radian;
+        T cosine = Math::Cos(radian);
+        T sine = Math::Sin(radian);
 
         m[0] = cosine;
         m[4] = sine;
@@ -165,33 +165,33 @@ public:
         m[5] = cosine;
     }
 
-    void SetRotateZXY(float zAngle, float xAngle, float yAngle)
+    void SetRotateZXY(T zAngle, T xAngle, T yAngle)
     {
         SetTranslateRotZXYScale(0, 0, 0, zAngle, xAngle, yAngle, 1);
     }
 
-    void SetRotateZYX(float zAngle, float yAngle, float xAngle)
+    void SetRotateZYX(T zAngle, T yAngle, T xAngle)
     {
         SetTranslateRotZYXScale(0, 0, 0, zAngle, yAngle, xAngle, 1);
     }
 
-    void SetRotateAxisAngle(const TVector3<T>& axis, float angle)
+    void SetRotateAxisAngle(const TVector3<T>& axis, T angle)
     {
         SetIdentity();
 
-        float radian = angle * Math::Degree2Radian;
-        float cos = Math::Cos(-radian);
-        float sin = Math::Sin(-radian);
-        float oneMinusCos = 1.0f - cos;
-        float x2 = axis[0] * axis[0];
-        float y2 = axis[1] * axis[1];
-        float z2 = axis[2] * axis[2];
-        float xyM = axis[0] * axis[1] * oneMinusCos;
-        float xzM = axis[0] * axis[2] * oneMinusCos;
-        float yzM = axis[1] * axis[2] * oneMinusCos;
-        float xSin = axis[0] * sin;
-        float ySin = axis[1] * sin;
-        float zSin = axis[2] * sin;
+        T radian = angle * Math::Degree2Radian;
+        T cos = Math::Cos(-radian);
+        T sin = Math::Sin(-radian);
+        T oneMinusCos = 1.0f - cos;
+        T x2 = axis[0] * axis[0];
+        T y2 = axis[1] * axis[1];
+        T z2 = axis[2] * axis[2];
+        T xyM = axis[0] * axis[1] * oneMinusCos;
+        T xzM = axis[0] * axis[2] * oneMinusCos;
+        T yzM = axis[1] * axis[2] * oneMinusCos;
+        T xSin = axis[0] * sin;
+        T ySin = axis[1] * sin;
+        T zSin = axis[2] * sin;
 
         m[0] = x2 * oneMinusCos + cos;
         m[1] = xyM + zSin;
@@ -206,12 +206,12 @@ public:
         m[10] = z2 * oneMinusCos + cos;
     }
 
-    void SetScale(float scale)
+    void SetScale(T scale)
     {
         SetScale(scale, scale, scale);
     }
 
-    void SetScale(float x, float y, float z)
+    void SetScale(T x, T y, T z)
     {
         SetIdentity();
 
@@ -220,7 +220,7 @@ public:
         m[10] = z;
     }
 
-    void SetTranslateRotZXYScale(float tx, float ty, float tz, float rz, float rx, float ry, float scale)
+    void SetTranslateRotZXYScale(T tx, T ty, T tz, T rz, T rx, T ry, T scale)
     {
         SetRotationZXY(rz, rx, ry);
 
@@ -241,7 +241,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotZYXScale(float tx, float ty, float tz, float rz, float ry, float rx, float scale)
+    void SetTranslateRotZYXScale(T tx, T ty, T tz, T rz, T ry, T rx, T scale)
     {
         SetRotationZYX(rz, ry, rx);
 
@@ -262,7 +262,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotYXZScale(float tx, float ty, float tz, float ry, float rx, float rz, float scale)
+    void SetTranslateRotYXZScale(T tx, T ty, T tz, T ry, T rx, T rz, T scale)
     {
         SetRotationYXZ(ry, rx, rz);
 
@@ -283,7 +283,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotYZXScale(float tx, float ty, float tz, float ry, float rz, float rx, float scale)
+    void SetTranslateRotYZXScale(T tx, T ty, T tz, T ry, T rz, T rx, T scale)
     {
         SetRotationYZX(ry, rz, rx);
 
@@ -304,7 +304,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotXYZScale(float tx, float ty, float tz, float rx, float ry, float rz, float scale)
+    void SetTranslateRotXYZScale(T tx, T ty, T tz, T rx, T ry, T rz, T scale)
     {
         SetRotationXYZ(rx, ry, rz);
 
@@ -325,7 +325,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotXZYScale(float tx, float ty, float tz, float rx, float rz, float ry, float scale)
+    void SetTranslateRotXZYScale(T tx, T ty, T tz, T rx, T rz, T ry, T scale)
     {
         SetRotationXZY(rx, rz, ry);
 
@@ -346,7 +346,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateRotateAxisAngleScale(float tx, float ty, float tz, const TVector3<T>& axis, const float angle, float scale)
+    void SetTranslateRotateAxisAngleScale(T tx, T ty, T tz, const TVector3<T>& axis, const T angle, T scale)
     {
         SetRotateAxisAngle(axis, angle);
 
@@ -367,7 +367,7 @@ public:
         m[11] = tz;
     }
 
-    void SetTranslateScale(float tx, float ty, float tz, float scale)
+    void SetTranslateScale(T tx, T ty, T tz, T scale)
     {
         SetScale(scale);
 
@@ -381,7 +381,7 @@ public:
         SetLookAtScale(position, objective, up, 1);
     }
 
-    void SetLookAtScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, float scale)
+    void SetLookAtScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, T scale)
     {
         // Right Hand
         TVector3<T> zaxis = position - objective; zaxis.Normalize();
@@ -415,7 +415,7 @@ public:
         SetStandOnScale(position, objective, up, 1);
     }
 
-    void SetStandOnScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, float scale)
+    void SetStandOnScale(const TVector3<T>& position, const TVector3<T>& objective, const TVector3<T>& up, T scale)
     {
         Vector3 yaxis = up; yaxis.Normalize();
         Vector3 zaxis = position - objective;
@@ -444,24 +444,24 @@ public:
         m[15] = 1;
     }
 
-    void SetPerspective(float w, float h, float n, float f)
+    void SetPerspective(T w, T h, T n, T f)
     {
         SetPerspectiveOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
     }
 
-    void SetPerspectiveFov(float fovY, float aspect, float n, float f)
+    void SetPerspectiveFov(T fovY, T aspect, T n, T f)
     {
         assert(fovY < 180);
 
-        float radianFovY = fovY * Math::Degree2Radian;
-        float tanHalfFovY = Math::Tan(radianFovY / 2);
-        float t = n * tanHalfFovY;
-        float r = t * aspect;
+        T radianFovY = fovY * Math::Degree2Radian;
+        T tanHalfFovY = Math::Tan(radianFovY / 2);
+        T t = n * tanHalfFovY;
+        T r = t * aspect;
 
         SetPerspectiveOffCenter(-r, r, -t, t, n, f);
     }
 
-    void SetPerspectiveOffCenter(float l, float r, float b, float t, float n, float f)
+    void SetPerspectiveOffCenter(T l, T r, T b, T t, T n, T f)
     {
         m[0] = 2 * n / (r - l);
         m[1] = 0;
@@ -484,12 +484,12 @@ public:
         m[15] = 0;
     }
 
-    void SetOrthogonal(float w, float h, float n, float f)
+    void SetOrthogonal(T w, T h, T n, T f)
     {
         SetOrthogonalOffCenter(-w / 2, w / 2, -h / 2, h / 2, n, f);
     }
 
-    void SetOrthogonalOffCenter(float l, float r, float b, float t, float n, float f)
+    void SetOrthogonalOffCenter(T l, T r, T b, T t, T n, T f)
     {
         m[0] = 2 / (r - l);
         m[1] = 0;
@@ -514,14 +514,14 @@ public:
 
     void Orthonormalize()
     {
-        float invLength = Math::InvSqrt(m[0] * m[0] + m[4] * m[4] + m[8] * m[8]);
+        T invLength = Math::InvSqrt(m[0] * m[0] + m[4] * m[4] + m[8] * m[8]);
 
         m[0] *= invLength;
         m[4] *= invLength;
         m[8] *= invLength;
 
         // Compute q1.
-        float dot0 = m[0] * m[1] + m[4] * m[5] + m[8] * m[9];
+        T dot0 = m[0] * m[1] + m[4] * m[5] + m[8] * m[9];
 
         m[1] -= dot0 * m[0];
         m[5] -= dot0 * m[4];
@@ -534,7 +534,7 @@ public:
         m[9] *= invLength;
 
         // compute q2
-        float dot1 = m[1] * m[2] + m[5] * m[6] + m[9] * m[10];
+        T dot1 = m[1] * m[2] + m[5] * m[6] + m[9] * m[10];
 
         dot0 = m[0] * m[2] + m[4] * m[6] + m[8] * m[10];
 
@@ -549,32 +549,32 @@ public:
         m[10] *= invLength;
     }
 
-    operator const float* () const
+    operator const T* () const
     {
         return m;
     }
 
-    operator float* ()
+    operator T* ()
     {
         return m;
     }
 
-    const float* operator[] (int row) const
+    const T* operator[] (int row) const
     {
         return &m[RowStartIdxs[row]];
     }
 
-    float* operator[] (int row)
+    T* operator[] (int row)
     {
         return &m[RowStartIdxs[row]];
     }
 
-    float operator() (int row, int col) const
+    T operator() (int row, int col) const
     {
         return m[I(row, col)];
     }
 
-    float& operator() (int row, int col)
+    T& operator() (int row, int col)
     {
         return m[I(row, col)];
     }
@@ -619,7 +619,7 @@ public:
         return v;
     }
 
-    void GetColumnMajor(float* columnMajor) const
+    void GetColumnMajor(T* columnMajor) const
     {
         for (int row = 0, i = 0; row < 4; row++)
         {
@@ -736,9 +736,9 @@ public:
         TMatrix4 result;
         int i;
 
-        if (scale != (float)0.0)
+        if (scale != (T)0.0)
         {
-            float invScalar = ((float)1.0) / scale;
+            T invScalar = ((T)1.0) / scale;
             for (i = 0; i < 16; i++)
             {
                 result.m[i] = invScalar * m[i];
@@ -796,9 +796,9 @@ public:
     {
         int i;
 
-        if (scalar != (float)0.0)
+        if (scalar != (T)0.0)
         {
-            float invScalar = ((float)1.0) / scalar;
+            T invScalar = ((T)1.0) / scalar;
             for (i = 0; i < 16; i++)
             {
                 m[i] *= invScalar;
@@ -890,20 +890,20 @@ public:
 
     TMatrix4 Inverse() const
     {
-        float fA0 = m[0] * m[5] - m[1] * m[4];
-        float fA1 = m[0] * m[6] - m[2] * m[4];
-        float fA2 = m[0] * m[7] - m[3] * m[4];
-        float fA3 = m[1] * m[6] - m[2] * m[5];
-        float fA4 = m[1] * m[7] - m[3] * m[5];
-        float fA5 = m[2] * m[7] - m[3] * m[6];
-        float fB0 = m[8] * m[13] - m[9] * m[12];
-        float fB1 = m[8] * m[14] - m[10] * m[12];
-        float fB2 = m[8] * m[15] - m[11] * m[12];
-        float fB3 = m[9] * m[14] - m[10] * m[13];
-        float fB4 = m[9] * m[15] - m[11] * m[13];
-        float fB5 = m[10] * m[15] - m[11] * m[14];
+        T fA0 = m[0] * m[5] - m[1] * m[4];
+        T fA1 = m[0] * m[6] - m[2] * m[4];
+        T fA2 = m[0] * m[7] - m[3] * m[4];
+        T fA3 = m[1] * m[6] - m[2] * m[5];
+        T fA4 = m[1] * m[7] - m[3] * m[5];
+        T fA5 = m[2] * m[7] - m[3] * m[6];
+        T fB0 = m[8] * m[13] - m[9] * m[12];
+        T fB1 = m[8] * m[14] - m[10] * m[12];
+        T fB2 = m[8] * m[15] - m[11] * m[12];
+        T fB3 = m[9] * m[14] - m[10] * m[13];
+        T fB4 = m[9] * m[15] - m[11] * m[13];
+        T fB5 = m[10] * m[15] - m[11] * m[14];
 
-        float fDet = fA0 * fB5 - fA1 * fB4 + fA2 * fB3 + fA3 * fB2 - fA4 * fB1 + fA5 * fB0;
+        T fDet = fA0 * fB5 - fA1 * fB4 + fA2 * fB3 + fA3 * fB2 - fA4 * fB1 + fA5 * fB0;
         if (Math::Sin(fDet) <= Math::ZeroTolerance)
         {
             return TMatrix4::Zero;
@@ -927,7 +927,7 @@ public:
         kInv[2][3] = -m[8] * fA4 + m[9] * fA2 - m[11] * fA0;
         kInv[3][3] = +m[8] * fA3 - m[9] * fA1 + m[10] * fA0;
 
-        float fInvDet = ((float)1.0) / fDet;
+        T fInvDet = ((T)1.0) / fDet;
         for (int iRow = 0; iRow < 4; iRow++)
         {
             for (int iCol = 0; iCol < 4; iCol++)
@@ -941,18 +941,18 @@ public:
 
     TMatrix4 Adjoint() const
     {
-        float fA0 = m[0] * m[5] - m[1] * m[4];
-        float fA1 = m[0] * m[6] - m[2] * m[4];
-        float fA2 = m[0] * m[7] - m[3] * m[4];
-        float fA3 = m[1] * m[6] - m[2] * m[5];
-        float fA4 = m[1] * m[7] - m[3] * m[5];
-        float fA5 = m[2] * m[7] - m[3] * m[6];
-        float fB0 = m[8] * m[13] - m[9] * m[12];
-        float fB1 = m[8] * m[14] - m[10] * m[12];
-        float fB2 = m[8] * m[15] - m[11] * m[12];
-        float fB3 = m[9] * m[14] - m[10] * m[13];
-        float fB4 = m[9] * m[15] - m[11] * m[13];
-        float fB5 = m[10] * m[15] - m[11] * m[14];
+        T fA0 = m[0] * m[5] - m[1] * m[4];
+        T fA1 = m[0] * m[6] - m[2] * m[4];
+        T fA2 = m[0] * m[7] - m[3] * m[4];
+        T fA3 = m[1] * m[6] - m[2] * m[5];
+        T fA4 = m[1] * m[7] - m[3] * m[5];
+        T fA5 = m[2] * m[7] - m[3] * m[6];
+        T fB0 = m[8] * m[13] - m[9] * m[12];
+        T fB1 = m[8] * m[14] - m[10] * m[12];
+        T fB2 = m[8] * m[15] - m[11] * m[12];
+        T fB3 = m[9] * m[14] - m[10] * m[13];
+        T fB4 = m[9] * m[15] - m[11] * m[13];
+        T fB5 = m[10] * m[15] - m[11] * m[14];
 
         TMatrix4 kAdj;
         kAdj[0][0] = +m[5] * fB5 - m[6] * fB4 + m[7] * fB3;
@@ -977,19 +977,19 @@ public:
 
     T Determinant() const
     {
-        float fA0 = m[0] * m[5] - m[1] * m[4];
-        float fA1 = m[0] * m[6] - m[2] * m[4];
-        float fA2 = m[0] * m[7] - m[3] * m[4];
-        float fA3 = m[1] * m[6] - m[2] * m[5];
-        float fA4 = m[1] * m[7] - m[3] * m[5];
-        float fA5 = m[2] * m[7] - m[3] * m[6];
-        float fB0 = m[8] * m[13] - m[9] * m[12];
-        float fB1 = m[8] * m[14] - m[10] * m[12];
-        float fB2 = m[8] * m[15] - m[11] * m[12];
-        float fB3 = m[9] * m[14] - m[10] * m[13];
-        float fB4 = m[9] * m[15] - m[11] * m[13];
-        float fB5 = m[10] * m[15] - m[11] * m[14];
-        float fDet = fA0 * fB5 - fA1 * fB4 + fA2 * fB3 + fA3 * fB2 - fA4 * fB1 + fA5 * fB0;
+        T fA0 = m[0] * m[5] - m[1] * m[4];
+        T fA1 = m[0] * m[6] - m[2] * m[4];
+        T fA2 = m[0] * m[7] - m[3] * m[4];
+        T fA3 = m[1] * m[6] - m[2] * m[5];
+        T fA4 = m[1] * m[7] - m[3] * m[5];
+        T fA5 = m[2] * m[7] - m[3] * m[6];
+        T fB0 = m[8] * m[13] - m[9] * m[12];
+        T fB1 = m[8] * m[14] - m[10] * m[12];
+        T fB2 = m[8] * m[15] - m[11] * m[12];
+        T fB3 = m[9] * m[14] - m[10] * m[13];
+        T fB4 = m[9] * m[15] - m[11] * m[13];
+        T fB5 = m[10] * m[15] - m[11] * m[14];
+        T fDet = fA0 * fB5 - fA1 * fB4 + fA2 * fB3 + fA3 * fB2 - fA4 * fB1 + fA5 * fB0;
         return fDet;
     }
 
@@ -1004,7 +1004,7 @@ public:
         yAngle *= Math::Degree2Radian;
         zAngle *= Math::Degree2Radian;
 
-        float fCos, fSin;
+        T fCos, fSin;
         fCos = Math::Cos(xAngle);
         fSin = Math::Sin(xAngle);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
@@ -1035,7 +1035,7 @@ public:
         yAngle *= Math::Degree2Radian;
         zAngle *= Math::Degree2Radian;
 
-        float fCos, fSin;
+        T fCos, fSin;
         fCos = Math::Cos(xAngle);
         fSin = Math::Sin(xAngle);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
@@ -1068,7 +1068,7 @@ public:
         yAngle *= Math::Degree2Radian;
         zAngle *= Math::Degree2Radian;
 
-        float fCos, fSin;
+        T fCos, fSin;
         fCos = Math::Cos(xAngle);
         fSin = Math::Sin(xAngle);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
@@ -1101,7 +1101,7 @@ public:
         yAngle *= Math::Degree2Radian;
         zAngle *= Math::Degree2Radian;
 
-        float fCos, fSin;
+        T fCos, fSin;
         fCos = Math::Cos(xAngle);
         fSin = Math::Sin(xAngle);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
@@ -1134,7 +1134,7 @@ public:
         yAngle *= Math::Degree2Radian;
         zAngle *= Math::Degree2Radian;
 
-        float fCos, fSin;
+        T fCos, fSin;
         fCos = Math::Cos(xAngle);
         fSin = Math::Sin(xAngle);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
@@ -1165,7 +1165,7 @@ public:
         yAngle *= Math::Degree2Radian;
         zAngle *= Math::Degree2Radian;
 
-        float fCos, fSin;
+        T fCos, fSin;
         fCos = Math::Cos(xAngle);
         fSin = Math::Sin(xAngle);
         TMatrix4 kXMat(1.0, 0.0, 0.0, 0.0,
