@@ -6,16 +6,7 @@
 #include "LPVMtlLoader.h"
 
 //////////////////////////////////////////////////////////////
-LPVSceneRenderer::LPVSceneRenderer(GameObject& gameObject_)
-	: Graphics3Component(gameObject_)
-	, camera()
-{
-}
-
-LPVSceneRenderer::~LPVSceneRenderer()
-{
-}
-
+// Setting
 bool initLPV = false;
 
 
@@ -36,6 +27,17 @@ ColorRGBA ambientColor(0.15, 0.15, 0.15, 1.0);
 ColorRGBA directionalLightcolor(1.0f, 1.0f, 1.0f, 1.0f);
 
 bool rotate_light = false;
+
+//////////////////////////////////////////////////////////////
+LPVSceneRenderer::LPVSceneRenderer(GameObject& gameObject_)
+	: Graphics3Component(gameObject_)
+	, camera()
+{
+}
+
+LPVSceneRenderer::~LPVSceneRenderer()
+{
+}
 
 bool LPVSceneRenderer::OnInitiate()
 {
