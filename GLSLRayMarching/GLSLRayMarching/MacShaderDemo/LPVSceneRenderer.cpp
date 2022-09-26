@@ -102,7 +102,7 @@ bool LPVSceneRenderer::OnInitiate()
 
 	sceneUniforms = SetupSceneUniforms();
 
-	shaderLoader = new LPVShaderLoader("lpvShaders/");
+	shaderLoader = new LPVShaderLoader("LPVDemos/shaders/");
 	shaderLoader->AddShaderFile("common.glsl");
 	shaderLoader->AddShaderFile("scene_uniforms.glsl");
 	shaderLoader->AddShaderFile("mesh_attributes.glsl");

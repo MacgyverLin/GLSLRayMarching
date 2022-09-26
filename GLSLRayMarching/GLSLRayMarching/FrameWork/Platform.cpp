@@ -916,9 +916,11 @@ bool Platform::ShouldAppQuit()
 }
 
 ///////////////////////////////////////////
+#define FORMAT_BUFFER_SIZE 32768
+
 const char* Format(const char* format, ...)
 {
-	static char buffer[4096];
+	static char buffer[FORMAT_BUFFER_SIZE];
 
 	va_list aptr;
 	int ret;
@@ -932,7 +934,7 @@ const char* Format(const char* format, ...)
 
 void Verbose(const char* format, ...)
 {
-	char buffer[4096];
+	char buffer[FORMAT_BUFFER_SIZE];
 
 	va_list aptr;
 	int ret;
@@ -946,7 +948,7 @@ void Verbose(const char* format, ...)
 
 void Debug(const char* format, ...)
 {
-	char buffer[4096];
+	char buffer[FORMAT_BUFFER_SIZE];
 
 	va_list aptr;
 	int ret;
@@ -960,7 +962,7 @@ void Debug(const char* format, ...)
 
 void Info(const char* format, ...)
 {
-	char buffer[4096];
+	char buffer[FORMAT_BUFFER_SIZE];
 
 	va_list aptr;
 	int ret;
@@ -974,7 +976,7 @@ void Info(const char* format, ...)
 
 void Warning(const char* format, ...)
 {
-	char buffer[4096];
+	char buffer[FORMAT_BUFFER_SIZE];
 
 	va_list aptr;
 	int ret;
@@ -988,7 +990,7 @@ void Warning(const char* format, ...)
 
 void Error(const char* format, ...)
 {
-	char buffer[4096];
+	char buffer[FORMAT_BUFFER_SIZE];
 
 	va_list aptr;
 	int ret;

@@ -1,0 +1,157 @@
+# Blender MTL File: 'sponza.blend'
+# Material Count: 13
+
+newmtl m0Material__25
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.042150 0.042140 0.042140
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_Ks lion_spec.png
+map_norm lion_ddn.png
+
+newmtl m10column_c
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_Ks sponza_column_c_spec.png
+map_norm sponza_column_c_ddn.png
+
+newmtl m11details
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_Ks sponza_details_spec.png
+map_norm sponza_details_ddn.png
+
+newmtl m19floor
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_Ks sponza_floor_a_spec.png
+map_norm sponza_floor_a_ddn.png
+
+newmtl m1Material__298
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.139500 0.139447 0.139447
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd background.png
+map_Ks background_spec.png
+map_norm background_ddn.png
+
+newmtl m21roof
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_norm sponza_roof_ddn.png
+
+newmtl m22vase
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.139447 0.139447 0.139447
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd vase_diff.png
+map_norm vase_ddn.png
+map_Ks vase_spec.png
+
+
+newmtl m2Material__47
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl m4arch
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_Ks sponza_arch_spec.png
+map_norm sponza_arch_ddn.png
+
+
+newmtl m5bricks
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_Ks spnza_bricks_a_spec.png
+map_norm spnza_bricks_a_ddn.png
+
+newmtl m6ceiling
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd debug.png
+map_Ks sponza_ceiling_a_spec.png
+map_norm sponza_ceiling_a_ddn.png
+
+
+newmtl m8column_a
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd   debug.png
+map_Ks   sponza_column_a_spec.png
+map_norm sponza_column_a_ddn.png
+
+newmtl m9column_b
+Ns 74.509804
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd   debug.png
+map_Ks   sponza_column_b_spec.png
+map_norm sponza_column_b_ddn.png
