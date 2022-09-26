@@ -1,6 +1,6 @@
 #include "LPVSceneRenderer.h"
 #include "LPVCommon.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "DrawCall.h"
 #include "LPVObjLoader.h"
 #include "LPVMtlLoader.h"
@@ -65,12 +65,12 @@ bool LPVSceneRenderer::OnInitiate()
 	if (sponza)
 	{
 		cameraPos = Vector3(-15 + offsetX, 3 + offsetY, 0 + offsetZ);
-		cameraRot.SetRotationXYZ(15, -90, 0);
+		cameraRot.SetEulerAngleXYZ(15, -90, 0);
 	}
 	else
 	{
 		cameraPos = Vector3(2.62158 + offsetX, 1.68613 + offsetY, 3.62357 + offsetZ);
-		cameraRot.SetRotationXYZ(90 - 101, 180 - 70.2, 180 + 180);
+		cameraRot.SetEulerAngleXYZ(90 - 101, 180 - 70.2, 180 + 180);
 	}
 	camera = new LPVCamera(cameraPos, cameraRot);
 
@@ -142,19 +142,19 @@ bool LPVSceneRenderer::OnInitiate()
 		if (sponza)
 		{
 			Matrix4 m(Matrix4::Identity);
-			Quaternion r; r.SetEulerZXY(0.0f, 0.0f, 0.0f);
+			Quaternion r; r.SetEulerAngleZXY(0.0f, 0.0f, 0.0f);
 			Vector3 t(offsetX, offsetY, offsetZ);
 			Vector3 s(1, 1, 1);
-			m.SetTranslateRotXYZScale(offsetX, offsetY, offsetZ, 0, 0, 0, 1);
+			m.SetTranslateEulerAngleXYZScale(offsetX, offsetY, offsetZ, 0, 0, 0, 1);
 			LoadObject("sponza_with_teapot/", "sponza_with_teapot.obj", "sponza_with_teapot.mtl", m);
 		}
 		else
 		{
 			Matrix4 m(Matrix4::Identity);
-			Quaternion r; r.SetEulerZXY(0.0f, 0.0f, 0.0f);
+			Quaternion r; r.SetEulerAngleZXY(0.0f, 0.0f, 0.0f);
 			Vector3 t(offsetX, offsetY, offsetZ);
 			Vector3 s(1, 1, 1);
-			m.SetTranslateRotXYZScale(offsetX, offsetY, offsetZ, 0, 0, 0, 1);
+			m.SetTranslateEulerAngleXYZScale(offsetX, offsetY, offsetZ, 0, 0, 0, 1);
 			LoadObject("living_room/", "living_room.obj", "living_room.mtl", m);
 		}
 
@@ -217,7 +217,7 @@ void LPVSceneRenderer::OnRender()
 	{
 		// Rotate light
 		Matrix4 rotateMat;
-		rotateMat.SetRotateAxisAngle(Vector3(1, 1, 1), 0.01);
+		rotateMat.SetAxisAngle(Vector3(1, 1, 1), 0.01);
 
 		//directionalLight-> = rotateMat * directionalLight->direction;
 	}
@@ -617,7 +617,7 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 	}
 
 
-	Primitives* LPVSceneRenderer::CreateFullscreenVertexArray()
+	VertexBuffer* LPVSceneRenderer::CreateFullscreenVertexArray()
 	{
 		////////////////////////////////////////////////////////////
 		float vertices[] =
@@ -627,8 +627,8 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 			-1, +3, 0
 		};
 
-		Primitives* primitive = new Primitives();
-		Primitives& p = *primitive;
+		VertexBuffer* vertexBuffer = new VertexBuffer();
+		VertexBuffer& p = *vertexBuffer;
 		bool success = p
 			.Begin()
 			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, &vertices[0], sizeof(vertices) / sizeof(vertices[0]) / 3)
@@ -638,10 +638,10 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 			return nullptr;
 		}
 
-		return primitive;
+		return vertexBuffer;
 	}
 
-	Primitives* LPVSceneRenderer::CreateSphereVertexArray(float radius, int rings, int sectors)
+	VertexBuffer* LPVSceneRenderer::CreateSphereVertexArray(float radius, int rings, int sectors)
 	{
 		std::vector<Vector3> positions;
 
@@ -683,8 +683,8 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 			}
 		}
 
-		Primitives* primitive = new Primitives();
-		Primitives& p = *primitive;
+		VertexBuffer* vertexBuffer = new VertexBuffer();
+		VertexBuffer& p = *vertexBuffer;
 		bool success = p
 			.Begin()
 			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, &positions[0], sizeof(positions) / sizeof(positions[0]) / 3)
@@ -700,13 +700,13 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 			// .vertexAttributeBuffer(0, positionBuffer)
 			// .indexBuffer(indexBuffer);
 
-		return primitive;
+		return vertexBuffer;
 	}
 
-	Primitives* LPVSceneRenderer::CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo & info)
+	VertexBuffer* LPVSceneRenderer::CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo & info)
 	{
-		Primitives* primitive = new Primitives();
-		Primitives& p = *primitive;
+		VertexBuffer* vertexBuffer = new VertexBuffer();
+		VertexBuffer& p = *vertexBuffer;
 		bool success = p
 			.Begin()
 			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, info.positions[0], sizeof(info.positions) / sizeof(info.positions[0]) / 3)
@@ -719,10 +719,10 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 			return nullptr;
 		}
 
-		return primitive;
+		return vertexBuffer;
 	}
 
-	DrawCall* LPVSceneRenderer::SetupProbeDrawCall(Primitives * vertexArray, ShaderProgram * shader)
+	DrawCall* LPVSceneRenderer::SetupProbeDrawCall(VertexBuffer * vertexArray, ShaderProgram * shader)
 	{
 		std::vector<Vector3> probeLocations;
 		std::vector<IVector3> probeIndices;
@@ -774,7 +774,7 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 		}
 
 		// Set up for instanced drawing at the probe locations
-		Primitives* translations = new Primitives();
+		VertexBuffer* translations = new VertexBuffer();
 		bool success = translations->
 			Begin()
 			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, &probeLocations[0], sizeof(probeLocations) / sizeof(probeLocations[0]) / 3)
@@ -784,7 +784,7 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 			return nullptr;
 		}
 
-		Primitives* indices = new Primitives();
+		VertexBuffer* indices = new VertexBuffer();
 		success = translations->
 			Begin()
 			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, &probeIndices[0], sizeof(probeIndices) / sizeof(probeIndices[0]) / 3)
@@ -803,10 +803,10 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 		return probeDrawCall;
 	}
 
-	DrawCall* LPVSceneRenderer::CreateDrawCall(Primitives * primitives_, ShaderProgram * shaderProgram_, const char* textureName_, Texture * texture_)
+	DrawCall* LPVSceneRenderer::CreateDrawCall(VertexBuffer * vertexBuffer_, ShaderProgram * shaderProgram_, const char* textureName_, Texture * texture_)
 	{
 		DrawCall* drawCall = new DrawCall();
-		drawCall->SetPrimitives(primitives_);
+		drawCall->SetVertexBuffer(vertexBuffer_);
 		drawCall->SetShaderProgram(shaderProgram_);
 		drawCall->SetTexture(textureName_, texture_);
 
@@ -840,7 +840,7 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 					std::string specularMap = (material.hasMapKs) ? directory + material.map_Ks : "default_specular.jpg";
 					std::string normalMap = (material.hasMapNorm) ? directory + material.map_norm : "default_normal.jpg";
 
-					Primitives* vertexArray = CreateVertexArrayFromMeshInfo(object);
+					VertexBuffer* vertexArray = CreateVertexArrayFromMeshInfo(object);
 
 					DrawCall* drawCall = CreateDrawCall(vertexArray, defaultShader);
 					drawCall->SetTexture("u_diffuse_map", diffuseTexture);
@@ -913,7 +913,7 @@ void LPVSceneRenderer::RenderTextureToScreen(Texture* texture)
 		}
 
 		Texture2D* texture = new Texture2D();
-		texture->Initiate(side, side, 4, Texture::DynamicRange::HIGH, &arr[0], false);
+		texture->Initiate(side, side, 4, Texture::DynamicRange::HIGH, &arr[0]);
 		texture->SetMagFilter(Texture::MagFilter::Nearest);
 		texture->SetMinFilter(Texture::MinFilter::Nearest);
 

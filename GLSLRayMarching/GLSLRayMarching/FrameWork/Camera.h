@@ -114,7 +114,7 @@ public:
 		return projectionTransform;
 	}
 
-	const Frustum& GetFrustum()
+	Frustum GetFrustum()
 	{
 		return Frustum(GetGlobalTransform(), l, r, b, t, n, f);
 	}

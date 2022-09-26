@@ -43,17 +43,22 @@ public:
 
 	TQuaternion(const TMatrix4<T>& rkRot)
 	{
-		FromRotationMatrix(rkRot);
+		SetRotationMatrix(rkRot);
 	}
 
 	TQuaternion(const TVector3<T>& rkAxis, T fAngle)
 	{
-		FromAxisAngle(rkAxis, fAngle);
+		SetAxisAngle(rkAxis, fAngle);
 	}
 
 	TQuaternion(const TVector3<T> akRotColumn[3])
 	{
-		FromRotationMatrix(akRotColumn);
+		SetRotationMatrix(akRotColumn);
+	}
+
+	TQuaternion(const T& Z, const T& X, const T& Y)
+	{
+		SetEulerAngleZYX(Z, Y, X);
 	}
 
 	void Set(T fW, T fX, T fY, T fZ)
@@ -327,7 +332,7 @@ public:
 		return *this;
 	}
 
-	TQuaternion& FromRotationMatrix(const TMatrix4<T>& rkRot)
+	TQuaternion& SetRotationMatrix(const TMatrix4<T>& rkRot)
 	{
 		// Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
 		// article "TQuaternion Calculus and Fast Animation".
@@ -372,7 +377,7 @@ public:
 		return *this;
 	}
 
-	void ToRotationMatrix(TMatrix4<T>& rkRot) const
+	void GetRotationMatrix(TMatrix4<T>& rkRot) const
 	{
 		T fTx = (2.0) * m[1];
 		T fTy = (2.0) * m[2];
@@ -408,7 +413,7 @@ public:
 		rkRot[3][3] = 1;
 	}
 
-	TQuaternion& FromRotationMatrix(const TVector3<T> akRotColumn[3])
+	TQuaternion& SetRotationMatrix(const TVector3<T> akRotColumn[3])
 	{
 		TMatrix4<T> kRot;
 		for (int iCol = 0; iCol < 3; iCol++)
@@ -420,7 +425,7 @@ public:
 		return FromRotationMatrix(kRot);
 	}
 
-	void ToRotationMatrix(TVector3<T> akRotColumn[3]) const
+	void GetRotationMatrix(TVector3<T> akRotColumn[3]) const
 	{
 		TMatrix4<T> kRot;
 		ToRotationMatrix(kRot);
@@ -432,7 +437,7 @@ public:
 		}
 	}
 
-	TQuaternion& FromAxisAngle(const TVector3<T>& rkAxis, T fAngle)
+	TQuaternion& SetAxisAngle(const TVector3<T>& rkAxis, T fAngle)
 	{
 		// assert:  axis[] is unit length
 		//
@@ -449,7 +454,7 @@ public:
 		return *this;
 	}
 
-	void ToAxisAngle(TVector3<T>& rkAxis, T& rfAngle) const
+	void GetAxisAngle(TVector3<T>& rkAxis, T& rfAngle) const
 	{
 		// The TQuaternion representing the rotation is
 		//   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
@@ -474,7 +479,103 @@ public:
 		}
 	}
 
-	void ToEulerZXY(T& Z, T& X, T& Y)
+	void SetEulerAngleXYZ(const T& X, const T& Y, const T& Z)
+	{
+		// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		double cx = Math::Cos(X * 0.5);
+		double sx = Math::Sin(X * 0.5);
+		double cy = Math::Cos(Y * 0.5);
+		double sy = Math::Sin(Y * 0.5);
+		double cz = Math::Cos(Z * 0.5);
+		double sz = Math::Sin(Z * 0.5);
+
+		m[0] = cx * cy * cz + sx * sy * sz;
+		m[1] = sx * cy * cz - cx * sy * sz;
+		m[2] = cx * sy * cz + sx * cy * sz;
+		m[3] = cx * cy * sz - sx * sy * cz;
+	}
+
+	void SetEulerAngleXZY(const T& X, const T& Z, const T& Y)
+	{
+		// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		double cx = Math::Cos(X * 0.5);
+		double sx = Math::Sin(X * 0.5);
+		double cy = Math::Cos(Y * 0.5);
+		double sy = Math::Sin(Y * 0.5);
+		double cz = Math::Cos(Z * 0.5);
+		double sz = Math::Sin(Z * 0.5);
+
+		m[0] = cx * cz * cy + sx * sz * sy;
+		m[1] = sx * cz * cy - cx * sz * sy;
+		m[2] = cx * sz * cy + sx * cz * sy;
+		m[3] = cx * cz * sy - sx * sz * cy;
+	}
+
+	void SetEulerAngleYXZ(const T& Y, const T& X, const T& Z)
+	{
+		// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		double cx = Math::Cos(X * 0.5);
+		double sx = Math::Sin(X * 0.5);
+		double cy = Math::Cos(Y * 0.5);
+		double sy = Math::Sin(Y * 0.5);
+		double cz = Math::Cos(Z * 0.5);
+		double sz = Math::Sin(Z * 0.5);
+
+		m[0] = cy * cx * cz + sy * sx * sz;
+		m[1] = sy * cx * cz - cy * sx * sz;
+		m[2] = cy * sx * cz + sy * cx * sz;
+		m[3] = cy * cx * sz - sy * sx * cz;
+	}
+
+	void SetEulerAngleYZX(const T& Y, const T& Z, const T& X)
+	{
+		// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		double cx = Math::Cos(X * 0.5);
+		double sx = Math::Sin(X * 0.5);
+		double cy = Math::Cos(Y * 0.5);
+		double sy = Math::Sin(Y * 0.5);
+		double cz = Math::Cos(Z * 0.5);
+		double sz = Math::Sin(Z * 0.5);
+
+		m[0] = cy * cz * cx + sy * sz * sx;
+		m[1] = sy * cz * cx - cy * sz * sx;
+		m[2] = cy * sz * cx + sy * cz * sx;
+		m[3] = cy * cz * sx - sy * sz * cx;
+	}
+
+	void SetEulerAngleZXY(const T& Z, const T& X, const T& Y)
+	{
+		// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		double cx = Math::Cos(X * 0.5);
+		double sx = Math::Sin(X * 0.5);
+		double cy = Math::Cos(Y * 0.5);
+		double sy = Math::Sin(Y * 0.5);
+		double cz = Math::Cos(Z * 0.5);
+		double sz = Math::Sin(Z * 0.5);
+
+		m[0] = cz * cx * cy + sz * sx * sy;
+		m[1] = sz * cx * cy - cz * sx * sy;
+		m[2] = cz * sx * cy + sz * cx * sy;
+		m[3] = cz * cx * sy - sz * sx * cy;
+	}
+
+	void SetEulerAngleZYX(const T& Y, const T& Z, const T& X)
+	{
+		// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		double cx = Math::Cos(X * 0.5);
+		double sx = Math::Sin(X * 0.5);
+		double cy = Math::Cos(Y * 0.5);
+		double sy = Math::Sin(Y * 0.5);
+		double cz = Math::Cos(Z * 0.5);
+		double sz = Math::Sin(Z * 0.5);
+
+		m[0] = cz * cy * cx + sz * sy * sx;
+		m[1] = sz * cy * cx - cz * sy * sx;
+		m[2] = cz * sy * cx + sz * cy * sx;
+		m[3] = cz * cy * sx - sz * sy * cx;
+	}
+
+	void GetEulerAngleZXY(T& Z, T& X, T& Y)
 	{
 		/*
 		double test = q1.x*q1.y + q1.z*q1.w;

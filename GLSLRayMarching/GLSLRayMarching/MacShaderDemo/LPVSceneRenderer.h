@@ -11,7 +11,7 @@
 #include "LPVSpotLight.h"
 #include "LPVShaderLoader.h"
 #include "ShaderProgram.h"
-#include "Primitives.h"
+#include "VertexBuffer.h"
 #include "DrawCall.h"
 #include "LPVObjLoader.h"
 
@@ -53,12 +53,12 @@ private:
 	void AddSpotLight(const Vector3& position_ = Vector3(0, 2, 0), const Vector3& direction_ = Vector3(0.3, -0.3, 0.3), float coneAngle_ = 20.0f, const ColorRGBA& color_ = ColorRGBA(1.5f, 1.5f, 1.5f));
 	void SetupSpotLightsSponza(int _nSpotlights = 0);
 	
-	Primitives* CreateFullscreenVertexArray();
-	Primitives* CreateSphereVertexArray(float radius, int rings, int sectors);
-	Primitives* CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& info);
-	DrawCall* SetupProbeDrawCall(Primitives* vertexArray, ShaderProgram* shader);
+	VertexBuffer* CreateFullscreenVertexArray();
+	VertexBuffer* CreateSphereVertexArray(float radius, int rings, int sectors);
+	VertexBuffer* CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& info);
+	DrawCall* SetupProbeDrawCall(VertexBuffer* vertexArray, ShaderProgram* shader);
 
-	DrawCall* CreateDrawCall(Primitives* primitives_ = nullptr, ShaderProgram* shaderProgram_ = nullptr, const char* textureName_ = nullptr, Texture* texture_ = nullptr);
+	DrawCall* CreateDrawCall(VertexBuffer* primitives_ = nullptr, ShaderProgram* shaderProgram_ = nullptr, const char* textureName_ = nullptr, Texture* texture_ = nullptr);
 	void LoadObject(const std::string& directory, const std::string& objFilename, const std::string& mtlFilename, const Matrix4& modelMatrix);
 
 	ShaderProgram* MakeShader(const std::string& name, std::map<std::string, LPVShaderLoader::ShaderResult>& shaderLoaderData);
@@ -81,7 +81,7 @@ private:
 	std::vector<RSMFramebuffer*> rsmFramebuffers;
 	Buffer* sceneUniforms;
 
-	Primitives* fullscreenVertexArray;
+	VertexBuffer* fullscreenVertexArray;
 	ShaderProgram* textureBlitShader;
 	DrawCall* blitTextureDrawCall;
 
@@ -92,7 +92,7 @@ private:
 	ShaderProgram* environmentShader;
 	DrawCall* environmentDrawCall;
 	ShaderProgram* lpvDebugShader;
-	Primitives* probeVertexArray;
+	VertexBuffer* probeVertexArray;
 	ShaderProgram* defaultShader;
 	ShaderProgram* rsmShader;
 	ShaderProgram* simpleShadowMapShader;

@@ -81,6 +81,12 @@
     <ClCompile Include="LPVShaderLoader.cpp">
       <Filter>LightPropagationVolumesScene</Filter>
     </ClCompile>
+    <ClCompile Include="LightPropagationVolumesScene.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVSceneRenderer.cpp">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DefaultScene.h" />
@@ -173,6 +179,12 @@
       <Filter>LightPropagationVolumesScene</Filter>
     </ClInclude>
     <ClInclude Include="LPVShaderLoader.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LightPropagationVolumesScene.h">
+      <Filter>LightPropagationVolumesScene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVSceneRenderer.h">
       <Filter>LightPropagationVolumesScene</Filter>
     </ClInclude>
   </ItemGroup>

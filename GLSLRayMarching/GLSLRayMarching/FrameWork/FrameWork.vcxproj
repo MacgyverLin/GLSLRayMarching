@@ -181,6 +181,7 @@
     <ClCompile Include="Capsule3.cpp" />
     <ClCompile Include="ColorRGBA.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="DrawCall.cpp" />
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="Frame3.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="Capsule3.h" />
     <ClInclude Include="ColorRGBA.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="DrawCall.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="Frame3.h" />
     <ClInclude Include="FrameBuffer.h" />

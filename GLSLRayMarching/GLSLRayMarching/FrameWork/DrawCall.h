@@ -1,71 +1,29 @@
-#ifndef _VertexBuffer_h_
-#define _VertexBuffer_h_
+#ifndef _DrawCall_h_
+#define _DrawCall_h_
 
 #include "Platform.h"
+#include "VertexBuffer.h"
+#include "ShaderProgram.h"
+#include "Texture.h"
+#include "Buffer.h"
 
-class VertexAttribute
+class DrawCall
 {
 public:
-	enum class DataType
-	{
-		BYTE = 0,
-		UNSIGNED_BYTE,
-		SHORT,
-		UNSIGNED_SHORT,
-		INT,
-		UNSIGNED_INT,
+	DrawCall();
+	virtual ~DrawCall();
 
-		HALF_FLOAT,
-		FLOAT,
-		DOUBLE,
-		FIXED,
-		INT_2_10_10_10_REV,
-		UNSIGNED_INT_2_10_10_10_REV,
-		UNSIGNED_INT_10F_11F_11F_REV
-	};
+	DrawCall& SetVertexBuffer(VertexBuffer* vertexBuffer_);
+	DrawCall& SetShaderProgram(ShaderProgram* shaderProgram_);
+	DrawCall& SetBuffer(const char* name_, Buffer* uniformBuffer_);
+	DrawCall& SetTexture(const char* name_, Texture* texture_);
 
-	VertexAttribute();
-	VertexAttribute(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int divisor_ = 0, unsigned int stride_ = 0);
-
-	unsigned int index;
-	int elementCount;
-	int elementSize;
-	DataType dataType;
-	bool normalized;
-	unsigned int stride;
-	unsigned int divisor;
-};
-
-class VertexBuffer
-{
-public:
-	enum class Mode
-	{
-		POINTS = 0,
-		LINE_STRIP,
-		LINE_LOOP,
-		LINES,
-		LINE_STRIP_ADJACENCY,
-		LINES_ADJACENCY,
-		TRIANGLE_STRIP,
-		TRIANGLE_FAN,
-		TRIANGLES,
-		TRIANGLE_STRIP_ADJACENCY,
-		TRIANGLES_ADJACENCY,
-		PATCHES
-	};
-
-	VertexBuffer();
-	virtual ~VertexBuffer();
-
-	VertexBuffer& Begin();
-	VertexBuffer& FillVertices(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int stride_, unsigned int divisor_, const void* vertices_, int verticesCount_);
-	VertexBuffer& FillIndices(const unsigned int* indices_, int indicesCount_);
-	bool End();
-	
-	void Terminate();
-	void Bind();
-	void Unbind();
+	VertexBuffer* GetVertexBuffer();
+	ShaderProgram* GetShaderProgram();
+	const std::map<const char*, Buffer*>& GetBuffers();
+	Buffer* GetBuffer(const char* name_);
+	const std::map<const char*, Texture*>& GetTextures();
+	Texture* GetTexture(const char* name_);
 
 	////////////////////////////////////////////////////////////////////////////////////
 	void DrawArray(VertexBuffer::Mode mode_, int first_, int count_);
@@ -88,14 +46,14 @@ public:
 	void MultiDrawIndicesBaseVertex(VertexBuffer::Mode mode_, const void* const* indices_, int* count_, int* baseVertex_, int mulitDrawCount_);
 	void MultiDrawIndicesIndirect(VertexBuffer::Mode mode_, const void* indirect_, int mulitDrawCount_, int stride_);
 	unsigned int GetCount();
+
+	void Bind();
+	void Unbind();
 private:
-private:
-	std::map<int, VertexAttribute> vertexAttributes;
-	std::map<int, unsigned int> vbos;
-	unsigned int vao;
-	unsigned int ebo;
-	unsigned int verticesCount;
-	unsigned int indicesCount;
+	VertexBuffer* vertexBuffer;
+	ShaderProgram* shaderProgram;
+	std::map<const char*, Buffer*> buffers;
+	std::map<const char*, Texture*> textures;
 };
 
 #endif
