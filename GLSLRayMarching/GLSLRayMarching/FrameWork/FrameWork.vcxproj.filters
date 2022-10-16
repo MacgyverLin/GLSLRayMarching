@@ -265,9 +265,6 @@
     <ClCompile Include="ResourceImport.cpp">
       <Filter>Source Files\System\Services\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="DrawCall.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
     <ClCompile Include="Matrix.cpp">
       <Filter>Source Files\Maths</Filter>
     </ClCompile>
@@ -527,9 +524,6 @@
     </ClInclude>
     <ClInclude Include="ResourceImport.h">
       <Filter>Source Files\System\Services\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawCall.h">
-      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
       <Filter>Source Files\Maths</Filter>

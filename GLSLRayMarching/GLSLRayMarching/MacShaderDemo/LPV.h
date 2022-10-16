@@ -7,8 +7,7 @@
 #include "Quaternion.h"
 #include "Matrix4.h"
 #include "Input.h"
-#include "ShaderProgram.h"
-#include "FrameBuffer.h"
+#include "PicoGL.h"
 #include "LPVDirectionLight.h"
 
 class LPV
@@ -19,23 +18,23 @@ public:
 
 	void CreateInjectionPointCloud();
 	void CreatePropagationPointCloud();
-	void CreateInjectionDrawCall(ShaderProgram* shaderProgram);
-	void CreateGeometryInjectDrawCall(ShaderProgram* shaderProgram);
-	void CreatePropagationDrawCall(ShaderProgram* shaderProgram);
+	void CreateInjectionDrawCall(PicoGL::Program* shaderProgram);
+	void CreateGeometryInjectDrawCall(PicoGL::Program* shaderProgram);
+	void CreatePropagationDrawCall(PicoGL::Program* shaderProgram);
 	void CreateFramebuffer(int size);
-	void LightInjection(FrameBuffer* RSMFramebuffer);
-	void GeometryInjection(FrameBuffer*, LPVDirectionLight*);
+	void LightInjection(PicoGL::Framebuffer* RSMFramebuffer);
+	void GeometryInjection(PicoGL::Framebuffer*, LPVDirectionLight*);
 	void ClearAccumulatedBuffer();
 	void ClearInjectionBuffer();
-	void LightPropagationIteration(int iteration, FrameBuffer* readLPV, FrameBuffer* nextIterationLPV, FrameBuffer* accumulatedLPV);
+	void LightPropagationIteration(int iteration, PicoGL::Framebuffer* readLPV, PicoGL::Framebuffer* nextIterationLPV, PicoGL::Framebuffer* accumulatedLPV);
 public:
 private:
 	int size;
 	int framebufferSize;
-	FrameBuffer* injectionFramebuffer;
-	FrameBuffer* geometryInjectionFramebuffer;
-	FrameBuffer* propagationFramebuffer;
-	FrameBuffer* accumulatedBuffer;
+	PicoGL::Framebuffer* injectionFramebuffer;
+	PicoGL::Framebuffer* geometryInjectionFramebuffer;
+	PicoGL::Framebuffer* propagationFramebuffer;
+	PicoGL::Framebuffer* accumulatedBuffer;
 };
 
 #endif

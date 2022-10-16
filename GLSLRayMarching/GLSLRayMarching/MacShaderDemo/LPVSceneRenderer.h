@@ -10,11 +10,9 @@
 #include "LPVDirectionLight.h"
 #include "LPVSpotLight.h"
 #include "LPVShaderLoader.h"
-#include "ShaderProgram.h"
-#include "VertexBuffer.h"
-#include "DrawCall.h"
 #include "LPVObjLoader.h"
 #include "LPV.h"
+#include "PicoGL.h"
 
 class LPVSceneRenderer : public Video::Graphics3Component
 {
@@ -22,9 +20,9 @@ public:
 	struct Mesh
 	{
 		Matrix4 modelMatrix;
-		DrawCall* drawCall;
-		DrawCall* shadowMapDrawCall;
-		DrawCall* rsmDrawCall;
+		PicoGL::DrawCall* drawCall;
+		PicoGL::DrawCall* shadowMapDrawCall;
+		PicoGL::DrawCall* rsmDrawCall;
 	};
 	LPVSceneRenderer(GameObject& gameObject_);
 
@@ -52,13 +50,13 @@ private:
 	void AddDirectionalLight(const Vector3& direction_, const ColorRGBA& color_);
 	void AddSpotLight(const Vector3& position_, const Vector3& direction_, float coneAngle_, const ColorRGBA& color_);
 	void SetupSpotLightsSponza(int _nSpotlights);
-	VertexBuffer* CreateFullscreenVertexArray();
-	VertexBuffer* CreateSphereVertexArray(float radius, int rings, int sectors);
+	PicoGL::VertexBuffer* CreateFullscreenVertexArray();
+	PicoGL::VertexBuffer* CreateSphereVertexArray(float radius, int rings, int sectors);
 	ShadowMapFrameBuffer* SetupDirectionalLightShadowMapFramebuffer(int size);
 	RSMFramebuffer* SetupRSMFramebuffer(int size);
 	void SetupSceneUniforms();
-	VertexBuffer* CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& info);
-	DrawCall* SetupProbeDrawCall(VertexBuffer* vertexArray, ShaderProgram* shader);
+	PicoGL::VertexBuffer* CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& info);
+	PicoGL::DrawCall* SetupProbeDrawCall(PicoGL::VertexBuffer* vertexArray, PicoGL::Program* shader);
 
 	//////////////////////////////
 	/// Rendering functions
@@ -73,11 +71,11 @@ private:
 	//////////////////////////////
 	/// Utilities functions
 	void LoadObject(const std::string& directory, const std::string& objFilename, const std::string& mtlFilename, const Matrix4& modelMatrix);
-	ShaderProgram* MakeShader(const std::string& name, std::map<std::string, LPVShaderLoader::ShaderResult>& shaderLoaderData);
+	PicoGL::Program* MakeShader(const std::string& name, std::map<std::string, LPVShaderLoader::ShaderResult>& shaderLoaderData);
 	bool IsDataTexture(const std::string& imageName);
 	Texture2DFile* LoadTexture(const char* imageName, bool haveOptions);
 	Texture2D* MakeSingleColorTexture(const ColorRGBA& c);
-	DrawCall* CreateDrawCall(ShaderProgram* shaderProgram_, VertexBuffer* vertexBuffer_, const VertexBuffer::Mode& mode_ = VertexBuffer::Mode::TRIANGLES);
+	PicoGL::DrawCall* CreateDrawCall(PicoGL::Program* shaderProgram_, PicoGL::VertexBuffer* vertexBuffer_, PicoGL::Constant mode = PicoGL::Constant::TRIANGLES);
 
 	LPVCamera* camera;
 	std::map<const char *, LPVLight*> lightSources;
@@ -89,21 +87,21 @@ private:
 	std::vector<RSMFramebuffer*> rsmFramebuffers;
 	Buffer* sceneUniforms;
 
-	VertexBuffer* fullscreenVertexArray;
-	ShaderProgram* textureBlitShader;
-	DrawCall* blitTextureDrawCall;
+	PicoGL::VertexBuffer* fullscreenVertexArray;
+	PicoGL::Program* textureBlitShader;
+	PicoGL::DrawCall* blitTextureDrawCall;
 
-	ShaderProgram* lightInjectShader;
-	ShaderProgram* geometryInjectShader;
-	ShaderProgram* lightPropagationShader;
+	PicoGL::Program* lightInjectShader;
+	PicoGL::Program* geometryInjectShader;
+	PicoGL::Program* lightPropagationShader;
 
-	ShaderProgram* environmentShader;
-	DrawCall* environmentDrawCall;
-	ShaderProgram* lpvDebugShader;
-	VertexBuffer* probeVertexArray;
-	ShaderProgram* defaultShader;
-	ShaderProgram* rsmShader;
-	ShaderProgram* simpleShadowMapShader;
+	PicoGL::Program* environmentShader;
+	PicoGL::DrawCall* environmentDrawCall;
+	PicoGL::Program* lpvDebugShader;
+	PicoGL::VertexBuffer* probeVertexArray;
+	PicoGL::Program* defaultShader;
+	PicoGL::Program* rsmShader;
+	PicoGL::Program* simpleShadowMapShader;
 
 	LPV* lpv;
 

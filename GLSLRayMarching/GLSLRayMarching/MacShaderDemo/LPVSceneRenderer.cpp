@@ -1,7 +1,5 @@
 #include "LPVSceneRenderer.h"
 #include "LPVCommon.h"
-#include "VertexBuffer.h"
-#include "DrawCall.h"
 #include "LPVObjLoader.h"
 #include "LPVMtlLoader.h"
 
@@ -274,7 +272,7 @@ bool LPVSceneRenderer::Init()
 		fullscreenVertexArray = CreateFullscreenVertexArray();
 
 		textureBlitShader = MakeShader("textureBlit", data);
-		blitTextureDrawCall = CreateDrawCall(textureBlitShader, fullscreenVertexArray, VertexBuffer::Mode::TRIANGLES);
+		blitTextureDrawCall = CreateDrawCall(textureBlitShader, fullscreenVertexArray, PicoGL::Constant::TRIANGLES);
 
 		lightInjectShader = MakeShader("lightInjection", data);
 		geometryInjectShader = MakeShader("geometryInjection", data);
@@ -381,7 +379,7 @@ void LPVSceneRenderer::SetupSpotLightsSponza(int _nSpotlights)
 #endif
 }
 
-VertexBuffer* LPVSceneRenderer::CreateFullscreenVertexArray()
+PicoGL::VertexBuffer* LPVSceneRenderer::CreateFullscreenVertexArray()
 {
 #if 0
 	function createFullscreenVertexArray() {
@@ -403,7 +401,7 @@ VertexBuffer* LPVSceneRenderer::CreateFullscreenVertexArray()
 	return nullptr;
 }
 
-VertexBuffer* LPVSceneRenderer::CreateSphereVertexArray(float radius, int rings, int sectors)
+PicoGL::VertexBuffer* LPVSceneRenderer::CreateSphereVertexArray(float radius, int rings, int sectors)
 {
 #if 0
 	function createSphereVertexArray(radius, rings, sectors) {
@@ -575,7 +573,7 @@ void LPVSceneRenderer::SetupSceneUniforms()
 #endif
 }
 
-VertexBuffer* LPVSceneRenderer::CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& info)
+PicoGL::VertexBuffer* LPVSceneRenderer::CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& info)
 {
 #if 0
 	function createVertexArrayFromMeshInfo(meshInfo) {
@@ -598,7 +596,7 @@ VertexBuffer* LPVSceneRenderer::CreateVertexArrayFromMeshInfo(const LPVObjLoader
 	return nullptr;
 }
 
-DrawCall* LPVSceneRenderer::SetupProbeDrawCall(VertexBuffer* vertexArray, ShaderProgram* shader)
+PicoGL::DrawCall* LPVSceneRenderer::SetupProbeDrawCall(PicoGL::VertexBuffer* vertexArray, PicoGL::Program* shader)
 {
 #if 0
 	function setupProbeDrawCall(vertexArray, shader) {
@@ -1037,7 +1035,7 @@ void LPVSceneRenderer::LoadObject(const std::string& directory, const std::strin
 	});
 }
 
-ShaderProgram* LPVSceneRenderer::MakeShader(const std::string& name, std::map<std::string, LPVShaderLoader::ShaderResult>& shaderLoaderData)
+PicoGL::Program* LPVSceneRenderer::MakeShader(const std::string& name, std::map<std::string, LPVShaderLoader::ShaderResult>& shaderLoaderData)
 {
 #if 0
 	function makeShader(name, shaderLoaderData) {
@@ -1126,7 +1124,7 @@ Texture2D* LPVSceneRenderer::MakeSingleColorTexture(const ColorRGBA& c)
 	return nullptr;
 }
 
-DrawCall* LPVSceneRenderer::CreateDrawCall(ShaderProgram* shaderProgram_, VertexBuffer* vertexBuffer_, const VertexBuffer::Mode& mode_)
+PicoGL::DrawCall* LPVSceneRenderer::CreateDrawCall(PicoGL::Program* shaderProgram_, PicoGL::VertexBuffer* vertexBuffer_, PicoGL::Constant primitive)
 {
 #if 0
 	createDrawCall(program, vertexArray, primitive) {

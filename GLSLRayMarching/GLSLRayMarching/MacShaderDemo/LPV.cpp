@@ -17,15 +17,15 @@ void LPV::CreatePropagationPointCloud()
 {
 }
 
-void LPV::CreateInjectionDrawCall(ShaderProgram* shaderProgram)
+void LPV::CreateInjectionDrawCall(PicoGL::Program* shaderProgram)
 {
 }
 
-void LPV::CreateGeometryInjectDrawCall(ShaderProgram* shaderProgram)
+void LPV::CreateGeometryInjectDrawCall(PicoGL::Program* shaderProgram)
 {
 }
 
-void LPV::CreatePropagationDrawCall(ShaderProgram* shaderProgram)
+void LPV::CreatePropagationDrawCall(PicoGL::Program* shaderProgram)
 {
 }
 
@@ -33,11 +33,11 @@ void LPV::CreateFramebuffer(int size)
 {
 }
 
-void LPV::LightInjection(FrameBuffer* RSMFramebuffer)
+void LPV::LightInjection(PicoGL::Framebuffer* RSMFramebuffer)
 {
 }
 
-void LPV::GeometryInjection(FrameBuffer* _RSMFrameBuffer, LPVDirectionLight* directionalLight)
+void LPV::GeometryInjection(PicoGL::Framebuffer* _RSMFrameBuffer, LPVDirectionLight* directionalLight)
 {
 }
 
@@ -49,6 +49,6 @@ void LPV::ClearInjectionBuffer()
 {
 }
 
-void LPV::LightPropagationIteration(int iteration, FrameBuffer* readLPV, FrameBuffer* nextIterationLPV, FrameBuffer* accumulatedLPV)
+void LPV::LightPropagationIteration(int iteration, PicoGL::Framebuffer* readLPV, PicoGL::Framebuffer* nextIterationLPV, PicoGL::Framebuffer* accumulatedLPV)
 {
 }
