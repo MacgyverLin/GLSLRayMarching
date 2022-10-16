@@ -15,6 +15,18 @@ LPVSpotLight::~LPVSpotLight()
 
 Vector3 LPVSpotLight::ViewSpaceDirection(LPVCamera& camera)
 {
+#if 0
+	viewSpaceDirection: function(camera) {
+
+		var inverseRotation = quat.conjugate(quat.create(), camera.orientation);
+
+		var result = vec3.create();
+		vec3.transformQuat(result, this.direction, inverseRotation);
+
+		return result;
+
+	},
+#endif
 	auto inverseRotation = camera.orientation.Conjugate();
 
 	Vector3 result;
@@ -25,6 +37,15 @@ Vector3 LPVSpotLight::ViewSpaceDirection(LPVCamera& camera)
 
 Vector3 LPVSpotLight::ViewSpacePosition(LPVCamera& camera)
 {
+#if 0
+	viewSpacePosition: function(camera) {
+
+		var result = vec3.transformMat4(vec3.create(), this.position, camera.viewMatrix);
+		return result;
+
+	},
+
+#endif
 	Vector3 result;
 	vec3transformMat4(result, this->position, camera.viewMatrix);
 	

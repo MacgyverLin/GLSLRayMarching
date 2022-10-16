@@ -8,14 +8,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 #include "Platform.h"
 #include "ArgParse.h"
+#include <iostream>
 
+//////////////////////////////////////////////////////////////////////////////////
 std::string appName = "";
 std::string initialScene = "";
+
 void* handle = nullptr;
 int width = 0;
 int height = 0;
 double currentTime = 0;
 double deltaTime = 0;
+
 int totalFrameCounter = 0;
 int sceneFrameCounter = 0;
 
@@ -32,8 +36,333 @@ std::vector<std::string> dropPaths;
 
 std::vector<std::string> arguments;
 
+static Platform::WebCam webCam;
+static Platform::Microphone microPhone;
+
+//////////////////////////////////////////////////////
+Platform::SystemTime::SystemTime()
+: wYear(0)
+, wMonth(0)
+, wDayOfWeek(0)
+, wDay(0)
+, wHour(0)
+, wMinute(0)
+, wSecond(0)
+, wMilliseconds(0)
+{
+}
+
+Platform::SystemTime::~SystemTime()
+{
+}
+
+//////////////////////////////////////////////////////
+Platform::WebCam::WebCam()
+: deviceHandle(nullptr)
+{
 #if (PLATFORM == GLFW)
-#include <time.h>
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+Platform::WebCam::~WebCam()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+bool Platform::WebCam::Initiate()
+{
+#if (PLATFORM == GLFW)
+	// deviceHandle = Create WebCam Device Here
+
+	return true;
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+bool Platform::WebCam::PreUpdate()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+	return true;
+}
+
+bool Platform::WebCam::PostUpdate()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+	return true;
+}
+
+bool Platform::WebCam::Pause()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+	return true;
+}
+
+void Platform::WebCam::Resume()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+void Platform::WebCam::Terminate()
+{
+#if (PLATFORM == GLFW)
+	// deviceHandle = Destroy WebCam Device Here
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+void Platform::WebCam::GetData()
+{
+	Assert(deviceHandle);
+
+#if (PLATFORM == GLFW)
+	// Get Webcam data from deviceHandle here
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+//////////////////////////////////////////////////////
+Platform::Microphone::Microphone()
+: deviceHandle(nullptr)
+{
+}
+
+Platform::Microphone::~Microphone()
+{
+}
+
+bool Platform::Microphone::Initiate()
+{
+#if (PLATFORM == GLFW)
+	// deviceHandle = Create Microphone Device Here
+	return true;
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+	return true;
+}
+
+bool Platform::Microphone::PreUpdate()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+	return true;
+}
+
+bool Platform::Microphone::PostUpdate()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+	return true;
+}
+
+bool Platform::Microphone::Pause()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+	return true;
+}
+
+void Platform::Microphone::Resume()
+{
+#if (PLATFORM == GLFW)
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+void Platform::Microphone::Terminate()
+{
+#if (PLATFORM == GLFW)
+	// deviceHandle = Destroy Microphone Device Here
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+void Platform::Microphone::GetData()
+{
+#if (PLATFORM == GLFW)
+	// Get Microphone data from deviceHandle here
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+}
+
+
+//////////////////////////////////////////////////////
+#if (PLATFORM == GLFW)
+#include <Windows.h>
+#include <WinUser.h>
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 #include "imgui\imgui.h"
@@ -513,6 +842,12 @@ bool Platform::Instantiate(int width_, int height_, const char* appName_, const 
 	//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 	//IM_ASSERT(font != NULL);
 
+	if (!webCam.Initiate())
+		return false;
+
+	if (!microPhone.Initiate())
+		return false;
+
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -529,11 +864,13 @@ bool Platform::Instantiate(int width_, int height_, const char* appName_, const 
 	return true;
 }
 
-#include <iostream>
-
 bool Platform::PreUpdate()
 {
 #if (PLATFORM == GLFW)
+	webCam.PreUpdate();
+
+	microPhone.PreUpdate();
+
 	///////////////////////////////////////////////////
 	// time
 	double now = glfwGetTime();
@@ -646,6 +983,10 @@ bool Platform::PreUpdate()
 bool Platform::PostUpdate()
 {
 #if (PLATFORM == GLFW)
+	webCam.PostUpdate();
+
+	microPhone.PostUpdate();
+
 	// Rendering
 	ImGui::Render();
 
@@ -680,16 +1021,53 @@ bool Platform::PostUpdate()
 
 bool Platform::Pause()
 {
+#if (PLATFORM == GLFW)
+	webCam.Pause();
+
+	microPhone.Pause();
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+
 	return true;
 }
 
 void Platform::Resume()
 {
+#if (PLATFORM == GLFW)
+	webCam.Resume();
+
+	microPhone.Resume();
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
 }
 
 void Platform::Terminate()
 {
 #if (PLATFORM == GLFW)
+	webCam.Terminate();
+
+	microPhone.Terminate();
+
 	glfwDestroyWindow((GLFWwindow*)handle);
 	glfwTerminate();
 #elif (PLATFORM == MACOSX)
@@ -804,6 +1182,38 @@ float Platform::GetMouseDX()
 float Platform::GetMouseDY()
 {
 	return mouse.dy;
+}
+
+Platform::SystemTime Platform::GetSystemTime()
+{
+#if (PLATFORM == GLFW)
+	Platform::SystemTime systemTime;
+
+	SYSTEMTIME lt = { 0 };
+	GetLocalTime(&lt);
+
+	systemTime.wYear = lt.wYear;
+	systemTime.wMonth = lt.wMonth;
+	systemTime.wDayOfWeek = lt.wDayOfWeek;
+	systemTime.wDay = lt.wDay;
+	systemTime.wHour = lt.wHour;
+	systemTime.wMinute = lt.wMinute;
+	systemTime.wSecond = lt.wSecond;
+	systemTime.wMilliseconds = lt.wMilliseconds;
+
+	return systemTime;
+#else
+#endif
+}
+
+Platform::Microphone Platform::GetMicrophone()
+{
+	return microPhone;
+}
+
+Platform::WebCam Platform::GetWebCam()
+{
+	return webCam;
 }
 
 void Platform::EnableCursor()

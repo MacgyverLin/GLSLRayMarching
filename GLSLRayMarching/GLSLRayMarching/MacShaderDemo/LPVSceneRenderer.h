@@ -14,6 +14,7 @@
 #include "VertexBuffer.h"
 #include "DrawCall.h"
 #include "LPVObjLoader.h"
+#include "LPV.h"
 
 class LPVSceneRenderer : public Video::Graphics3Component
 {
@@ -45,34 +46,41 @@ public:
 
 	virtual void OnTerminate() override;
 private:
-	ShadowMapFrameBuffer* SetupDirectionalLightShadowMapFramebuffer(int size);
-	RSMFramebuffer* SetupRSMFramebuffer(int size);
-	Buffer* SetupSceneUniforms();
-
-	void AddDirectionalLight(const Vector3& direction_ = Vector3(0.3, -1.0, 0.3), const ColorRGBA& color_ = ColorRGBA::White);
-	void AddSpotLight(const Vector3& position_ = Vector3(0, 2, 0), const Vector3& direction_ = Vector3(0.3, -0.3, 0.3), float coneAngle_ = 20.0f, const ColorRGBA& color_ = ColorRGBA(1.5f, 1.5f, 1.5f));
-	void SetupSpotLightsSponza(int _nSpotlights = 0);
-	
+	//////////////////////////////
+	/// Setup Functions
+	bool Init();
+	void AddDirectionalLight(const Vector3& direction_, const ColorRGBA& color_);
+	void AddSpotLight(const Vector3& position_, const Vector3& direction_, float coneAngle_, const ColorRGBA& color_);
+	void SetupSpotLightsSponza(int _nSpotlights);
 	VertexBuffer* CreateFullscreenVertexArray();
 	VertexBuffer* CreateSphereVertexArray(float radius, int rings, int sectors);
+	ShadowMapFrameBuffer* SetupDirectionalLightShadowMapFramebuffer(int size);
+	RSMFramebuffer* SetupRSMFramebuffer(int size);
+	void SetupSceneUniforms();
 	VertexBuffer* CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& info);
 	DrawCall* SetupProbeDrawCall(VertexBuffer* vertexArray, ShaderProgram* shader);
 
-	DrawCall* CreateDrawCall(VertexBuffer* primitives_ = nullptr, ShaderProgram* shaderProgram_ = nullptr, const char* textureName_ = nullptr, Texture* texture_ = nullptr);
-	void LoadObject(const std::string& directory, const std::string& objFilename, const std::string& mtlFilename, const Matrix4& modelMatrix);
-
-	ShaderProgram* MakeShader(const std::string& name, std::map<std::string, LPVShaderLoader::ShaderResult>& shaderLoaderData);
-	Texture2DFile* LoadTexture(const char* imageName, bool useDefaultOptions);
-	Texture2D* MakeSingleColorTexture(const ColorRGBA& c);
-
+	//////////////////////////////
+	/// Rendering functions
+	void Render();
+	bool ShadowMapNeedsRendering();
 	void RenderShadowMap();
 	void RenderScene();
 	void RenderLpvCells(const Matrix4& viewProjection);
 	void RenderEnvironment(const Matrix4& inverseViewProjection);
 	void RenderTextureToScreen(Texture* texture);
+	
+	//////////////////////////////
+	/// Utilities functions
+	void LoadObject(const std::string& directory, const std::string& objFilename, const std::string& mtlFilename, const Matrix4& modelMatrix);
+	ShaderProgram* MakeShader(const std::string& name, std::map<std::string, LPVShaderLoader::ShaderResult>& shaderLoaderData);
+	bool IsDataTexture(const std::string& imageName);
+	Texture2DFile* LoadTexture(const char* imageName, bool haveOptions);
+	Texture2D* MakeSingleColorTexture(const ColorRGBA& c);
+	DrawCall* CreateDrawCall(ShaderProgram* shaderProgram_, VertexBuffer* vertexBuffer_, const VertexBuffer::Mode& mode_ = VertexBuffer::Mode::TRIANGLES);
 
 	LPVCamera* camera;
-	std::vector<LPVLight*> lightSources;
+	std::map<const char *, LPVLight*> lightSources;
 	LPVLight* directionalLight;
 	LPVLight* spotLight;
 	LPVShaderLoader* shaderLoader;
@@ -97,7 +105,27 @@ private:
 	ShaderProgram* rsmShader;
 	ShaderProgram* simpleShadowMapShader;
 
-	std::vector<Mesh> meshes;
+	LPV* lpv;
+
+	bool initLPV = false;
+	bool sponza = true;
+
+	float lpvGridSize;
+	int propagationIterations;
+
+	float offsetX;
+	float offsetY;
+	float offsetZ;
+
+	int shadowMapSize = 4096;
+	int shadowMapSmallSize = 512;
+
+	ColorRGBA ambientColor = ColorRGBA(0.15f, 0.15f, 0.15f, 1.0f);
+	ColorRGBA directionalLightcolor = ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+
+	bool rotate_light = false;
+
+	std::vector<LPVSceneRenderer::Mesh> meshes;
 };
 
 #endif

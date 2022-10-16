@@ -423,6 +423,56 @@ public:
 		int mods;
 	};
 
+	class SystemTime
+	{
+	public:
+		SystemTime();
+		~SystemTime();
+
+		int wYear;
+		int wMonth;
+		int wDayOfWeek;
+		int wDay;
+		int wHour;
+		int wMinute;
+		int wSecond;
+		int wMilliseconds;
+	};
+
+	class WebCam
+	{
+	public:
+		WebCam();
+		~WebCam();
+
+		bool Initiate();
+		bool PreUpdate();
+		bool PostUpdate();
+		bool Pause();
+		void Resume();
+		void Terminate();
+		void GetData();
+	private:
+		void* deviceHandle;
+	};
+
+	class Microphone
+	{
+	public:
+		Microphone();
+		~Microphone();
+
+		bool Initiate();
+		bool PreUpdate();
+		bool PostUpdate();
+		bool Pause();
+		void Resume();
+		void Terminate();
+		void GetData();
+	private:
+		void* deviceHandle;
+	};
+
 	static bool Instantiate(int width_, int height_, const char* appName_, const char* InitalizeScene_);
 	static bool PreUpdate();
 	static bool PostUpdate();
@@ -454,6 +504,10 @@ public:
 	static float GetMouseDX();
 	static float GetMouseDY();
 
+	static Platform::SystemTime GetSystemTime();
+	static Platform::Microphone GetMicrophone();
+	static Platform::WebCam GetWebCam();
+	
 	static void EnableCursor();
 	static void DisableCursor();
 	static bool IsCursorEnabled();
@@ -473,7 +527,6 @@ public:
 
 	static void QuitApp();
 	static bool ShouldAppQuit();
-private:
 };
 
 void MemSet(void* dst, int val, int size);

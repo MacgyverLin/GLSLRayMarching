@@ -611,4 +611,6 @@ typedef TVector2<int> IVector2;
 typedef TVector2<float> Vector2;
 typedef TVector2<double> DVector2;
 
+typedef TVector2<unsigned int> UIVector2;
+
 #endif

@@ -203,6 +203,7 @@
     <ClCompile Include="InputStream.cpp" />
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="Maths.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="OutputStream.cpp" />
     <ClCompile Include="PathTrace.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="IK2DCCDJoint.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="PathTrace.h" />
     <ClInclude Include="ID.h" />
     <ClInclude Include="GZFileIO.h" />

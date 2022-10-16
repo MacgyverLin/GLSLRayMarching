@@ -17,12 +17,6 @@
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{b6cea35d-ac59-4129-bc06-6832ec0fdbe5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{0b892241-ed44-4780-8c0e-8285fe49ea83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\Primitive">
-      <UniqueIdentifier>{6638dcd5-15c0-4c14-a32d-0e71cc467715}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\System\GameObject">
       <UniqueIdentifier>{0131513b-f782-48f9-85fc-c6982892a1a6}</UniqueIdentifier>
     </Filter>
@@ -41,26 +35,32 @@
     <Filter Include="Source Files\System\Services\Input">
       <UniqueIdentifier>{d283cb99-0bf3-4bec-9838-32db854e5207}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Graphics\PathTrace">
-      <UniqueIdentifier>{fb189e0d-e97d-492b-9341-13c83fffacd7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\PathTrace\core">
-      <UniqueIdentifier>{4bef95c8-4f72-4c6c-bc09-fb58efd18fd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\PathTrace\loaders">
-      <UniqueIdentifier>{6495680a-eaef-4155-9ddd-03fc92f5aef4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\PathTrace\math">
-      <UniqueIdentifier>{9f9bb36f-3f1b-4584-9485-6441327aadfc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\PathTrace\tests">
-      <UniqueIdentifier>{49564eec-d291-4daa-ac52-81a3e4ca6d0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\PathTrace\RadeonRays">
-      <UniqueIdentifier>{d6e554d2-ee68-4d0e-8645-824c129fdb19}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\System\Services\Resource">
       <UniqueIdentifier>{b4706268-69eb-481b-8da9-8897705ee30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI">
+      <UniqueIdentifier>{0b892241-ed44-4780-8c0e-8285fe49ea83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\Primitive">
+      <UniqueIdentifier>{6638dcd5-15c0-4c14-a32d-0e71cc467715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\PathTrace">
+      <UniqueIdentifier>{fb189e0d-e97d-492b-9341-13c83fffacd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\PathTrace\core">
+      <UniqueIdentifier>{4bef95c8-4f72-4c6c-bc09-fb58efd18fd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\PathTrace\loaders">
+      <UniqueIdentifier>{6495680a-eaef-4155-9ddd-03fc92f5aef4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\PathTrace\math">
+      <UniqueIdentifier>{9f9bb36f-3f1b-4584-9485-6441327aadfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\PathTrace\tests">
+      <UniqueIdentifier>{49564eec-d291-4daa-ac52-81a3e4ca6d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\PathTrace\RadeonRays">
+      <UniqueIdentifier>{d6e554d2-ee68-4d0e-8645-824c129fdb19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -146,25 +146,25 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="ShaderProgram.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="Graphics.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="FrameBuffer.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="RenderStates.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="Rect2.cpp">
       <Filter>Source Files\Maths</Filter>
@@ -173,7 +173,7 @@
       <Filter>Source Files\Maths</Filter>
     </ClCompile>
     <ClCompile Include="Frame3.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="Service.cpp">
       <Filter>Source Files\System\Services</Filter>
@@ -203,52 +203,52 @@
       <Filter>Source Files\System\Services\Video</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\Camera.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\Mesh.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\Program.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\PTScene.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\PTTexture.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\Quad.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\Renderer.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\Shader.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\core\TiledRenderer.cpp">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\loaders\hdrloader.cpp">
-      <Filter>Source Files\Graphics\PathTrace\loaders</Filter>
+      <Filter>Source Files\RHI\PathTrace\loaders</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\loaders\Loader.cpp">
-      <Filter>Source Files\Graphics\PathTrace\loaders</Filter>
+      <Filter>Source Files\RHI\PathTrace\loaders</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace.cpp">
-      <Filter>Source Files\Graphics\PathTrace</Filter>
+      <Filter>Source Files\RHI\PathTrace</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\RadeonRays\bbox.cpp">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\RadeonRays\bvh.cpp">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\RadeonRays\bvh_translator.cpp">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClCompile>
     <ClCompile Include="PathTrace\RadeonRays\split_bvh.cpp">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\System\Services\Input</Filter>
@@ -266,7 +266,10 @@
       <Filter>Source Files\System\Services\Resource</Filter>
     </ClCompile>
     <ClCompile Include="DrawCall.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Source Files\Maths</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -343,13 +346,13 @@
       <Filter>Source Files\System</Filter>
     </ClInclude>
     <ClInclude Include="FrameBuffer.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="ShaderProgram.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>Source Files\System</Filter>
@@ -358,16 +361,16 @@
       <Filter>Source Files\System</Filter>
     </ClInclude>
     <ClInclude Include="Graphics.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="RenderStates.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Buffer.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Rect2.h">
       <Filter>Source Files\Maths</Filter>
@@ -376,25 +379,25 @@
       <Filter>Source Files\Maths</Filter>
     </ClInclude>
     <ClInclude Include="Frame3.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="Shape.h">
-      <Filter>Source Files\Graphics\Primitive</Filter>
+      <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="IK2DBase.h">
-      <Filter>Source Files\Graphics\Primitive</Filter>
+      <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="IK2DNJoint.h">
-      <Filter>Source Files\Graphics\Primitive</Filter>
+      <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="IK2D2Joint.h">
-      <Filter>Source Files\Graphics\Primitive</Filter>
+      <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="GradientDescent.h">
-      <Filter>Source Files\Graphics\Primitive</Filter>
+      <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="Service.h">
       <Filter>Source Files\System\Services</Filter>
@@ -424,88 +427,88 @@
       <Filter>Source Files\System\Services\Video</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Camera.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Config.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Material.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Mesh.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Program.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\PTScene.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\PTTexture.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Quad.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Renderer.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\Shader.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\ShaderIncludes.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\core\TiledRenderer.h">
-      <Filter>Source Files\Graphics\PathTrace\core</Filter>
+      <Filter>Source Files\RHI\PathTrace\core</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\loaders\hdrloader.h">
-      <Filter>Source Files\Graphics\PathTrace\loaders</Filter>
+      <Filter>Source Files\RHI\PathTrace\loaders</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\loaders\Loader.h">
-      <Filter>Source Files\Graphics\PathTrace\loaders</Filter>
+      <Filter>Source Files\RHI\PathTrace\loaders</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\loaders\tiny_obj_loader.h">
-      <Filter>Source Files\Graphics\PathTrace\loaders</Filter>
+      <Filter>Source Files\RHI\PathTrace\loaders</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\math\Mat4.h">
-      <Filter>Source Files\Graphics\PathTrace\math</Filter>
+      <Filter>Source Files\RHI\PathTrace\math</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\math\MathUtils.h">
-      <Filter>Source Files\Graphics\PathTrace\math</Filter>
+      <Filter>Source Files\RHI\PathTrace\math</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\math\Vec2.h">
-      <Filter>Source Files\Graphics\PathTrace\math</Filter>
+      <Filter>Source Files\RHI\PathTrace\math</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\math\Vec3.h">
-      <Filter>Source Files\Graphics\PathTrace\math</Filter>
+      <Filter>Source Files\RHI\PathTrace\math</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\math\Vec4.h">
-      <Filter>Source Files\Graphics\PathTrace\math</Filter>
+      <Filter>Source Files\RHI\PathTrace\math</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\tests\ajaxTestScene.h">
-      <Filter>Source Files\Graphics\PathTrace\tests</Filter>
+      <Filter>Source Files\RHI\PathTrace\tests</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\tests\boyTestScene.h">
-      <Filter>Source Files\Graphics\PathTrace\tests</Filter>
+      <Filter>Source Files\RHI\PathTrace\tests</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\tests\cornellTestScene.h">
-      <Filter>Source Files\Graphics\PathTrace\tests</Filter>
+      <Filter>Source Files\RHI\PathTrace\tests</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace.h">
-      <Filter>Source Files\Graphics\PathTrace</Filter>
+      <Filter>Source Files\RHI\PathTrace</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\RadeonRays\bbox.h">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\RadeonRays\bvh.h">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\RadeonRays\bvh_translator.h">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClInclude>
     <ClInclude Include="PathTrace\RadeonRays\split_bvh.h">
-      <Filter>Source Files\Graphics\PathTrace\RadeonRays</Filter>
+      <Filter>Source Files\RHI\PathTrace\RadeonRays</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Source Files\System\Services\Input</Filter>
@@ -514,7 +517,7 @@
       <Filter>Source Files\Maths</Filter>
     </ClInclude>
     <ClInclude Include="IK2DCCDJoint.h">
-      <Filter>Source Files\Graphics\Primitive</Filter>
+      <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="FrameWork.h">
       <Filter>Source Files</Filter>
@@ -526,7 +529,10 @@
       <Filter>Source Files\System\Services\Resource</Filter>
     </ClInclude>
     <ClInclude Include="DrawCall.h">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Source Files\Maths</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

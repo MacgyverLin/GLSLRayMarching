@@ -57,35 +57,41 @@
     <ClCompile Include="LightFieldCamera.cpp">
       <Filter>LightFieldRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="LPVDirectionLight.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
-    </ClCompile>
-    <ClCompile Include="LPVLight.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
-    </ClCompile>
-    <ClCompile Include="LPVSpotLight.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
-    </ClCompile>
-    <ClCompile Include="LPVCamera.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
-    </ClCompile>
-    <ClCompile Include="LPVCommon.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
-    </ClCompile>
     <ClCompile Include="LPVMtlLoader.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\3rdParty</Filter>
     </ClCompile>
     <ClCompile Include="LPVObjLoader.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\3rdParty</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVCamera.cpp">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVCommon.cpp">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVDirectionLight.cpp">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVLight.cpp">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClCompile>
+    <ClCompile Include="LPVSpotLight.cpp">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
     </ClCompile>
     <ClCompile Include="LPVShaderLoader.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
     </ClCompile>
     <ClCompile Include="LightPropagationVolumesScene.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="LPV.cpp">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
     </ClCompile>
     <ClCompile Include="LPVSceneRenderer.cpp">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClCompile>
+    <ClCompile Include="PicoGL.cpp">
+      <Filter>LightPropagationVolumesScene\3rdParty</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,36 +162,68 @@
     <ClInclude Include="GeoMipmapTerrainScene.h">
       <Filter>GeoMorphTerrainScene</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainCameraComponent.h" />
-    <ClInclude Include="LPVDirectionLight.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+    <ClInclude Include="Pass.h">
+      <Filter>ShaderToy</Filter>
     </ClInclude>
-    <ClInclude Include="LPVLight.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+    <ClInclude Include="MicrophoneTexture.h">
+      <Filter>ShaderToy\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="LPVSpotLight.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+    <ClInclude Include="KeyboardTexture.h">
+      <Filter>ShaderToy\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="LPVCamera.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+    <ClInclude Include="WebcamTexture.h">
+      <Filter>ShaderToy\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="LPVCommon.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+    <ClInclude Include="SoundCloudTexture.h">
+      <Filter>ShaderToy\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoTexture.h">
+      <Filter>ShaderToy\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="FlipFrameBuffer.h">
+      <Filter>ShaderToy\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderToyConfig.h">
+      <Filter>ShaderToy</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainCameraComponent.h">
+      <Filter>GeoMorphTerrainScene</Filter>
     </ClInclude>
     <ClInclude Include="LPVMtlLoader.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\3rdParty</Filter>
     </ClInclude>
     <ClInclude Include="LPVObjLoader.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\3rdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVCamera.h">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVCommon.h">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVDirectionLight.h">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVLight.h">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClInclude>
+    <ClInclude Include="LPVSpotLight.h">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
     </ClInclude>
     <ClInclude Include="LPVShaderLoader.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
     </ClInclude>
     <ClInclude Include="LightPropagationVolumesScene.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="LPV.h">
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
     </ClInclude>
     <ClInclude Include="LPVSceneRenderer.h">
-      <Filter>LightPropagationVolumesScene</Filter>
+      <Filter>LightPropagationVolumesScene\LPV</Filter>
+    </ClInclude>
+    <ClInclude Include="PicoGL.h">
+      <Filter>LightPropagationVolumesScene\3rdParty</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +250,18 @@
     </Filter>
     <Filter Include="LightPropagationVolumesScene">
       <UniqueIdentifier>{df23f298-f559-4f9d-a89f-ae6bd82a862c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderToy\Textures">
+      <UniqueIdentifier>{ef8f8696-9af9-4b67-84e5-d85dfe38a943}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightPropagationVolumesScene\3rdParty">
+      <UniqueIdentifier>{7bd7154b-2444-4629-8dad-e950b6d45177}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightPropagationVolumesScene\LPV">
+      <UniqueIdentifier>{fc70b11f-c74c-449e-be7b-e025e789436f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightPropagationVolumesScene\Scene">
+      <UniqueIdentifier>{2eb4a103-7b2d-4023-a72a-edf495e15382}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -136,7 +136,7 @@ public:
 			1.0, 1.0
 		};
 
-		bool success = primitives
+		bool success = vertexBuffer
 			.Begin()
 			.FillVertices(0, 2, VertexAttribute::DataType::FLOAT, false, 0, 0, &vertices[0], sizeof(vertices) / sizeof(vertices[0]) / 2)
 			.End();
@@ -271,7 +271,7 @@ public:
 		uniformBlockBuffer.Terminate();
 		geometryTextureShaderProgram.Terminate();
 		renderStates.Terminate();
-		primitives.Terminate();
+		vertexBuffer.Terminate();
 	}
 
 	virtual void OnRender() override
@@ -315,8 +315,8 @@ public:
 		int triangleCount = (int)(GEOMETRY_TEXTURE_SIZE * GEOMETRY_TEXTURE_SIZE / (scale) / (scale));
 		Debug("%f: %f %f %d\n", lod, floor(lod), scale, triangleCount);
 
-		primitives.Bind();
-		primitives.DrawArrayInstanced(VertexBuffer::Mode::TRIANGLES, 0, primitives.GetCount(), triangleCount);
+		vertexBuffer.Bind();
+		vertexBuffer.DrawArrayInstanced(VertexBuffer::Mode::TRIANGLES, 0, vertexBuffer.GetCount(), triangleCount);
 	}
 
 	GeometryTextureCameraComponent& geometryTextureCameraComponent;
@@ -329,7 +329,7 @@ public:
 	Buffer shaderStorageBlockBuffer;
 	Buffer uniformBlockBuffer;
 	RenderStates renderStates;
-	VertexBuffer primitives;
+	VertexBuffer vertexBuffer;
 };
 
 class GeometryTextureScene : public Scene

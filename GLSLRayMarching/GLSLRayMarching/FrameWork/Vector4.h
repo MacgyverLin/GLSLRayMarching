@@ -372,4 +372,6 @@ typedef TVector4<int> IVector4;
 typedef TVector4<float> Vector4;
 typedef TVector4<double> DVector4;
 
+typedef TVector4<unsigned int> UIVector4;
+
 #endif

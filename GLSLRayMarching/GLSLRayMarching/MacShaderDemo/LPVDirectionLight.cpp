@@ -7,6 +7,24 @@ LPVDirectionLight::LPVDirectionLight(const Vector3& direction_, const ColorRGBA&
 , sponza(false)
 , orthoProjectionSize(100.0)
 {
+#if 0
+	this.direction = direction || vec3.fromValues(0.3, -1.0, 0.3);
+	vec3.normalize(this.direction, this.direction);
+
+	this.color = color || new Float32Array([1.0, 1.0, 1.0]);
+
+	//
+
+	if (sponza)
+		this.orthoProjectionSize = 100.0;
+	else
+		this.orthoProjectionSize = 30.0;
+
+	this.lightViewMatrix = mat4.create();
+	this.lightProjectionMatrix = mat4.create();
+	this.lightViewProjection = mat4.create();
+
+#endif
 	if (sponza)
 		this->orthoProjectionSize = 100.0;
 	else
@@ -19,6 +37,18 @@ LPVDirectionLight::~LPVDirectionLight()
 
 Vector3 LPVDirectionLight::ViewSpaceDirection(LPVCamera& camera)
 {
+#if 0
+	viewSpaceDirection: function(camera) {
+
+		var inverseRotation = quat.conjugate(quat.create(), camera.orientation);
+
+		var result = vec3.create();
+		vec3.transformQuat(result, this.direction, inverseRotation);
+
+		return result;
+
+	},
+#endif
 	auto inverseRotation = camera.orientation.Conjugate();
 
 	Vector3 result;

@@ -468,7 +468,7 @@ public:
 		}
 
 		////////////////////////////////////////////////////////////
-		bool success = primitives
+		bool success = vertexBuffer
 			.Begin()
 			.FillVertices(0, 2, VertexAttribute::DataType::FLOAT, false, 0, 0, &vertices[0], vertices.size())
 			.End();
@@ -680,7 +680,7 @@ public:
 		splatMap.Bind(5);
 
 		///////////////////////////////////////////////////////
-		primitives.Bind();
+		vertexBuffer.Bind();
 
 		// frustum culling
 		// area = b * sqrt(b*b + h*h)
@@ -736,7 +736,7 @@ public:
 					shaderProgram.SetUniform1i("useTexture", true);
 					shaderProgram.SetUniform2i("offset", info.offset.X(), info.offset.Z());
 
-					primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
+					vertexBuffer.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
 				}
 			}
 		}
@@ -758,7 +758,7 @@ public:
 					shaderProgram.SetUniform1i("useTexture", false);
 					shaderProgram.SetUniform2i("offset", info.offset.X(), info.offset.Z());
 
-					primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
+					vertexBuffer.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
 				}
 			}
 		}
@@ -802,7 +802,7 @@ public:
 		splatMap.Bind(5);
 
 		///////////////////////////////////////////////////////
-		primitives.Bind();
+		vertexBuffer.Bind();
 
 		// frustum culling
 		// area = b * sqrt(b*b + h*h)
@@ -881,7 +881,7 @@ public:
 			shaderProgram.SetUniform1i("useTexture", false);
 			shaderProgram.SetUniform2i("offset", info.offset.X(), info.offset.Z());
 
-			primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
+			vertexBuffer.DrawArray(VertexBuffer::Mode::TRIANGLES, patch.GetBaseVertexIndex(), patch.GetVertexCount());
 		}
 	}
 
@@ -903,7 +903,7 @@ public:
 		shaderProgram.Terminate();
 		renderStates.Terminate();
 
-		primitives.Terminate();
+		vertexBuffer.Terminate();
 	}
 
 	unsigned int GetLevelsCount() const
@@ -936,7 +936,7 @@ private:
 	RenderStates renderStates;
 	ShaderProgram shaderProgram;
 	Buffer uniformBlockBuffer;
-	VertexBuffer primitives;
+	VertexBuffer vertexBuffer;
 };
 
 #endif

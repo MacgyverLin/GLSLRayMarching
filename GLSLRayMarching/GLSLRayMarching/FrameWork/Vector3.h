@@ -942,4 +942,6 @@ typedef TVector3<int> IVector3;
 typedef TVector3<float> Vector3;
 typedef TVector3<double> DVector3;
 
+typedef TVector3<unsigned int> UIVector3;
+
 #endif

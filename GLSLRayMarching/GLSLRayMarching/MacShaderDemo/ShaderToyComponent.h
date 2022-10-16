@@ -4,7 +4,7 @@
 #include "Component.h"
 #include "Video.h"
 
-class MacShaderDemo;
+class ShaderToyRenderer;
 
 class ShaderToyComponent : public Video::Graphics3Component
 {
@@ -31,7 +31,7 @@ public:
 
 	virtual void OnTerminate() override;
 private:
-	MacShaderDemo* macShaderDemo;
+	ShaderToyRenderer* shaderToyRenderer;
 };
 
 #endif

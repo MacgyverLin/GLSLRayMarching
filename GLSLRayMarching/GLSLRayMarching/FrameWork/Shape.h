@@ -48,7 +48,7 @@ public:
 
 	VertexBuffer& GetPrimitives()
 	{
-		return primitives;
+		return vertexBuffer;
 	}
 
 	#define USE_UNIFORM_BLOCK
@@ -119,7 +119,7 @@ public:
 	bool End()
 	{
 		////////////////////////////////////////////////////////////
-		bool success = primitives
+		bool success = vertexBuffer
 			.Begin()
 			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, &vertices[0], vertices.size())
 			.End();
@@ -188,8 +188,8 @@ public:
 		shaderProgram.SetUniformMatrix4x4fv("projTransform", 1, camera.GetProjectionTransform());
 		shaderProgram.SetUniform4fv("color", 1, &uniformBlockData.color[0]);
 #endif
-		primitives.Bind();
-		primitives.DrawArray(VertexBuffer::Mode::TRIANGLES, 0, primitives.GetCount());
+		vertexBuffer.Bind();
+		vertexBuffer.DrawArray(VertexBuffer::Mode::TRIANGLES, 0, vertexBuffer.GetCount());
 	}
 
 	void Terminate()
@@ -199,7 +199,7 @@ public:
 		uniformBlockBuffer.Terminate();
 		shaderStorageBlockBuffer.Terminate();
 		shaderProgram.Terminate();
-		primitives.Terminate();
+		vertexBuffer.Terminate();
 	}
 private:
 	RenderStates renderStates;
@@ -208,7 +208,7 @@ private:
 	Buffer uniformBlockBuffer;
 	Buffer shaderStorageBlockBuffer;
 	ShaderProgram shaderProgram;
-	VertexBuffer primitives;
+	VertexBuffer vertexBuffer;
 
 	std::vector<Vector3> vertices;
 };

@@ -216,7 +216,7 @@ public:
 		Patch patch(vertices, indices);
 
 		////////////////////////////////////////////////////////////
-		bool success = primitives
+		bool success = vertexBuffer
 			.Begin()
 			.FillVertices(0, 4, VertexAttribute::DataType::FLOAT, false, 0, 0, &vertices[0], vertices.size())
 			.FillIndices(&indices[0], indices.size())
@@ -423,7 +423,7 @@ public:
 		splatMap.Bind(5);
 
 		///////////////////////////////////////////////////////
-		primitives.Bind();
+		vertexBuffer.Bind();
 
 		// frustum culling
 		// area = b * sqrt(b*b + h*h)
@@ -495,7 +495,7 @@ public:
 				shaderProgram.SetUniform1f("alpha", alpha);
 
 				RenderInfo& info = terrainRenderInfos[i];
-				primitives.DrawIndices(VertexBuffer::Mode::TRIANGLES, 0, 96);
+				vertexBuffer.DrawIndices(VertexBuffer::Mode::TRIANGLES, 0, 96);
 			}
 		}
 	}
@@ -520,7 +520,7 @@ public:
 		shaderProgram.Terminate();
 		renderStates.Terminate();
 
-		primitives.Terminate();
+		vertexBuffer.Terminate();
 	}
 private:
 	Texture2DFile texture0;
@@ -535,7 +535,7 @@ private:
 	RenderStates renderStates;
 	ShaderProgram shaderProgram;
 	Buffer uniformBlockBuffer;
-	VertexBuffer primitives;
+	VertexBuffer vertexBuffer;
 };
 
 #endif

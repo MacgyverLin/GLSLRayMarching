@@ -8,7 +8,7 @@
 class LPVDirectionLight : public LPVLight
 {
 public:
-	LPVDirectionLight(const Vector3& direction_ = Vector3(0.3, -1.0, 0.3), const ColorRGBA& color_ = ColorRGBA::White);
+	LPVDirectionLight(const Vector3& direction_ = Vector3(0.3f, -1.0f, 0.3f), const ColorRGBA& color_ = ColorRGBA::White);
 
 	virtual ~LPVDirectionLight();
 
