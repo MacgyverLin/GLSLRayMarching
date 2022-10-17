@@ -1,0 +1,22 @@
+{
+  "passes": [
+    {
+      "shader": "cubemapbuffera.glsl",
+      "channels": [
+      ],
+      "rendertarget": "cubemapbuffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels":
+      [
+        {
+          "cubemapbuffer": "cubemapbuffera",
+          "filter": "linear",
+          "wrap": "repeat"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}
