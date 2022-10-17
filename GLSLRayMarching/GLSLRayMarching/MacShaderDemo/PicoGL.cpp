@@ -689,20 +689,6 @@ if(options.find(#key) != options.end()) \
 		}
 	};
 
-	class Shader;
-	class Query;
-	class App;
-	class Cubemap;
-	class DrawCall;
-	class Framebuffer;
-	class Program;
-	class Texture;
-	class Timer;
-	class TransformFeedback;
-	class UniformBuffer;
-	class VertexArray;
-	class VertexBuffer;
-	class State;
 
 	/**
 		Shader.

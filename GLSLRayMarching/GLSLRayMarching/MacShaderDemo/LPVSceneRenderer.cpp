@@ -50,22 +50,6 @@ void LPVSceneRenderer::OnRender()
 	Render();
 }
 
-//////////////////////////////
-/// Setup Functions
-
-int target_fps = 60;
-float environment_brightness = 1.5f;
-
-bool rotate_light = true;
-
-float indirect_light_attenuation = 1.0;
-float ambient_light  =  0.0;
-bool render_lpv_debug_view  =  false;
-bool render_direct_light  =  true;
-bool render_indirect_light  =  true;
-
-ColorRGBA sceneSettings_ambientColor(0.15, 0.15, 0.15, 1.0);
-
 bool LPVSceneRenderer::Init()
 {
 	if (sponza) {
@@ -744,7 +728,7 @@ void LPVSceneRenderer::SetupSceneUniforms()
 			//PicoGL.FLOAT_MAT4 /* 4 - projection from view matrix */
 		}
 	)
-	->Set(0, sceneSettings_ambientColor)
+	->Set(0, ambientColor)
 	//->Set(1, directionalLight.color)
 	//->Set(2, directionalLight.direction)
 	//->Set(3, camera.viewMatrix)
