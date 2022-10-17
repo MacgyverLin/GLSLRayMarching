@@ -29,6 +29,7 @@
 #include <functional>
 #include <string>
 #include <memory>
+#include <sstream>
 
 // Platform Encapsulation
 #define PLATFORM GLFW

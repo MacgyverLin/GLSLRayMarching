@@ -650,7 +650,7 @@ namespace PicoGL
 #define IMPLEMENT_INIT_OPTION(options, key, value) \
 PicoGL::Constant key = value; \
 if(options.find(#key) != options.end()) \
-    key = options[#key];
+    key = options.at(#key);
 
 	static std::map<PicoGL::Constant, std::map<PicoGL::Constant, PicoGL::Constant> > TEXTURE_FORMAT_DEFAULTS =
 	{
@@ -802,7 +802,7 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {Query} The Query object.
 	*/
-	Query& Query::Begin()
+	Query* Query::Begin()
 	{
 		if (!this->active)
 		{
@@ -810,7 +810,7 @@ if(options.find(#key) != options.end()) \
 			this->result = 0;
 		}
 
-		return *this;
+		return this;
 
 		/*
 		if (!this.active) {
@@ -828,14 +828,14 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {Query} The Query object.
 	*/
-	Query& Query::End()
+	Query* Query::End()
 	{
 		if (!this->active) {
 			glEndQuery(GetGLEnum(this->target));
 			this->active = true;
 		}
 
-		return *this;
+		return this;
 
 		/*
 		if (!this.active) {
@@ -924,7 +924,7 @@ if(options.find(#key) != options.end()) \
 		@prop {Object} appState Tracked GL state.
 	*/
 
-	Cubemap::Cubemap(State* state, Options& options)
+	Cubemap::Cubemap(State* state, const Options& options)
 	{
 		/*
 		let{ negX, posX, negY, posY, negZ, posZ } = options;
@@ -1015,8 +1015,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {Cubemap} The Cubemap object.
 	*/
-	Cubemap& Cubemap::Bind(int unit) {
-		return *this;
+	Cubemap* Cubemap::Bind(int unit) {
+		return this;
 		/*
 		let currentTexture = this.appState.textures[unit];
 
@@ -1100,8 +1100,8 @@ if(options.find(#key) != options.end()) \
 		@param {TransformFeedback} transformFeedback Transform Feedback to set.
 		@return {DrawCall} The DrawCall object.
 	*/
-	DrawCall& DrawCall::TransformFeedback(PicoGL::TransformFeedback* transformFeedback) {
-		return *this;
+	DrawCall* DrawCall::TransformFeedback(PicoGL::TransformFeedback* transformFeedback) {
+		return this;
 		/*
 		this.currentTransformFeedback = transformFeedback;
 
@@ -1117,8 +1117,8 @@ if(options.find(#key) != options.end()) \
 	@param {Texture} texture Texture to bind.
 	@return {DrawCall} The DrawCall object.
 	*/
-	DrawCall& DrawCall::Texture(const char* name, PicoGL::Texture* texture) {
-		return *this;
+	DrawCall* DrawCall::Texture(const char* name, PicoGL::Texture* texture) {
+		return this;
 		/*
 		let unit = this.currentProgram.samplers[name];
 		this.textures[unit] = texture;
@@ -1135,8 +1135,8 @@ if(options.find(#key) != options.end()) \
 		@param {UniformBuffer} buffer Uniform buffer to bind.
 		@return {DrawCall} The DrawCall object.
 	*/
-	DrawCall& DrawCall::UniformBlock(const char* name, PicoGL::UniformBuffer* buffer) {
-		return *this;
+	DrawCall* DrawCall::UniformBlock(const char* name, PicoGL::UniformBuffer* buffer) {
+		return this;
 		/*
 		let base = this.currentProgram.uniformBlocks[name];
 		this.uniformBuffers[base] = buffer;
@@ -1152,8 +1152,8 @@ if(options.find(#key) != options.end()) \
 		 @param {GLsizei} [count=0] Number of element to draw, 0 set to all.
 		 @return {DrawCall} The DrawCall object.
 	 */
-	DrawCall& DrawCall::ElementCount(int count) {
-		return *this;
+	DrawCall* DrawCall::ElementCount(int count) {
+		return this;
 		/*
 		if (count > 0) {
 			this.numElements = Math.min(count, this.currentVertexArray.numElements);
@@ -1173,8 +1173,8 @@ if(options.find(#key) != options.end()) \
 		@param {GLsizei} [count=0] Number of instance to draw, 0 set to all.
 		@return {DrawCall} The DrawCall object.
 	*/
-	DrawCall& DrawCall::InstanceCount(int count) {
-		return *this;
+	DrawCall* DrawCall::InstanceCount(int count) {
+		return this;
 		/*
 		if (count > 0) {
 			this.numInstances = Math.min(count, this.currentVertexArray.numInstances);
@@ -1193,8 +1193,8 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {DrawCall} The DrawCall object.
 	*/
-	DrawCall& DrawCall::Draw() {
-		return *this;
+	DrawCall* DrawCall::Draw() {
+		return this;
 		/*
 		let uniformNames = this.uniformNames;
 		let uniformValues = this.uniformValues;
@@ -1295,10 +1295,10 @@ if(options.find(#key) != options.end()) \
 			 defaults to 0, otherwise to TEXTURE_2D.
 		 @return {Framebuffer} The Framebuffer object.
 	 */
-	Framebuffer& Framebuffer::ColorTarget(int index, Texture* texture, PicoGL::Constant target) {
+	Framebuffer* Framebuffer::ColorTarget(int index, Texture* texture) {
 		// target = texture->is3D ? 0 : PicoGL::Constant::TEXTURE_2D
 
-		return *this;
+		return this;
 		/*
 		this.colorAttachments[index] = CONSTANTS.COLOR_ATTACHMENT0 + index;
 
@@ -1332,9 +1332,9 @@ if(options.find(#key) != options.end()) \
 			defaults to 0, otherwise to TEXTURE_2D.
 		@return {Framebuffer} The Framebuffer object.
 	*/
-	Framebuffer& Framebuffer::DepthTarget(Texture* texture, PicoGL::Constant target) {
+	PicoGL::Framebuffer* Framebuffer::DepthTarget(PicoGL::Texture* texture) {
 		// target = texture->is3D ? 0 : PicoGL::Constant::TEXTURE_2D
-		return *this;
+		return this;
 		/*
 		let currentFramebuffer = this.bindAndCaptureState();
 
@@ -1362,7 +1362,7 @@ if(options.find(#key) != options.end()) \
 		@param {number} [height=app.height] New height of the framebuffer.
 		@return {Framebuffer} The Framebuffer object.
 	*/
-	Framebuffer& Framebuffer::Resize(int width, int height, int depth) {
+	Framebuffer* Framebuffer::Resize(int width, int height, int depth) {
 		if (width == -1)
 			width = Platform::GetWidth();
 		if (height == -1)
@@ -1370,7 +1370,7 @@ if(options.find(#key) != options.end()) \
 		if (depth)
 			depth = 1;
 
-		return *this;
+		return this;
 		/*
 		let currentFramebuffer = this.bindAndCaptureState();
 
@@ -1425,8 +1425,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {Framebuffer} The Framebuffer object.
 	*/
-	Framebuffer& Framebuffer::BindForDraw() {
-		return *this;
+	Framebuffer* Framebuffer::BindForDraw() {
+		return this;
 		/*
 		if (this.appState.drawFramebuffer != = this) {
 			this.gl.bindFramebuffer(this.gl.DRAW_FRAMEBUFFER, this.framebuffer);
@@ -1444,8 +1444,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {Framebuffer} The Framebuffer object.
 	*/
-	Framebuffer& Framebuffer::BindForRead() {
-		return *this;
+	Framebuffer* Framebuffer::BindForRead() {
+		return this;
 		/*
 		if (this.appState.readFramebuffer != = this) {
 			this.gl.bindFramebuffer(this.gl.READ_FRAMEBUFFER, this.framebuffer);
@@ -1464,8 +1464,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {Framebuffer} The Framebuffer object.
 	*/
-	Framebuffer& Framebuffer::BindAndCaptureState() {
-		return *this;
+	Framebuffer* Framebuffer::BindAndCaptureState() {
+		return this;
 		/*
 		let currentFramebuffer = this.appState.drawFramebuffer;
 
@@ -1484,8 +1484,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {Framebuffer} The Framebuffer object.
 	*/
-	Framebuffer& Framebuffer::RestoreState(Framebuffer* framebuffer) {
-		return *this;
+	Framebuffer* Framebuffer::RestoreState(Framebuffer* framebuffer) {
+		return this;
 		/*
 		if (framebuffer != = this) {
 			this.gl.bindFramebuffer(this.gl.DRAW_FRAMEBUFFER, framebuffer ? framebuffer.framebuffer : null);
@@ -1511,7 +1511,7 @@ if(options.find(#key) != options.end()) \
 	Program::Program(State* state,
 		const char* const* vsSource, int vsSourceLength,
 		const char* const* fsSource, int fsSourceLength,
-		std::vector<const char*>& xformFeedbackVars)
+		const std::vector<const char*>& xformFeedbackVars)
 	{
 		Shader* vShader = new Shader(PicoGL::Constant::VERTEX_SHADER, vsSource, vsSourceLength);
 
@@ -1520,12 +1520,12 @@ if(options.find(#key) != options.end()) \
 		CreateProgramInternal(state, vShader, fShader, true, true, xformFeedbackVars);
 	}
 
-	Program::Program(State* state, Shader* vShader, Shader* fShader, std::vector<const char*>& xformFeedbackVars)
+	Program::Program(State* state, Shader* vShader, Shader* fShader, const std::vector<const char*>& xformFeedbackVars)
 	{
 		CreateProgramInternal(state, vShader, fShader, false, false, xformFeedbackVars);
 	}
 
-	void Program::CreateProgramInternal(State* state, Shader* vShader, Shader* fShader, bool ownVertexShader, bool ownFragmentShader, std::vector<const char*>& xformFeedbackVars)
+	void Program::CreateProgramInternal(State* state, Shader* vShader, Shader* fShader, bool ownVertexShader, bool ownFragmentShader, const std::vector<const char*>& xformFeedbackVars)
 	{
 		/*
 		let program = gl.createProgram();
@@ -1677,8 +1677,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {Program} The Program object.
 	*/
-	Program& Program::Bind() {
-		return *this;
+	Program* Program::Bind() {
+		return this;
 		/*
 		if (this.appState.program != = this) {
 			this.gl.useProgram(this.program);
@@ -1709,7 +1709,7 @@ if(options.find(#key) != options.end()) \
 		@prop {Object} appState Tracked GL state.
 	*/
 
-	Texture::Texture(State* state, PicoGL::Constant target, void* image, int width, int height, int depth, bool is3D, Options& options)
+	Texture::Texture(State* state, PicoGL::Constant target, const void* image, int width, int height, int depth, bool is3D, const Options& options)
 	{
 		/*
 		let defaultType = options.format == = CONSTANTS.DEPTH_COMPONENT ? CONSTANTS.UNSIGNED_SHORT : CONSTANTS.UNSIGNED_BYTE;
@@ -1790,8 +1790,8 @@ if(options.find(#key) != options.end()) \
 		@return {Texture} The Texture object.
 	*/
 
-	Texture& Texture::Resize(int width, int height, int depth) {
-		return *this;
+	Texture* Texture::Resize(int width, int height, int depth) {
+		return this;
 		/*
 		depth = depth || 0;
 
@@ -1868,8 +1868,8 @@ if(options.find(#key) != options.end()) \
 			used to set mip map levels.
 		@return {Texture} The Texture object.
 	*/
-	Texture& Texture::Data(void* data, unsigned int dataLength) {
-		return *this;
+	Texture* Texture::Data(void* data, unsigned int dataLength) {
+		return this;
 		/*
 		if (!Array.isArray(data)) {
 			DUMMY_ARRAY[0] = data;
@@ -1955,8 +1955,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {Texture} The Texture object.
 	*/
-	Texture& Texture::Bind(int unit) {
-		return *this;
+	Texture* Texture::Bind(int unit) {
+		return this;
 		/*
 		let currentTexture = this.appState.textures[unit];
 
@@ -2035,8 +2035,8 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} buffer Buffer to record output into.
 		@return {TransformFeedback} The TransformFeedback object.
 	*/
-	TransformFeedback& TransformFeedback::FeedbackBuffer(int index, VertexBuffer* buffer) {
-		return *this;
+	TransformFeedback* TransformFeedback::FeedbackBuffer(int index, VertexBuffer* buffer) {
+		return this;
 		/*
 		this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.transformFeedback);
 		this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, index, buffer.buffer);
@@ -2073,8 +2073,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {TransformFeedback} The TransformFeedback object.
 	*/
-	TransformFeedback& TransformFeedback::Bind() {
-		return *this;
+	TransformFeedback* TransformFeedback::Bind() {
+		return this;
 		/*
 		if (this.appState.transformFeedback != = this) {
 			this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.transformFeedback);
@@ -2106,7 +2106,7 @@ if(options.find(#key) != options.end()) \
 		@prop {GLEnum} usage Usage pattern of the buffer.
 	*/
 
-	UniformBuffer::UniformBuffer(State* state, std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage)
+	UniformBuffer::UniformBuffer(State* state, const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage)
 	{
 		/*
 		this.gl = gl;
@@ -2254,8 +2254,8 @@ if(options.find(#key) != options.end()) \
 		@param {number} [index] Index in the layout of item to send to the GPU. If ommited, entire buffer is sent.
 		@return {UniformBuffer} The UniformBuffer object.
 	*/
-	UniformBuffer& UniformBuffer::Update(int index) {
-		return *this;
+	UniformBuffer* UniformBuffer::Update(int index) {
+		return this;
 		/*
 		let data;
 		let offset;
@@ -2306,8 +2306,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {UniformBuffer} The UniformBuffer object.
 	*/
-	UniformBuffer& UniformBuffer::Bind(int base) {
-		return *this;
+	UniformBuffer* UniformBuffer::Bind(int base) {
+		return this;
 		/*
 		let currentBuffer = this.appState.uniformBuffers[base];
 
@@ -2367,10 +2367,10 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::VertexAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
+	VertexArray* VertexArray::VertexAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
 		this->AttributeBuffer(attributeIndex, vertexBuffer, false, false, false);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2381,10 +2381,10 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::InstanceAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
+	VertexArray* VertexArray::InstanceAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
 		this->AttributeBuffer(attributeIndex, vertexBuffer, true, false, false);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2397,10 +2397,10 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::VertexIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
+	VertexArray* VertexArray::VertexIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
 		this->AttributeBuffer(attributeIndex, vertexBuffer, false, true, false);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2413,10 +2413,10 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::InstanceIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
+	VertexArray* VertexArray::InstanceIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
 		this->AttributeBuffer(attributeIndex, vertexBuffer, true, true, false);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2429,10 +2429,10 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::VertexNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
+	VertexArray* VertexArray::VertexNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
 		this->AttributeBuffer(attributeIndex, vertexBuffer, false, false, true);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2445,10 +2445,10 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::InstanceNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
+	VertexArray* VertexArray::InstanceNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer) {
 		this->AttributeBuffer(attributeIndex, vertexBuffer, true, false, true);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2458,8 +2458,8 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::IndexBuffer(VertexBuffer* vertexBuffer) {
-		return *this;
+	VertexArray* VertexArray::IndexBuffer(VertexBuffer* vertexBuffer) {
+		return this;
 		/*
 		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.bindBuffer(vertexBuffer.binding, vertexBuffer.buffer);
@@ -2500,8 +2500,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::Bind() {
-		return *this;
+	VertexArray* VertexArray::Bind() {
+		return this;
 		/*
 		if (this.appState.vertexArray != = this) {
 			this.gl.bindVertexArray(this.vertexArray);
@@ -2519,8 +2519,8 @@ if(options.find(#key) != options.end()) \
 		@ignore
 		@return {VertexArray} The VertexArray object.
 	*/
-	VertexArray& VertexArray::AttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer, bool instanced, bool integer, bool normalized) {
-		return *this;
+	VertexArray* VertexArray::AttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer, bool instanced, bool integer, bool normalized) {
+		return this;
 		/*
 		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.bindBuffer(vertexBuffer.binding, vertexBuffer.buffer);
@@ -2583,7 +2583,7 @@ if(options.find(#key) != options.end()) \
 		@prop {GLEnum} binding GL binding point (ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER).
 		@prop {Object} appState Tracked GL state.
 	*/
-	VertexBuffer::VertexBuffer(State* state, PicoGL::Constant type, int itemSize, void* data, unsigned int dataLength, PicoGL::Constant usage, bool indexType)
+	VertexBuffer::VertexBuffer(State* state, PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage, bool indexType)
 	{
 		/*
 		let numColumns;
@@ -2662,8 +2662,8 @@ if(options.find(#key) != options.end()) \
 		@param {VertexBufferView} data Data to store in the buffer.
 		@return {VertexBuffer} The VertexBuffer object.
 	*/
-	VertexBuffer& VertexBuffer::Data(void* data, unsigned int dataLength) {
-		return *this;
+	VertexBuffer* VertexBuffer::Data(void* data, unsigned int dataLength) {
+		return this;
 		/*
 		// Don't want to update vertex array bindings
 		let currentVertexArray = this.appState.vertexArray;
@@ -2751,7 +2751,7 @@ if(options.find(#key) != options.end()) \
 
 
 
-	App::App()
+	App::App(const Options& options)
 	{
 		this->width = Platform::GetWidth();
 		this->height = Platform::GetHeight();
@@ -2806,11 +2806,11 @@ if(options.find(#key) != options.end()) \
 		@param {boolean} a Alpha channel.
 		@return {App} The App object.
 	*/
-	App& App::ColorMask(bool r, bool g, bool b, bool a)
+	App* App::ColorMask(bool r, bool g, bool b, bool a)
 	{
 		glColorMask(r, g, b, a);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2823,11 +2823,11 @@ if(options.find(#key) != options.end()) \
 		@param {number} a Alpha channel.
 		@return {App} The App object.
 	*/
-	App& App::ClearColor(float r, float g, float b, float a)
+	App* App::ClearColor(float r, float g, float b, float a)
 	{
 		glClearColor(r, g, b, a);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2838,11 +2838,11 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} mask Bit mask of buffers to clear.
 		@return {App} The App object.
 	*/
-	App& App::ClearMask(int mask)
+	App* App::ClearMask(int mask)
 	{
 		this->clearBits = mask;
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2851,11 +2851,11 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::Clear()
+	App* App::Clear()
 	{
 		glClear(this->clearBits);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2866,11 +2866,11 @@ if(options.find(#key) != options.end()) \
 		@see Framebuffer
 		@return {App} The App object.
 	*/
-	App& App::DrawFramebuffer(Framebuffer* framebuffer)
+	App* App::DrawFramebuffer(Framebuffer* framebuffer)
 	{
 		framebuffer->BindForDraw();
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2881,11 +2881,11 @@ if(options.find(#key) != options.end()) \
 		@see Framebuffer
 		@return {App} The App object.
 	*/
-	App& App::ReadFramebuffer(Framebuffer* framebuffer)
+	App* App::ReadFramebuffer(Framebuffer* framebuffer)
 	{
 		framebuffer->BindForRead();
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2895,14 +2895,14 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::DefaultDrawFramebuffer()
+	App* App::DefaultDrawFramebuffer()
 	{
 		if (this->state.drawFramebuffer != nullptr) {
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 			this->state.drawFramebuffer = nullptr;
 		}
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2911,14 +2911,14 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::DefaultReadFramebuffer()
+	App* App::DefaultReadFramebuffer()
 	{
 		if (this->state.readFramebuffer != nullptr) {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 			this->state.readFramebuffer = nullptr;
 		}
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2929,11 +2929,11 @@ if(options.find(#key) != options.end()) \
 		@param {number} far Maximum depth value.
 		@return {App} The App object.
 	*/
-	App& App::DepthRange(float near, float far)
+	App* App::DepthRange(float near, float far)
 	{
 		glDepthRange(near, far);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2942,10 +2942,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::DepthTest() {
+	App* App::DepthTest() {
 		glEnable(GL_DEPTH_TEST);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2954,10 +2954,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::NoDepthTest() {
+	App* App::NoDepthTest() {
 		glDisable(GL_DEPTH_TEST);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2967,10 +2967,10 @@ if(options.find(#key) != options.end()) \
 		@param {Boolean} mask The depth mask.
 		@return {App} The App object.
 	*/
-	App& App::DepthMask(bool mask) {
+	App* App::DepthMask(bool mask) {
 		glDepthMask(mask);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2980,10 +2980,10 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} func The depth testing function to use.
 		@return {App} The App object.
 	*/
-	App& App::DepthFunc(PicoGL::Constant func) {
+	App* App::DepthFunc(PicoGL::Constant func) {
 		glDepthFunc(GetGLEnum(func));
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -2992,10 +2992,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::Blend() {
+	App* App::Blend() {
 		glEnable(GL_BLEND);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3004,10 +3004,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::NoBlend() {
+	App* App::NoBlend() {
 		glDisable(GL_BLEND);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3018,10 +3018,10 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} dest The destination blending weight.
 		@return {App} The App object.
 	*/
-	App& App::BlendFunc(PicoGL::Constant src, PicoGL::Constant dest) {
+	App* App::BlendFunc(PicoGL::Constant src, PicoGL::Constant dest) {
 		glBlendFunc(GetGLEnum(src), GetGLEnum(dest));
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3035,10 +3035,10 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} adest The destination blending weight for the alpha channel.
 		@return {App} The App object.
 	*/
-	App& App::BlendFuncSeparate(PicoGL::Constant csrc, PicoGL::Constant cdest, PicoGL::Constant asrc, PicoGL::Constant adest) {
+	App* App::BlendFuncSeparate(PicoGL::Constant csrc, PicoGL::Constant cdest, PicoGL::Constant asrc, PicoGL::Constant adest) {
 		glBlendFuncSeparate(GetGLEnum(csrc), GetGLEnum(cdest), GetGLEnum(asrc), GetGLEnum(adest));
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3049,10 +3049,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::StencilTest() {
+	App* App::StencilTest() {
 		glEnable(GL_STENCIL_TEST);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3061,10 +3061,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::NoStencilTest() {
+	App* App::NoStencilTest() {
 		glDisable(GL_STENCIL_TEST);
 
-		return *this;
+		return this;
 	}
 
 
@@ -3074,10 +3074,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::scissorTest() {
+	App* App::scissorTest() {
 		glEnable(GL_SCISSOR_TEST);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3086,10 +3086,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::NoScissorTest() {
+	App* App::NoScissorTest() {
 		glDisable(GL_SCISSOR_TEST);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3098,10 +3098,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::Scissor(int x, int y, int width, int height) {
+	App* App::Scissor(int x, int y, int width, int height) {
 		glScissor(x, y, width, height);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3115,10 +3115,10 @@ if(options.find(#key) != options.end()) \
 		@return {App} The App object.
 
 	*/
-	App& App::StencilMask(int mask) {
+	App* App::StencilMask(int mask) {
 		glStencilMask(mask);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3132,10 +3132,10 @@ if(options.find(#key) != options.end()) \
 		@param {number} mask The mask value.
 		@return {App} The App object.
 	*/
-	App& App::StencilMaskSeparate(PicoGL::Constant face, int mask) {
+	App* App::StencilMaskSeparate(PicoGL::Constant face, int mask) {
 		glStencilMaskSeparate(GetGLEnum(face), mask);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3151,10 +3151,10 @@ if(options.find(#key) != options.end()) \
 			the stencil function.
 		@return {App} The App object.
 	*/
-	App& App::StencilFunc(PicoGL::Constant func, int ref, int mask) {
+	App* App::StencilFunc(PicoGL::Constant func, int ref, int mask) {
 		glStencilFunc(GetGLEnum(func), ref, mask);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3171,10 +3171,10 @@ if(options.find(#key) != options.end()) \
 			the stencil function.
 		@return {App} The App object.
 	*/
-	App& App::StencilFuncSeparate(PicoGL::Constant face, PicoGL::Constant func, int ref, int mask) {
+	App* App::StencilFuncSeparate(PicoGL::Constant face, PicoGL::Constant func, int ref, int mask) {
 		glStencilFuncSeparate(GetGLEnum(face), GetGLEnum(func), ref, mask);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3189,10 +3189,10 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} pass Operation to apply if the both the depth and stencil tests pass.
 		@return {App} The App object.
 	*/
-	App& App::StencilOp(PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass) {
+	App* App::StencilOp(PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass) {
 		glStencilOp(GetGLEnum(stencilFail), GetGLEnum(depthFail), GetGLEnum(pass));
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3208,10 +3208,10 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} pass Operation to apply if the both the depth and stencil tests pass.
 		@return {App} The App object.
 	*/
-	App& App::StencilOpSeparate(PicoGL::Constant face, PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass) {
+	App* App::StencilOpSeparate(PicoGL::Constant face, PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass) {
 		glStencilOpSeparate(GetGLEnum(face), GetGLEnum(stencilFail), GetGLEnum(depthFail), GetGLEnum(pass));
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3220,10 +3220,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::Rasterize() {
+	App* App::Rasterize() {
 		glDisable(GL_RASTERIZER_DISCARD);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3232,10 +3232,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::NoRasterize() {
+	App* App::NoRasterize() {
 		glEnable(GL_RASTERIZER_DISCARD);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3244,10 +3244,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::CullBackfaces() {
+	App* App::CullBackfaces() {
 		glEnable(GL_CULL_FACE);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3256,10 +3256,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::NoCullBackfaces() {
+	App* App::NoCullBackfaces() {
 		glDisable(GL_CULL_FACE);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3270,10 +3270,25 @@ if(options.find(#key) != options.end()) \
 		@see Framebuffer
 		@return {App} The App object.
 	*/
-	App& App::FloatRenderTargets() {
-		this->floatRenderTargetsEnabled = glfwExtensionSupported("EXT_color_buffer_float");
 
-		return *this;
+	void PrintAllExtensions()
+	{
+		GLint n = 0;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+
+		for (GLint i = 0; i < n; i++)
+		{
+			const char* extension = (const char*)glGetStringi(GL_EXTENSIONS, i);
+			::Debug("Ext %d: %s\n", i, extension);
+		}
+	}
+
+	App* App::FloatRenderTargets() {
+		PrintAllExtensions();
+
+		this->floatRenderTargetsEnabled = glfwExtensionSupported("GL_ARB_color_buffer_float");
+
+		return this;
 	}
 
 	/**
@@ -3283,10 +3298,10 @@ if(options.find(#key) != options.end()) \
 		@see Framebuffer
 		@return {App} The App object.
 	*/
-	App& App::LinearFloatTextures() {
-		this->linearFloatTexturesEnabled = glfwExtensionSupported("OES_texture_float_linear");
+	App* App::LinearFloatTextures() {
+		this->linearFloatTexturesEnabled = glfwExtensionSupported("GL_EXT_texture_float_linear");
 
-		return *this;
+		return this;
 	}
 
 
@@ -3308,8 +3323,8 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::S3TCTextures() {
-		this->s3tcTexturesEnabled = glfwExtensionSupported("EXT_texture_compression_s3tc"); // ext name not sure, need to check!!!
+	App* App::S3TCTextures() {
+		this->s3tcTexturesEnabled = glfwExtensionSupported("GL_EXT_texture_compression_s3tc"); // ext name not sure, need to check!!!
 
 		if (this->s3tcTexturesEnabled) {
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_RGB_S3TC_DXT1_EXT] = PicoGL::Constant::TRUE;
@@ -3318,7 +3333,7 @@ if(options.find(#key) != options.end()) \
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_RGBA_S3TC_DXT5_EXT] = PicoGL::Constant::TRUE;
 		}
 
-		this->s3tcSRGBTexturesEnabled = glfwExtensionSupported("EXT_compressed_texture_s3tc_srgb"); // ext name not sure, need to check!!!
+		this->s3tcSRGBTexturesEnabled = glfwExtensionSupported("GL_EXT_texture_compression_s3tc_srgb"); // ext name not sure, need to check!!!
 
 		if (this->s3tcSRGBTexturesEnabled) {
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_SRGB_S3TC_DXT1_EXT] = PicoGL::Constant::TRUE;
@@ -3327,7 +3342,7 @@ if(options.find(#key) != options.end()) \
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT] = PicoGL::Constant::TRUE;
 		}
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3353,9 +3368,9 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::ETCTextures() {
-		this->etcTexturesEnabled = glfwExtensionSupported("EXT_compressed_texture_etc");// ext name not sure, need to check!!!
-
+	App* App::ETCTextures() {
+		this->etcTexturesEnabled = glfwExtensionSupported("GL_EXT_texture_compression_etc");// ext name not sure, need to check!!!
+		
 		if (this->etcTexturesEnabled) {
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_R11_EAC] = PicoGL::Constant::TRUE;
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_SIGNED_R11_EAC] = PicoGL::Constant::TRUE;
@@ -3369,7 +3384,7 @@ if(options.find(#key) != options.end()) \
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_SRGB8_ALPHA8_ETC2_EAC] = PicoGL::Constant::TRUE;
 		}
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3410,8 +3425,8 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::ASTCTextures() {
-		this->astcTexturesEnabled = glfwExtensionSupported("EXT_compressed_texture_astc"); // ext name not sure, need to check!!!
+	App* App::ASTCTextures() {
+		this->astcTexturesEnabled = glfwExtensionSupported("GL_EXT_texture_compression_astc"); // ext name not sure, need to check!!!
 
 		if (this->astcTexturesEnabled) {
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_RGBA_ASTC_4x4_KHR] = PicoGL::Constant::TRUE;
@@ -3444,7 +3459,7 @@ if(options.find(#key) != options.end()) \
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES][PicoGL::Constant::COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR] = PicoGL::Constant::TRUE;
 		}
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3462,8 +3477,8 @@ if(options.find(#key) != options.end()) \
 		@return {App} The App object.
 	*/
 	/*
-	App& App::PVRTCTextures() {
-		this->pvrtcTexturesEnabled = glfwExtensionSupported("EXT_compressed_texture_pvrtc"); // ext name not sure, need to check!!!
+	App* App::PVRTCTextures() {
+		this->pvrtcTexturesEnabled = glfwExtensionSupported("GL_EXT_texture_compression_pvrtc"); // ext name not sure, need to check!!!
 
 		if (this->pvrtcTexturesEnabled) {
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES[PicoGL::Constant::COMPRESSED_RGB_PVRTC_4BPPV1_IMG] = PicoGL::Constant::TRUE;
@@ -3472,7 +3487,7 @@ if(options.find(#key) != options.end()) \
 			TEXTURE_FORMAT_DEFAULTS[PicoGL::Constant::COMPRESSED_TYPES[PicoGL::Constant::COMPRESSED_RGBA_PVRTC_2BPPV1_IMG] = PicoGL::Constant::TRUE;
 		}
 
-		return *this;
+		return this;
 	}
 	*/
 
@@ -3489,7 +3504,7 @@ if(options.find(#key) != options.end()) \
 		@return {App} The App object.
 	*/
 
-	App& App::ReadPixel(int x, int y, void* outColor, Options& options) {
+	App* App::ReadPixel(int x, int y, void* outColor, const Options& options) {
 		IMPLEMENT_INIT_OPTION(options, format, PicoGL::Constant::RGBA);
 		IMPLEMENT_INIT_OPTION(options, type, PicoGL::Constant::UNSIGNED_BYTE);
 		/*
@@ -3500,7 +3515,7 @@ if(options.find(#key) != options.end()) \
 		*/
 		glReadPixels(x, y, 1, 1, GetGLEnum(format), GetGLEnum(type), outColor);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3513,7 +3528,7 @@ if(options.find(#key) != options.end()) \
 		@param {number} height Height of the viewport rectangle.
 		@return {App} The App object.
 	*/
-	App& App::Viewport(int x, int y, int width, int height) {
+	App* App::Viewport(int x, int y, int width, int height) {
 		if (this->viewportWidth != width || this->viewportHeight != height || this->viewportX != x || this->viewportY != y)
 		{
 			this->viewportX = x;
@@ -3523,7 +3538,7 @@ if(options.find(#key) != options.end()) \
 			glViewport(x, y, this->viewportWidth, this->viewportHeight);
 		}
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3532,10 +3547,10 @@ if(options.find(#key) != options.end()) \
 		@method
 		@return {App} The App object.
 	*/
-	App& App::DefaultViewport() {
+	App* App::DefaultViewport() {
 		this->Viewport(0, 0, this->width, this->height);
 
-		return *this;
+		return this;
 	}
 
 	/**
@@ -3546,7 +3561,7 @@ if(options.find(#key) != options.end()) \
 		@param {number} height The new canvas height.
 		@return {App} The App object.
 	*/
-	App& App::Resize(int width, int height) {
+	App* App::Resize(int width, int height) {
 		// this.canvas.width = width;
 		// this.canvas.height = height;
 
@@ -3554,7 +3569,7 @@ if(options.find(#key) != options.end()) \
 		this->height = height; // this.gl.drawingBufferHeight;
 		this->Viewport(0, 0, this->width, this->height);
 
-		return *this;
+		return this;
 	}
 	/**
 		Create a program.
@@ -3567,11 +3582,11 @@ if(options.find(#key) != options.end()) \
 	*/
 	Program* App::CreateProgram(const char* const* vsSource, unsigned int vsSourceLength,
 		const char* const* fsSource, unsigned int fsSourceLength,
-		std::vector<const char*>& xformFeedbackVars) {
+		const std::vector<const char*>& xformFeedbackVars) {
 		return new Program(&this->state, vsSource, vsSourceLength, fsSource, fsSourceLength, xformFeedbackVars);
 	}
 
-	Program* App::CreateProgram(Shader* vShader, Shader* fShader, std::vector<const char*>& xformFeedbackVars) {
+	Program* App::CreateProgram(Shader* vShader, Shader* fShader, const std::vector<const char*>& xformFeedbackVars) {
 		return new Program(&this->state, vShader, fShader, xformFeedbackVars);
 	}
 
@@ -3618,7 +3633,7 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} [usage=STATIC_DRAW] Buffer usage.
 		@return {VertexBuffer} New VertexBuffer object.
 	*/
-	VertexBuffer* App::CreateVertexBuffer(PicoGL::Constant type, int itemSize, void* data, unsigned int dataLength, PicoGL::Constant usage) {
+	VertexBuffer* App::CreateVertexBuffer(PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage) {
 		return new VertexBuffer(&this->state, type, itemSize, data, dataLength, usage);
 	}
 
@@ -3634,7 +3649,7 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} [usage=STATIC_DRAW] Buffer usage.
 		@return {VertexBuffer} New VertexBuffer object.
 	*/
-	VertexBuffer* App::CreateMatrixBuffer(PicoGL::Constant type, void* data, unsigned int dataLength, PicoGL::Constant usage) {
+	PicoGL::VertexBuffer* App::CreateMatrixBuffer(PicoGL::Constant type, const void* data, unsigned int dataLength, PicoGL::Constant usage) {
 		return new VertexBuffer(&this->state, type, 0, data, dataLength, usage);
 	}
 
@@ -3648,7 +3663,7 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} [usage=STATIC_DRAW] Buffer usage.
 		@return {VertexBuffer} New VertexBuffer object.
 	*/
-	VertexBuffer* App::CreateIndexBuffer(PicoGL::Constant type, int itemSize, void* data, unsigned int dataLength, PicoGL::Constant usage) {
+	PicoGL::VertexBuffer* App::CreateIndexBuffer(PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage) {
 		return new VertexBuffer(&this->state, type, itemSize, data, dataLength, usage, true);
 	}
 
@@ -3663,7 +3678,7 @@ if(options.find(#key) != options.end()) \
 		@param {GLEnum} [usage=DYNAMIC_DRAW] Buffer usage.
 		@return {UniformBuffer} New UniformBuffer object.
 	*/
-	UniformBuffer* App::CreateUniformBuffer(std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage) {
+	PicoGL::UniformBuffer* App::CreateUniformBuffer(const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage) {
 		return new UniformBuffer(&this->state, layout, usage);
 	}
 
@@ -3703,7 +3718,7 @@ if(options.find(#key) != options.end()) \
 			a mipmap sampling filter is used and the mipmap levels aren't provided directly.
 		@return {Texture} New Texture object.
 	*/
-	Texture* App::CreateTexture2D(void* image, int width, int height, Options& options) {
+	Texture* App::CreateTexture2D(const void* image, int width, int height, const Options& options) {
 		/*
 		if (typeof image == = "number") {
 			// Create empty texture just give width/height.
@@ -3757,7 +3772,7 @@ if(options.find(#key) != options.end()) \
 			a mipmap sampling filter is use and the mipmap levels aren't provided directly.
 		@return {Texture} New Texture object.
 	*/
-	Texture* App::CreateTextureArray(void* image, int width, int height, int depth, Options& options) {
+	Texture* App::CreateTextureArray(const void* image, int width, int height, int depth, const Options& options) {
 		/*
 		if (typeof image == = "number") {
 			// Create empty texture just give width/height/depth.
@@ -3806,7 +3821,7 @@ if(options.find(#key) != options.end()) \
 			a mipmap sampling filter is use and the mipmap levels aren't provided directly.
 		@return {Texture} New Texture object.
 	*/
-	Texture* App::CreateTexture3D(void* image, int width, int height, int depth, Options& options) {
+	Texture* App::CreateTexture3D(const void* image, int width, int height, int depth, const Options& options) {
 		/*
 		if (typeof image == = "number") {
 			// Create empty texture just give width/height/depth.
@@ -3859,7 +3874,7 @@ if(options.find(#key) != options.end()) \
 			a mipmap sampling filter is usedd.
 		@return {Cubemap} New Cubemap object.
 	*/
-	Cubemap* App::CreateCubemap(Options& options) {
+	Cubemap* App::CreateCubemap(const Options& options) {
 		return new Cubemap(&this->state, options);
 	}
 
@@ -3908,4 +3923,8 @@ if(options.find(#key) != options.end()) \
 	DrawCall* App::CreateDrawCall(Program* program, VertexArray* vertexArray, PicoGL::Constant primitive) {
 		return new DrawCall(&this->state, program, vertexArray, primitive);
 	}
+
+	App* CreateApp(const Options& options) {
+		return new App(options);
+	};
 };

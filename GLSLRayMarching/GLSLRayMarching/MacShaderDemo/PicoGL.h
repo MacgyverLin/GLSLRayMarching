@@ -714,14 +714,14 @@ namespace PicoGL
 			@method
 			@return {Query} The Query object.
 		*/
-		Query& Begin();
+		Query* Begin();
 		/**
 			End a query.
 
 			@method
 			@return {Query} The Query object.
 		*/
-		Query& End();
+		Query* End();
 
 		/**
 			Check if query result is available.
@@ -756,7 +756,7 @@ namespace PicoGL
 	class Cubemap
 	{
 	public:
-		Cubemap(State* state, Options& options);
+		Cubemap(State* state, const Options& options);
 		~Cubemap();
 
 		/**
@@ -766,7 +766,7 @@ namespace PicoGL
 			@ignore
 			@return {Cubemap} The Cubemap object.
 		*/
-		Cubemap& Bind(int unit);
+		Cubemap* Bind(int unit);
 	private:
 		State* state;
 	};
@@ -807,8 +807,8 @@ namespace PicoGL
 			@param {TransformFeedback} transformFeedback Transform Feedback to set.
 			@return {DrawCall} The DrawCall object.
 		*/
-		DrawCall& TransformFeedback(TransformFeedback* transformFeedback);
-	
+		DrawCall* TransformFeedback(TransformFeedback* transformFeedback);
+
 		/**
 			Set the value for a uniform. Array uniforms are supported by
 			using appending "[0]" to the array name and passing a flat array
@@ -820,8 +820,8 @@ namespace PicoGL
 			@return {DrawCall} The DrawCall object.
 		*/
 		template<class T>
-		DrawCall& Uniform(const char* name, const T& value) {
-			return *this;
+		DrawCall* Uniform(const char* name, const T& value) {
+			return this;
 			/*
 			let index = this.uniformIndices[name];
 			if (index == = undefined) {
@@ -843,7 +843,7 @@ namespace PicoGL
 		@param {Texture} texture Texture to bind.
 		@return {DrawCall} The DrawCall object.
 		*/
-		DrawCall& Texture(const char* name, Texture* texture);
+		DrawCall* Texture(const char* name, Texture* texture);
 
 		/**
 			Set uniform buffer to bind to a uniform block.
@@ -853,7 +853,7 @@ namespace PicoGL
 			@param {UniformBuffer} buffer Uniform buffer to bind.
 			@return {DrawCall} The DrawCall object.
 		*/
-		DrawCall& UniformBlock(const char* name, UniformBuffer* buffer);
+		DrawCall* UniformBlock(const char* name, UniformBuffer* buffer);
 
 		/**
 			 Set numElements property to allow number of elements to be drawn
@@ -862,7 +862,7 @@ namespace PicoGL
 			 @param {GLsizei} [count=0] Number of element to draw, 0 set to all.
 			 @return {DrawCall} The DrawCall object.
 		 */
-		DrawCall& ElementCount(int count = 0);
+		DrawCall* ElementCount(int count = 0);
 
 		/**
 			Set numInstances property to allow number of instances be drawn
@@ -871,7 +871,7 @@ namespace PicoGL
 			@param {GLsizei} [count=0] Number of instance to draw, 0 set to all.
 			@return {DrawCall} The DrawCall object.
 		*/
-		DrawCall& InstanceCount(int count = 0);
+		DrawCall* InstanceCount(int count = 0);
 
 		/**
 			Draw based on current state.
@@ -879,7 +879,7 @@ namespace PicoGL
 			@method
 			@return {DrawCall} The DrawCall object.
 		*/
-		DrawCall& Draw();
+		DrawCall* Draw();
 
 		~DrawCall();
 	private:
@@ -913,7 +913,7 @@ namespace PicoGL
 				 defaults to 0, otherwise to TEXTURE_2D.
 			 @return {Framebuffer} The Framebuffer object.
 		 */
-		Framebuffer& ColorTarget(int index, Texture* texture, PicoGL::Constant target);
+		Framebuffer* ColorTarget(int index, PicoGL::Texture* texture);
 
 		/**
 			Attach a depth target to this framebuffer.
@@ -924,7 +924,7 @@ namespace PicoGL
 				defaults to 0, otherwise to TEXTURE_2D.
 			@return {Framebuffer} The Framebuffer object.
 		*/
-		Framebuffer& DepthTarget(Texture* texture, PicoGL::Constant target);
+		Framebuffer* DepthTarget(Texture* texture);
 
 		/**
 			Resize all currently attached textures.
@@ -934,7 +934,7 @@ namespace PicoGL
 			@param {number} [height=app.height] New height of the framebuffer.
 			@return {Framebuffer} The Framebuffer object.
 		*/
-		Framebuffer& Resize(int width = -1, int height = -1, int depth = -1);
+		Framebuffer* Resize(int width = -1, int height = -1, int depth = -1);
 
 		/**
 			Delete this framebuffer.
@@ -951,7 +951,7 @@ namespace PicoGL
 			@ignore
 			@return {Framebuffer} The Framebuffer object.
 		*/
-		Framebuffer& BindForDraw();
+		Framebuffer* BindForDraw();
 
 		/**
 			Bind as the read framebuffer
@@ -960,7 +960,7 @@ namespace PicoGL
 			@ignore
 			@return {Framebuffer} The Framebuffer object.
 		*/
-		Framebuffer& BindForRead();
+		Framebuffer* BindForRead();
 
 		/**
 			Bind for a framebuffer state update.
@@ -970,7 +970,7 @@ namespace PicoGL
 			@ignore
 			@return {Framebuffer} The Framebuffer object.
 		*/
-		Framebuffer& BindAndCaptureState();
+		Framebuffer* BindAndCaptureState();
 
 		/**
 			Bind restore previous binding after state update
@@ -979,9 +979,48 @@ namespace PicoGL
 			@ignore
 			@return {Framebuffer} The Framebuffer object.
 		*/
-		Framebuffer& RestoreState(Framebuffer* framebuffer);
+		Framebuffer* RestoreState(Framebuffer* framebuffer);
+
+		int GetNumColorTargets() const
+		{
+			return numColorTargets;
+		}
+
+		const std::vector < Texture*>& GetColorTextures()
+		{
+			return colorTextures;
+		}
+
+		const std::vector < Texture*>& GetColorAttachments()
+		{
+			return  colorAttachments;
+		}
+
+		const std::vector<Texture*>& GetColorTextureTargets()
+		{
+			return colorTextureTargets;
+		}
+
+		Texture* DepthTexture()
+		{
+			return depthTexture;
+		}
+
+		Texture* DepthTextureTarget()
+		{
+			return depthTextureTarget;
+		}
 	private:
 		State* state;
+		unsigned int framebuffer;
+
+		int numColorTargets;
+
+		std::vector < Texture*> colorTextures;
+		std::vector < Texture*> colorAttachments;
+		std::vector<Texture*> colorTextureTargets;
+		Texture* depthTexture;
+		Texture* depthTextureTarget;
 	};
 
 	/**
@@ -1002,12 +1041,12 @@ namespace PicoGL
 		Program(State* state,
 			const char* const* vsSource, int vsSourceLength,
 			const char* const* fsSource, int fsSourceLength,
-			std::vector<const char*>& xformFeedbackVars);
+			const std::vector<const char*>& xformFeedbackVars = {});
 
-		Program(State* state, Shader* vShader, Shader* fShader, std::vector<const char*>& xformFeedbackVars);
-
-		void CreateProgramInternal(State* state, Shader* vShader, Shader* fShader, bool ownVertexShader, bool ownFragmentShader, std::vector<const char*>& xformFeedbackVars);
-
+		Program(State* state, Shader* vShader, Shader* fShader, const std::vector<const char*>& xformFeedbackVars = {});
+	private:
+		void CreateProgramInternal(State* state, Shader* vShader, Shader* fShader, bool ownVertexShader, bool ownFragmentShader, const std::vector<const char*>& xformFeedbackVars);
+	public:
 		/**
 			Delete this program.
 
@@ -1024,8 +1063,8 @@ namespace PicoGL
 			@return {Program} The Program object.
 		*/
 		template<class T>
-		Program& Uniform(const char* name, const T& value) {
-			return *this;
+		Program* Uniform(const char* name, const T& value) {
+			return this;
 			/*
 			this.uniforms[name].set(value);
 
@@ -1041,7 +1080,7 @@ namespace PicoGL
 			@ignore
 			@return {Program} The Program object.
 		*/
-		Program& Bind();
+		Program* Bind();
 	private:
 		State* state;
 	};
@@ -1067,7 +1106,7 @@ namespace PicoGL
 	class Texture
 	{
 	public:
-		Texture(State* state, PicoGL::Constant target, void* image, int width, int height, int depth, bool is3D, Options& options);
+		Texture(State* state, PicoGL::Constant target, const void* image, int width, int height, int depth, bool is3D, const Options& options);
 		/**
 			Re-allocate texture storage.
 
@@ -1077,7 +1116,7 @@ namespace PicoGL
 			@param {number} [depth] Image depth or number of images. Required when passing 3D or texture array data.
 			@return {Texture} The Texture object.
 		*/
-		Texture& Resize(int width, int height, int depth);
+		Texture* Resize(int width, int height, int depth);
 
 		/**
 			Set the image data for the texture. An array can be passed to manually set all levels
@@ -1090,7 +1129,7 @@ namespace PicoGL
 				used to set mip map levels.
 			@return {Texture} The Texture object.
 		*/
-		Texture& Data(void* data, unsigned int dataLength);
+		Texture* Data(void* data, unsigned int dataLength);
 
 		/**
 			Delete this texture.
@@ -1107,7 +1146,7 @@ namespace PicoGL
 			@ignore
 			@return {Texture} The Texture object.
 		*/
-		Texture& Bind(int unit);
+		Texture* Bind(int unit);
 	private:
 		State* state;
 	};
@@ -1156,7 +1195,7 @@ namespace PicoGL
 			@param {VertexBuffer} buffer Buffer to record output into.
 			@return {TransformFeedback} The TransformFeedback object.
 		*/
-		TransformFeedback& FeedbackBuffer(int index, VertexBuffer* buffer);
+		TransformFeedback* FeedbackBuffer(int index, VertexBuffer* buffer);
 
 		/**
 			Delete this transform feedback.
@@ -1173,7 +1212,7 @@ namespace PicoGL
 			@ignore
 			@return {TransformFeedback} The TransformFeedback object.
 		*/
-		TransformFeedback& Bind();
+		TransformFeedback* Bind();
 	private:
 		State* state;
 	};
@@ -1197,7 +1236,7 @@ namespace PicoGL
 	class UniformBuffer
 	{
 	public:
-		UniformBuffer(State* state, std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage);
+		UniformBuffer(State* state, const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage);
 
 		/**
 			Update data for a given item in the buffer. NOTE: Data is not
@@ -1209,8 +1248,8 @@ namespace PicoGL
 			@return {UniformBuffer} The UniformBuffer object.
 		*/
 		template<class T>
-		UniformBuffer& Set(int index, const T& value) {
-			return *this;
+		UniformBuffer* Set(int index, const T& value) {
+			return this;
 			/*
 			let view = this.dataViews[this.types[index]];
 
@@ -1232,7 +1271,7 @@ namespace PicoGL
 			@param {number} [index] Index in the layout of item to send to the GPU. If ommited, entire buffer is sent.
 			@return {UniformBuffer} The UniformBuffer object.
 		*/
-		UniformBuffer& Update(int index);
+		UniformBuffer* Update(int index = -1);
 
 		/**
 			Delete this uniform buffer.
@@ -1249,7 +1288,7 @@ namespace PicoGL
 			@ignore
 			@return {UniformBuffer} The UniformBuffer object.
 		*/
-		UniformBuffer& Bind(int base);
+		UniformBuffer* Bind(int base);
 	private:
 		State* state;
 	};
@@ -1280,7 +1319,7 @@ namespace PicoGL
 			@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& VertexAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
+		VertexArray* VertexAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
 
 		/**
 			Bind an per-instance attribute buffer to this vertex array.
@@ -1290,7 +1329,7 @@ namespace PicoGL
 			@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& InstanceAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
+		VertexArray* InstanceAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
 
 		/**
 			Bind an per-vertex integer attribute buffer to this vertex array.
@@ -1302,7 +1341,7 @@ namespace PicoGL
 			@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& VertexIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
+		VertexArray* VertexIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
 
 		/**
 			Bind an per-instance integer attribute buffer to this vertex array.
@@ -1314,7 +1353,7 @@ namespace PicoGL
 			@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& InstanceIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
+		VertexArray* InstanceIntegerAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
 
 		/**
 			Bind an per-vertex normalized attribute buffer to this vertex array.
@@ -1326,7 +1365,7 @@ namespace PicoGL
 			@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& VertexNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
+		VertexArray* VertexNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
 
 		/**
 			Bind an per-instance normalized attribute buffer to this vertex array.
@@ -1338,7 +1377,7 @@ namespace PicoGL
 			@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& InstanceNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
+		VertexArray* InstanceNormalizedAttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer);
 
 		/**
 			Bind an index buffer to this vertex array.
@@ -1347,7 +1386,7 @@ namespace PicoGL
 			@param {VertexBuffer} vertexBuffer The VertexBuffer to bind.
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& IndexBuffer(VertexBuffer* vertexBuffer);
+		VertexArray* IndexBuffer(VertexBuffer* vertexBuffer);
 
 		/**
 			Delete this vertex array.
@@ -1364,7 +1403,7 @@ namespace PicoGL
 			@ignore
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& Bind();
+		VertexArray* Bind();
 
 		/**
 			Attach an attribute buffer
@@ -1373,7 +1412,7 @@ namespace PicoGL
 			@ignore
 			@return {VertexArray} The VertexArray object.
 		*/
-		VertexArray& AttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer, bool instanced, bool integer, bool normalized);
+		VertexArray* AttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer, bool instanced, bool integer, bool normalized);
 	private:
 		State* state;
 	};
@@ -1395,7 +1434,7 @@ namespace PicoGL
 	class VertexBuffer
 	{
 	public:
-		VertexBuffer(State* state, PicoGL::Constant type, int itemSize, void* data, unsigned int dataLength, PicoGL::Constant usage, bool indexType = false);
+		VertexBuffer(State* state, PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage = PicoGL::Constant::STATIC_DRAW, bool indexType = false);
 
 		/**
 			Update data in this buffer. NOTE: the data must fit
@@ -1405,7 +1444,7 @@ namespace PicoGL
 			@param {VertexBufferView} data Data to store in the buffer.
 			@return {VertexBuffer} The VertexBuffer object.
 		*/
-		VertexBuffer& Data(void* data, unsigned int dataLength);
+		VertexBuffer* Data(void* data, unsigned int dataLength);
 
 		/**
 			Delete this array buffer.
@@ -1447,8 +1486,8 @@ namespace PicoGL
 			VertexArray* vertexArray = nullptr,
 			TransformFeedback* transformFeedback = nullptr,
 			int activeTexture = -1,
-			std::vector<Texture*> textures = std::vector<Texture*>(WEBGL_INFO[PicoGL::Constant::MAX_TEXTURE_UNITS]),
-			std::vector<UniformBuffer*> uniformBuffers = std::vector<UniformBuffer*>(WEBGL_INFO[PicoGL::Constant::MAX_UNIFORM_BUFFERS]),
+			std::vector<Texture*> textures = std::vector<Texture*>(),
+			std::vector<UniformBuffer*> uniformBuffers = std::vector<UniformBuffer*>(),
 			std::vector<int> freeUniformBufferBases = std::vector<int>(),
 			Framebuffer* drawFramebuffer = nullptr,
 			Framebuffer* readFramebuffer = nullptr
@@ -1496,7 +1535,7 @@ namespace PicoGL
 
 		IVector4 viewport;
 	public:
-		App();
+		App(const Options& options);
 
 		/**
 			Set the color mask to selectively enable or disable particular
@@ -1509,7 +1548,7 @@ namespace PicoGL
 			@param {boolean} a Alpha channel.
 			@return {App} The App object.
 		*/
-		App& ColorMask(bool r, bool g, bool b, bool a);
+		App* ColorMask(bool r, bool g, bool b, bool a);
 
 		/**
 			Set the clear color.
@@ -1521,7 +1560,7 @@ namespace PicoGL
 			@param {number} a Alpha channel.
 			@return {App} The App object.
 		*/
-		App& ClearColor(float r, float g, float b, float a);
+		App* ClearColor(float r, float g, float b, float a);
 
 		/**
 			Set the clear mask bits to use when calling clear().
@@ -1531,7 +1570,7 @@ namespace PicoGL
 			@param {GLEnum} mask Bit mask of buffers to clear.
 			@return {App} The App object.
 		*/
-		App& ClearMask(int mask);
+		App* ClearMask(int mask);
 
 		/**
 			Clear the canvas
@@ -1539,7 +1578,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& Clear();
+		App* Clear();
 
 		/**
 			Bind a draw framebuffer to the WebGL context.
@@ -1549,7 +1588,7 @@ namespace PicoGL
 			@see Framebuffer
 			@return {App} The App object.
 		*/
-		App& DrawFramebuffer(Framebuffer* framebuffer);
+		App* DrawFramebuffer(Framebuffer* framebuffer);
 
 		/**
 			Bind a read framebuffer to the WebGL context.
@@ -1559,7 +1598,7 @@ namespace PicoGL
 			@see Framebuffer
 			@return {App} The App object.
 		*/
-		App& ReadFramebuffer(Framebuffer* framebuffer);
+		App* ReadFramebuffer(Framebuffer* framebuffer);
 
 		/**
 			Switch back to the default framebuffer for drawing (i.e. draw to the screen).
@@ -1568,7 +1607,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& DefaultDrawFramebuffer();
+		App* DefaultDrawFramebuffer();
 
 		/**
 			Switch back to the default framebuffer for reading (i.e. read from the screen).
@@ -1576,7 +1615,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& DefaultReadFramebuffer();
+		App* DefaultReadFramebuffer();
 
 		/**
 			Set the depth range.
@@ -1586,7 +1625,7 @@ namespace PicoGL
 			@param {number} far Maximum depth value.
 			@return {App} The App object.
 		*/
-		App& DepthRange(float near, float far);
+		App* DepthRange(float near, float far);
 
 		/**
 			Enable depth testing.
@@ -1594,7 +1633,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& DepthTest();
+		App* DepthTest();
 
 		/**
 			Disable depth testing.
@@ -1602,7 +1641,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& NoDepthTest();
+		App* NoDepthTest();
 
 		/**
 			Enable or disable writing to the depth buffer.
@@ -1611,7 +1650,7 @@ namespace PicoGL
 			@param {Boolean} mask The depth mask.
 			@return {App} The App object.
 		*/
-		App& DepthMask(bool mask);
+		App* DepthMask(bool mask);
 		/**
 			Set the depth test function. E.g. app.depthFunc(PicoGL.LEQUAL).
 
@@ -1619,7 +1658,7 @@ namespace PicoGL
 			@param {GLEnum} func The depth testing function to use.
 			@return {App} The App object.
 		*/
-		App& DepthFunc(PicoGL::Constant func);
+		App* DepthFunc(PicoGL::Constant func);
 
 		/**
 			Enable blending.
@@ -1627,7 +1666,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& Blend();
+		App* Blend();
 
 		/**
 			Disable blending
@@ -1635,7 +1674,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& NoBlend();
+		App* NoBlend();
 
 		/**
 			Set the blend function. E.g. app.blendFunc(PicoGL.ONE, PicoGL.ONE_MINUS_SRC_ALPHA).
@@ -1645,7 +1684,7 @@ namespace PicoGL
 			@param {GLEnum} dest The destination blending weight.
 			@return {App} The App object.
 		*/
-		App& BlendFunc(PicoGL::Constant src, PicoGL::Constant dest);
+		App* BlendFunc(PicoGL::Constant src, PicoGL::Constant dest);
 
 		/**
 			Set the blend function, with separate weighting for color and alpha channels.
@@ -1658,7 +1697,7 @@ namespace PicoGL
 			@param {GLEnum} adest The destination blending weight for the alpha channel.
 			@return {App} The App object.
 		*/
-		App& BlendFuncSeparate(PicoGL::Constant csrc, PicoGL::Constant cdest, PicoGL::Constant asrc, PicoGL::Constant adest);
+		App* BlendFuncSeparate(PicoGL::Constant csrc, PicoGL::Constant cdest, PicoGL::Constant asrc, PicoGL::Constant adest);
 
 		/**
 			Enable stencil testing.
@@ -1668,7 +1707,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& StencilTest();
+		App* StencilTest();
 
 		/**
 			Disable stencil testing.
@@ -1676,7 +1715,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& NoStencilTest();
+		App* NoStencilTest();
 
 
 		/**
@@ -1685,7 +1724,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& scissorTest();
+		App* scissorTest();
 
 		/**
 			Disable scissor testing.
@@ -1693,7 +1732,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& NoScissorTest();
+		App* NoScissorTest();
 
 		/**
 			Define the scissor box.
@@ -1701,7 +1740,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& Scissor(int x, int y, int width, int height);
+		App* Scissor(int x, int y, int width, int height);
 
 		/**
 			Set the bitmask to use for tested stencil values.
@@ -1714,7 +1753,7 @@ namespace PicoGL
 			@return {App} The App object.
 
 		*/
-		App& StencilMask(int mask);
+		App* StencilMask(int mask);
 
 		/**
 			Set the bitmask to use for tested stencil values for a particular face orientation.
@@ -1727,7 +1766,7 @@ namespace PicoGL
 			@param {number} mask The mask value.
 			@return {App} The App object.
 		*/
-		App& StencilMaskSeparate(PicoGL::Constant face, int mask);
+		App* StencilMaskSeparate(PicoGL::Constant face, int mask);
 
 		/**
 			Set the stencil function and reference value.
@@ -1742,7 +1781,7 @@ namespace PicoGL
 				the stencil function.
 			@return {App} The App object.
 		*/
-		App& StencilFunc(PicoGL::Constant func, int ref, int mask);
+		App* StencilFunc(PicoGL::Constant func, int ref, int mask);
 
 		/**
 			Set the stencil function and reference value for a particular face orientation.
@@ -1758,7 +1797,7 @@ namespace PicoGL
 				the stencil function.
 			@return {App} The App object.
 		*/
-		App& StencilFuncSeparate(PicoGL::Constant face, PicoGL::Constant func, int ref, int mask);
+		App* StencilFuncSeparate(PicoGL::Constant face, PicoGL::Constant func, int ref, int mask);
 
 		/**
 			Set the operations for updating stencil buffer values.
@@ -1772,7 +1811,7 @@ namespace PicoGL
 			@param {GLEnum} pass Operation to apply if the both the depth and stencil tests pass.
 			@return {App} The App object.
 		*/
-		App& StencilOp(PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass);
+		App* StencilOp(PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass);
 
 		/**
 			Set the operations for updating stencil buffer values for a particular face orientation.
@@ -1787,7 +1826,7 @@ namespace PicoGL
 			@param {GLEnum} pass Operation to apply if the both the depth and stencil tests pass.
 			@return {App} The App object.
 		*/
-		App& StencilOpSeparate(PicoGL::Constant face, PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass);
+		App* StencilOpSeparate(PicoGL::Constant face, PicoGL::Constant stencilFail, PicoGL::Constant depthFail, PicoGL::Constant pass);
 
 		/**
 			Enable rasterization step.
@@ -1795,7 +1834,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& Rasterize();
+		App* Rasterize();
 
 		/**
 			Disable rasterization step.
@@ -1803,7 +1842,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& NoRasterize();
+		App* NoRasterize();
 
 		/**
 			Enable backface culling.
@@ -1811,7 +1850,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& CullBackfaces();
+		App* CullBackfaces();
 
 		/**
 			Disable backface culling.
@@ -1819,7 +1858,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& NoCullBackfaces();
+		App* NoCullBackfaces();
 
 		/**
 			Enable the EXT_color_buffer_float extension. Allows for creating float textures as
@@ -1829,7 +1868,7 @@ namespace PicoGL
 			@see Framebuffer
 			@return {App} The App object.
 		*/
-		App& FloatRenderTargets();
+		App* FloatRenderTargets();
 
 		/**
 			Enable the OES_texture_float_linear extension. Allows for linear blending on float textures.
@@ -1838,7 +1877,7 @@ namespace PicoGL
 			@see Framebuffer
 			@return {App} The App object.
 		*/
-		App& LinearFloatTextures();
+		App* LinearFloatTextures();
 
 
 		/**
@@ -1859,7 +1898,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& S3TCTextures();
+		App* S3TCTextures();
 		/**
 			Enable the WEBGL_compressed_texture_etc extension, which allows the following enums to
 			be used as texture formats:
@@ -1883,7 +1922,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& ETCTextures();
+		App* ETCTextures();
 
 		/**
 			Enable the WEBGL_compressed_texture_astc extension, which allows the following enums to
@@ -1923,7 +1962,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& ASTCTextures();
+		App* ASTCTextures();
 
 		/**
 			Enable the WEBGL_compressed_texture_pvrtc extension, which allows the following enums to
@@ -1940,7 +1979,7 @@ namespace PicoGL
 			@return {App} The App object.
 		*/
 		/*
-		App& PVRTCTextures();
+		App* PVRTCTextures();
 		*/
 
 		/**
@@ -1956,7 +1995,7 @@ namespace PicoGL
 			@return {App} The App object.
 		*/
 
-		App& ReadPixel(int x, int y, void* outColor, Options& options = DUMMY_OBJECT);
+		App* ReadPixel(int x, int y, void* outColor, const Options& options = DUMMY_OBJECT);
 
 		/**
 			Set the viewport.
@@ -1968,7 +2007,7 @@ namespace PicoGL
 			@param {number} height Height of the viewport rectangle.
 			@return {App} The App object.
 		*/
-		App& Viewport(int x, int y, int width, int height);
+		App* Viewport(int x, int y, int width, int height);
 
 		/**
 			Set the viewport to the full canvas.
@@ -1976,7 +2015,7 @@ namespace PicoGL
 			@method
 			@return {App} The App object.
 		*/
-		App& DefaultViewport();
+		App* DefaultViewport();
 
 		/**
 			Resize the drawing surface.
@@ -1986,7 +2025,7 @@ namespace PicoGL
 			@param {number} height The new canvas height.
 			@return {App} The App object.
 		*/
-		App& Resize(int width, int height);
+		App* Resize(int width, int height);
 
 		/**
 			Create a program.
@@ -1998,10 +2037,10 @@ namespace PicoGL
 			@return {Program} New Program object.
 		*/
 		Program* CreateProgram(const char* const* vsSource, unsigned int vsSourceLength,
-							   const char* const* fsSource, unsigned int fsSourceLength,
-							   std::vector<const char*>& xformFeedbackVars);
+			const char* const* fsSource, unsigned int fsSourceLength,
+			const std::vector<const char*>& xformFeedbackVars = {});
 
-		Program* CreateProgram(Shader* vShader, Shader* fShader, std::vector<const char*>& xformFeedbackVars);
+		Program* CreateProgram(Shader* vShader, Shader* fShader, const std::vector<const char*>& xformFeedbackVars = {});
 
 		/**
 			Create a shader. Creating a shader separately from a program allows for
@@ -2040,7 +2079,7 @@ namespace PicoGL
 			@param {GLEnum} [usage=STATIC_DRAW] Buffer usage.
 			@return {VertexBuffer} New VertexBuffer object.
 		*/
-		VertexBuffer* CreateVertexBuffer(PicoGL::Constant type, int itemSize, void* data, unsigned int dataLength, PicoGL::Constant usage);
+		VertexBuffer* CreateVertexBuffer(PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage = PicoGL::Constant::STATIC_DRAW);
 
 		/**
 			Create a per-vertex matrix buffer. Matrix buffers ensure that columns
@@ -2054,7 +2093,7 @@ namespace PicoGL
 			@param {GLEnum} [usage=STATIC_DRAW] Buffer usage.
 			@return {VertexBuffer} New VertexBuffer object.
 		*/
-		VertexBuffer* CreateMatrixBuffer(PicoGL::Constant type, void* data, unsigned int dataLength, PicoGL::Constant usage);
+		VertexBuffer* CreateMatrixBuffer(PicoGL::Constant type, const void* data, unsigned int dataLength, PicoGL::Constant usage = PicoGL::Constant::STATIC_DRAW);
 
 		/**
 			Create an index buffer.
@@ -2066,7 +2105,7 @@ namespace PicoGL
 			@param {GLEnum} [usage=STATIC_DRAW] Buffer usage.
 			@return {VertexBuffer} New VertexBuffer object.
 		*/
-		VertexBuffer* CreateIndexBuffer(PicoGL::Constant type, int itemSize, void* data, unsigned int dataLength, PicoGL::Constant usage);
+		VertexBuffer* CreateIndexBuffer(PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage = PicoGL::Constant::STATIC_DRAW);
 
 		/**
 			Create a uniform buffer in std140 layout. NOTE: FLOAT_MAT2, FLOAT_MAT3x2, FLOAT_MAT4x2,
@@ -2079,7 +2118,7 @@ namespace PicoGL
 			@param {GLEnum} [usage=DYNAMIC_DRAW] Buffer usage.
 			@return {UniformBuffer} New UniformBuffer object.
 		*/
-		UniformBuffer* CreateUniformBuffer(std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage);
+		UniformBuffer* CreateUniformBuffer(const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage = PicoGL::Constant::DYNAMIC_DRAW);
 
 		/**
 			Create a 2D texture. Can be used in several ways depending on the type of texture data:
@@ -2117,7 +2156,7 @@ namespace PicoGL
 				a mipmap sampling filter is used and the mipmap levels aren't provided directly.
 			@return {Texture} New Texture object.
 		*/
-		Texture* CreateTexture2D(void* image, int width, int height, Options& options);
+		Texture* CreateTexture2D(const void* image, int width, int height, const Options& options);
 
 		/**
 			Create a 2D texture array.
@@ -2152,7 +2191,7 @@ namespace PicoGL
 				a mipmap sampling filter is use and the mipmap levels aren't provided directly.
 			@return {Texture} New Texture object.
 		*/
-		Texture* CreateTextureArray(void* image, int width, int height, int depth, Options& options);
+		Texture* CreateTextureArray(const void* image, int width, int height, int depth, const Options& options);
 
 		/**
 			Create a 3D texture.
@@ -2187,7 +2226,7 @@ namespace PicoGL
 				a mipmap sampling filter is use and the mipmap levels aren't provided directly.
 			@return {Texture} New Texture object.
 		*/
-		Texture* CreateTexture3D(void* image, int width, int height, int depth, Options& options);
+		Texture* CreateTexture3D(const void* image, int width, int height, int depth, const Options& options);
 
 		/**
 			Create a cubemap.
@@ -2227,7 +2266,7 @@ namespace PicoGL
 				a mipmap sampling filter is usedd.
 			@return {Cubemap} New Cubemap object.
 		*/
-		Cubemap* CreateCubemap(Options& options);
+		Cubemap* CreateCubemap(const Options& options);
 
 		/**
 			Create a framebuffer.
@@ -2264,8 +2303,10 @@ namespace PicoGL
 			@param {GLEnum} [primitive=TRIANGLES] Type of primitive to draw.
 			@return {DrawCall} New DrawCall object.
 		*/
-		DrawCall* CreateDrawCall(Program* program, VertexArray* vertexArray, PicoGL::Constant primitive);
+		DrawCall* CreateDrawCall(Program* program, VertexArray* vertexArray, PicoGL::Constant primitive = PicoGL::Constant::TRIANGLES);
 	};
+
+	App* CreateApp(const Options& options);
 };
 
 #endif

@@ -46,21 +46,21 @@ public:
 		return color;
 	}
 
-	Matrix4& LightViewMatrix()
+	const Matrix4& LightViewMatrix()
 	{
 		ValidateLightViewMatrix(lightViewMatrix);
 
 		return lightViewMatrix;
 	}
 
-	Matrix4& LightProjectionMatrix()
+	const Matrix4& LightProjectionMatrix()
 	{
 		ValidateLightProjectionMatrix(lightProjectionMatrix);
 
 		return lightProjectionMatrix;
 	}
 
-	Matrix4& LightViewProjectionMatrix()
+	const Matrix4& LightViewProjectionMatrix()
 	{
 		ValidateLightViewProjectionMatrix(lightViewProjectionMatrix);
 

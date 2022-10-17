@@ -35,7 +35,7 @@ LPVDirectionLight::~LPVDirectionLight()
 {
 }
 
-Vector3 LPVDirectionLight::ViewSpaceDirection(LPVCamera& camera)
+Vector3 LPVDirectionLight::ViewSpaceDirection(LPVCamera* camera)
 {
 #if 0
 	viewSpaceDirection: function(camera) {
@@ -49,7 +49,7 @@ Vector3 LPVDirectionLight::ViewSpaceDirection(LPVCamera& camera)
 
 	},
 #endif
-	auto inverseRotation = camera.orientation.Conjugate();
+	auto inverseRotation = camera->Orientation().Conjugate();
 
 	Vector3 result;
 	vec3transformQuat(result, this->Direction(), inverseRotation);

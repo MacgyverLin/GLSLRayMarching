@@ -28,9 +28,9 @@ public:
 
 	virtual void OnTerminate();
 
-	Vector3 ViewSpaceDirection(LPVCamera& camera);
+	Vector3 ViewSpaceDirection(LPVCamera* camera);
 
-	Vector3 ViewSpacePosition(LPVCamera& camera);
+	Vector3 ViewSpacePosition(LPVCamera* camera);
 
 	Vector3& Position()
 	{

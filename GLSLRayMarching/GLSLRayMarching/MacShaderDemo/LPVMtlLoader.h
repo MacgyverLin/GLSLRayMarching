@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "Video.h"
 #include "LPVCommon.h"
+#include "ColorRGBA.h"
 
 class LPVMtlLoader
 {

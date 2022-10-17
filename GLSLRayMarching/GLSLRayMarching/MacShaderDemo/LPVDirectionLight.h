@@ -12,7 +12,7 @@ public:
 
 	virtual ~LPVDirectionLight();
 
-	Vector3 ViewSpaceDirection(LPVCamera& camera);
+	Vector3 ViewSpaceDirection(LPVCamera* camera);
 
 	virtual void OnRender();
 

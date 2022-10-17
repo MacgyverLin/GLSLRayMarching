@@ -13,7 +13,7 @@ LPVSpotLight::~LPVSpotLight()
 {
 }
 
-Vector3 LPVSpotLight::ViewSpaceDirection(LPVCamera& camera)
+Vector3 LPVSpotLight::ViewSpaceDirection(LPVCamera* camera)
 {
 #if 0
 	viewSpaceDirection: function(camera) {
@@ -27,7 +27,7 @@ Vector3 LPVSpotLight::ViewSpaceDirection(LPVCamera& camera)
 
 	},
 #endif
-	auto inverseRotation = camera.orientation.Conjugate();
+	auto inverseRotation = camera->Orientation().Conjugate();
 
 	Vector3 result;
 	vec3transformQuat(result, this->Direction(), inverseRotation);
@@ -35,7 +35,7 @@ Vector3 LPVSpotLight::ViewSpaceDirection(LPVCamera& camera)
 	return result;
 }
 
-Vector3 LPVSpotLight::ViewSpacePosition(LPVCamera& camera)
+Vector3 LPVSpotLight::ViewSpacePosition(LPVCamera* camera)
 {
 #if 0
 	viewSpacePosition: function(camera) {
@@ -47,7 +47,7 @@ Vector3 LPVSpotLight::ViewSpacePosition(LPVCamera& camera)
 
 #endif
 	Vector3 result;
-	vec3transformMat4(result, this->position, camera.viewMatrix);
+	vec3transformMat4(result, this->position, camera->ViewMatrix());
 	
 	return result;
 }

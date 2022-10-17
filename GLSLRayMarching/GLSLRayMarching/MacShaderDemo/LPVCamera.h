@@ -58,7 +58,28 @@ private:
 	void Resize();
 	void UpdateProjectionMatrix(float aspectRatio);
 	void UpdateViewMatrix();
+
 public:
+	Vector3 Position()
+	{
+		return position;
+	}
+
+	Quaternion Orientation()
+	{
+		return orientation;
+	}
+
+	Matrix4 ViewMatrix()
+	{
+		return viewMatrix;
+	}
+
+	Matrix4 ProjectionMatrix()
+	{
+		return projectionMatrix;
+	}
+private:
 	Vector3 position;
 	Quaternion orientation;
 

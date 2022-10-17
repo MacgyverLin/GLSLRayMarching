@@ -41,6 +41,11 @@ void LPV::GeometryInjection(PicoGL::Framebuffer* _RSMFrameBuffer, LPVDirectionLi
 {
 }
 
+void LPV::LightPropagation(int lightPropagationIternation)
+{
+}
+
+
 void LPV::ClearAccumulatedBuffer()
 {
 }

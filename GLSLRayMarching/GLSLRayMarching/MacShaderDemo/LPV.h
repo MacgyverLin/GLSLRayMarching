@@ -24,11 +24,11 @@ public:
 	void CreateFramebuffer(int size);
 	void LightInjection(PicoGL::Framebuffer* RSMFramebuffer);
 	void GeometryInjection(PicoGL::Framebuffer*, LPVDirectionLight*);
+	void LightPropagation(int lightPropagationIternation);
 	void ClearAccumulatedBuffer();
 	void ClearInjectionBuffer();
 	void LightPropagationIteration(int iteration, PicoGL::Framebuffer* readLPV, PicoGL::Framebuffer* nextIterationLPV, PicoGL::Framebuffer* accumulatedLPV);
-public:
-private:
+
 	int size;
 	int framebufferSize;
 	PicoGL::Framebuffer* injectionFramebuffer;
