@@ -83,6 +83,7 @@ int main(int argc, char** argv)
 
 	macShaderDemoApp.Start();
 
+
 	macShaderDemoApp.Terminate();
 
 	return 0;
