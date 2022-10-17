@@ -67,7 +67,7 @@ public:
 		}
 
 		Texture* texture;
-		FlipFrameBuffer* buffer;
+		FrameBuffer* buffer;
 		Filter filter;
 		Wrap wrap;
 		bool vFlip;
@@ -177,9 +177,21 @@ public:
 		{
 			Texture* texture = nullptr;
 			if (iChannels[i].texture)
+			{
 				texture = iChannels[i].texture;
+			}
 			else if (iChannels[i].buffer)
-				texture = iChannels[i].buffer->GetCurrentTexture();
+			{
+				if (iChannels[i].buffer->GetType() == FrameBuffer::Type::Texture2D)
+					texture = ((TextureFrameBuffer2D*)iChannels[i].buffer)->GetTexture();
+				else if (iChannels[i].buffer->GetType() == FrameBuffer::Type::TextureCubemap)
+					texture = ((TextureFrameBufferCubemap*)iChannels[i].buffer)->GetTexture();
+				else
+				{
+					::Debug("Channel%d: channel texture must be either 2D cubemap");
+					return false;
+				}
+			}
 
 			if (texture)
 			{
@@ -262,7 +274,14 @@ public:
 	{
 		if (renderTarget)
 		{
-			renderTarget->Flip();
+			if (renderTarget->GetType() == FrameBuffer::Type::Texture2D)
+				((TextureFrameBuffer2D*)renderTarget)->Flip();
+			else if (renderTarget->GetType() == FrameBuffer::Type::TextureCubemap)
+				((TextureFrameBufferCubemap*)renderTarget)->Flip();
+			else
+			{
+				::Debug("Channel%d: channel texture must be either 2D cubemap");
+			}
 		}
 	}
 
@@ -313,7 +332,7 @@ public:
 		this->iChannels[i].buffer = nullptr;
 	}
 
-	void SetChannelBuffer(int i, FlipFrameBuffer* renderTarget_)
+	void SetChannelBuffer(int i, FrameBuffer* renderTarget_)
 	{
 		this->iChannels[i].texture = nullptr;
 		this->iChannels[i].buffer = renderTarget_;
@@ -324,12 +343,12 @@ public:
 		return this->iChannels[i];
 	}
 
-	void SetRenderTarget(FlipFrameBuffer* renderTarget_)
+	void SetRenderTarget(FrameBuffer* renderTarget_)
 	{
 		renderTarget = renderTarget_;
 	}
 
-	FlipFrameBuffer* GetRenderTarget() const
+	FrameBuffer* GetRenderTarget() const
 	{
 		return renderTarget;
 	}
@@ -413,14 +432,14 @@ public:
 			{
 				if (iChannels[i].texture->GetType() == Texture::Type::Texture2D)
 					fShaderChannels += "uniform sampler2D iChannel" + idx + ";\n";
-				else if (iChannels[i].texture->GetType() == Texture::Type::TextureCubeMap)
+				else if (iChannels[i].texture->GetType() == Texture::Type::TextureCubemap)
 					fShaderChannels += "uniform samplerCube iChannel" + idx + ";\n";
 			}
 			else if (iChannels[i].buffer)
 			{
-				if (iChannels[i].buffer->GetCurrentTexture()->GetType() == Texture::Type::Texture2D)
+				if (iChannels[i].buffer->GetType() == FrameBuffer::Type::Texture2D)
 					fShaderChannels += "uniform sampler2D iChannel" + idx + ";\n";
-				else if (iChannels[i].buffer->GetCurrentTexture()->GetType() == Texture::Type::TextureCubeMap)
+				else if (iChannels[i].buffer->GetType() == FrameBuffer::Type::TextureCubemap)
 					fShaderChannels += "uniform samplerCube iChannel" + idx + ";\n";
 			}
 		}
@@ -482,7 +501,7 @@ private:
 	RenderStates renderStates;
 	ShaderProgram shaderProgram;
 	std::vector<Channel> iChannels;
-	FlipFrameBuffer* renderTarget;
+	FrameBuffer* renderTarget;
 	VertexBuffer vertexBuffer;
 };
 

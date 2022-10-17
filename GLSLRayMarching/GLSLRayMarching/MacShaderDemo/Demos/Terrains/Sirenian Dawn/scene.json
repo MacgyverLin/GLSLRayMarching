@@ -24,6 +24,17 @@
     },
     {
       "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "cubemapbuffera"
+    },
+    {
+      "shader": "image.glsl",
       "channels":
       [
         {

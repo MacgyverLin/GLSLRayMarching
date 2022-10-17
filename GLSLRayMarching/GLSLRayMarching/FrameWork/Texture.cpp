@@ -711,21 +711,21 @@ unsigned int Texture3D::GetDepth() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-TextureCubeMap::TextureCubeMap()
-: Texture(Texture::Type::TextureCubeMap)
+TextureCubemap::TextureCubemap()
+: Texture(Texture::Type::TextureCubemap)
 , size(0)
 , faceDataSize(0)
 {
 }
 
-TextureCubeMap::~TextureCubeMap()
+TextureCubemap::~TextureCubemap()
 {
 	Assert(impl);
 
 	Terminate();
 }
 
-bool TextureCubeMap::Initiate(unsigned int size_, Texture::Format format_, void* src_)
+bool TextureCubemap::Initiate(unsigned int size_, Texture::Format format_, void* src_)
 {
 	Assert(impl);
 
@@ -740,6 +740,12 @@ bool TextureCubeMap::Initiate(unsigned int size_, Texture::Format format_, void*
 
 	glGenTextures(1, &impl->handle);
 	glBindTexture(textureType, impl->handle);
+	glTexParameterf(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameterf(textureType, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
 	if (impl->format >= Texture::Format::COMPRESSED_R11_EAC)
 	{
 		glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), src_); dataPtr += faceDataSize;
@@ -764,19 +770,19 @@ bool TextureCubeMap::Initiate(unsigned int size_, Texture::Format format_, void*
 	return Texture::Initiate();
 }
 
-bool TextureCubeMap::Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_)
+bool TextureCubemap::Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_)
 {
 	return Initiate(size_, GetFormat(nrComponents_, dynamicRange_), src_);
 }
 
-void TextureCubeMap::Terminate()
+void TextureCubemap::Terminate()
 {
 	Assert(impl);
 
 	return Texture::Terminate();
 }
 
-void TextureCubeMap::Update(Side side_, unsigned int x_, unsigned int y_, unsigned int width_, unsigned int height_, void* src_, int mipLevel_)
+void TextureCubemap::Update(Side side_, unsigned int x_, unsigned int y_, unsigned int width_, unsigned int height_, void* src_, int mipLevel_)
 {
 	Assert(impl);
 
@@ -797,12 +803,12 @@ void TextureCubeMap::Update(Side side_, unsigned int x_, unsigned int y_, unsign
 		glGenerateMipmap(textureType);
 }
 
-void TextureCubeMap::Update(Side side_, void* src_, int mipLevel_)
+void TextureCubemap::Update(Side side_, void* src_, int mipLevel_)
 {
 	Update(side_, 0, 0, size, size, src_, mipLevel_);
 }
 
-void TextureCubeMap::Update(void* src_, int mipLevel_)
+void TextureCubemap::Update(void* src_, int mipLevel_)
 {
 	Assert(impl);
 
@@ -834,7 +840,7 @@ void TextureCubeMap::Update(void* src_, int mipLevel_)
 		glGenerateMipmap(textureType);
 }
 
-void TextureCubeMap::GetResolution(unsigned int* w_, unsigned int* h_, unsigned int* d_) const
+void TextureCubemap::GetResolution(unsigned int* w_, unsigned int* h_, unsigned int* d_) const
 {
 	Assert(impl);
 
@@ -843,7 +849,7 @@ void TextureCubeMap::GetResolution(unsigned int* w_, unsigned int* h_, unsigned 
 	*d_ = 1;
 }
 
-unsigned int TextureCubeMap::GetSize() const
+unsigned int TextureCubemap::GetSize() const
 {
 	Assert(impl);
 
@@ -1350,7 +1356,7 @@ void Texture3DFile::Terminate()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 TextureCubeMapFile::TextureCubeMapFile()
-	: TextureCubeMap()
+	: TextureCubemap()
 {
 }
 
@@ -1386,7 +1392,7 @@ bool TextureCubeMapFile::Initiate(const std::string& path_, bool vflip_)
 	if (data)
 	{
 		Texture::DynamicRange precision = isHDR ? Texture::DynamicRange::HIGH : Texture::DynamicRange::LOW;
-		bool result = TextureCubeMap::Initiate(width, nrComponents, precision, data);
+		bool result = TextureCubemap::Initiate(width, nrComponents, precision, data);
 
 		stbi_image_free(data);
 
@@ -1402,5 +1408,5 @@ void TextureCubeMapFile::Terminate()
 {
 	Assert(impl);
 
-	return TextureCubeMap::Terminate();
+	return TextureCubemap::Terminate();
 }

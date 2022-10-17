@@ -191,6 +191,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 	AppState s;
 	InitializeState(s);
 
+    showGroundTruth(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
+/*
     if(s.displayMode			        == GFMB_GROUND_TRUTH)
         showGroundTruth(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
     else if(s.displayMode			== GFMB_FSR)
@@ -203,4 +205,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         compareAll(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
     else if(s.displayMode			== GFMB_COMPARE_ALL)
         showSSIM(fragColor, fragCoord, s.easuScale, s.showOrginalThumbnail);
+*/
 }

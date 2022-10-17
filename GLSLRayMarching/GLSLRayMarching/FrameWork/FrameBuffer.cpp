@@ -57,34 +57,32 @@ public:
 	{
 		fbo = 0;
 		colorAttachments.clear();
-		depthAttachment = FrameBufferImpl::TextureAndDirty();
-		stencilAttachment = FrameBufferImpl::TextureAndDirty();
-		depthStencilAttachment = FrameBufferImpl::TextureAndDirty();
+		depthAttachment = FrameBufferImpl::Attachment();
+		stencilAttachment = FrameBufferImpl::Attachment();
 	}
 
-	class TextureAndDirty
+	class Attachment
 	{
 	public:
-		TextureAndDirty()
+		Attachment()
 			: texture(nullptr)
-			, dirty(true)
 			, pixelStorage(FrameBuffer::PixelStorage::Store)
 		{
 		}
 
 		Texture* texture;
-		bool dirty;
 		FrameBuffer::PixelStorage pixelStorage;
 	};
 
 	unsigned int fbo;
-	std::map<FrameBuffer::ColorAttachment, TextureAndDirty> colorAttachments;
-	TextureAndDirty depthAttachment;
-	TextureAndDirty stencilAttachment;
-	TextureAndDirty depthStencilAttachment;
+
+	std::map<FrameBuffer::ColorAttachment, Attachment> colorAttachments;
+	Attachment depthAttachment;
+	Attachment stencilAttachment;
 };
 
-FrameBuffer::FrameBuffer()
+FrameBuffer::FrameBuffer(FrameBuffer::Type type_)
+: type(type_)
 {
 	impl = new FrameBufferImpl();
 	Assert(impl);
@@ -101,6 +99,11 @@ FrameBuffer::~FrameBuffer()
 		delete impl;
 		impl = nullptr;
 	}
+}
+
+FrameBuffer::Type FrameBuffer::GetType() const
+{
+	return type;
 }
 
 bool FrameBuffer::Initiate()
@@ -131,72 +134,6 @@ bool FrameBuffer::Bind()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, impl->fbo);
 
-	///////////////////////////////////////////////////////////////
-	for (auto& attachmentmentItr : impl->colorAttachments)
-	{
-		FrameBufferImpl::TextureAndDirty& attachment = attachmentmentItr.second;
-
-		if (attachment.dirty)
-		{
-			if (attachment.texture)
-			{
-				glFramebufferTexture2D(GL_FRAMEBUFFER,
-					frameBufferGLColorAttachments[(int)attachmentmentItr.first],
-					GL_TEXTURE_2D,
-					attachment.texture->GetHandle(),
-					0);
-				attachment.dirty = false;
-
-				return IsframeBufferComplete();
-			}
-		}
-	}
-
-	{
-		FrameBufferImpl::TextureAndDirty& attachment = impl->depthAttachment;
-
-		if (attachment.dirty)
-		{
-			if (attachment.texture)
-			{
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, attachment.texture->GetHandle(), 0);
-				attachment.dirty = false;
-
-				return IsframeBufferComplete();
-			}
-		}
-	}
-
-	{
-		FrameBufferImpl::TextureAndDirty& attachment = impl->stencilAttachment;
-
-		if (attachment.dirty)
-		{
-			if (attachment.texture)
-			{
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, attachment.texture->GetHandle(), 0);
-				attachment.dirty = false;
-
-				return IsframeBufferComplete();
-			}
-		}
-	}
-
-	{
-		FrameBufferImpl::TextureAndDirty& attachment = impl->depthStencilAttachment;
-
-		if (attachment.dirty)
-		{
-			if (attachment.texture)
-			{
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, attachment.texture->GetHandle(), 0);
-				attachment.dirty = false;
-
-				return IsframeBufferComplete();
-			}
-		}
-	}
-
 	return true;
 }
 
@@ -207,39 +144,6 @@ void FrameBuffer::UnBind()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-static unsigned int frameBuffer_GLMagFilters[] =
-{
-	GL_NEAREST,
-	GL_LINEAR,
-};
-
-void Copy(FrameBuffer& src_, const Rect2& srcRect_, FrameBuffer& dst_, const Rect2& dstRect_, FrameBuffer::BlitMask blitMask_, Texture::MagFilter filter_)
-{
-	Assert(src_.impl);
-	Assert(dst_.impl);
-
-	unsigned int mask = 0;
-	mask |= (blitMask_ & FrameBuffer::BlitMask::COLOR_BUFFER_BIT) ? GL_COLOR_BUFFER_BIT : 0;
-	mask |= (blitMask_ & FrameBuffer::BlitMask::DEPTH_BUFFER_BIT) ? GL_DEPTH_BUFFER_BIT : 0;
-	mask |= (blitMask_ & FrameBuffer::BlitMask::STENCIL_BUFFER_BIT) ? GL_STENCIL_BUFFER_BIT : 0;
-
-	glBlitFramebuffer
-	(
-		srcRect_.X(),
-		srcRect_.Y(),
-		srcRect_.X() + srcRect_.Width(),
-		srcRect_.Y() + srcRect_.Height(),
-
-		dstRect_.X(),
-		dstRect_.Y(),
-		dstRect_.X() + dstRect_.Width(),
-		dstRect_.Y() + dstRect_.Height(),
-
-		mask,
-		frameBuffer_GLMagFilters[(int)filter_]
-	);
-}
-
 void FrameBuffer::Invalidate(int x, int y, int w, int h) const
 {
 	Assert(impl);
@@ -248,13 +152,13 @@ void FrameBuffer::Invalidate(int x, int y, int w, int h) const
 	///////////////////////////////////////////////////////////////
 	for (auto& attachmentmentItr : impl->colorAttachments)
 	{
-		FrameBufferImpl::TextureAndDirty& attachment = attachmentmentItr.second;
+		FrameBufferImpl::Attachment& attachment = attachmentmentItr.second;
 
 		attachmentEnums.push_back((int)attachmentmentItr.first);
 	}
 
 	{
-		FrameBufferImpl::TextureAndDirty& attachment = impl->depthAttachment;
+		FrameBufferImpl::Attachment& attachment = impl->depthAttachment;
 		if (attachment.texture)
 		{
 			attachmentEnums.push_back(GL_DEPTH_ATTACHMENT);
@@ -262,13 +166,13 @@ void FrameBuffer::Invalidate(int x, int y, int w, int h) const
 	}
 
 	{
-		FrameBufferImpl::TextureAndDirty& attachment = impl->depthAttachment;
+		FrameBufferImpl::Attachment& attachment = impl->stencilAttachment;
 		if (attachment.texture)
 		{
 			attachmentEnums.push_back(GL_STENCIL_ATTACHMENT);
 		}
 	}
-
+	
 	if (x < 0 || y < 0 || w < 0 || h < 0)
 		glInvalidateSubFramebuffer(GL_FRAMEBUFFER, attachmentEnums.size(), &attachmentEnums[0], x, y, w, h);
 	else
@@ -280,7 +184,6 @@ void FrameBuffer::SetColorAttachment(FrameBuffer::ColorAttachment colorAttachmen
 	Assert(impl);
 
 	impl->colorAttachments[colorAttachment_].texture = texture_;
-	impl->colorAttachments[colorAttachment_].dirty = true;
 	impl->colorAttachments[colorAttachment_].pixelStorage = pixelStorage_;
 }
 
@@ -290,7 +193,6 @@ void FrameBuffer::SetDepthAttachment(Texture* texture_, PixelStorage pixelStorag
 	Assert(texture_);
 
 	impl->depthAttachment.texture = texture_;
-	impl->depthAttachment.dirty = true;
 	impl->depthAttachment.pixelStorage = pixelStorage_;
 }
 
@@ -300,25 +202,14 @@ void FrameBuffer::SetStencilAttachment(Texture* texture_, PixelStorage pixelStor
 	Assert(texture_);
 
 	impl->stencilAttachment.texture = texture_;
-	impl->stencilAttachment.dirty = true;
-	impl->depthAttachment.pixelStorage = pixelStorage_;
-}
-
-void FrameBuffer::SetDepthStencilAttachment(Texture* texture_, PixelStorage pixelStorage_)
-{
-	Assert(impl);
-	Assert(texture_);
-
-	impl->depthStencilAttachment.texture = texture_;
-	impl->depthStencilAttachment.dirty = true;
-	impl->depthStencilAttachment.pixelStorage = pixelStorage_;
+	impl->stencilAttachment.pixelStorage = pixelStorage_;
 }
 
 const Texture* FrameBuffer::GetColorAttachment(FrameBuffer::ColorAttachment colorAttachment_) const
 {
 	Assert(impl);
 
-	std::map<FrameBuffer::ColorAttachment, FrameBufferImpl::TextureAndDirty>::const_iterator
+	std::map<FrameBuffer::ColorAttachment, FrameBufferImpl::Attachment>::const_iterator
 		itr = impl->colorAttachments.find(colorAttachment_);
 
 	if (itr != impl->colorAttachments.end())
@@ -341,13 +232,6 @@ const Texture* FrameBuffer::GetStencilAttachment() const
 	return impl->stencilAttachment.texture;
 }
 
-const Texture* FrameBuffer::GetDepthStencilAttachment() const
-{
-	Assert(impl);
-
-	return impl->depthStencilAttachment.texture;
-}
-
 void FrameBuffer::ClearColorAttachment(FrameBuffer::ColorAttachment colorAttachment_, const ColorRGBA& color_)
 {
 	Assert(impl);
@@ -361,7 +245,7 @@ void FrameBuffer::ClearColorAttachment(FrameBuffer::ColorAttachment colorAttachm
 	};
 
 	bool attachmentIsFloat = false;
-	if(attachmentIsFloat)
+	if (attachmentIsFloat)
 		glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0, &color_[0]);
 	else
 		glClearBufferiv(GL_COLOR, GL_DRAW_BUFFER0, c);
@@ -377,23 +261,16 @@ void FrameBuffer::ClearDepthAttachment(float clearDepth_)
 void FrameBuffer::ClearStencilAttachment(int clearStencil_)
 {
 	Assert(impl);
-	
-	glClearBufferiv(GL_COLOR, 0, &clearStencil_);
+
+	glClearBufferiv(GL_STENCIL, 0, &clearStencil_);
 }
 
-void FrameBuffer::ClearDepthStencilAttachment(float clearDepth_, int clearStencil_)
+void FrameBuffer::EnableDrawBuffers()
 {
-	Assert(impl);
-
-	glClearBufferfi(GL_DEPTH_STENCIL, 0, clearDepth_, clearStencil_);
-}
-
-void FrameBuffer::EnableDrawBuffers(std::vector<FrameBuffer::ColorAttachment> attachments_)
-{
-	std::vector<unsigned int> bufs(attachments_.size());
-	for (int i = 0; i < attachments_.size(); i++)
+	std::vector<GLenum> bufs;
+	for (auto& colorAttachment : impl->colorAttachments)
 	{
-		bufs[i] = frameBufferGLColorAttachments[(int)attachments_[i]];
+		bufs.push_back(frameBufferGLColorAttachments[(int)colorAttachment.first]);
 	}
 
 	glDrawBuffers(bufs.size(), &bufs[0]);
@@ -407,83 +284,449 @@ bool FrameBuffer::IsframeBufferComplete() const
 }
 
 ////////////////////////////////////////////////////////////
-Texture2DFrameBuffer::Texture2DFrameBuffer()
-	: FrameBuffer()
+FrameBuffer1D::FrameBuffer1D()
+	: FrameBuffer(FrameBuffer::Type::Texture1D)
 {
 }
 
-Texture2DFrameBuffer::~Texture2DFrameBuffer()
+FrameBuffer1D::~FrameBuffer1D()
 {
 	Terminate();
 }
 
-bool Texture2DFrameBuffer::Initiate(unsigned int width, unsigned int height, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+bool FrameBuffer1D::Initiate(unsigned int width, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
 {
 	if (!FrameBuffer::Initiate())
 		return false;
 
-	if (!texture.Initiate(width, height, nrComponents, dynamicRange_, nullptr))
-		return false;
-
-	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, &texture, FrameBuffer::PixelStorage::Store);
-
 	return true;
 }
 
-void Texture2DFrameBuffer::Terminate()
+void FrameBuffer1D::Terminate()
 {
-	texture.Terminate();
-
-	return FrameBuffer::Terminate();
+	FrameBuffer::Terminate();
 }
 
-Texture* Texture2DFrameBuffer::GetTexture()
-{
-	return &texture;
+#define BIND_ATTACHEDMENT_1D(framebufferattachment, gl_attachmentEnum) \
+{ \
+	FrameBufferImpl::Attachment& attachment = framebufferattachment; \
+	if (attachment.texture) \
+	{ \
+		glFramebufferTexture1D \
+		( \
+			GL_FRAMEBUFFER, \
+			gl_attachmentEnum, \
+			GL_TEXTURE_1D, \
+			attachment.texture->GetHandle(), \
+			0 \
+		);\
+	} \
 }
 
-const Texture* Texture2DFrameBuffer::GetTexture() const
-{
-	return &texture;
+#define BIND_ATTACHEDMENT_2D(framebufferattachment, gl_attachmentEnum) \
+{ \
+	FrameBufferImpl::Attachment& attachment = framebufferattachment; \
+	if (attachment.texture) \
+	{ \
+		glFramebufferTexture2D \
+		( \
+			GL_FRAMEBUFFER, \
+			gl_attachmentEnum, \
+			GL_TEXTURE_2D, \
+			attachment.texture->GetHandle(), \
+			0 \
+		);\
+	} \
 }
 
-//////////////////////////////////////////////////////////
-TextureCubeMapFrameBuffer::TextureCubeMapFrameBuffer()
-	: FrameBuffer()
+#define BIND_ATTACHEDMENT_CUBEMAP(face, framebufferattachment, gl_attachmentEnum) \
+{ \
+	FrameBufferImpl::Attachment& attachment = framebufferattachment; \
+	if (attachment.texture) \
+	{ \
+		glFramebufferTexture2D \
+		( \
+			GL_FRAMEBUFFER, \
+			gl_attachmentEnum, \
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, \
+			attachment.texture->GetHandle(), \
+			0 \
+		);\
+	} \
+}
+
+#define BIND_ATTACHEDMENT_3D(framebufferattachment, gl_attachmentEnum) \
+{ \
+	FrameBufferImpl::Attachment& attachment = framebufferattachment; \
+	if (attachment.texture) \
+	{ \
+		glFramebufferTexture3D \
+		( \
+			GL_FRAMEBUFFER, \
+			gl_attachmentEnum, \
+			GL_TEXTURE_3D, \
+			attachment.texture->GetHandle(), \
+			0, \
+			0  \
+		);\
+	} \
+}
+
+bool FrameBuffer1D::Bind()
+{
+	if (!FrameBuffer::Bind())
+		return false;
+
+	for (auto& attachmentmentItr : impl->colorAttachments)
+	{
+		BIND_ATTACHEDMENT_1D(attachmentmentItr.second, frameBufferGLColorAttachments[(int)attachmentmentItr.first])
+	}
+
+	BIND_ATTACHEDMENT_1D(impl->depthAttachment, GL_DEPTH_ATTACHMENT);
+
+	BIND_ATTACHEDMENT_1D(impl->stencilAttachment, GL_STENCIL_ATTACHMENT);
+
+	return IsframeBufferComplete();
+}
+
+////////////////////////////////////////////////////////////
+FrameBuffer2D::FrameBuffer2D()
+	: FrameBuffer(FrameBuffer::Type::Texture2D)
 {
 }
 
-TextureCubeMapFrameBuffer::~TextureCubeMapFrameBuffer()
+FrameBuffer2D::~FrameBuffer2D()
 {
 	Terminate();
 }
 
-bool TextureCubeMapFrameBuffer::Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_)
+bool FrameBuffer2D::Initiate(unsigned int width, unsigned int height, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
 {
 	if (!FrameBuffer::Initiate())
 		return false;
 
-	if (!texture.Initiate(size_, nrComponents_, dynamicRange_, nullptr))
+	return true;
+}
+
+void FrameBuffer2D::Terminate()
+{
+	return FrameBuffer::Terminate();
+}
+
+bool FrameBuffer2D::Bind()
+{
+	if (!FrameBuffer::Bind())
 		return false;
 
-	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, &texture);
+	for (auto& attachmentmentItr : impl->colorAttachments)
+	{
+		BIND_ATTACHEDMENT_2D(attachmentmentItr.second, frameBufferGLColorAttachments[(int)attachmentmentItr.first])
+	}
+
+	BIND_ATTACHEDMENT_2D(impl->depthAttachment, GL_DEPTH_ATTACHMENT);
+
+	BIND_ATTACHEDMENT_2D(impl->stencilAttachment, GL_STENCIL_ATTACHMENT);
+
+	return IsframeBufferComplete();
+}
+
+////////////////////////////////////////////////////////////
+FrameBuffer3D::FrameBuffer3D()
+	: FrameBuffer(FrameBuffer::Type::Texture3D)
+{
+}
+
+FrameBuffer3D::~FrameBuffer3D()
+{
+	Terminate();
+}
+
+bool FrameBuffer3D::Initiate(unsigned int width, unsigned int height, unsigned int depth, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+{
+	if (!FrameBuffer::Initiate())
+		return false;
 
 	return true;
 }
 
-void TextureCubeMapFrameBuffer::Terminate()
+void FrameBuffer3D::Terminate()
 {
-	texture.Terminate();
-
-	return FrameBuffer::Terminate();
+	FrameBuffer::Terminate();
 }
 
-Texture* TextureCubeMapFrameBuffer::GetTexture()
+bool FrameBuffer3D::Bind()
 {
-	return &texture;
+	if (!FrameBuffer::Bind())
+		return false;
+
+	for (auto& attachmentmentItr : impl->colorAttachments)
+	{
+		BIND_ATTACHEDMENT_3D(attachmentmentItr.second, frameBufferGLColorAttachments[(int)attachmentmentItr.first])
+	}
+
+	BIND_ATTACHEDMENT_3D(impl->depthAttachment, GL_DEPTH_ATTACHMENT);
+
+	BIND_ATTACHEDMENT_3D(impl->stencilAttachment, GL_STENCIL_ATTACHMENT);
+
+	return IsframeBufferComplete();
 }
 
-const Texture* TextureCubeMapFrameBuffer::GetTexture() const
+////////////////////////////////////////////////////////////
+FrameBufferCubemap::FrameBufferCubemap()
+	: FrameBuffer(FrameBuffer::Type::TextureCubemap)
+	, currentFace(0)
 {
-	return &texture;
+}
+
+FrameBufferCubemap::~FrameBufferCubemap()
+{
+	Terminate();
+}
+
+void FrameBufferCubemap::Terminate()
+{
+	FrameBuffer::Terminate();
+}
+
+bool FrameBufferCubemap::Initiate(unsigned int size, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+{
+	if (!FrameBuffer::Initiate())
+		return false;
+
+	return true;
+}
+
+bool FrameBufferCubemap::Bind()
+{
+	if (!FrameBuffer::Bind())
+		return false;
+
+	for (auto& attachmentmentItr : impl->colorAttachments)
+	{
+		BIND_ATTACHEDMENT_CUBEMAP(currentFace, attachmentmentItr.second, frameBufferGLColorAttachments[(int)attachmentmentItr.first])
+	}
+
+	BIND_ATTACHEDMENT_2D(impl->depthAttachment, GL_DEPTH_ATTACHMENT);
+
+	BIND_ATTACHEDMENT_2D(impl->stencilAttachment, GL_STENCIL_ATTACHMENT);
+
+	return IsframeBufferComplete();
+}
+
+void FrameBufferCubemap::SetCurrentFace(int face)
+{
+	currentFace = face;
+}
+
+int FrameBufferCubemap::GetCurrentFace() const
+{
+	return currentFace;
+}
+
+////////////////////////////////////////////////////////////
+TextureFrameBuffer1D::TextureFrameBuffer1D()
+	: currentTexture(0)
+{
+}
+
+TextureFrameBuffer1D::~TextureFrameBuffer1D()
+{
+	Terminate();
+}
+
+bool TextureFrameBuffer1D::Initiate(unsigned int width, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+{
+	if (!FrameBuffer1D::Initiate(width, nrComponents ,dynamicRange_))
+		return false;
+
+	if (!textures[0].Initiate(width, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	if (!textures[1].Initiate(width, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+
+	return true;
+}
+
+void TextureFrameBuffer1D::Terminate()
+{
+	textures[0].Terminate();
+	textures[1].Terminate();
+
+	FrameBuffer1D::Terminate();
+}
+
+void TextureFrameBuffer1D::Flip()
+{
+	currentTexture = 1 - currentTexture;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+}
+
+Texture1D* TextureFrameBuffer1D::GetTexture()
+{
+	return &textures[currentTexture];
+}
+
+const Texture1D* TextureFrameBuffer1D::GetTexture() const
+{
+	return &textures[currentTexture];
+}
+
+////////////////////////////////////////////////////////////
+TextureFrameBuffer2D::TextureFrameBuffer2D()
+	: currentTexture(0)
+{
+}
+
+TextureFrameBuffer2D::~TextureFrameBuffer2D()
+{
+	Terminate();
+}
+
+bool TextureFrameBuffer2D::Initiate(unsigned int width, unsigned int height, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+{
+	if (!FrameBuffer2D::Initiate(width, height, nrComponents, dynamicRange_))
+		return false;
+
+	if (!textures[0].Initiate(width, height, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	if (!textures[1].Initiate(width, height, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+
+	return true;
+}
+
+void TextureFrameBuffer2D::Terminate()
+{
+	textures[0].Terminate();
+	textures[1].Terminate();
+
+	FrameBuffer2D::Terminate();
+}
+
+void TextureFrameBuffer2D::Flip()
+{
+	currentTexture = 1 - currentTexture;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+}
+
+Texture2D* TextureFrameBuffer2D::GetTexture()
+{
+	return &textures[currentTexture];
+}
+
+const Texture2D* TextureFrameBuffer2D::GetTexture() const
+{
+	return &textures[currentTexture];
+}
+
+////////////////////////////////////////////////////////////
+TextureFrameBuffer3D::TextureFrameBuffer3D()
+	: currentTexture(0)
+{
+}
+
+TextureFrameBuffer3D::~TextureFrameBuffer3D()
+{
+	Terminate();
+}
+
+bool TextureFrameBuffer3D::Initiate(unsigned int width, unsigned int height, unsigned int depth, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+{
+	if (!FrameBuffer3D::Initiate(width, height, depth, nrComponents, dynamicRange_))
+		return false;
+
+	if (!textures[0].Initiate(width, height, depth, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	if (!textures[1].Initiate(width, height, depth, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+
+	return true;
+}
+
+void TextureFrameBuffer3D::Terminate()
+{
+	textures[0].Terminate();
+	textures[1].Terminate();
+
+	FrameBuffer3D::Terminate();
+}
+
+void TextureFrameBuffer3D::Flip()
+{
+	currentTexture = 1 - currentTexture;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+}
+
+Texture3D* TextureFrameBuffer3D::GetTexture()
+{
+	return &textures[currentTexture];
+}
+
+const Texture3D* TextureFrameBuffer3D::GetTexture() const
+{
+	return &textures[currentTexture];
+}
+
+////////////////////////////////////////////////////////////
+TextureFrameBufferCubemap::TextureFrameBufferCubemap()
+	: currentTexture(0)
+{
+}
+
+TextureFrameBufferCubemap::~TextureFrameBufferCubemap()
+{
+	Terminate();
+}
+
+bool TextureFrameBufferCubemap::Initiate(unsigned int size, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+{
+	if (!FrameBufferCubemap::Initiate(size, nrComponents, dynamicRange_))
+		return false;
+
+	if (!textures[0].Initiate(size, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	if (!textures[1].Initiate(size, nrComponents, dynamicRange_, nullptr))
+		return false;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+
+	return true;
+}
+
+void TextureFrameBufferCubemap::Terminate()
+{
+	textures[0].Terminate();
+	textures[1].Terminate();
+
+	FrameBufferCubemap::Terminate();
+}
+
+void TextureFrameBufferCubemap::Flip()
+{
+	currentTexture = 1 - currentTexture;
+
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+}
+
+TextureCubemap* TextureFrameBufferCubemap::GetTexture()
+{
+	return &textures[currentTexture];
+}
+
+const TextureCubemap* TextureFrameBufferCubemap::GetTexture() const
+{
+	return &textures[currentTexture];
 }

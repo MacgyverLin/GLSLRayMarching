@@ -91,7 +91,7 @@ public:
 		}
 	}
 
-	FlipFrameBuffer* GetRenderTarget(const std::string& s)
+	FrameBuffer* GetRenderTarget(const std::string& s)
 	{
 		if (s == "sound")
 		{
@@ -369,6 +369,7 @@ public:
 				Texture* texture = AddKeyboardTexture();
 				if (!texture)
 					return false;
+			
 				pass.SetChannelTexture(j, texture);
 			}
 			else if (channel.IsMicrophone())  // !!!!!!!!! TODO, Áõ¼ÒÃÈ 
@@ -394,7 +395,7 @@ public:
 			}
 			else if (channel.IsSound())				// !!!!!!!!! TODO, Áõ¼ÒÃÈ 
 			{
-				FlipFrameBuffer* fb = GetRenderTarget(channel.sound);
+				FrameBuffer* fb = GetRenderTarget(channel.sound);
 				if (!fb)
 				{
 					Debug("channel %d: buffer=%s is not supported\n", j, channel.sound.c_str());
@@ -439,7 +440,7 @@ public:
 			}
 			else if (channel.IsBuffer())
 			{
-				FlipFrameBuffer* fb = GetRenderTarget(channel.buffer);
+				FrameBuffer* fb = GetRenderTarget(channel.buffer);
 				if (!fb)
 				{
 					Debug("channel %d: buffer=%s is not supported\n", j, channel.buffer.c_str());
@@ -450,7 +451,7 @@ public:
 			}
 			else if (channel.IsCubemapBuffer())	// !!!!!!!!! TODO, Áõ¼ÒÃÈ
 			{
-				FlipFrameBuffer* fb = GetRenderTarget(channel.cubemapbuffer);
+				FrameBuffer* fb = GetRenderTarget(channel.cubemapbuffer);
 				if (!fb)
 				{
 					Debug("channel %d: buffer=%s is not supported\n", j, channel.buffer.c_str());
@@ -472,20 +473,19 @@ public:
 		}
 
 		std::string rendertargetname = passConfig.renderTarget;
-		if (rendertargetname != "backbuffer")
+		if (rendertargetname == "backbuffer")
 		{
-			FlipFrameBuffer* rendertarget = this->GetRenderTarget(rendertargetname);
+			pass.SetRenderTarget(nullptr);
+		}
+		else
+		{
+			FrameBuffer* rendertarget = this->GetRenderTarget(rendertargetname);
 			if (!rendertarget)
 			{
 				Debug("rendertarget=%s not supported\n", rendertargetname.c_str());
 				return false;
 			}
-
 			pass.SetRenderTarget(rendertarget);
-		}
-		else
-		{
-			pass.SetRenderTarget(nullptr);
 		}
 
 		return true;
@@ -571,20 +571,20 @@ private:
 	std::vector<Texture*> textures;
 	Texture2D black;
 
-	FlipTexture2DFrameBuffer soundFrameBuffer;
-	FlipTexture2DFrameBuffer bufferAFrameBuffer;
-	FlipTexture2DFrameBuffer bufferBFrameBuffer;
-	FlipTexture2DFrameBuffer bufferCFrameBuffer;
-	FlipTexture2DFrameBuffer bufferDFrameBuffer;
-	FlipTextureCubeMapFrameBuffer cubeMapAFrameBuffer;
-	FlipTextureCubeMapFrameBuffer cubeMapBFrameBuffer;
-	FlipTextureCubeMapFrameBuffer cubeMapCFrameBuffer;
-	FlipTextureCubeMapFrameBuffer cubeMapDFrameBuffer;
+	TextureFrameBuffer2D soundFrameBuffer;
+	TextureFrameBuffer2D bufferAFrameBuffer;
+	TextureFrameBuffer2D bufferBFrameBuffer;
+	TextureFrameBuffer2D bufferCFrameBuffer;
+	TextureFrameBuffer2D bufferDFrameBuffer;
+	TextureFrameBufferCubemap cubeMapAFrameBuffer;
+	TextureFrameBufferCubemap cubeMapBFrameBuffer;
+	TextureFrameBufferCubemap cubeMapCFrameBuffer;
+	TextureFrameBufferCubemap cubeMapDFrameBuffer;
 
-	FlipTexture2DFrameBuffer imageFrameBuffer;
-	FlipTexture2DFrameBuffer scaledImageFrameBuffer;
-	FlipTexture2DFrameBuffer easuFrameBuffer;
-	FlipTexture2DFrameBuffer rcasFrameBuffer;
+	TextureFrameBuffer2D imageFrameBuffer;
+	TextureFrameBuffer2D scaledImageFrameBuffer;
+	TextureFrameBuffer2D easuFrameBuffer;
+	TextureFrameBuffer2D rcasFrameBuffer;
 
 	BackBuffer backBuffer;
 
