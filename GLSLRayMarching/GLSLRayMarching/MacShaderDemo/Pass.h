@@ -120,9 +120,6 @@ public:
 		Vector3 resolution;
 		if (renderTarget)
 		{
-			//if (frameBuffer->GetColorAttachment(GL_COLOR_ATTACHMENT0)->GetType() == GL_TEXTURE_CUBE_MAP)
-				//facecount = 6;
-
 			renderTarget->Bind();
 
 			unsigned int w;
@@ -261,17 +258,7 @@ public:
 		vertexBuffer.DrawArray(VertexBuffer::Mode::TRIANGLES, 0, vertexBuffer.GetCount());
 
 		//////////////////////////////////////////////////
-		// Clean Up
-		if (renderTarget)
-		{
-			renderTarget->UnBind();
-		}
-
-		return true;
-	}
-
-	void Flip()
-	{
+		// Flip buffer
 		if (renderTarget)
 		{
 			if (renderTarget->GetType() == FrameBuffer::Type::Texture2D)
@@ -283,6 +270,15 @@ public:
 				::Debug("Channel%d: channel texture must be either 2D cubemap");
 			}
 		}
+
+		//////////////////////////////////////////////////
+		// Clean Up
+		if (renderTarget)
+		{
+			renderTarget->UnBind();
+		}
+
+		return true;
 	}
 
 	void Terminate()

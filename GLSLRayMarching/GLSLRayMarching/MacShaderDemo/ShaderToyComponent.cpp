@@ -213,7 +213,7 @@ public:
 		return texture;
 	}
 
-	Texture* AddTexture2D(const char* path, bool vflip_)
+	Texture2D* AddTexture2D(const char* path, bool vflip_)
 	{
 		Texture2DFile* texture = new Texture2DFile();
 		if (!texture)
@@ -228,7 +228,7 @@ public:
 		return texture;
 	}
 
-	Texture* AddTextureCubemap(const char* path, bool vflip_)
+	TextureCubemap* AddTextureCubemap(const char* path, bool vflip_)
 	{
 		TextureCubeMapFile* texture = new TextureCubeMapFile();
 		if (!texture)
@@ -341,6 +341,8 @@ public:
 
 	bool CreatePass(Pass& pass, const ShaderToyConfig::Pass& passConfig, const ShaderToyConfig::Common& common)
 	{
+		////////////////////////////////////////////////////////////////
+		// Initiate pass
 		if (!pass.Initiate())
 		{
 			Debug("Failed to Create Pass %d\n");
@@ -349,21 +351,33 @@ public:
 
 		pass.SetEnabled(true);
 
+		//////////////////////////////////////////////////////
+		// Setup pass's channels
 		for (int j = 0; j < passConfig.channels.size(); j++)
 		{
+			//////////////////////////////////////////////////////
+			// default black texture
 			pass.SetChannelTexture(j, &black);
 
 			const ShaderToyConfig::Channel& channel = passConfig.channels[j];
 
+			//////////////////////////////////////////////////////
+			// Setup channels's texture filter
 			Pass::Filter channelFilter = GetFilter(channel.filter.c_str());
 			pass.SetFilter(j, channelFilter);
 
+			//////////////////////////////////////////////////////
+			// Setup channels's texture wrap
 			Pass::Wrap channelWrap = GetWrap(channel.wrap.c_str());
 			pass.SetWrap(j, channelWrap);
 
+			//////////////////////////////////////////////////////
+			// Setup channels's texture vflip
 			bool channelVFlip = channel.vflip;
 			pass.SetVFlip(j, channelVFlip);
 
+			//////////////////////////////////////////////////////
+			// Setup channels's texture
 			if (channel.IsKeyboard())
 			{
 				Texture* texture = AddKeyboardTexture();
@@ -407,15 +421,21 @@ public:
 
 			else if (channel.IsTexture2d())
 			{
-				std::string url = channel.texture2d.c_str();
-				if (!LoadTexture2D(url, pass, j))
+				std::string url = channel.texture2d;
+				Texture2D* texture = LoadTexture2D(url, pass, j);
+				if (!texture)
 					return false;
+
+				pass.SetChannelTexture(j, texture);
 			}
 			else if (channel.IsTextureCubemap())	// !!!!!!!!! TODO, Áõ¼ÒÃÈ
 			{
-				std::string url = channel.texturecubemap.c_str();
-				if (!LoadTextureCube(url, pass, j))
+				std::string url = channel.texturecubemap;
+				TextureCubemap* texture = LoadTextureCube(url, pass, j);
+				if (!texture)
 					return false;
+
+				pass.SetChannelTexture(j, texture);
 			}
 			else if (channel.IsTextureVideo())		// !!!!!!!!! TODO, Áõ¼ÒÃÈ
 			{
@@ -491,30 +511,28 @@ public:
 		return true;
 	}
 
-	bool LoadTexture2D(const std::string& url, Pass& pass, int j)
+	Texture2D* LoadTexture2D(const std::string& url, Pass& pass, int j)
 	{
-		Texture* texture = AddTexture2D(url.c_str(), pass.GetChannel(j).vFlip);
+		Texture2D* texture = AddTexture2D(url.c_str(), pass.GetChannel(j).vFlip);
 		if (!texture)
 		{
 			Debug("channel %d: failed to load texture2d %s\n", j, url.c_str());
-			return false;
+			return nullptr;
 		}
 
-		pass.SetChannelTexture(j, texture);
-		return true;
+		return texture;
 	}
 
-	bool LoadTextureCube(const std::string& url, Pass& pass, int j)
+	TextureCubemap* LoadTextureCube(const std::string& url, Pass& pass, int j)
 	{
-		Texture* texture = AddTextureCubemap(url.c_str(), pass.GetChannel(j).vFlip);
+		TextureCubemap* texture = AddTextureCubemap(url.c_str(), pass.GetChannel(j).vFlip);
 		if (!texture)
 		{
 			Debug("channel %d: failed to load texturecubemap %s\n", j, url.c_str());
-			return false;
+			return nullptr;
 		}
 
-		pass.SetChannelTexture(j, texture);
-		return true;
+		return texture;
 	}
 
 	bool Render(unsigned int width, unsigned int height, double time, double deltaTime, Vector4 mouse, Vector2 mouseDelta, int frameCounter)
@@ -526,8 +544,6 @@ public:
 
 			if (!pass.Render(width, height, time, deltaTime, mouse, mouseDelta, frameCounter))
 				return false;
-
-			pass.Flip();
 		}
 
 		return true;
