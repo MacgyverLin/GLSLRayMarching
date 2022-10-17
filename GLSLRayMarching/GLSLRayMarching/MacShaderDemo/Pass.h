@@ -50,7 +50,7 @@ public:
 	public:
 		Channel()
 			: texture(nullptr)
-			, frameBuffer(nullptr)
+			, buffer(nullptr)
 			, filter(Mipmap)
 			, wrap(Repeat)
 			, vFlip(true)
@@ -60,14 +60,14 @@ public:
 		void Terminate()
 		{
 			texture = nullptr;
-			frameBuffer = nullptr;
+			buffer = nullptr;
 			filter = Mipmap;
 			wrap = Repeat;
 			vFlip = true;
 		}
 
 		Texture* texture;
-		FlipFrameBuffer* frameBuffer;
+		FlipFrameBuffer* buffer;
 		Filter filter;
 		Wrap wrap;
 		bool vFlip;
@@ -78,7 +78,7 @@ public:
 		, vertexBuffer()
 		, shaderProgram()
 		, iChannels(CHANNEL_COUNT)
-		, frameBuffer(nullptr)
+		, renderTarget(nullptr)
 	{
 	}
 
@@ -118,17 +118,17 @@ public:
 		int facecount = 1;
 
 		Vector3 resolution;
-		if (frameBuffer)
+		if (renderTarget)
 		{
 			//if (frameBuffer->GetColorAttachment(GL_COLOR_ATTACHMENT0)->GetType() == GL_TEXTURE_CUBE_MAP)
 				//facecount = 6;
 
-			frameBuffer->Bind();
+			renderTarget->Bind();
 
 			unsigned int w;
 			unsigned int h;
 			unsigned int d;
-			frameBuffer->GetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0)->GetResolution(&w, &h, &d);
+			renderTarget->GetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0)->GetResolution(&w, &h, &d);
 			resolution = Vector3(w, h, d);
 
 			renderStates.viewportState.pos = Vector2(0, 0);
@@ -178,8 +178,8 @@ public:
 			Texture* texture = nullptr;
 			if (iChannels[i].texture)
 				texture = iChannels[i].texture;
-			else if (iChannels[i].frameBuffer)
-				texture = iChannels[i].frameBuffer->GetCurrentTexture();
+			else if (iChannels[i].buffer)
+				texture = iChannels[i].buffer->GetCurrentTexture();
 
 			if (texture)
 			{
@@ -250,9 +250,9 @@ public:
 
 		//////////////////////////////////////////////////
 		// Clean Up
-		if (frameBuffer)
+		if (renderTarget)
 		{
-			frameBuffer->UnBind();
+			renderTarget->UnBind();
 		}
 
 		return true;
@@ -260,9 +260,9 @@ public:
 
 	void Flip()
 	{
-		if (frameBuffer)
+		if (renderTarget)
 		{
-			frameBuffer->Flip();
+			renderTarget->Flip();
 		}
 	}
 
@@ -278,7 +278,7 @@ public:
 			channel.Terminate();
 		}
 
-		frameBuffer = nullptr;
+		renderTarget = nullptr;
 		vertexBuffer.Terminate();
 	}
 
@@ -310,13 +310,13 @@ public:
 	void SetChannelTexture(int i, Texture* texture_)
 	{
 		this->iChannels[i].texture = texture_;
-		this->iChannels[i].frameBuffer = nullptr;
+		this->iChannels[i].buffer = nullptr;
 	}
 
-	void SetChannelFrameBuffer(int i, FlipFrameBuffer* frameBuffer_)
+	void SetChannelBuffer(int i, FlipFrameBuffer* renderTarget_)
 	{
 		this->iChannels[i].texture = nullptr;
-		this->iChannels[i].frameBuffer = frameBuffer_;
+		this->iChannels[i].buffer = renderTarget_;
 	}
 
 	const Pass::Channel& GetChannel(int i) const
@@ -324,14 +324,14 @@ public:
 		return this->iChannels[i];
 	}
 
-	void SetFrameBuffer(FlipFrameBuffer* frameBuffer_)
+	void SetRenderTarget(FlipFrameBuffer* renderTarget_)
 	{
-		frameBuffer = frameBuffer_;
+		renderTarget = renderTarget_;
 	}
 
-	FlipFrameBuffer* GetFrameBuffer() const
+	FlipFrameBuffer* GetRenderTarget() const
 	{
-		return frameBuffer;
+		return renderTarget;
 	}
 
 	bool LoadShader(const char* path_, std::string& fShaderCode)
@@ -416,11 +416,11 @@ public:
 				else if (iChannels[i].texture->GetType() == Texture::Type::TextureCubeMap)
 					fShaderChannels += "uniform samplerCube iChannel" + idx + ";\n";
 			}
-			else if (iChannels[i].frameBuffer)
+			else if (iChannels[i].buffer)
 			{
-				if (iChannels[i].frameBuffer->GetCurrentTexture()->GetType() == Texture::Type::Texture2D)
+				if (iChannels[i].buffer->GetCurrentTexture()->GetType() == Texture::Type::Texture2D)
 					fShaderChannels += "uniform sampler2D iChannel" + idx + ";\n";
-				else if (iChannels[i].frameBuffer->GetCurrentTexture()->GetType() == Texture::Type::TextureCubeMap)
+				else if (iChannels[i].buffer->GetCurrentTexture()->GetType() == Texture::Type::TextureCubeMap)
 					fShaderChannels += "uniform samplerCube iChannel" + idx + ";\n";
 			}
 		}
@@ -482,7 +482,7 @@ private:
 	RenderStates renderStates;
 	ShaderProgram shaderProgram;
 	std::vector<Channel> iChannels;
-	FlipFrameBuffer* frameBuffer;
+	FlipFrameBuffer* renderTarget;
 	VertexBuffer vertexBuffer;
 };
 

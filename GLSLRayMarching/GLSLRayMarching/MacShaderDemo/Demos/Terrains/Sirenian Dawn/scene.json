@@ -2,8 +2,7 @@
   "passes": [
     {
       "shader": "buffera.glsl",
-      "channels":
-      [
+      "channels": [
         {
           "texture2d": "tex0.png",
           "filter": "linear",
@@ -12,6 +11,11 @@
         },
         {
           "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "cubemapbuffer": "cubemapbuffera",
           "filter": "linear",
           "wrap": "clamp"
         }

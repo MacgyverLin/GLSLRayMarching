@@ -37,6 +37,40 @@ private:
 	int current;
 };
 
+class BackBuffer : public FlipFrameBuffer
+{
+public:
+	BackBuffer()
+		: FlipFrameBuffer()
+	{
+	}
+
+	virtual ~BackBuffer()
+	{
+	}
+
+	virtual bool Initiate(unsigned int width, unsigned int height, unsigned int nrComponents, Texture::DynamicRange dynamicRange_)
+	{
+		return true;
+	}
+
+	Texture* GetCurrentTexture()
+	{
+		return nullptr;
+	}
+
+	virtual void Terminate()
+	{
+		return FlipFrameBuffer::Terminate();
+	}
+
+	virtual void Flip()
+	{
+		FlipFrameBuffer::Flip();
+	}
+private:
+};
+
 class FlipTexture2DFrameBuffer : public FlipFrameBuffer
 {
 public:

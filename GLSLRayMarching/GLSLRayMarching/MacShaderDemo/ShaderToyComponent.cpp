@@ -36,6 +36,8 @@ public:
 		, scaledImageFrameBuffer()
 		, easuFrameBuffer()
 		, rcasFrameBuffer()
+		
+		, backBuffer()
 
 		, passes()
 	{
@@ -89,10 +91,8 @@ public:
 		}
 	}
 
-	FlipFrameBuffer* GetFrameBuffer(const char* str)
+	FlipFrameBuffer* GetRenderTarget(const std::string& s)
 	{
-		std::string s = ToLower(str);
-
 		if (s == "sound")
 		{
 			return &soundFrameBuffer;
@@ -113,19 +113,19 @@ public:
 		{
 			return &bufferDFrameBuffer;
 		}
-		else if (s == "cubemapa")
+		else if (s == "cubemapbuffera")
 		{
 			return &cubeMapAFrameBuffer;
 		}
-		else if (s == "cubemapb")
+		else if (s == "cubemapbufferb")
 		{
 			return &cubeMapBFrameBuffer;
 		}
-		else if (s == "cubemapc")
+		else if (s == "cubemapbufferc")
 		{
 			return &cubeMapCFrameBuffer;
 		}
-		else if (s == "cubemapd")
+		else if (s == "cubemapbufferd")
 		{
 			return &cubeMapDFrameBuffer;
 		}
@@ -145,9 +145,9 @@ public:
 		{
 			return &rcasFrameBuffer;
 		}
-		else if (s == "default")
+		else if (s == "backbuffer")
 		{
-			return nullptr;
+			return &backBuffer;
 		}
 		else
 			return nullptr;
@@ -317,6 +317,9 @@ public:
 		if (!rcasFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
 			return false;
 
+		if (!backBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
+			return false;
+
 		if (!CreatePasses(shaderToyConfig))
 			return false;
 
@@ -329,193 +332,56 @@ public:
 
 		for (int i = 0; i < shaderToyConfig.GetPassCount(); i++)
 		{
-			if (!CreatePass(i, shaderToyConfig))
+			if (!CreatePass(passes[i], shaderToyConfig.GetPass(i), shaderToyConfig.GetCommon()))
 				return false;
 		}
 
 		return true;
 	}
 
-	bool CreatePass(int i, const ShaderToyConfig& shaderToyConfig)
+	bool CreatePass(Pass& pass, const ShaderToyConfig::Pass& passConfig, const ShaderToyConfig::Common& common)
 	{
-		if (!passes[i].Initiate())
+		if (!pass.Initiate())
 		{
-			Debug("Failed to Create Pass %d\n", i);
+			Debug("Failed to Create Pass %d\n");
 			return false;
 		}
 
-		passes[i].SetEnabled(true);
+		pass.SetEnabled(true);
 
-		const ShaderToyConfig::Pass& pass = shaderToyConfig.GetPass(i);
-		for (int j = 0; j < pass.channels.size(); j++)
+		for (int j = 0; j < passConfig.channels.size(); j++)
 		{
-			passes[i].SetChannelTexture(j, &black);
+			pass.SetChannelTexture(j, &black);
 
-			std::string name = "ichannel";
-			name += ('0' + j);
-
-			const ShaderToyConfig::Channel& channel = pass.channels[j];
+			const ShaderToyConfig::Channel& channel = passConfig.channels[j];
 
 			Pass::Filter channelFilter = GetFilter(channel.filter.c_str());
-			passes[i].SetFilter(j, channelFilter);
+			pass.SetFilter(j, channelFilter);
 
 			Pass::Wrap channelWrap = GetWrap(channel.wrap.c_str());
-			passes[i].SetWrap(j, channelWrap);
+			pass.SetWrap(j, channelWrap);
 
 			bool channelVFlip = channel.vflip;
-			passes[i].SetVFlip(j, channelVFlip);
+			pass.SetVFlip(j, channelVFlip);
 
 			if (channel.IsKeyboard())
 			{
 				Texture* texture = AddKeyboardTexture();
 				if (!texture)
 					return false;
-				passes[i].SetChannelTexture(j, texture);
+				pass.SetChannelTexture(j, texture);
 			}
-			else if (channel.IsWebcam())
-			{
-				Texture* texture = AddWebcamTexture(passes[i].GetChannel(j).vFlip);
-				if (!texture)
-					return false;
-
-				passes[i].SetChannelTexture(j, texture);
-			}
-			else if (channel.IsMicrophone())
+			else if (channel.IsMicrophone())  // !!!!!!!!! TODO, Áõ¼ÒÃÈ 
 			{
 				Texture* texture = AddMicrophoneTexture();
 				if (!texture)
 					return false;
 
-				passes[i].SetChannelTexture(j, texture);
+				pass.SetChannelTexture(j, texture);
 			}
-			else if (channel.IsSoundcloud())
+			else if (channel.IsSoundcloud())	// !!!!!!!!! TODO, Áõ¼ÒÃÈ
 			{
 				std::string url = channel.soundcloud;
-
-				Texture* texture = AddSoundCloudTexture(url.c_str(), passes[i].GetChannel(j).vFlip);
-				if (!texture)
-				{
-					Debug("channel %d: failed to load soundcloud %s\n", j, url.c_str());
-					return false;
-				}
-
-				passes[i].SetChannelTexture(j, texture);
-			}
-			else if (channel.IsTexture2d())
-			{
-				std::string url = channel.texture2d.c_str();
-				if (!LoadTexture2D(url, i, j))
-					return false;
-			}
-			else if (channel.IsTextureCubemap())
-			{
-				std::string url = channel.texturecubemap.c_str();
-				if (!LoadTextureCube(url, i, j))
-					return false;
-			}
-			else if (channel.IsTextureVideo())
-			{
-				std::string url = channel.texturevideo.c_str();
-
-				Texture* texture = AddVideoTexture(url.c_str(), passes[i].GetChannel(j).vFlip);
-				if (!texture)
-				{
-					Debug("channel %d: failed to load texture video %s\n", j, url.c_str());
-					return false;
-				}
-
-				passes[i].SetChannelTexture(j, texture);
-			}
-			else if (channel.IsBuffer())
-			{
-				FlipFrameBuffer* fb = GetFrameBuffer(channel.buffer.c_str());
-				if (!fb)
-				{
-					Debug("channel %d: buffer=%s is not supported\n", j, channel.buffer.c_str());
-					return false;
-				}
-
-				passes[i].SetChannelFrameBuffer(j, fb);
-			}
-			else
-			{
-				Debug("channel%d: must have texture or frame buffer specified or texture type is not supported\n", j);
-				return false;
-			}
-		}
-
-		if (!passes[i].SetShader(pass.shader.c_str(), shaderToyConfig.GetCommon().GetShaderPath()))
-		{
-			return false;
-		}
-
-		std::string rendertargetname = pass.renderTarget;
-		if (rendertargetname != "default")
-		{
-			FlipFrameBuffer* rendertarget = this->GetFrameBuffer(rendertargetname.c_str());
-			if (!rendertarget)
-			{
-				Debug("rendertarget=%s not supported\n", rendertargetname.c_str());
-				return false;
-			}
-
-			passes[i].SetFrameBuffer(rendertarget);
-		}
-		else
-		{
-			passes[i].SetFrameBuffer(nullptr);
-		}
-
-		return true;
-	}
-
-	bool CreatePostprocessPass(Pass& pass,
-		const std::vector<const char*> channelBufferNames,
-		const std::vector<Pass::Filter> channelFilters,
-		const std::vector<Pass::Wrap> channelWraps,
-		const char* shaderFileName, const char* renderTargetName, const char* commonShaderURL)
-	{
-		if (!pass.Initiate())
-		{
-			Debug("Failed to CreatePostprocessPass %d\n");
-			return false;
-		}
-
-		pass.SetEnabled(true);
-
-		for (int i = 0; i < CHANNEL_COUNT; i++)
-		{
-			pass.SetFilter(i, channelFilters[i]);
-			pass.SetWrap(i, channelWraps[i]);
-			pass.SetVFlip(i, false);
-			if (channelBufferNames[i] == "keyboard")
-			{
-				Texture* texture = AddKeyboardTexture();
-				if (!texture)
-					return false;
-
-				pass.SetChannelTexture(i, texture);
-			}
-			else if (channelBufferNames[i] == "webcam")
-			{
-				Texture* texture = AddWebcamTexture(pass.GetChannel(i).vFlip);
-				if (!texture)
-					return false;
-
-				pass.SetChannelTexture(i, texture);
-			}
-			else if (channelBufferNames[i] == "microphone")
-			{
-				Texture* texture = AddMicrophoneTexture();
-				if (!texture)
-					return false;
-
-				pass.SetChannelTexture(i, texture);
-			}
-			else if (channelBufferNames[i] == "soundcloud")
-			{
-				/*
-				std::string url = channelJson["soundcloud"].GetString();
 
 				Texture* texture = AddSoundCloudTexture(url.c_str(), pass.GetChannel(j).vFlip);
 				if (!texture)
@@ -524,96 +390,130 @@ public:
 					return false;
 				}
 
-				pass.SetChannelTexture(i, texture);
-				*/
+				pass.SetChannelTexture(j, texture);
 			}
-			else if (channelBufferNames[i] == "texture2d")
+			else if (channel.IsSound())				// !!!!!!!!! TODO, Áõ¼ÒÃÈ 
 			{
-				/*
-				Texture* texture = LoadTexture2D(folder, channelJson, i, j);
-				if (!texture)
+				FlipFrameBuffer* fb = GetRenderTarget(channel.sound);
+				if (!fb)
 				{
-					Debug("channel %d: failed to load texture2d %s\n", i, url.c_str());
+					Debug("channel %d: buffer=%s is not supported\n", j, channel.sound.c_str());
 					return false;
 				}
 
-				pass.SetChannelTexture(i, texture);
-				return true;
-				*/
-				return false;
+				pass.SetChannelBuffer(j, fb);
 			}
-			else if (channelBufferNames[i] == "texturecubemap")
-			{
-				/*
-				std::string url = folder;
-				url += "/";
-				url += channelJson["texturecubemap"].GetString();
 
-				Texture* texture = AddTextureCubemap(url.c_str(), pass.GetChannel(i).vFlip);
-				if (!texture)
-				{
-					Debug("channel %d: failed to load texturecubemap %s\n", i, url.c_str());
+			else if (channel.IsTexture2d())
+			{
+				std::string url = channel.texture2d.c_str();
+				if (!LoadTexture2D(url, pass, j))
 					return false;
-				}
-
-				pass.SetChannelTexture(i, texture);
-				*/
 			}
-			else if (channelBufferNames[i] == "texturevideo")
+			else if (channel.IsTextureCubemap())	// !!!!!!!!! TODO, Áõ¼ÒÃÈ
 			{
-				/*
-				std::string url = folder;
-				url += "/";
-				url += channelJson["texturevideo"].GetString();
+				std::string url = channel.texturecubemap.c_str();
+				if (!LoadTextureCube(url, pass, j))
+					return false;
+			}
+			else if (channel.IsTextureVideo())		// !!!!!!!!! TODO, Áõ¼ÒÃÈ
+			{
+				std::string url = channel.texturevideo.c_str();
 
-				Texture* texture = AddVideoTexture(url.c_str(), pass.GetChannel(i).vFlip);
+				Texture* texture = AddVideoTexture(url.c_str(), pass.GetChannel(j).vFlip);
 				if (!texture)
 				{
 					Debug("channel %d: failed to load texture video %s\n", j, url.c_str());
 					return false;
 				}
 
-				pass.SetChannelTexture(i, texture);
-				*/
+				pass.SetChannelTexture(j, texture);
+			}
+			else if (channel.IsWebcam())			// !!!!!!!!! TODO, Áõ¼ÒÃÈ
+			{
+				Texture* texture = AddWebcamTexture(pass.GetChannel(j).vFlip);
+				if (!texture)
+					return false;
+
+				pass.SetChannelTexture(j, texture);
+			}
+			else if (channel.IsBuffer())
+			{
+				FlipFrameBuffer* fb = GetRenderTarget(channel.buffer);
+				if (!fb)
+				{
+					Debug("channel %d: buffer=%s is not supported\n", j, channel.buffer.c_str());
+					return false;
+				}
+
+				pass.SetChannelBuffer(j, fb);
+			}
+			else if (channel.IsCubemapBuffer())	// !!!!!!!!! TODO, Áõ¼ÒÃÈ
+			{
+				FlipFrameBuffer* fb = GetRenderTarget(channel.cubemapbuffer);
+				if (!fb)
+				{
+					Debug("channel %d: buffer=%s is not supported\n", j, channel.buffer.c_str());
+					return false;
+				}
+
+				pass.SetChannelBuffer(j, fb);
 			}
 			else
 			{
-				pass.SetChannelFrameBuffer(i, GetFrameBuffer(channelBufferNames[i]));
+				Debug("channel%d: must have texture or frame buffer specified or texture type is not supported\n", j);
+				return false;
 			}
 		}
 
-		std::string url = std::string("Demos/AMD_FSR") + shaderFileName;
-		if (!pass.SetShader(url.c_str(), commonShaderURL))
+		if (!pass.SetShader(passConfig.shader.c_str(), common.GetShaderPath()))
+		{
 			return false;
+		}
 
-		pass.SetFrameBuffer(GetFrameBuffer(renderTargetName));
+		std::string rendertargetname = passConfig.renderTarget;
+		if (rendertargetname != "backbuffer")
+		{
+			FlipFrameBuffer* rendertarget = this->GetRenderTarget(rendertargetname);
+			if (!rendertarget)
+			{
+				Debug("rendertarget=%s not supported\n", rendertargetname.c_str());
+				return false;
+			}
+
+			pass.SetRenderTarget(rendertarget);
+		}
+		else
+		{
+			pass.SetRenderTarget(nullptr);
+		}
 
 		return true;
 	}
 
-	bool LoadTexture2D(const std::string& url, int i, int j)
+	bool LoadTexture2D(const std::string& url, Pass& pass, int j)
 	{
-		Texture* texture = AddTexture2D(url.c_str(), passes[i].GetChannel(j).vFlip);
+		Texture* texture = AddTexture2D(url.c_str(), pass.GetChannel(j).vFlip);
 		if (!texture)
 		{
 			Debug("channel %d: failed to load texture2d %s\n", j, url.c_str());
 			return false;
 		}
 
-		passes[i].SetChannelTexture(j, texture);
+		pass.SetChannelTexture(j, texture);
 		return true;
 	}
 
-	bool LoadTextureCube(const std::string& url, int i, int j)
+	bool LoadTextureCube(const std::string& url, Pass& pass, int j)
 	{
-		Texture* texture = AddTextureCubemap(url.c_str(), passes[i].GetChannel(j).vFlip);
+		Texture* texture = AddTextureCubemap(url.c_str(), pass.GetChannel(j).vFlip);
 		if (!texture)
 		{
 			Debug("channel %d: failed to load texturecubemap %s\n", j, url.c_str());
 			return false;
 		}
 
-		passes[i].SetChannelTexture(j, texture);
+		pass.SetChannelTexture(j, texture);
 		return true;
 	}
 
@@ -663,6 +563,8 @@ public:
 		scaledImageFrameBuffer.Terminate();
 		easuFrameBuffer.Terminate();
 		rcasFrameBuffer.Terminate();
+
+		backBuffer.Terminate();
 	}
 protected:
 private:
@@ -683,6 +585,8 @@ private:
 	FlipTexture2DFrameBuffer scaledImageFrameBuffer;
 	FlipTexture2DFrameBuffer easuFrameBuffer;
 	FlipTexture2DFrameBuffer rcasFrameBuffer;
+
+	BackBuffer backBuffer;
 
 	std::vector<Pass> passes;
 };
