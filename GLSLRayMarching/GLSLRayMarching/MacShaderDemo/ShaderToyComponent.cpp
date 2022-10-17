@@ -790,10 +790,10 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Cloudy Terrain");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Desert Sand");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Elevated");
-	return shaderToyRenderer->Initiate("Demos/Terrains/Lake in highland");
+	////return shaderToyRenderer->Initiate("Demos/Terrains/Lake in highland");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Mountains");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Rainforest");
-	////return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
+	return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
 	//return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
 
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
