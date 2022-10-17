@@ -487,11 +487,6 @@ public:
 			}
 		}
 
-		if (!pass.SetShader(passConfig.shader.c_str(), common.GetShaderPath()))
-		{
-			return false;
-		}
-
 		std::string rendertargetname = passConfig.renderTarget;
 		if (rendertargetname == "backbuffer")
 		{
@@ -506,6 +501,11 @@ public:
 				return false;
 			}
 			pass.SetRenderTarget(rendertarget);
+		}
+
+		if (!pass.CreateShader(passConfig.shader.c_str(), common.GetShaderPath()))
+		{
+			return false;
 		}
 
 		return true;
@@ -713,8 +713,10 @@ bool ShaderToyComponent::OnStart()
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Lake in highland");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Mountains");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Rainforest");
-	return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
+	////return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
 	//return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
+	
+	return shaderToyRenderer->Initiate("Demos/CubemapTest");
 
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");

@@ -378,7 +378,7 @@ public:
 		return true;
 	}
 
-	bool SetShader(const char* path_, const char* commonShaderURL_)
+	bool CreateShader(const char* path_, const char* commonShaderURL_)
 	{
 		std::string vShaderCode =
 			"#version 430 core\n"
@@ -437,16 +437,44 @@ public:
 					fShaderChannels += "uniform sampler2D iChannel" + idx + ";\n";
 				else if (iChannels[i].buffer->GetType() == FrameBuffer::Type::TextureCubemap)
 					fShaderChannels += "uniform samplerCube iChannel" + idx + ";\n";
+				else
+				{
+					::Debug("channel%d: channels texture must be either 2d or cubemap\n");
+					return false;
+				}
 			}
 		}
 
-		std::string fShaderMain =
-			"void main()\n"
-			"{\n"
-			"vec4 fragColor; \n"
-			"mainImage(fragColor, fragCoord);\n"
-			"FragColor = fragColor;\n"
-			"}\n";
+		std::string fShaderMain = "";
+	
+			if (!renderTarget || renderTarget->GetType() == FrameBuffer::Type::Texture2D)
+			{
+				fShaderMain =
+					"void main()\n"
+					"{\n"
+					"vec4 fragColor; \n"
+					"mainImage(fragColor, fragCoord);\n"
+					"FragColor = fragColor;\n"
+					"}\n";
+			}
+			else if (renderTarget->GetType() == FrameBuffer::Type::TextureCubemap)
+			{
+				fShaderMain =
+					"void main()\n"
+					"{\n"
+					"vec4 fragColor; \n"
+					"vec3 rayOri; \n"
+					"vec3 rayDir; \n"
+					"mainCubemap(fragColor, fragCoord, rayOri, rayDir);\n"
+					"FragColor = fragColor;\n"
+					"}\n";
+			}
+			else
+			{
+				::Debug("channel%d: channels texture must be either 2d or cubemap\n");
+				return false;
+			}
+	
 
 		std::string fShaderCode;
 		if (path_)
