@@ -13,7 +13,6 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "PathTraceCamera.h"
-#include "ShaderToyComponent.h"
 #include "PathTraceComponent.h"
 
 class PathTraceScene : public Scene

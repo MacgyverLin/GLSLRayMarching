@@ -188,6 +188,7 @@
     <ClCompile Include="phase-detection-autofocus.cpp" />
     <ClCompile Include="quad.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="ShaderToyRenderer.cpp" />
     <ClCompile Include="ShaderToyScene.cpp" />
     <ClCompile Include="PathTraceScene.cpp" />
     <ClCompile Include="main.cpp">
@@ -235,6 +236,7 @@
     <ClInclude Include="quad.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="ShaderToyConfig.h" />
+    <ClInclude Include="ShaderToyRenderer.h" />
     <ClInclude Include="ShaderToyScene.h" />
     <ClInclude Include="PathTraceScene.h" />
     <ClInclude Include="PathTraceCamera.h" />

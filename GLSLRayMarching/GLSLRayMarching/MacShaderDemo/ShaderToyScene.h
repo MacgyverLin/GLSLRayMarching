@@ -14,7 +14,6 @@
 #include "GameObject.h"
 #include "ShaderToyCamera.h"
 #include "ShaderToyComponent.h"
-#include "PathTraceComponent.h"
 
 class ShaderToyScene : public Scene
 {

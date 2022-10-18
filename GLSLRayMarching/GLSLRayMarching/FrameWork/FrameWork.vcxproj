@@ -121,7 +121,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ..\..\..\3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>
@@ -134,7 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; _DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>../../../3rdparty/OpenAL/libs/Win64/OpenAL32.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>
@@ -157,7 +157,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -167,7 +167,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core.lib; </AdditionalDependencies>
+      <AdditionalDependencies>../../../3rdparty/OpenAL/libs/Win64/OpenAL32.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>

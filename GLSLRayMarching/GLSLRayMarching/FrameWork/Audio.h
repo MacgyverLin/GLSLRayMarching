@@ -9,26 +9,151 @@
 #ifndef _Audio_h_
 #define _Audio_h_
 
-#include "Platform.h"
-
-#include "String.h"
+#include "Platform.h" 
+#include "Component.h"
 
 class Audio
 {
 public:
+	class SourceComponent : public Component
+	{
+		friend class Audio;
+	private:
+		class Impl;
+	public:
+		SourceComponent(GameObject& gameObject_);
+
+		virtual ~SourceComponent();
+
+		void SetGain(float gain, float minGain = 0.0f, float maxGain = 1.0f);
+		void SetHeadRelativeMode(bool mode);
+		void SetMaxDistance(float maxDistance, float referenceDistance = -1.0f);
+
+		void SetCone(float coneInnerAngle, float coneOuterAngle, float coneFalloff, float coneOuterGain);
+
+		void SetPitch(float pitch);
+		void SetLooping(bool loop);
+
+		float GetGain() const;
+		float GetMinGain() const;
+		float GetMaxGain() const;
+		bool GetHeadRelativeMode() const;
+		float GetMaxDistance() const;
+		float GetReferenceDistance() const;
+
+		float GetConeInnerAngle() const;
+		float GetConeOuterAngle() const;
+		float GetConeFalloff() const;
+		float GetConeOuterGain() const;
+
+		float GetPitch() const;
+		bool GetLooping() const;
+	private:
+		void Render();
+
+		virtual bool OnInitiate() override;
+
+		virtual bool OnStart() override;
+
+		virtual bool OnUpdate() override;
+
+		virtual bool OnPause() override;
+
+		virtual void OnResume() override;
+
+		virtual void OnStop() override;
+
+		virtual void OnTerminate() override;
+
+		virtual void OnRender();
+	private:
+		Impl* impl;
+	};
+
+	class StreamSourceComponent : public SourceComponent
+	{
+		friend class Audio;
+	public:
+		StreamSourceComponent(GameObject& gameObject_);
+
+		virtual ~StreamSourceComponent();
+	private:
+		virtual bool OnInitiate() override;
+
+		virtual bool OnStart() override;
+
+		virtual bool OnUpdate() override;
+
+		virtual bool OnPause() override;
+
+		virtual void OnResume() override;
+
+		virtual void OnStop() override;
+
+		virtual void OnTerminate() override;
+
+		virtual void OnRender() override;
+	};
+
+	class ListenerComponent : public Component
+	{
+		friend class Audio;
+	private:
+		class Impl;
+	public:
+		ListenerComponent(GameObject& gameObject_);
+
+		virtual ~ListenerComponent();
+
+		void SetGain(float gain);
+
+		float GetGain() const;
+	private:
+		void Render();
+
+		virtual bool OnInitiate() override;
+
+		virtual bool OnStart() override;
+
+		virtual bool OnUpdate() override;
+
+		virtual bool OnPause() override;
+
+		virtual void OnResume() override;
+
+		virtual void OnStop() override;
+
+		virtual void OnTerminate() override;
+
+		virtual void OnRender();
+	private:
+		Impl* impl;
+	};
+
 	class Manager
 	{
-	friend class Audio;
+	private:
+		class Impl;
+	private:
 		Manager();
 		~Manager();
 	public:
 		static Audio::Manager& GetInstance();
-	private:
+
 		bool Initialize();
 		bool Update();
 		bool Pause();
 		void Resume();
 		void Terminate();
+
+		void Add(ListenerComponent* audioListener);
+		void Add(SourceComponent* soundSource);
+		void Remove(ListenerComponent* audioListener);
+		void Remove(SourceComponent* soundSource);
+	private:
+		std::vector<ListenerComponent*> listeners;
+		std::vector<SourceComponent*> sources;
+		Impl* impl;
 	};
 
 	///////////////////////////////////////////////////////////////////////
