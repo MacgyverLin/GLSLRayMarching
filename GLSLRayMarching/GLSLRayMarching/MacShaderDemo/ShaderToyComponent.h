@@ -3,8 +3,7 @@
 
 #include "Component.h"
 #include "Video.h"
-
-class ShaderToyRenderer;
+#include "ShaderToyRenderer.h"
 
 class ShaderToyComponent : public Video::Graphics3Component
 {

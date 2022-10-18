@@ -93,6 +93,9 @@
     <ClCompile Include="PicoGL.cpp">
       <Filter>LightPropagationVolumesScene\3rdParty</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderToyRenderer.cpp">
+      <Filter>ShaderToy\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DefaultScene.h" />
@@ -162,26 +165,23 @@
     <ClInclude Include="GeoMipmapTerrainScene.h">
       <Filter>GeoMorphTerrainScene</Filter>
     </ClInclude>
-    <ClInclude Include="Pass.h">
-      <Filter>ShaderToy</Filter>
-    </ClInclude>
     <ClInclude Include="MicrophoneTexture.h">
-      <Filter>ShaderToy\Textures</Filter>
+      <Filter>ShaderToy\Renderer\Textures</Filter>
     </ClInclude>
     <ClInclude Include="KeyboardTexture.h">
-      <Filter>ShaderToy\Textures</Filter>
+      <Filter>ShaderToy\Renderer\Textures</Filter>
     </ClInclude>
     <ClInclude Include="WebcamTexture.h">
-      <Filter>ShaderToy\Textures</Filter>
+      <Filter>ShaderToy\Renderer\Textures</Filter>
     </ClInclude>
     <ClInclude Include="SoundCloudTexture.h">
-      <Filter>ShaderToy\Textures</Filter>
+      <Filter>ShaderToy\Renderer\Textures</Filter>
     </ClInclude>
     <ClInclude Include="VideoTexture.h">
-      <Filter>ShaderToy\Textures</Filter>
+      <Filter>ShaderToy\Renderer\Textures</Filter>
     </ClInclude>
     <ClInclude Include="FlipFrameBuffer.h">
-      <Filter>ShaderToy\Textures</Filter>
+      <Filter>ShaderToy\Renderer\Textures</Filter>
     </ClInclude>
     <ClInclude Include="ShaderToyConfig.h">
       <Filter>ShaderToy</Filter>
@@ -225,6 +225,12 @@
     <ClInclude Include="PicoGL.h">
       <Filter>LightPropagationVolumesScene\3rdParty</Filter>
     </ClInclude>
+    <ClInclude Include="Pass.h">
+      <Filter>ShaderToy\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderToyRenderer.h">
+      <Filter>ShaderToy\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PathTrace">
@@ -251,9 +257,6 @@
     <Filter Include="LightPropagationVolumesScene">
       <UniqueIdentifier>{df23f298-f559-4f9d-a89f-ae6bd82a862c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ShaderToy\Textures">
-      <UniqueIdentifier>{ef8f8696-9af9-4b67-84e5-d85dfe38a943}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LightPropagationVolumesScene\3rdParty">
       <UniqueIdentifier>{7bd7154b-2444-4629-8dad-e950b6d45177}</UniqueIdentifier>
     </Filter>
@@ -262,6 +265,12 @@
     </Filter>
     <Filter Include="LightPropagationVolumesScene\Scene">
       <UniqueIdentifier>{2eb4a103-7b2d-4023-a72a-edf495e15382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderToy\Renderer">
+      <UniqueIdentifier>{940e90bf-3947-4c72-978a-2178e33e880d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderToy\Renderer\Textures">
+      <UniqueIdentifier>{ef8f8696-9af9-4b67-84e5-d85dfe38a943}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -14,7 +14,7 @@ public:
 		Texture1D = 0,
 		Texture2D,
 		Texture3D,
-		TextureCubeMap,
+		TextureCubemap,
 		Texture1DArray,
 		Texture2DArray,
 		TextureCubeMapArray,
@@ -275,7 +275,7 @@ protected:
 private:
 };
 
-class TextureCubeMap : public Texture
+class TextureCubemap : public Texture
 {
 public:
 	enum class Side
@@ -288,8 +288,8 @@ public:
 		NEGATIVE_Z
 	};
 
-	TextureCubeMap();
-	virtual ~TextureCubeMap();
+	TextureCubemap();
+	virtual ~TextureCubemap();
 
 	bool Initiate(unsigned int size_, Texture::Format format_, void* src_);
 	bool Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_);
@@ -479,7 +479,7 @@ protected:
 private:
 };
 
-class TextureCubeMapFile : public TextureCubeMap
+class TextureCubeMapFile : public TextureCubemap
 {
 public:
 	TextureCubeMapFile();

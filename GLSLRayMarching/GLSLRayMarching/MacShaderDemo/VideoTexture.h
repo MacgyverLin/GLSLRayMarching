@@ -1,7 +1,6 @@
 #ifndef _VideoTexture_h_
 #define _VideoTexture_h_
 
-#include "ShaderToyComponent.h"
 #include "Texture.h"
 #include "FrameBuffer.h"
 #include "RenderStates.h"

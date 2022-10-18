@@ -11,7 +11,6 @@
 
 #include "Platform.h" 
 #include "Component.h"
-#include "Vector2.h"
 
 class Video
 {

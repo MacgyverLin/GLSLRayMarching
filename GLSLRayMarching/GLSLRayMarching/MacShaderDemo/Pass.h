@@ -1,7 +1,6 @@
 #ifndef _Pass_h_
 #define _Pass_h_
 
-#include "ShaderToyComponent.h"
 #include "Texture.h"
 #include "FrameBuffer.h"
 #include "RenderStates.h"
@@ -50,7 +49,7 @@ public:
 	public:
 		Channel()
 			: texture(nullptr)
-			, frameBuffer(nullptr)
+			, buffer(nullptr)
 			, filter(Mipmap)
 			, wrap(Repeat)
 			, vFlip(true)
@@ -60,14 +59,14 @@ public:
 		void Terminate()
 		{
 			texture = nullptr;
-			frameBuffer = nullptr;
+			buffer = nullptr;
 			filter = Mipmap;
 			wrap = Repeat;
 			vFlip = true;
 		}
 
 		Texture* texture;
-		FlipFrameBuffer* frameBuffer;
+		FrameBuffer* buffer;
 		Filter filter;
 		Wrap wrap;
 		bool vFlip;
@@ -78,7 +77,7 @@ public:
 		, vertexBuffer()
 		, shaderProgram()
 		, iChannels(CHANNEL_COUNT)
-		, frameBuffer(nullptr)
+		, renderTarget(nullptr)
 	{
 	}
 
@@ -115,155 +114,208 @@ public:
 
 	bool Render(unsigned int width, unsigned height, double time, double deltaTime, Vector4 mouse, Vector2 mouseDelta, int frameCounter)
 	{
-		int facecount = 1;
-
-		Vector3 resolution;
-		if (frameBuffer)
-		{
-			//if (frameBuffer->GetColorAttachment(GL_COLOR_ATTACHMENT0)->GetType() == GL_TEXTURE_CUBE_MAP)
-				//facecount = 6;
-
-			frameBuffer->Bind();
-
-			unsigned int w;
-			unsigned int h;
-			unsigned int d;
-			frameBuffer->GetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0)->GetResolution(&w, &h, &d);
-			resolution = Vector3(w, h, d);
-
-			renderStates.viewportState.pos = Vector2(0, 0);
-			renderStates.viewportState.size = Vector2(resolution[0], resolution[1]);
-
-			renderStates.scissorTestState.enabled = true;
-			renderStates.scissorTestState.pos = Vector2(0, 0);
-			renderStates.scissorTestState.size = Vector2(resolution[0], resolution[1]);
-		}
-		else
-		{
-			resolution = Vector3(Platform::GetWidth(), Platform::GetHeight(), 1.0);
-
-			renderStates.viewportState.pos = Vector2(0, 0);
-			renderStates.viewportState.size = Vector2(width, height);
-
-			renderStates.scissorTestState.enabled = true;
-			renderStates.scissorTestState.pos = Vector2(0, 0);
-			renderStates.scissorTestState.size = Vector2(width, height);
-		}
-
-		////////////
-		// renderState
-		renderStates.Apply();
-
-		////////////
-		// Bind Shader Uniform
-		shaderProgram.Bind();
-		shaderProgram.SetUniform3f("iResolution", resolution[0], resolution[1], resolution[2]);
-		shaderProgram.SetUniform1f("iTime", (float)time);
-		shaderProgram.SetUniform1f("iTimeDelta", (float)deltaTime);
-		shaderProgram.SetUniform1f("iFrameRate", 60.0f);
-		shaderProgram.SetUniform1i("iFrame", frameCounter);
-		shaderProgram.SetUniform4f("iMouse", mouse.X(), mouse.Y(), mouse.Z(), mouse.W());
-		//Debug("%f %f %f %f\n", mouse.X(), mouse.Y(), mouse.Z(), mouse.W());
-		
-		Platform::SystemTime lt = Platform::GetSystemTime();
-		shaderProgram.SetUniform4f("iDate", (float)lt.wYear - 1, (float)lt.wMonth - 1, (float)lt.wDay, lt.wHour * 60.0f * 60.0f + lt.wMinute * 60.0f + lt.wSecond);
-		shaderProgram.SetUniform1f("iSampleRate", 48000.0);
-
-		////////////////////////////////////////////////
-		// Bind Channels
-		std::vector<Vector3> channelResolutions(CHANNEL_COUNT);
-		std::vector<float> channelTimes(CHANNEL_COUNT);
 		for (int i = 0; i < iChannels.size(); i++)
 		{
-			Texture* texture = nullptr;
 			if (iChannels[i].texture)
-				texture = iChannels[i].texture;
-			else if (iChannels[i].frameBuffer)
-				texture = iChannels[i].frameBuffer->GetCurrentTexture();
-
-			if (texture)
 			{
-				unsigned int w, h, d;
-				texture->GetResolution(&w, &h, &d);
-				channelResolutions[i].X() = w;
-				channelResolutions[i].Y() = h;
-				channelResolutions[i].Z() = d;
+				iChannels[i].texture->Tick();
+			}
+		}
 
-				channelTimes[i] = 0.0;
-
-				if (iChannels[i].wrap == Pass::Wrap::Repeat)
-				{
-					texture->SetWarpS(Texture::Wrap::Repeat);
-					texture->SetWarpR(Texture::Wrap::Repeat);
-					texture->SetWarpT(Texture::Wrap::Repeat);
-				}
-				else if (iChannels[i].wrap == Pass::Wrap::Clamp)
-				{
-					texture->SetWarpS(Texture::Wrap::Clamp);
-					texture->SetWarpR(Texture::Wrap::Clamp);
-					texture->SetWarpT(Texture::Wrap::Clamp);
-				}
-
-				if (iChannels[i].filter == Pass::Filter::Nearest)
-				{
-					texture->SetMinFilter(Texture::MinFilter::Nearest);
-					texture->SetMagFilter(Texture::MagFilter::Nearest);
-				}
-				else if (iChannels[i].filter == Pass::Filter::Linear)
-				{
-					texture->SetMinFilter(Texture::MinFilter::Linear);
-					texture->SetMagFilter(Texture::MagFilter::Linear);
-				}
-				else if (iChannels[i].filter == Pass::Filter::Mipmap)
-				{
-					texture->SetMinFilter(Texture::MinFilter::LinearMipmapLinear);
-					texture->SetMagFilter(Texture::MagFilter::Linear);
-				}
-
-				texture->Bind(i);
-
-				texture->Tick();
+		int faceCount = 1;
+		if (renderTarget)
+		{
+			if (renderTarget->GetType() == FrameBuffer::Type::Texture2D)
+			{
+				faceCount = 1;
+			}
+			else if (renderTarget->GetType() == FrameBuffer::Type::TextureCubemap)
+			{
+				faceCount = 6;
 			}
 			else
 			{
-				channelResolutions[i] = Vector3(0.0, 0.0, 0.0);
-				channelTimes[i] = 0.0;
+				::Debug("Channel%d: channel texture must be either 2D cubemap");
+				return false;
 			}
 		}
 
-		shaderProgram.SetUniform3fv("iChannelResolution", CHANNEL_COUNT, &channelResolutions[0][0]);
-
-		shaderProgram.SetUniform1fv("iChannelTime", CHANNEL_COUNT, &channelTimes[0]);
-
-		for (int i = 0; i < CHANNEL_COUNT; i++)
+		for (int i = 0; i < 6; i++)
 		{
-			std::string name = "iChannel";
-			name += ('0' + i);
+			if (renderTarget)
+			{
+				if (renderTarget->GetType() == FrameBuffer::Type::TextureCubemap)
+				{
+					TextureFrameBufferCubemap* cubemapRenderTarget = (TextureFrameBufferCubemap*)renderTarget;
+					cubemapRenderTarget->SetCurrentFace(i);
+				}
 
-			shaderProgram.SetUniform1i(name.c_str(), i);
+				renderTarget->Bind();
+			}
+
+			Vector3 resolution;
+			if (renderTarget)
+			{
+				unsigned int w;
+				unsigned int h;
+				unsigned int d;
+				renderTarget->GetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0)->GetResolution(&w, &h, &d);
+				resolution = Vector3(w, h, d);
+
+				renderStates.viewportState.pos = Vector2(0, 0);
+				renderStates.viewportState.size = Vector2(resolution[0], resolution[1]);
+
+				renderStates.scissorTestState.enabled = true;
+				renderStates.scissorTestState.pos = Vector2(0, 0);
+				renderStates.scissorTestState.size = Vector2(resolution[0], resolution[1]);
+			}
+			else
+			{
+				resolution = Vector3(Platform::GetWidth(), Platform::GetHeight(), 1.0);
+
+				renderStates.viewportState.pos = Vector2(0, 0);
+				renderStates.viewportState.size = Vector2(width, height);
+
+				renderStates.scissorTestState.enabled = true;
+				renderStates.scissorTestState.pos = Vector2(0, 0);
+				renderStates.scissorTestState.size = Vector2(width, height);
+			}
+
+			////////////
+			// renderState
+			renderStates.Apply();
+
+			////////////
+			// Bind Shader Uniform
+			shaderProgram.Bind();
+			shaderProgram.SetUniform1i("iFace", i);
+			shaderProgram.SetUniform3f("iResolution", resolution[0], resolution[1], resolution[2]);
+			shaderProgram.SetUniform1f("iTime", (float)time);
+			shaderProgram.SetUniform1f("iTimeDelta", (float)deltaTime);
+			shaderProgram.SetUniform1f("iFrameRate", 60.0f);
+			shaderProgram.SetUniform1i("iFrame", frameCounter);
+			shaderProgram.SetUniform4f("iMouse", mouse.X(), mouse.Y(), mouse.Z(), mouse.W());
+			//Debug("%f %f %f %f\n", mouse.X(), mouse.Y(), mouse.Z(), mouse.W());
+
+			Platform::SystemTime lt = Platform::GetSystemTime();
+			shaderProgram.SetUniform4f("iDate", (float)lt.wYear - 1, (float)lt.wMonth - 1, (float)lt.wDay, lt.wHour * 60.0f * 60.0f + lt.wMinute * 60.0f + lt.wSecond);
+			shaderProgram.SetUniform1f("iSampleRate", 48000.0);
+
+			////////////////////////////////////////////////
+			// Bind Channels
+			std::vector<Vector3> channelResolutions(CHANNEL_COUNT);
+			std::vector<float> channelTimes(CHANNEL_COUNT);
+			for (int i = 0; i < iChannels.size(); i++)
+			{
+				////////////////////////////////////////////////
+				// Get Channel's texture
+				Texture* texture = nullptr;
+				if (iChannels[i].texture)
+				{
+					texture = iChannels[i].texture;
+				}
+				else if (iChannels[i].buffer)
+				{
+					if (iChannels[i].buffer->GetType() == FrameBuffer::Type::Texture2D)
+						texture = ((TextureFrameBuffer2D*)iChannels[i].buffer)->GetTexture();
+					else if (iChannels[i].buffer->GetType() == FrameBuffer::Type::TextureCubemap)
+						texture = ((TextureFrameBufferCubemap*)iChannels[i].buffer)->GetTexture();
+					else
+					{
+						::Debug("Channel%d: channel texture must be either 2D cubemap");
+						return false;
+					}
+				}
+
+				////////////////////////////////////////////////
+				// Get Channel's texture wrap, filter, vflip
+				if (texture)
+				{
+					unsigned int w, h, d;
+					texture->GetResolution(&w, &h, &d);
+					channelResolutions[i].X() = w;
+					channelResolutions[i].Y() = h;
+					channelResolutions[i].Z() = d;
+
+					channelTimes[i] = 0.0;
+
+					if (iChannels[i].wrap == Pass::Wrap::Repeat)
+					{
+						texture->SetWarpS(Texture::Wrap::Repeat);
+						texture->SetWarpR(Texture::Wrap::Repeat);
+						texture->SetWarpT(Texture::Wrap::Repeat);
+					}
+					else if (iChannels[i].wrap == Pass::Wrap::Clamp)
+					{
+						texture->SetWarpS(Texture::Wrap::Clamp);
+						texture->SetWarpR(Texture::Wrap::Clamp);
+						texture->SetWarpT(Texture::Wrap::Clamp);
+					}
+
+					if (iChannels[i].filter == Pass::Filter::Nearest)
+					{
+						texture->SetMinFilter(Texture::MinFilter::Nearest);
+						texture->SetMagFilter(Texture::MagFilter::Nearest);
+					}
+					else if (iChannels[i].filter == Pass::Filter::Linear)
+					{
+						texture->SetMinFilter(Texture::MinFilter::Linear);
+						texture->SetMagFilter(Texture::MagFilter::Linear);
+					}
+					else if (iChannels[i].filter == Pass::Filter::Mipmap)
+					{
+						texture->SetMinFilter(Texture::MinFilter::LinearMipmapLinear);
+						texture->SetMagFilter(Texture::MagFilter::Linear);
+					}
+
+					texture->Bind(i);
+				}
+				else
+				{
+					channelResolutions[i] = Vector3(0.0, 0.0, 0.0);
+					channelTimes[i] = 0.0;
+				}
+			}
+
+			shaderProgram.SetUniform3fv("iChannelResolution", CHANNEL_COUNT, &channelResolutions[0][0]);
+			shaderProgram.SetUniform1fv("iChannelTime", CHANNEL_COUNT, &channelTimes[0]);
+
+			for (int i = 0; i < CHANNEL_COUNT; i++)
+			{
+				std::string name = "iChannel";
+				name += ('0' + i);
+
+				shaderProgram.SetUniform1i(name.c_str(), i);
+			}
+
+			//////////////////////////////////////////////////
+			// Draw
+			vertexBuffer.Bind();
+			vertexBuffer.DrawArray(VertexBuffer::Mode::TRIANGLES, 0, vertexBuffer.GetCount());
 		}
 
 		//////////////////////////////////////////////////
-		// Draw
-		vertexBuffer.Bind();
-		vertexBuffer.DrawArray(VertexBuffer::Mode::TRIANGLES, 0, vertexBuffer.GetCount());
+		// Flip buffer
+		if (renderTarget)
+		{
+			if (renderTarget->GetType() == FrameBuffer::Type::Texture2D)
+				((TextureFrameBuffer2D*)renderTarget)->Flip();
+			else if (renderTarget->GetType() == FrameBuffer::Type::TextureCubemap)
+				((TextureFrameBufferCubemap*)renderTarget)->Flip();
+			else
+			{
+				::Debug("Channel%d: channel texture must be either 2D cubemap");
+			}
+		}
 
 		//////////////////////////////////////////////////
 		// Clean Up
-		if (frameBuffer)
+		if (renderTarget)
 		{
-			frameBuffer->UnBind();
+			renderTarget->UnBind();
 		}
 
 		return true;
-	}
-
-	void Flip()
-	{
-		if (frameBuffer)
-		{
-			frameBuffer->Flip();
-		}
 	}
 
 	void Terminate()
@@ -278,7 +330,7 @@ public:
 			channel.Terminate();
 		}
 
-		frameBuffer = nullptr;
+		renderTarget = nullptr;
 		vertexBuffer.Terminate();
 	}
 
@@ -310,13 +362,13 @@ public:
 	void SetChannelTexture(int i, Texture* texture_)
 	{
 		this->iChannels[i].texture = texture_;
-		this->iChannels[i].frameBuffer = nullptr;
+		this->iChannels[i].buffer = nullptr;
 	}
 
-	void SetChannelFrameBuffer(int i, FlipFrameBuffer* frameBuffer_)
+	void SetChannelBuffer(int i, FrameBuffer* renderTarget_)
 	{
 		this->iChannels[i].texture = nullptr;
-		this->iChannels[i].frameBuffer = frameBuffer_;
+		this->iChannels[i].buffer = renderTarget_;
 	}
 
 	const Pass::Channel& GetChannel(int i) const
@@ -324,14 +376,14 @@ public:
 		return this->iChannels[i];
 	}
 
-	void SetFrameBuffer(FlipFrameBuffer* frameBuffer_)
+	void SetRenderTarget(FrameBuffer* renderTarget_)
 	{
-		frameBuffer = frameBuffer_;
+		renderTarget = renderTarget_;
 	}
 
-	FlipFrameBuffer* GetFrameBuffer() const
+	FrameBuffer* GetRenderTarget() const
 	{
-		return frameBuffer;
+		return renderTarget;
 	}
 
 	bool LoadShader(const char* path_, std::string& fShaderCode)
@@ -363,7 +415,7 @@ public:
 		return true;
 	}
 
-	bool SetShader(const char* path_, const char* commonShaderURL_)
+	bool CreateShader(const char* path_, const char* commonShaderURL_)
 	{
 		std::string vShaderCode =
 			"#version 430 core\n"
@@ -392,6 +444,7 @@ public:
 			"precision highp int;\n"
 			"in vec2 fragCoord;\n"
 			"out vec4 FragColor;\n"
+			"uniform int iFace;\n"
 			"uniform vec3 iResolution;\n"
 			"uniform float iTime;\n"
 			"uniform float iTimeDelta;\n"
@@ -413,25 +466,75 @@ public:
 			{
 				if (iChannels[i].texture->GetType() == Texture::Type::Texture2D)
 					fShaderChannels += "uniform sampler2D iChannel" + idx + ";\n";
-				else if (iChannels[i].texture->GetType() == Texture::Type::TextureCubeMap)
+				else if (iChannels[i].texture->GetType() == Texture::Type::TextureCubemap)
 					fShaderChannels += "uniform samplerCube iChannel" + idx + ";\n";
 			}
-			else if (iChannels[i].frameBuffer)
+			else if (iChannels[i].buffer)
 			{
-				if (iChannels[i].frameBuffer->GetCurrentTexture()->GetType() == Texture::Type::Texture2D)
+				if (iChannels[i].buffer->GetType() == FrameBuffer::Type::Texture2D)
 					fShaderChannels += "uniform sampler2D iChannel" + idx + ";\n";
-				else if (iChannels[i].frameBuffer->GetCurrentTexture()->GetType() == Texture::Type::TextureCubeMap)
+				else if (iChannels[i].buffer->GetType() == FrameBuffer::Type::TextureCubemap)
 					fShaderChannels += "uniform samplerCube iChannel" + idx + ";\n";
+				else
+				{
+					::Debug("channel%d: channels texture must be either 2d or cubemap\n");
+					return false;
+				}
 			}
 		}
-
-		std::string fShaderMain =
-			"void main()\n"
-			"{\n"
-			"vec4 fragColor; \n"
-			"mainImage(fragColor, fragCoord);\n"
-			"FragColor = fragColor;\n"
-			"}\n";
+		
+		std::string fShaderMain = "";
+		if (!renderTarget || renderTarget->GetType() == FrameBuffer::Type::Texture2D)
+		{
+			fShaderMain =
+				"void main()\n"
+				"{\n"
+				"vec4 fragColor; \n"
+				"mainImage(fragColor, fragCoord);\n"
+				"FragColor = fragColor;\n"
+				"}\n";
+		}
+		else if (renderTarget->GetType() == FrameBuffer::Type::TextureCubemap)
+		{
+			/*
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X 0x8515
+			GL_TEXTURE_CUBE_MAP_NEGATIVE_X 0x8516
+			GL_TEXTURE_CUBE_MAP_POSITIVE_Y 0x8517
+			GL_TEXTURE_CUBE_MAP_NEGATIVE_Y 0x8518
+			GL_TEXTURE_CUBE_MAP_POSITIVE_Z 0x8519
+			GL_TEXTURE_CUBE_MAP_NEGATIVE_Z 0x851A
+			*/
+			fShaderMain =
+				"void main()\n"
+				"{\n"
+				"vec4 fragColor; \n"
+				"vec3 rayOri = vec3(0); \n"
+				"vec3 rayDir;\n"
+				"vec2 texcoord = (2.0 * fragCoord / iResolution.xy) - 1.0;\n"
+				"float a = texcoord.x;\n"
+				"float b = texcoord.y;\n"
+				"float c = sqrt(a*a+b*b);\n"
+				"if(iFace==0)\n"
+				"	rayDir = vec3( c,  -b,  -a);\n"
+				"else if(iFace==1)\n"
+				"	rayDir = vec3(-c,  -b,   a);\n"
+				"else if(iFace==2)\n"
+				"	rayDir = vec3( a,   c,   b);\n"
+				"else if(iFace==3)\n"
+				"	rayDir = vec3( a,  -c,  -b);\n"
+				"else if(iFace==4)\n"
+				"	rayDir = vec3( a,  -b,   c);\n"
+				"else\n"
+				"	rayDir = vec3(-a,  -b,  -c);\n"
+				"mainCubemap(fragColor, fragCoord, rayOri, rayDir);\n"
+				"FragColor = fragColor;\n"
+				"}\n";
+		}
+		else
+		{
+			::Debug("channel%d: channels texture must be either 2d or cubemap\n");
+			return false;
+		}
 
 		std::string fShaderCode;
 		if (path_)
@@ -460,15 +563,15 @@ public:
 			commonShaderCode + "\n" +
 			fShaderCode + "\n" +
 			fShaderMain;
-		
-		
+
+
 		FILE* fptr = fopen("test.log", "wt");
 		if (fptr)
 		{
 			fprintf(fptr, "%s\n", fShader.c_str());
 			fclose(fptr);
 		}
-		
+
 		return shaderProgram.CreateFromSource(vShaderCode.c_str(), fShader.c_str());
 	}
 protected:
@@ -482,7 +585,7 @@ private:
 	RenderStates renderStates;
 	ShaderProgram shaderProgram;
 	std::vector<Channel> iChannels;
-	FlipFrameBuffer* frameBuffer;
+	FrameBuffer* renderTarget;
 	VertexBuffer vertexBuffer;
 };
 

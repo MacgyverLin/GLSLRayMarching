@@ -49,13 +49,18 @@ public:
 	public:
 		Channel()
 			: keyboard()
-			, webcam()
+
 			, microphone()
 			, soundcloud()
+			, sound()
+
 			, texture2d()
 			, texturecubemap()
 			, texturevideo()
+			, webcam()
+
 			, buffer()
+			, cubemapbuffer()
 
 			, filter()
 			, wrap()
@@ -68,11 +73,6 @@ public:
 			return keyboard != "";
 		}
 
-		bool IsWebcam() const
-		{
-			return webcam != "";
-		}
-
 		bool IsMicrophone() const
 		{
 			return microphone != "";
@@ -81,6 +81,11 @@ public:
 		bool IsSoundcloud() const
 		{
 			return soundcloud != "";
+		}
+
+		bool IsSound() const
+		{
+			return sound != "";
 		}
 
 		bool IsTexture2d() const
@@ -98,19 +103,31 @@ public:
 			return texturevideo != "";
 		}
 
+		bool IsWebcam() const
+		{
+			return webcam != "";
+		}
+
 		bool IsBuffer() const
 		{
 			return buffer != "";
 		}
 
+		bool IsCubemapBuffer() const
+		{
+			return cubemapbuffer != "";
+		}
+
 		std::string keyboard;
-		std::string webcam;
 		std::string microphone;
+		std::string sound;
 		std::string soundcloud;
 		std::string texture2d;
 		std::string texturecubemap;
 		std::string texturevideo;
+		std::string webcam;
 		std::string buffer;
+		std::string cubemapbuffer;
 
 		std::string filter;
 		std::string wrap;
@@ -172,40 +189,7 @@ public:
 			if (!CreatePasses(shaderToyDoc, folder_, common.GetShaderPath()))
 				return false;
 
-			if (!CreatePostprocessPass(
-					{ "image" , "keyboard", "buffera", "scaledimage"	},					// input texture
-					{ "linear", "nearest" , "nearest", "linear"			},					// input filter
-					{ "clamp" , "clamp"   , "clamp"  , "clamp"			},					// input wrap
-					"Demos/AMD_FSR/scaledimage.glsl",
-					"scaledimage",
-					common.GetShaderPath()))
-				return false;
-
-			if (!CreatePostprocessPass(
-				{ "scaledimage", "buffera", "buffera", "scaledimage" },															// input texture
-				{ "linear", "linear" , "linear", "linear" },					// input filter
-				{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
-				"Demos/AMD_FSR/easu.glsl",
-				"easu",
-				common.GetShaderPath()))
-				return false;
-
-			if (!CreatePostprocessPass(
-				{ "easu", "buffera", "buffera", "scaledimage" },																// input texture
-				{ "linear", "linear" , "linear", "linear" },					// input filter
-				{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
-				"Demos/AMD_FSR/rcas.glsl",
-				"rcas",
-				common.GetShaderPath()))
-				return false;
-
-			if (!CreatePostprocessPass(
-				{ "image", "easu", "rcas", "scaledimage" },
-				{ "linear", "linear" , "linear", "linear" },					// input filter
-				{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
-				"Demos/AMD_FSR/copy.glsl",
-				"default",
-				common.GetShaderPath()))
+			if (!CreatePostprocessPasses(common.GetShaderPath()))
 				return false;
 		}
 		catch (std::ifstream::failure&)
@@ -270,7 +254,7 @@ private:
 				passes.resize(passesJson.Size());
 				for (int i = 0; i < passesJson.Size(); i++)
 				{
-					if (!CreatePass(i, passesJson, folder, commonShaderURL))
+					if (!CreatePass(passes[i], passesJson[i], folder, commonShaderURL))
 						return false;
 				}
 			}
@@ -279,47 +263,86 @@ private:
 		return true;
 	}
 
-	bool CreatePass(int i, rapidjson::Value& passesJson, std::string& folder, const char* commonShaderURL)
+	static bool IsValidChannelTextureName(const std::string& texturename_)
 	{
-		Value& passJson = passesJson[i];
+		return texturename_ == "keyboard" ||
+			texturename_ == "microphone" || texturename_ == "soundcloud" ||
+			texturename_ == "texture2d" || texturename_ == "texturecubemap" || texturename_ == "texturevideo" || texturename_ == "webcam" ||
+			texturename_ == "buffera" || texturename_ == "bufferb" || texturename_ == "bufferc" || texturename_ == "bufferd" ||
+			texturename_ == "cubemapbuffera" || texturename_ == "cubemapbufferb" || texturename_ == "cubemapbufferc" || texturename_ == "cubemapbufferd" ||
+			IsValidRenderTargetName(texturename_);
+	}
+
+	static bool IsValidRenderTargetName(const std::string& rendertargetname_)
+	{
+		return 
+			rendertargetname_ == "backbuffer" ||
+			rendertargetname_ == "sound" ||
+			rendertargetname_ == "image" || rendertargetname_ == "scaledimage" || rendertargetname_ == "easu" || rendertargetname_ == "rcas" ||
+			rendertargetname_ == "buffera" || rendertargetname_ == "bufferb" || rendertargetname_ == "bufferc" || rendertargetname_ == "bufferd" ||
+			rendertargetname_ == "cubemapbuffera" || rendertargetname_ == "cubemapbufferb" || rendertargetname_ == "cubemapbufferc" || rendertargetname_ == "cubemapbufferd";
+	}
+
+	const std::string& GetJSONStringLowerCase(const rapidjson::Value& value)
+	{
+		static std::string data;
+
+		data = value.GetString();
+
+		std::transform(data.begin(), data.end(), data.begin(),
+			[](unsigned char c)
+		{
+			return std::tolower(c);
+		}
+		);
+
+		return data;
+	}
+
+	bool CreatePass(Pass& pass, const rapidjson::Value& passJson, std::string& folder, const char* commonShaderURL)
+	{
 		if (passJson.IsObject())
 		{
-			Value& channelsJson = passJson["channels"];
+			const Value& channelsJson = passJson["channels"];
 
-			passes[i].channels.resize(channelsJson.Size());
+			pass.channels.resize(channelsJson.Size());
 			for (int j = 0; j < channelsJson.Size(); j++)
 			{
-				Value& channelJson = channelsJson[j];
+				const Value& channelJson = channelsJson[j];
 				if (channelJson.IsObject())
 				{
 					if (channelJson.HasMember("filter"))
 					{
-						passes[i].channels[j].filter = channelJson["filter"].GetString();
+						pass.channels[j].filter = GetJSONStringLowerCase(channelJson["filter"]);
 					}
 					if (channelJson.HasMember("wrap"))
 					{
-						passes[i].channels[j].wrap = channelJson["wrap"].GetString();
+						pass.channels[j].wrap = GetJSONStringLowerCase(channelJson["wrap"]);
 					}
 					if (channelJson.HasMember("vflip"))
 					{
-						passes[i].channels[j].vflip = channelJson["vflip"].GetBool();
+						pass.channels[j].vflip = channelJson["vflip"].GetBool();
 					}
 
 					if (channelJson.HasMember("keyboard"))
 					{
-						passes[i].channels[j].keyboard = "keyboard0";
-					}
-					else if (channelJson.HasMember("webcam"))
-					{
-						passes[i].channels[j].webcam = "webcam0";
+						pass.channels[j].keyboard = "keyboard";
 					}
 					else if (channelJson.HasMember("microphone"))
 					{
-						passes[i].channels[j].microphone = "microphone0";
+						pass.channels[j].microphone = "microphone";
 					}
 					else if (channelJson.HasMember("soundcloud"))
 					{
-						passes[i].channels[j].soundcloud = channelJson["soundcloud"].GetString();
+						std::string url(folder);
+						url += "/";
+						url += channelJson["soundcloud"].GetString();
+
+						pass.channels[j].soundcloud = url;
+					}
+					else if (channelJson.HasMember("sound"))
+					{
+						pass.channels[j].sound = "sound";
 					}
 					else if (channelJson.HasMember("texture2d"))
 					{
@@ -327,7 +350,7 @@ private:
 						url += "/";
 						url += channelJson["texture2d"].GetString();
 
-						passes[i].channels[j].texture2d = url;
+						pass.channels[j].texture2d = url;
 					}
 					else if (channelJson.HasMember("texturecubemap"))
 					{
@@ -335,7 +358,7 @@ private:
 						url += "/";
 						url += channelJson["texturecubemap"].GetString();
 
-						passes[i].channels[j].texturecubemap = url;
+						pass.channels[j].texturecubemap = url;
 					}
 					else if (channelJson.HasMember("texturevideo"))
 					{
@@ -343,11 +366,29 @@ private:
 						url += "/";
 						url += channelJson["texturevideo"].GetString();
 
-						passes[i].channels[j].texturevideo = url;
+						pass.channels[j].texturevideo = url;
+					}
+					else if (channelJson.HasMember("webcam"))
+					{
+						pass.channels[j].webcam = "webcam";
 					}
 					else if (channelJson.HasMember("buffer"))
 					{
-						passes[i].channels[j].buffer = channelJson["buffer"].GetString();
+						pass.channels[j].buffer = GetJSONStringLowerCase(channelJson["buffer"]);
+						if (!IsValidChannelTextureName(pass.channels[j].buffer))
+						{
+							Debug("IsValidChannelTextureName: %s\n", pass.channels[j].buffer);
+							return false;
+						}
+					}
+					else if (channelJson.HasMember("cubemapbuffer"))
+					{
+						pass.channels[j].cubemapbuffer = GetJSONStringLowerCase(channelJson["cubemapbuffer"]);
+						if (!IsValidChannelTextureName(pass.channels[j].cubemapbuffer))
+						{
+							Debug("IsValidRenderTargetName: %s\n", pass.channels[j].cubemapbuffer);
+							return false;
+						}
 					}
 					else
 					{
@@ -363,16 +404,21 @@ private:
 				url += "/";
 				url += passJson["shader"].GetString();
 
-				passes[i].shader = url;
+				pass.shader = url;
 			}
 			else
 			{
-				Debug("channel%d: must have shader specified\n", i);
+				Debug("channel: must have shader specified\n");
 			}
 
 			if (passJson.HasMember("rendertarget"))
 			{
-				passes[i].renderTarget = passJson["rendertarget"].GetString();
+				pass.renderTarget = GetJSONStringLowerCase(passJson["rendertarget"]);
+				if (!IsValidRenderTargetName(pass.renderTarget))
+				{
+					Debug("IsValidRenderTargetName: %s\n", pass.renderTarget);
+					return false;
+				}
 			}
 			else
 			{
@@ -384,56 +430,136 @@ private:
 		return true;
 	}
 
-	bool CreatePostprocessPass(	
-		const std::vector<const char *> channelBufferNames,	
-		const std::vector<const char *> channelFilters,
-		const std::vector<const char *> channelWraps,
-		const char* shaderFileName, 
+	bool CreatePostprocessPasses(const char* commonShaderPath)
+	{
+		/*
+		if (!CreatePostprocessPass(
+			{ "image" , "keyboard", "buffera", "scaledimage" },					// input texture
+			{ "linear", "nearest" , "nearest", "linear" },					// input filter
+			{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
+			"Demos/AMD_FSR/scaledimage.glsl",
+			"scaledimage",
+			commonShaderPath))
+			return false;
+
+		if (!CreatePostprocessPass(
+			{ "scaledimage", "buffera", "buffera", "scaledimage" },															// input texture
+			{ "linear", "linear" , "linear", "linear" },					// input filter
+			{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
+			"Demos/AMD_FSR/easu.glsl",
+			"easu",
+			commonShaderPath))
+			return false;
+
+		if (!CreatePostprocessPass(
+			{ "easu", "buffera", "buffera", "scaledimage" },																// input texture
+			{ "linear", "linear" , "linear", "linear" },					// input filter
+			{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
+			"Demos/AMD_FSR/rcas.glsl",
+			"rcas",
+			commonShaderPath))
+			return false;
+		*/
+		if (!CreatePostprocessPass(
+			{ "image", "easu", "rcas", "scaledimage" },
+			{ "linear", "linear" , "linear", "linear" },					// input filter
+			{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
+			"Demos/AMD_FSR/copy.glsl",
+			"backbuffer",
+			commonShaderPath))
+			return false;
+
+		return true;
+	}
+
+	bool CreatePostprocessPass(
+		const std::vector<const char*> channelTextureNames,
+		const std::vector<const char*> channelFilters,
+		const std::vector<const char*> channelWraps,
+		const char* shaderFileName,
 		const char* renderTarget,
 		const char* commonShaderURL)
 	{
+		for (int i = 0; i < channelTextureNames.size(); i++)
+		{
+			if (!IsValidChannelTextureName(channelTextureNames[i]))
+			{
+				Debug("IsValidChannelTextureName: %s\n", channelTextureNames[i]);
+				return false;
+			}
+		}
+
+		if (!IsValidRenderTargetName(renderTarget))
+		{
+			Debug("IsValidRenderTargetName: %s\n", renderTarget);
+			return false;
+		}
+
 		passes.push_back(Pass());
 
 		Pass& pass = passes.back();
 
-		pass.channels.resize(channelBufferNames.size());
-		for (int i = 0; i < channelBufferNames.size(); i++)
+		pass.channels.resize(channelTextureNames.size());
+		for (int i = 0; i < channelTextureNames.size(); i++)
 		{
 			pass.channels[i].filter = channelFilters[i];
 			pass.channels[i].wrap = channelWraps[i];
 			pass.channels[i].vflip = false;
 
-			if (channelBufferNames[i] == "keyboard")
+			if (channelTextureNames[i] == "keyboard")
 			{
 				pass.channels[i].keyboard = "keyboard";
 			}
-			else if (channelBufferNames[i] == "webcam")
-			{
-				pass.channels[i].webcam = "webcam";
-			}
-			else if (channelBufferNames[i] == "microphone")
+			else if (channelTextureNames[i] == "microphone")
 			{
 				pass.channels[i].microphone = "microphone";
 			}
-			else if (channelBufferNames[i] == "soundcloud")
+			else if (channelTextureNames[i] == "soundcloud")
 			{
 				pass.channels[i].soundcloud = "soundcloud";
 			}
-			else if (channelBufferNames[i] == "texture2d")
+			else if (channelTextureNames[i] == "sound")
 			{
-				pass.channels[i].texture2d = channelBufferNames[i];
+				pass.channels[i].sound = "sound";
 			}
-			else if (channelBufferNames[i] == "texturecubemap")
+			else if (channelTextureNames[i] == "texture2d")
 			{
-				pass.channels[i].texturecubemap = channelBufferNames[i];
+				pass.channels[i].texture2d = channelTextureNames[i];
 			}
-			else if (channelBufferNames[i] == "texturevideo")
+			else if (channelTextureNames[i] == "texturecubemap")
 			{
-				pass.channels[i].texturevideo = channelBufferNames[i];
+				pass.channels[i].texturecubemap = channelTextureNames[i];
+			}
+			else if (channelTextureNames[i] == "texturevideo")
+			{
+				pass.channels[i].texturevideo = channelTextureNames[i];
+			}
+			else if (channelTextureNames[i] == "webcam")
+			{
+				pass.channels[i].webcam = "webcam";
+			}
+			else if (channelTextureNames[i] == "buffera" ||
+				channelTextureNames[i] == "bufferb" ||
+				channelTextureNames[i] == "bufferc" ||
+				channelTextureNames[i] == "bufferd" ||
+				channelTextureNames[i] == "image" ||
+				channelTextureNames[i] == "scaledimage" ||
+				channelTextureNames[i] == "easu" ||
+				channelTextureNames[i] == "rcas")
+			{
+				pass.channels[i].buffer = channelTextureNames[i];
+			}
+			else if (channelTextureNames[i] == "cubemapbuffera" ||
+				channelTextureNames[i] == "cubemapbufferb" ||
+				channelTextureNames[i] == "cubemapbufferc" ||
+				channelTextureNames[i] == "cubemapbufferd")
+			{
+				pass.channels[i].cubemapbuffer = channelTextureNames[i];
 			}
 			else
 			{
-				pass.channels[i].buffer = channelBufferNames[i];
+				Debug("channel%d: must have texture or frame buffer specified. or Texture type is not supported\n", i);
+				return false;
 			}
 		}
 

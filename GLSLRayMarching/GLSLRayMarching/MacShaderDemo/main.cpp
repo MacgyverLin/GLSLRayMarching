@@ -78,7 +78,7 @@ private:
 int main(int argc, char** argv)
 {
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
-	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "LightPropagationVolumes"))
+	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "ShaderToy"))
 		return -1;
 
 	macShaderDemoApp.Start();
