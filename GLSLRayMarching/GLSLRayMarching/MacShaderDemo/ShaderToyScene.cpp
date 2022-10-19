@@ -12,8 +12,8 @@
 ShaderToyScene::ShaderToyScene()
 : shaderToyCamera(gameObject)
 , shaderToyComponent(gameObject)
-, listenerComponent(gameObject)
-, streamSourceComponent(gameObject)
+// , listenerComponent(gameObject)
+// , streamSourceComponent(gameObject)
 {
 }
 
@@ -28,7 +28,7 @@ bool ShaderToyScene::OnInitiate()
 
 bool ShaderToyScene::OnStart()
 {
-	streamSourceComponent.Play();
+	// streamSourceComponent.Play();
 
 	return true;
 }
