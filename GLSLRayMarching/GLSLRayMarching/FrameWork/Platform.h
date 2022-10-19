@@ -424,6 +424,7 @@ public:
 		int mods;
 	};
 
+	////////////////////////////////////////////////////////////////////
 	class SystemTime
 	{
 	public:
@@ -440,8 +441,10 @@ public:
 		int wMilliseconds;
 	};
 
-	class WebCam
+	////////////////////////////////////////////////////////////////////
+	class WebCam  // !!!!!!!!! TODO, ¡ıº“√» 
 	{
+		class Impl;
 	public:
 		WebCam();
 		~WebCam();
@@ -454,11 +457,13 @@ public:
 		void Terminate();
 		void GetData();
 	private:
-		void* deviceHandle;
+		Impl* impl;
 	};
 
-	class Microphone
+	////////////////////////////////////////////////////////////////////
+	class Microphone  // !!!!!!!!! TODO, ¡ıº“√» 
 	{
+		class Impl;
 	public:
 		Microphone();
 		~Microphone();
@@ -471,8 +476,11 @@ public:
 		void Terminate();
 		void GetData();
 	private:
-		void* deviceHandle;
+		Impl* impl;
 	};
+
+	////////////////////////////////////////////////////////////////////
+
 
 	static bool Instantiate(int width_, int height_, const char* appName_, const char* InitalizeScene_);
 	static bool PreUpdate();

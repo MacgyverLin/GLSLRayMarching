@@ -34,6 +34,7 @@ public:
 
 	virtual void Tick() override
 	{
+		// !!!!!!!!! TODO, ¡ıº“√» 
 		// Platform::GetMicroPhone().GetData();
 	}
 private:

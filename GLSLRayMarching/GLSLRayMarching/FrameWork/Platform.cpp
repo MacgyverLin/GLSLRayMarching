@@ -57,10 +57,19 @@ Platform::SystemTime::~SystemTime()
 }
 
 //////////////////////////////////////////////////////
-Platform::WebCam::WebCam()
-: deviceHandle(nullptr)
+//////////////////////////////////////////////////////
+class Platform::WebCam::Impl
 {
+public:
+	Impl()
+	{
+		// !!!!!!!!! DO NOTHING HERE, ¡ıº“√»
+	}
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// define Win32 WebCam related data here
+	int test;
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -73,30 +82,34 @@ Platform::WebCam::WebCam()
 #else
 #pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
 #endif
+};
+
+Platform::WebCam::WebCam()
+	: impl(nullptr)
+{
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
+	impl = new Platform::WebCam::Impl();
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
 }
 
 Platform::WebCam::~WebCam()
 {
-#if (PLATFORM == GLFW)
-#elif (PLATFORM == MACOSX)
-#elif (PLATFORM == LINUX)
-#elif (PLATFORM == ANDROID)
-#elif (PLATFORM == IOS)
-#elif (PLATFORM == PS4)
-#elif (PLATFORM == XBOXONE)
-#elif (PLATFORM == NSWITCH)
-#elif (PLATFORM == PS5)
-#elif (PLATFORM == XSX)
-#else
-#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
-#endif
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
+	if (impl)
+	{
+		delete impl;
+		impl = nullptr;
+	}
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
 }
 
 bool Platform::WebCam::Initiate()
 {
-#if (PLATFORM == GLFW)
-	// deviceHandle = Create WebCam Device Here
+	Assert(impl);
 
+#if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// init Win32 WebCam related data here
 	return true;
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
@@ -110,11 +123,16 @@ bool Platform::WebCam::Initiate()
 #else
 #pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
 #endif
+	return true;
 }
 
 bool Platform::WebCam::PreUpdate()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// update WebCam, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -132,7 +150,11 @@ bool Platform::WebCam::PreUpdate()
 
 bool Platform::WebCam::PostUpdate()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// update WebCam, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -150,7 +172,11 @@ bool Platform::WebCam::PostUpdate()
 
 bool Platform::WebCam::Pause()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// system pause, do something for WebCam, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -168,7 +194,11 @@ bool Platform::WebCam::Pause()
 
 void Platform::WebCam::Resume()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// system pause, do something for WebCam, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -185,8 +215,11 @@ void Platform::WebCam::Resume()
 
 void Platform::WebCam::Terminate()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
-	// deviceHandle = Destroy WebCam Device Here
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// delete Win32 WebCam related data here
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -203,10 +236,11 @@ void Platform::WebCam::Terminate()
 
 void Platform::WebCam::GetData()
 {
-	Assert(deviceHandle);
+	Assert(impl);
 
 #if (PLATFORM == GLFW)
-	// Get Webcam data from deviceHandle here
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// Get WebCam data from deviceHandle here
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -222,19 +256,58 @@ void Platform::WebCam::GetData()
 }
 
 //////////////////////////////////////////////////////
-Platform::Microphone::Microphone()
-: deviceHandle(nullptr)
+class Platform::Microphone::Impl
 {
+public:
+	Impl()
+	{
+		// !!!!!!!!! DO NOTHING HERE, ¡ıº“√»
+	}
+
+#if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// define Win32 Microphone related data here
+	int test;
+#elif (PLATFORM == MACOSX)
+#elif (PLATFORM == LINUX)
+#elif (PLATFORM == ANDROID)
+#elif (PLATFORM == IOS)
+#elif (PLATFORM == PS4)
+#elif (PLATFORM == XBOXONE)
+#elif (PLATFORM == NSWITCH)
+#elif (PLATFORM == PS5)
+#elif (PLATFORM == XSX)
+#else
+#pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
+#endif
+};
+
+Platform::Microphone::Microphone()			
+: impl(nullptr)
+{
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
+	impl = new Platform::Microphone::Impl();
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
 }
 
 Platform::Microphone::~Microphone()
 {
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
+	if (impl)
+	{
+		delete impl;
+		impl = nullptr;
+	}
+	// !!!!!!!!! DON't DO ANYTHING HERE, ¡ıº“√»
 }
 
 bool Platform::Microphone::Initiate()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
-	// deviceHandle = Create Microphone Device Here
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// init Win32 Microphone related data here
 	return true;
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
@@ -253,7 +326,11 @@ bool Platform::Microphone::Initiate()
 
 bool Platform::Microphone::PreUpdate()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// update microphone, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -271,7 +348,11 @@ bool Platform::Microphone::PreUpdate()
 
 bool Platform::Microphone::PostUpdate()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// update microphone, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -289,7 +370,11 @@ bool Platform::Microphone::PostUpdate()
 
 bool Platform::Microphone::Pause()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// system pause, do something for microphone, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -307,7 +392,11 @@ bool Platform::Microphone::Pause()
 
 void Platform::Microphone::Resume()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// system pause, do something for microphone, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -324,8 +413,11 @@ void Platform::Microphone::Resume()
 
 void Platform::Microphone::Terminate()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
-	// deviceHandle = Destroy Microphone Device Here
+	// !!!!!!!!! TODO, ¡ıº“√»
+	// delete Win32 Microphone related data here
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -342,7 +434,10 @@ void Platform::Microphone::Terminate()
 
 void Platform::Microphone::GetData()
 {
+	Assert(impl);
+
 #if (PLATFORM == GLFW)
+	// !!!!!!!!! TODO, ¡ıº“√»
 	// Get Microphone data from deviceHandle here
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
@@ -357,7 +452,6 @@ void Platform::Microphone::GetData()
 #pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
 #endif
 }
-
 
 //////////////////////////////////////////////////////
 #if (PLATFORM == GLFW)

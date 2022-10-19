@@ -275,6 +275,7 @@ protected:
 private:
 };
 
+// !!!!!!!!! NEED CHECK all TextureCubemap method, ¡ıº“√» 
 class TextureCubemap : public Texture
 {
 public:

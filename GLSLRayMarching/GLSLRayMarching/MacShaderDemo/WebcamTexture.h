@@ -34,7 +34,7 @@ public:
 
 	virtual void Tick() override
 	{
-		// Platform::GetWebcam().GetData();
+		// Platform::GetWebcam().GetData();   // !!!!!!!!! TODO, ¡ıº“√» 
 	}
 private:
 private:

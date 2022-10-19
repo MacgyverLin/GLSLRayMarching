@@ -422,7 +422,6 @@ public:
 
 				pass.SetChannelBuffer(j, fb);
 			}
-
 			else if (channel.IsTexture2d())
 			{
 				std::string url = channel.texture2d;
