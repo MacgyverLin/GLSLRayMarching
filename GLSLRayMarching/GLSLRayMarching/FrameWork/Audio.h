@@ -89,12 +89,30 @@ public:
 	class StreamSourceComponent : public SourceComponent
 	{
 		friend class Audio;
+
+		class DataBuffer
+		{
+		public:
+			DataBuffer()
+			{
+			}
+
+			void Fill(void* data, unsigned int dataLength)
+			{
+				buffer.resize(dataLength);
+
+				::MemCpy(&buffer[0], data, dataLength);
+			}
+
+			std::vector<char> buffer;
+		};
 	public:
 		StreamSourceComponent(GameObject& gameObject_);
 
 		virtual ~StreamSourceComponent();
 
-		void FillSineWaveBuffer(std::vector<char>& data, float frequency, float volume);
+		static void GetEmptyData(std::vector<char>& data);
+		static void GetSineWaveData(std::vector<char>& data, float frequency, float volume);
 
 		void FillData(void* data, unsigned int dataLength);
 	private:
@@ -121,7 +139,11 @@ public:
 		virtual bool OnSourcePause() override;
 
 		virtual bool OnSourceRewind() override;
-	private:	
+	private:
+		int WP;
+		int RP;
+		std::vector<DataBuffer> dataBuffers;
+
 		std::vector<unsigned int> buffers;
 	};
 

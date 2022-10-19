@@ -13,25 +13,9 @@
           "buffer": "buffera",
           "filter": "linear",
           "wrap": "clamp"
-        },
-        {
-          "cubemapbuffer": "cubemapbuffera",
-          "filter": "linear",
-          "wrap": "clamp"
         }
       ],
       "rendertarget": "buffera"
-    },
-    {
-      "shader": "image.glsl",
-      "channels": [
-        {
-          "buffer": "buffera",
-          "filter": "linear",
-          "wrap": "clamp"
-        }
-      ],
-      "rendertarget": "cubemapbuffera"
     },
     {
       "shader": "image.glsl",

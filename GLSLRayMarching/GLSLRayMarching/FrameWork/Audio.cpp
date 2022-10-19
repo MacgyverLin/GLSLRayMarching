@@ -415,6 +415,8 @@ void Audio::SourceComponent::OnRender()
 /////////////////////////////////////////////////////////////////////
 Audio::StreamSourceComponent::StreamSourceComponent(GameObject& gameObject_)
 	: Audio::SourceComponent(gameObject_)
+	, WP(0)
+	, RP(0)
 {
 }
 
@@ -422,11 +424,15 @@ Audio::StreamSourceComponent::~StreamSourceComponent()
 {
 }
 
-void Audio::StreamSourceComponent::FillData(void* data, unsigned int dataLength)
+void Audio::StreamSourceComponent::GetEmptyData(std::vector<char>& data)
 {
+	int dataLength = Audio::Manager::GetInstance().GetBytesPerBuffer();
+	data.resize(dataLength);
+
+	::MemSet(&data[0], 0, dataLength);
 }
 
-void Audio::StreamSourceComponent::FillSineWaveBuffer(std::vector<char>& data, float frequency, float volume)
+void Audio::StreamSourceComponent::GetSineWaveData(std::vector<char>& data, float frequency, float volume)
 {
 	int dataLength = Audio::Manager::GetInstance().GetBytesPerBuffer();
 	data.resize(dataLength);
@@ -464,6 +470,15 @@ void Audio::StreamSourceComponent::FillSineWaveBuffer(std::vector<char>& data, f
 	}
 }
 
+void Audio::StreamSourceComponent::FillData(void* data, unsigned int dataLength)
+{
+	// data overrun , discard
+	if ((WP + 1) % dataBuffers.size() == RP)
+		return;
+
+	dataBuffers[WP].Fill(data, dataLength);
+	WP = (WP + 1) % dataBuffers.size();
+}
 
 bool Audio::StreamSourceComponent::OnInitiate()
 {
@@ -472,6 +487,7 @@ bool Audio::StreamSourceComponent::OnInitiate()
 	if (!Audio::SourceComponent::OnInitiate())
 		return false;
 
+	dataBuffers.resize(Audio::Manager::GetInstance().GetSourceBufferCount());
 	buffers.resize(Audio::Manager::GetInstance().GetSourceBufferCount());
 	alGenBuffers(buffers.size(), &buffers[0]);
 	if (alGetError() != AL_NO_ERROR)
@@ -612,34 +628,32 @@ void Audio::StreamSourceComponent::OnRender()
 			alGetSourceiv(impl->source, AL_BUFFERS_QUEUED, &queued);
 			::Debug("Queued %d\n", queued);
 
-			if (haveNewBuffer)
+			std::vector<char>& buffer = dataBuffers[RP].buffer;
+			if (RP != WP)
 			{
-				std::vector<char> data;
-
-				FillSineWaveBuffer(data, 2000.0f, 0.7f);
-
-				alBufferData
-				(
-					bufferID, 
-					Audio::Manager::GetInstance().GetFormat(),
-					&data[0], data.size(), 
-					Audio::Manager::GetInstance().GetSamplingRate()
-				);
-				if ((error = alGetError()) != AL_NO_ERROR)
-					::Error("alBufferData :  %d", error);
-				
-				// Queue buffer
-				alSourceQueueBuffers(impl->source, 1, &bufferID);
-				if ((error = alGetError()) != AL_NO_ERROR)
-					::Error("alSourceQueueBuffers 1 :  %d", error);
-				
-				processed--;
+				buffer = dataBuffers[RP].buffer;
 			}
 			else
 			{
-				// fill empty buffer
-				processed--;
+				GetEmptyData(buffer);
 			}
+
+			alBufferData
+			(
+				bufferID,
+				Audio::Manager::GetInstance().GetFormat(),
+				&buffer[0], buffer.size(),
+				Audio::Manager::GetInstance().GetSamplingRate()
+			);
+			if ((error = alGetError()) != AL_NO_ERROR)
+				::Error("alBufferData :  %d", error);
+
+			// Queue buffer
+			alSourceQueueBuffers(impl->source, 1, &bufferID);
+			if ((error = alGetError()) != AL_NO_ERROR)
+				::Error("alSourceQueueBuffers 1 :  %d", error);
+
+			processed--;
 		}
 	}
 }
