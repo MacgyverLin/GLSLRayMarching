@@ -13,6 +13,17 @@
 #include <al.h>
 #include <alc.h>
 
+enum Contants
+{
+	AUDIO_BUFFER_FORMAT = AL_FORMAT_STEREO16,
+
+	AUDIO_CHANNEL_COUNT = 2,
+	AUDIO_SAMPLING_RATE = 44100,
+	AUDIO_BITS_PER_SAMPLE = 16,
+	AUDIO_BUFFER_COUNT = 32,
+	AUDIO_SAMPLES_PER_BUFFER = ((AUDIO_SAMPLING_RATE / AUDIO_BUFFER_COUNT))
+};
+
 /////////////////////////////////////////////////////////////////////
 class Audio::SourceComponent::Impl
 {
@@ -21,8 +32,8 @@ public:
 	{
 	}
 
-	ALuint outSource;
-	
+	ALuint source;
+
 	float gain;
 	float minGain;
 	float maxGain;
@@ -39,6 +50,8 @@ public:
 	float coneOuterGain;
 	float pitch;
 	bool looping;
+
+	int state;
 };
 
 Audio::SourceComponent::SourceComponent(GameObject& gameObject_)
@@ -82,7 +95,7 @@ void Audio::SourceComponent::SetMaxDistance(float maxDistance, float referenceDi
 
 	impl->maxDistance = maxDistance;
 
-	if(referenceDistance<0)
+	if (referenceDistance < 0)
 		impl->referenceDistance = maxDistance * 0.8f;
 	else
 		impl->referenceDistance = referenceDistance;
@@ -110,6 +123,27 @@ void Audio::SourceComponent::SetLooping(bool looping)
 	Assert(impl);
 
 	impl->pitch = looping;
+}
+
+bool Audio::SourceComponent::IsPlaying() const
+{
+	Assert(impl);
+
+	return impl->state == AL_PLAYING;
+}
+
+bool Audio::SourceComponent::IsStopped() const
+{
+	Assert(impl);
+
+	return impl->state == AL_STOPPED;
+}
+
+bool Audio::SourceComponent::IsPaused() const
+{
+	Assert(impl);
+
+	return impl->state == AL_PAUSED;
 }
 
 float Audio::SourceComponent::GetGain() const
@@ -207,7 +241,7 @@ bool Audio::SourceComponent::OnInitiate()
 {
 	Assert(impl);
 
-	alGenSources(1, &impl->outSource);
+	alGenSources(1, &impl->source);
 
 	impl->gain = 1.0f;
 	impl->minGain = 0.0f;
@@ -225,22 +259,24 @@ bool Audio::SourceComponent::OnInitiate()
 	impl->coneOuterGain = 0.2f;
 	impl->pitch = 1.0f;
 	impl->looping = false;
-	
-	alSourcef(impl->outSource, AL_GAIN                 , impl->gain);
-	alSourcef(impl->outSource, AL_MIN_GAIN             , impl->minGain);
-	alSourcef(impl->outSource, AL_MAX_GAIN             , impl->maxGain);
-	alSourcefv(impl->outSource, AL_POSITION            , impl->position);
-	alSourcefv(impl->outSource, AL_VELOCITY            , impl->velocity);
-	alSourcefv(impl->outSource, AL_DIRECTION           , impl->direction);
-	alSourcei(impl->outSource, AL_SOURCE_RELATIVE      , impl->headRelative);
-	alSourcef(impl->outSource, AL_REFERENCE_DISTANCE   , impl->referenceDistance);
-	alSourcef(impl->outSource, AL_MAX_DISTANCE         , impl->maxDistance);
-	alSourcef(impl->outSource, AL_CONE_INNER_ANGLE     , impl->coneInnerAngle);
-	alSourcef(impl->outSource, AL_CONE_OUTER_ANGLE     , impl->coneOuterGain);
-	alSourcef(impl->outSource, AL_ROLLOFF_FACTOR	   , impl->coneRollOffFactor);
-	alSourcef(impl->outSource, AL_CONE_OUTER_GAIN      , impl->coneOuterGain);
-	alSourcef(impl->outSource, AL_PITCH                , impl->pitch);
-	alSourcei(impl->outSource, AL_LOOPING              , impl->looping);
+
+	impl->state = AL_INITIAL;
+
+	alSourcef(impl->source, AL_GAIN, impl->gain);
+	// alSourcef(impl->source, AL_MIN_GAIN, impl->minGain);
+	// alSourcef(impl->source, AL_MAX_GAIN, impl->maxGain);
+	// alSourcefv(impl->source, AL_POSITION, impl->position);
+	// alSourcefv(impl->source, AL_VELOCITY, impl->velocity);
+	// alSourcefv(impl->source, AL_DIRECTION, impl->direction);
+	// alSourcei(impl->source, AL_SOURCE_RELATIVE, impl->headRelative);
+	// alSourcef(impl->source, AL_REFERENCE_DISTANCE, impl->referenceDistance);
+	// alSourcef(impl->source, AL_MAX_DISTANCE, impl->maxDistance);
+	// alSourcef(impl->source, AL_CONE_INNER_ANGLE, impl->coneInnerAngle);
+	// alSourcef(impl->source, AL_CONE_OUTER_ANGLE, impl->coneOuterGain);
+	// alSourcef(impl->source, AL_ROLLOFF_FACTOR, impl->coneRollOffFactor);
+	// alSourcef(impl->source, AL_CONE_OUTER_GAIN, impl->coneOuterGain);
+	alSourcef(impl->source, AL_PITCH, impl->pitch);
+	alSourcei(impl->source, AL_LOOPING, impl->looping);
 
 	return true;
 }
@@ -255,6 +291,74 @@ bool Audio::SourceComponent::OnStart()
 bool Audio::SourceComponent::OnUpdate()
 {
 	Assert(impl);
+
+	return true;
+}
+
+bool Audio::SourceComponent::Play()
+{
+	Assert(impl);
+
+	OnSourcePlay();
+
+	alSourcePlay(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_PLAYING)
+		return false;
+
+	return true;
+}
+
+bool Audio::SourceComponent::Stop()
+{
+	Assert(impl);
+
+	if (!OnSourceStop())
+		return false;
+
+	alSourceStop(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_STOPPED)
+		return false;
+
+	return true;
+}
+
+bool Audio::SourceComponent::Pause()
+{
+	Assert(impl);
+
+	if (!OnSourcePause())
+		return false;
+
+	alSourcePause(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_PAUSED)
+		return false;
+
+	return true;
+}
+
+bool Audio::SourceComponent::Rewind()
+{
+	Assert(impl);
+
+	alSourceRewind(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_PLAYING)
+		return false;
 
 	return true;
 }
@@ -282,9 +386,9 @@ void Audio::SourceComponent::OnTerminate()
 
 	if (impl)
 	{
-		alDeleteSources(1, &impl->outSource);
+		alDeleteSources(1, &impl->source);
 
-		impl->outSource = 0;
+		impl->source = 0;
 	}
 }
 
@@ -297,21 +401,21 @@ void Audio::SourceComponent::OnRender()
 	impl->position = GetGameObject().GetGlobalPosition();
 	impl->direction = -GetGameObject().GetGlobalZAxis();
 
-	alSourcef(impl->outSource, AL_GAIN, impl->gain);
-	alSourcef(impl->outSource, AL_MIN_GAIN, impl->minGain);
-	alSourcef(impl->outSource, AL_MAX_GAIN, impl->maxGain);
-	alSourcefv(impl->outSource, AL_POSITION, impl->position);
-	alSourcefv(impl->outSource, AL_VELOCITY, impl->velocity);
-	alSourcefv(impl->outSource, AL_DIRECTION, impl->direction);
-	alSourcei(impl->outSource, AL_SOURCE_RELATIVE, impl->headRelative);
-	alSourcef(impl->outSource, AL_REFERENCE_DISTANCE, impl->referenceDistance);
-	alSourcef(impl->outSource, AL_MAX_DISTANCE, impl->maxDistance);
-	alSourcef(impl->outSource, AL_CONE_INNER_ANGLE, impl->coneInnerAngle);
-	alSourcef(impl->outSource, AL_CONE_OUTER_ANGLE, impl->coneOuterGain);
-	alSourcef(impl->outSource, AL_ROLLOFF_FACTOR, impl->coneRollOffFactor);
-	alSourcef(impl->outSource, AL_CONE_OUTER_GAIN, impl->coneOuterGain);
-	alSourcef(impl->outSource, AL_PITCH, impl->pitch);
-	alSourcei(impl->outSource, AL_LOOPING, impl->looping);
+	alSourcef(impl->source, AL_GAIN, impl->gain);
+	// alSourcef(impl->source, AL_MIN_GAIN, impl->minGain);
+	// alSourcef(impl->source, AL_MAX_GAIN, impl->maxGain);
+	// alSourcefv(impl->source, AL_POSITION, impl->position);
+	// alSourcefv(impl->source, AL_VELOCITY, impl->velocity);
+	// alSourcefv(impl->source, AL_DIRECTION, impl->direction);
+	// alSourcei(impl->source, AL_SOURCE_RELATIVE, impl->headRelative);
+	// alSourcef(impl->source, AL_REFERENCE_DISTANCE, impl->referenceDistance);
+	// alSourcef(impl->source, AL_MAX_DISTANCE, impl->maxDistance);
+	// alSourcef(impl->source, AL_CONE_INNER_ANGLE, impl->coneInnerAngle);
+	// alSourcef(impl->source, AL_CONE_OUTER_ANGLE, impl->coneOuterGain);
+	// alSourcef(impl->source, AL_ROLLOFF_FACTOR, impl->coneRollOffFactor);
+	// alSourcef(impl->source, AL_CONE_OUTER_GAIN, impl->coneOuterGain);
+	alSourcef(impl->source, AL_PITCH, impl->pitch);
+	alSourcei(impl->source, AL_LOOPING, impl->looping);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -327,6 +431,22 @@ Audio::StreamSourceComponent::~StreamSourceComponent()
 bool Audio::StreamSourceComponent::OnInitiate()
 {
 	Assert(impl);
+
+	buffers.resize(AUDIO_BUFFER_COUNT);
+	alGenBuffers(AUDIO_BUFFER_COUNT, &buffers[0]);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	// clear buffer
+	// for 16 bit stereo
+	int dataLength = AUDIO_SAMPLES_PER_BUFFER * AUDIO_CHANNEL_COUNT * (AUDIO_BITS_PER_SAMPLE / 16);
+	std::vector<char> data(dataLength);
+	for (int i = 0; i < buffers.size(); i++)
+	{
+		alBufferData(buffers[i], AUDIO_BUFFER_FORMAT, &data[0], data.size(), AUDIO_SAMPLING_RATE);
+		if (alGetError() != AL_NO_ERROR)
+			return false;
+	}
 
 	return Audio::SourceComponent::OnInitiate();
 }
@@ -370,12 +490,153 @@ void Audio::StreamSourceComponent::OnTerminate()
 {
 	Assert(impl);
 
+	alDeleteBuffers(AUDIO_BUFFER_COUNT, &buffers[0]);
+	Assert(alGetError() != AL_NO_ERROR);
+
 	Audio::SourceComponent::OnTerminate();
 }
 
 void Audio::StreamSourceComponent::OnRender()
 {
+	if (!IsPlaying())
+		return;
+
+	// force no looping;
+	SetLooping(false);
+
+	float dt = Platform::GetDeltaTime();
+	bool haveNewBuffer = true;
+
+	ALint error;
+
+	// Get status
+	ALint processed = 0;
+	ALint queued = 0;
+
+	if ((error = alGetError()) != AL_NO_ERROR)
+	{
+		::Error("alSourceUnqueueBuffers 1 : %d", error);
+	}
+
+	alGetSourceiv(impl->source, AL_BUFFERS_PROCESSED, &processed);
+	if ((error = alGetError()) != AL_NO_ERROR)
+	{
+		::Error("alSourceUnqueueBuffers 1 : %d", error);
+	}
+
+	alGetSourceiv(impl->source, AL_BUFFERS_QUEUED, &queued);
+	if ((error = alGetError()) != AL_NO_ERROR)
+	{
+		::Error("alSourceUnqueueBuffers 1 : %d", error);
+	}
+	::Debug("Queued %d, Processed %d\n", queued, processed);
+
+	// If some buffers have been played, unqueue them
+	// then load new audio into them, then add them to the queue
+	if (processed > 0)
+	{
+		// Pseudo code for Streaming with Open AL
+		// while (processed)
+		//		Unqueue a buffer
+		//		Load audio data into buffer (returned by UnQueueBuffers)
+		//		if successful
+		//			Queue buffer
+		//			processed--
+		//		else
+		//			buffersinqueue--
+		//			if buffersinqueue == 0
+		//				finished playing !
+		while (processed !=0)
+		{
+			ALuint bufferID;
+			alSourceUnqueueBuffers(impl->source, 1, &bufferID);
+			if ((error = alGetError()) != AL_NO_ERROR)
+			{
+				::Error("alSourceUnqueueBuffers 1 : %d", error);
+			}
+			
+			ALint queued = 0;
+			alGetSourceiv(impl->source, AL_BUFFERS_QUEUED, &queued);
+			::Debug("Queued %d\n", queued);
+
+			if (haveNewBuffer)
+			{
+				// Load data to buffer
+				/*
+				DataToRead = (DataSize > BSIZE) ? BSIZE : DataSize;
+				if (DataToRead == DataSize) bFinished = AL_TRUE;
+					fread(data, 1, DataToRead, fp);
+				DataSize -= DataToRead;
+				if (bFinished == AL_TRUE)
+				{
+					memset(data + DataToRead, 0, BSIZE - DataToRead);
+				}
+				*/
+
+				int dataLength = AUDIO_SAMPLES_PER_BUFFER * AUDIO_CHANNEL_COUNT * (AUDIO_BITS_PER_SAMPLE / 16);
+				std::vector<char> data(dataLength);
+
+				// for 16 bit channel, stereo
+				short* l = (short*)(&data[0]);
+				short* r = (short*)(&data[1]);
+				for (int i = 0; i < AUDIO_SAMPLES_PER_BUFFER; i++)
+				{
+					float frequency = 1000.0f;
+					float phase = frequency * (((float)i) / AUDIO_SAMPLES_PER_BUFFER / AUDIO_BUFFER_COUNT) * Math::TwoPi;
+					*l = 32767 * Math::Cos(phase); l += 2;
+					*r = 32767 * Math::Cos(phase); r += 2;
+				}
+
+				alBufferData(bufferID, AUDIO_BUFFER_FORMAT, &data[0], data.size(), AUDIO_SAMPLING_RATE);
+				if ((error = alGetError()) != AL_NO_ERROR)
+					::Error("alBufferData :  %d", error);
+				
+				// Queue buffer
+				alSourceQueueBuffers(impl->source, 1, &bufferID);
+				if ((error = alGetError()) != AL_NO_ERROR)
+					::Error("alSourceQueueBuffers 1 :  %d", error);
+				
+				processed--;
+			}
+			else
+			{
+				// fill empty buffer
+				processed--;
+			}
+		}
+	}
+	
 	Audio::SourceComponent::OnRender();
+}
+
+bool Audio::StreamSourceComponent::OnSourcePlay()
+{
+	ALint error;
+
+	alSourcei(impl->source, AL_LOOPING, AL_FALSE);
+
+	// attach first set of buffers using queuing mechanism
+	alSourceQueueBuffers(impl->source, AUDIO_BUFFER_COUNT, &buffers[0]);
+	if ((error = alGetError()) != AL_NO_ERROR)
+		::Debug("alSourceQueueBuffers : %d", error);
+
+
+	return true;
+}
+
+bool Audio::StreamSourceComponent::OnSourceStop()
+{
+	return true;
+}
+
+bool Audio::StreamSourceComponent::OnSourcePause()
+{
+	return true;
+}
+
+bool Audio::StreamSourceComponent::OnSourceRewind()
+{
+	return true;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -530,19 +791,12 @@ public:
 	{
 	}
 
-	ALCcontext*			context;
-	ALCdevice*			device;
-
-	ALint				processedBuffer;
-	ALint				queuedBuffer;
-
-	std::vector<ALuint>	sndBuffers;
+	ALCcontext* context;
+	ALCdevice* device;
 
 	int					channels;
 	int					bitsPerSample;
 	int					sampleRate;
-
-	int					WP;
 
 	// alDopplerFactor(1.0f);
 	// alDopplerVelocity(343.3f);
@@ -571,11 +825,6 @@ Audio::Manager& Audio::Manager::GetInstance()
 	return instance;
 }
 
-#define CHANNELS 2
-#define BITS_PER_SAMPLE 16
-#define SAMPLE_RATE 44100
-#define BUFFER_COUNT 32
-
 bool Audio::Manager::Initialize()
 {
 	Assert(impl);
@@ -584,13 +833,9 @@ bool Audio::Manager::Initialize()
 
 	impl->context = 0;
 	impl->device = 0;
-	impl->processedBuffer = 0;
-	impl->queuedBuffer = 0;
-	impl->channels = CHANNELS;
-	impl->bitsPerSample = BITS_PER_SAMPLE;
-	impl->sampleRate = SAMPLE_RATE;
-
-	impl->WP = 0;
+	impl->channels = AUDIO_CHANNEL_COUNT;
+	impl->bitsPerSample = AUDIO_BITS_PER_SAMPLE;
+	impl->sampleRate = AUDIO_SAMPLING_RATE;
 
 	// device
 	impl->device = alcOpenDevice(NULL);
@@ -601,20 +846,13 @@ bool Audio::Manager::Initialize()
 	impl->context = alcCreateContext(impl->device, NULL);
 	alcMakeContextCurrent(impl->context);
 
-	// create 32 buffers
-	impl->sndBuffers.resize(BUFFER_COUNT);
-	alGenBuffers(impl->sndBuffers.size(), &impl->sndBuffers[0]);
-	error = alGetError();
-	if (error != AL_NO_ERROR)
-	{
-		//printf("error alGenBuffers %x \n", error);
-		return false;
-	}
-
-	alDopplerFactor(1.0f);
-	alDopplerVelocity(343.3f);
-	alSpeedOfSound(343.3);
-	alDistanceModel(AL_EXPONENT_DISTANCE_CLAMPED);
+	alSpeedOfSound(1.0);
+	alDopplerVelocity(1.0);
+	alDopplerFactor(1.0);
+	//alDopplerFactor(1.0f);
+	//alDopplerVelocity(1.0f);
+	//alSpeedOfSound(1.0f);
+	//alDistanceModel(AL_EXPONENT_DISTANCE_CLAMPED);
 
 	return true;
 }
@@ -655,23 +893,18 @@ void Audio::Manager::Terminate()
 	listeners.clear();
 	sources.clear();
 
-	if (impl->sndBuffers.size() != 0)
-	{
-		alDeleteBuffers(impl->sndBuffers.size(), &impl->sndBuffers[0]);
-	}
-
-	if (impl->device)
-	{
-		alcCloseDevice(impl->device);
-		impl->device = NULL;
-	}
-
 	if (impl->context)
 	{
 		alcMakeContextCurrent(NULL);
 
 		alcDestroyContext(impl->context);
 		impl->context = NULL;
+	}
+
+	if (impl->device)
+	{
+		alcCloseDevice(impl->device);
+		impl->device = NULL;
 	}
 }
 

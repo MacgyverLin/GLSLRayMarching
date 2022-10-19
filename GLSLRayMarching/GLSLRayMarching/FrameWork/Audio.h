@@ -22,8 +22,12 @@ public:
 		class Impl;
 	public:
 		SourceComponent(GameObject& gameObject_);
-
 		virtual ~SourceComponent();
+
+		bool Play();
+		bool Stop();
+		bool Pause();
+		bool Rewind();
 
 		void SetGain(float gain, float minGain = 0.0f, float maxGain = 1.0f);
 		void SetHeadRelativeMode(bool mode);
@@ -33,6 +37,10 @@ public:
 
 		void SetPitch(float pitch);
 		void SetLooping(bool loop);
+
+		bool IsPlaying() const;
+		bool IsStopped() const;
+		bool IsPaused() const;
 
 		float GetGain() const;
 		float GetMinGain() const;
@@ -48,7 +56,7 @@ public:
 
 		float GetPitch() const;
 		bool GetLooping() const;
-	private:
+	private:	
 		void Render();
 
 		virtual bool OnInitiate() override;
@@ -66,7 +74,15 @@ public:
 		virtual void OnTerminate() override;
 
 		virtual void OnRender();
-	private:
+
+		virtual bool OnSourcePlay() = 0;
+
+		virtual bool OnSourceStop() = 0;
+		
+		virtual bool OnSourcePause() = 0;
+		
+		virtual bool OnSourceRewind() = 0;
+	protected:
 		Impl* impl;
 	};
 
@@ -93,6 +109,16 @@ public:
 		virtual void OnTerminate() override;
 
 		virtual void OnRender() override;
+
+		virtual bool OnSourcePlay() override;
+
+		virtual bool OnSourceStop() override;
+
+		virtual bool OnSourcePause() override;
+
+		virtual bool OnSourceRewind() override;
+	protected:
+		std::vector<unsigned int> buffers;
 	};
 
 	class ListenerComponent : public Component
