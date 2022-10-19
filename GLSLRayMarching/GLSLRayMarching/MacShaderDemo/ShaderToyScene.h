@@ -14,7 +14,7 @@
 #include "GameObject.h"
 #include "ShaderToyCamera.h"
 #include "ShaderToyComponent.h"
-
+#include "Audio.h"
 class ShaderToyScene : public Scene
 {
 public:
@@ -40,6 +40,8 @@ private:
 	GameObject gameObject;
 	ShaderToyCamera shaderToyCamera;
 	ShaderToyComponent shaderToyComponent;
+	Audio::ListenerComponent listenerComponent;
+	Audio::StreamSourceComponent streamSourceComponent;
 };
 
 #endif

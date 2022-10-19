@@ -18,10 +18,6 @@
 #define AUDIO_SAMPLING_RATE 44100
 #define AUDIO_BITS_PER_SAMPLE 16
 
-#define AUDIO_BUFFER_FORMAT AL_FORMAT_STEREO16
-#define AUDIO_SAMPLES_PER_BUFFER ((AUDIO_SAMPLING_RATE / AUDIO_SOURCE_BUFFER_COUNT))
-
-
 /////////////////////////////////////////////////////////////////////
 class Audio::SourceComponent::Impl
 {
@@ -426,6 +422,49 @@ Audio::StreamSourceComponent::~StreamSourceComponent()
 {
 }
 
+void Audio::StreamSourceComponent::FillData(void* data, unsigned int dataLength)
+{
+}
+
+void Audio::StreamSourceComponent::FillSineWaveBuffer(std::vector<char>& data, float frequency, float volume)
+{
+	int dataLength = Audio::Manager::GetInstance().GetBytesPerBuffer();
+	data.resize(dataLength);
+
+#define FILL_BUFFER(dat, type, max, stereo, freq) \
+	type* l = (type*)(&dat[0]);\
+	type* r = l + 1; \
+	for (int i = 0; i < Audio::Manager::GetInstance().GetSamplesPerBuffer(); i++) \
+	{ \
+		float phase = freq *  \
+			(((float)i) / (Audio::Manager::GetInstance().GetSamplesPerBuffer() * \
+				Audio::Manager::GetInstance().GetSourceBufferCount())) * Math::TwoPi; \
+		*l = (max / 2) * Math::Cos(phase) + (max / 2); l += (stereo ? 2 : 1); \
+		if (stereo) \
+		{ \
+			*r = (max / 2) * Math::Cos(phase) + (max / 2); r += (stereo ? 2 : 1);  \
+		} \
+	}
+
+	if (Audio::Manager::GetInstance().GetFormat() == AL_FORMAT_STEREO16)
+	{
+		FILL_BUFFER(data, short, 32767 * volume, true, frequency);
+	}
+	else if (Audio::Manager::GetInstance().GetFormat() == AL_FORMAT_MONO16)
+	{
+		FILL_BUFFER(data, short, 32767 * volume, false, frequency);
+	}
+	else if (Audio::Manager::GetInstance().GetFormat() == AL_FORMAT_STEREO8)
+	{
+		FILL_BUFFER(data, char, 127 * volume, true, frequency);
+	}
+	else if (Audio::Manager::GetInstance().GetFormat() == AL_FORMAT_MONO8)
+	{
+		FILL_BUFFER(data, char, 127 * volume, false, frequency);
+	}
+}
+
+
 bool Audio::StreamSourceComponent::OnInitiate()
 {
 	Assert(impl);
@@ -575,22 +614,9 @@ void Audio::StreamSourceComponent::OnRender()
 
 			if (haveNewBuffer)
 			{
+				std::vector<char> data;
 
-				int dataLength = Audio::Manager::GetInstance().GetBytesPerBuffer();
-				std::vector<char> data(dataLength);
-
-				// for 16 bit channel, stereo
-				short* l = (short*)(&data[0]);
-				short* r = (short*)(&data[2]);
-				for (int i = 0; i < Audio::Manager::GetInstance().GetSamplesPerBuffer(); i++)
-				{
-					float frequency = 1000.0f;
-					float phase = frequency *
-						(((float)i) / (Audio::Manager::GetInstance().GetSamplesPerBuffer() * 
-							Audio::Manager::GetInstance().GetSourceBufferCount())) * Math::TwoPi;
-					*l = 32767 * Math::Cos(phase); l += 2;
-					*r = 32767 * Math::Cos(phase); r += 2;
-				}
+				FillSineWaveBuffer(data, 2000.0f, 0.7f);
 
 				alBufferData
 				(
@@ -616,8 +642,6 @@ void Audio::StreamSourceComponent::OnRender()
 			}
 		}
 	}
-	
-
 }
 
 bool Audio::StreamSourceComponent::OnSourcePlay()
@@ -914,14 +938,14 @@ int Audio::Manager::GetSamplesPerBuffer() const
 {
 	Assert(impl);
 
-	return impl->samplingRate / impl->sourceBufferCount;
+	return GetSamplingRate() / GetSourceBufferCount();
 }
 
 int Audio::Manager::GetBytesPerBuffer() const
 {
 	Assert(impl);
 
-	return GetSamplesPerBuffer() * impl->chanelCounts * (impl->bitsPerSample / 8);
+	return GetSamplesPerBuffer() * GetChannelCount() * (GetBitsPerSample() / 8);
 }
 
 bool Audio::Manager::Initialize()

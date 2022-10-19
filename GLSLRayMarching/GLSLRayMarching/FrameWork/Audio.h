@@ -93,6 +93,10 @@ public:
 		StreamSourceComponent(GameObject& gameObject_);
 
 		virtual ~StreamSourceComponent();
+
+		void FillSineWaveBuffer(std::vector<char>& data, float frequency, float volume);
+
+		void FillData(void* data, unsigned int dataLength);
 	private:
 		virtual bool OnInitiate() override;
 
@@ -117,7 +121,7 @@ public:
 		virtual bool OnSourcePause() override;
 
 		virtual bool OnSourceRewind() override;
-	protected:
+	private:	
 		std::vector<unsigned int> buffers;
 	};
 
