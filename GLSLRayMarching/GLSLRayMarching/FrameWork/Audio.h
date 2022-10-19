@@ -166,6 +166,14 @@ public:
 	public:
 		static Audio::Manager& GetInstance();
 
+		int GetSourceBufferCount() const;
+		int GetChannelCount() const;
+		int GetSamplingRate() const;
+		int GetBitsPerSample() const;
+		int GetFormat() const;
+		int GetSamplesPerBuffer() const;
+		int GetBytesPerBuffer() const;
+
 		bool Initialize();
 		bool Update();
 		bool Pause();

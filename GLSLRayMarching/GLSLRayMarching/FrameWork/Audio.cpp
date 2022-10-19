@@ -13,16 +13,14 @@
 #include <al.h>
 #include <alc.h>
 
-enum Contants
-{
-	AUDIO_BUFFER_FORMAT = AL_FORMAT_STEREO16,
+#define AUDIO_SOURCE_BUFFER_COUNT 4
+#define AUDIO_CHANNEL_COUNT 2
+#define AUDIO_SAMPLING_RATE 44100
+#define AUDIO_BITS_PER_SAMPLE 16
 
-	AUDIO_CHANNEL_COUNT = 2,
-	AUDIO_SAMPLING_RATE = 44100,
-	AUDIO_BITS_PER_SAMPLE = 16,
-	AUDIO_BUFFER_COUNT = 32,
-	AUDIO_SAMPLES_PER_BUFFER = ((AUDIO_SAMPLING_RATE / AUDIO_BUFFER_COUNT))
-};
+#define AUDIO_BUFFER_FORMAT AL_FORMAT_STEREO16
+#define AUDIO_SAMPLES_PER_BUFFER ((AUDIO_SAMPLING_RATE / AUDIO_SOURCE_BUFFER_COUNT))
+
 
 /////////////////////////////////////////////////////////////////////
 class Audio::SourceComponent::Impl
@@ -71,6 +69,74 @@ Audio::SourceComponent::~SourceComponent()
 		delete impl;
 		impl = nullptr;
 	}
+}
+
+bool Audio::SourceComponent::Play()
+{
+	Assert(impl);
+
+	OnSourcePlay();
+
+	alSourcePlay(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_PLAYING)
+		return false;
+
+	return true;
+}
+
+bool Audio::SourceComponent::Stop()
+{
+	Assert(impl);
+
+	if (!OnSourceStop())
+		return false;
+
+	alSourceStop(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_STOPPED)
+		return false;
+
+	return true;
+}
+
+bool Audio::SourceComponent::Pause()
+{
+	Assert(impl);
+
+	if (!OnSourcePause())
+		return false;
+
+	alSourcePause(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_PAUSED)
+		return false;
+
+	return true;
+}
+
+bool Audio::SourceComponent::Rewind()
+{
+	Assert(impl);
+
+	alSourceRewind(impl->source);
+	if (alGetError() != AL_NO_ERROR)
+		return false;
+
+	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
+	if (impl->state != AL_PLAYING)
+		return false;
+
+	return true;
 }
 
 void Audio::SourceComponent::SetGain(float gain, float minGain, float maxGain)
@@ -122,7 +188,7 @@ void Audio::SourceComponent::SetLooping(bool looping)
 {
 	Assert(impl);
 
-	impl->pitch = looping;
+	impl->looping = looping;
 }
 
 bool Audio::SourceComponent::IsPlaying() const
@@ -295,74 +361,6 @@ bool Audio::SourceComponent::OnUpdate()
 	return true;
 }
 
-bool Audio::SourceComponent::Play()
-{
-	Assert(impl);
-
-	OnSourcePlay();
-
-	alSourcePlay(impl->source);
-	if (alGetError() != AL_NO_ERROR)
-		return false;
-
-	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
-	if (impl->state != AL_PLAYING)
-		return false;
-
-	return true;
-}
-
-bool Audio::SourceComponent::Stop()
-{
-	Assert(impl);
-
-	if (!OnSourceStop())
-		return false;
-
-	alSourceStop(impl->source);
-	if (alGetError() != AL_NO_ERROR)
-		return false;
-
-	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
-	if (impl->state != AL_STOPPED)
-		return false;
-
-	return true;
-}
-
-bool Audio::SourceComponent::Pause()
-{
-	Assert(impl);
-
-	if (!OnSourcePause())
-		return false;
-
-	alSourcePause(impl->source);
-	if (alGetError() != AL_NO_ERROR)
-		return false;
-
-	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
-	if (impl->state != AL_PAUSED)
-		return false;
-
-	return true;
-}
-
-bool Audio::SourceComponent::Rewind()
-{
-	Assert(impl);
-
-	alSourceRewind(impl->source);
-	if (alGetError() != AL_NO_ERROR)
-		return false;
-
-	alGetSourcei(impl->source, AL_SOURCE_STATE, &impl->state);
-	if (impl->state != AL_PLAYING)
-		return false;
-
-	return true;
-}
-
 bool Audio::SourceComponent::OnPause()
 {
 	Assert(impl);
@@ -432,23 +430,33 @@ bool Audio::StreamSourceComponent::OnInitiate()
 {
 	Assert(impl);
 
-	buffers.resize(AUDIO_BUFFER_COUNT);
-	alGenBuffers(AUDIO_BUFFER_COUNT, &buffers[0]);
+	if (!Audio::SourceComponent::OnInitiate())
+		return false;
+
+	buffers.resize(Audio::Manager::GetInstance().GetSourceBufferCount());
+	alGenBuffers(buffers.size(), &buffers[0]);
 	if (alGetError() != AL_NO_ERROR)
 		return false;
 
 	// clear buffer
 	// for 16 bit stereo
-	int dataLength = AUDIO_SAMPLES_PER_BUFFER * AUDIO_CHANNEL_COUNT * (AUDIO_BITS_PER_SAMPLE / 16);
+	int dataLength = Audio::Manager::GetInstance().GetBytesPerBuffer();
 	std::vector<char> data(dataLength);
 	for (int i = 0; i < buffers.size(); i++)
 	{
-		alBufferData(buffers[i], AUDIO_BUFFER_FORMAT, &data[0], data.size(), AUDIO_SAMPLING_RATE);
+		alBufferData
+		(
+			buffers[i], 
+			Audio::Manager::GetInstance().GetFormat(),
+			&data[0], 
+			data.size(), 
+			Audio::Manager::GetInstance().GetSamplingRate()
+		);
 		if (alGetError() != AL_NO_ERROR)
 			return false;
 	}
 
-	return Audio::SourceComponent::OnInitiate();
+	return true;
 }
 
 bool Audio::StreamSourceComponent::OnStart()
@@ -490,7 +498,11 @@ void Audio::StreamSourceComponent::OnTerminate()
 {
 	Assert(impl);
 
-	alDeleteBuffers(AUDIO_BUFFER_COUNT, &buffers[0]);
+	for (int i = 0; i < buffers.size(); i++)
+	{
+		if(buffers[i])
+			alDeleteBuffers(1, &buffers[i]);
+	}
 	Assert(alGetError() != AL_NO_ERROR);
 
 	Audio::SourceComponent::OnTerminate();
@@ -503,6 +515,8 @@ void Audio::StreamSourceComponent::OnRender()
 
 	// force no looping;
 	SetLooping(false);
+	Audio::SourceComponent::OnRender();
+
 
 	float dt = Platform::GetDeltaTime();
 	bool haveNewBuffer = true;
@@ -561,33 +575,30 @@ void Audio::StreamSourceComponent::OnRender()
 
 			if (haveNewBuffer)
 			{
-				// Load data to buffer
-				/*
-				DataToRead = (DataSize > BSIZE) ? BSIZE : DataSize;
-				if (DataToRead == DataSize) bFinished = AL_TRUE;
-					fread(data, 1, DataToRead, fp);
-				DataSize -= DataToRead;
-				if (bFinished == AL_TRUE)
-				{
-					memset(data + DataToRead, 0, BSIZE - DataToRead);
-				}
-				*/
 
-				int dataLength = AUDIO_SAMPLES_PER_BUFFER * AUDIO_CHANNEL_COUNT * (AUDIO_BITS_PER_SAMPLE / 16);
+				int dataLength = Audio::Manager::GetInstance().GetBytesPerBuffer();
 				std::vector<char> data(dataLength);
 
 				// for 16 bit channel, stereo
 				short* l = (short*)(&data[0]);
-				short* r = (short*)(&data[1]);
-				for (int i = 0; i < AUDIO_SAMPLES_PER_BUFFER; i++)
+				short* r = (short*)(&data[2]);
+				for (int i = 0; i < Audio::Manager::GetInstance().GetSamplesPerBuffer(); i++)
 				{
 					float frequency = 1000.0f;
-					float phase = frequency * (((float)i) / AUDIO_SAMPLES_PER_BUFFER / AUDIO_BUFFER_COUNT) * Math::TwoPi;
+					float phase = frequency *
+						(((float)i) / (Audio::Manager::GetInstance().GetSamplesPerBuffer() * 
+							Audio::Manager::GetInstance().GetSourceBufferCount())) * Math::TwoPi;
 					*l = 32767 * Math::Cos(phase); l += 2;
 					*r = 32767 * Math::Cos(phase); r += 2;
 				}
 
-				alBufferData(bufferID, AUDIO_BUFFER_FORMAT, &data[0], data.size(), AUDIO_SAMPLING_RATE);
+				alBufferData
+				(
+					bufferID, 
+					Audio::Manager::GetInstance().GetFormat(),
+					&data[0], data.size(), 
+					Audio::Manager::GetInstance().GetSamplingRate()
+				);
 				if ((error = alGetError()) != AL_NO_ERROR)
 					::Error("alBufferData :  %d", error);
 				
@@ -606,7 +617,7 @@ void Audio::StreamSourceComponent::OnRender()
 		}
 	}
 	
-	Audio::SourceComponent::OnRender();
+
 }
 
 bool Audio::StreamSourceComponent::OnSourcePlay()
@@ -616,10 +627,12 @@ bool Audio::StreamSourceComponent::OnSourcePlay()
 	alSourcei(impl->source, AL_LOOPING, AL_FALSE);
 
 	// attach first set of buffers using queuing mechanism
-	alSourceQueueBuffers(impl->source, AUDIO_BUFFER_COUNT, &buffers[0]);
+	alSourceQueueBuffers(impl->source, Audio::Manager::GetInstance().GetSourceBufferCount(), &buffers[0]);
 	if ((error = alGetError()) != AL_NO_ERROR)
+	{
 		::Debug("alSourceQueueBuffers : %d", error);
-
+		return false;
+	}
 
 	return true;
 }
@@ -714,9 +727,9 @@ bool Audio::ListenerComponent::OnInitiate()
 		impl->upward[1],
 		impl->upward[2]
 	};
-	alListenerf(AL_GAIN, impl->gain);
-	alListenerfv(AL_POSITION, impl->position);
-	alListenerfv(AL_ORIENTATION, orientation);
+	//alListenerf(AL_GAIN, impl->gain);
+	//alListenerfv(AL_POSITION, impl->position);
+	//alListenerfv(AL_ORIENTATION, orientation);
 
 	return true;
 }
@@ -791,12 +804,13 @@ public:
 	{
 	}
 
-	ALCcontext* context;
-	ALCdevice* device;
+	ALCcontext*			context;
+	ALCdevice*			device;
 
-	int					channels;
+	int					sourceBufferCount;
+	int					chanelCounts;
+	int					samplingRate;
 	int					bitsPerSample;
-	int					sampleRate;
 
 	// alDopplerFactor(1.0f);
 	// alDopplerVelocity(343.3f);
@@ -825,17 +839,96 @@ Audio::Manager& Audio::Manager::GetInstance()
 	return instance;
 }
 
+int Audio::Manager::GetSourceBufferCount() const
+{
+	Assert(impl);
+
+	return impl->sourceBufferCount;
+}
+
+int Audio::Manager::GetChannelCount() const
+{
+	Assert(impl);
+
+	return impl->chanelCounts;
+}
+
+int Audio::Manager::GetSamplingRate() const
+{
+	Assert(impl);
+
+	return impl->samplingRate;
+}
+
+int Audio::Manager::GetBitsPerSample() const
+{
+	Assert(impl);
+
+	return impl->bitsPerSample;
+}
+
+int Audio::Manager::GetFormat() const
+{
+	Assert(impl);
+
+	if (impl->bitsPerSample == 8)
+	{
+		if (impl->chanelCounts == 1)
+		{
+			return AL_FORMAT_MONO8;
+		}
+		else if (impl->chanelCounts == 2)
+		{
+			return AL_FORMAT_STEREO8;
+		}
+		else
+		{
+			//printf("Error: Channel must be 1 or 2\n");
+			return 0;
+		}
+	}
+	else if (impl->bitsPerSample == 16)
+	{
+		if (impl->chanelCounts == 1)
+		{
+			return AL_FORMAT_MONO16;
+		}
+		else if (impl->chanelCounts == 2)
+		{
+			return AL_FORMAT_STEREO16;
+		}
+		else
+		{
+			//printf("Error: Channel must be 1 or 2\n");
+			return 0;
+		}
+	}
+	else
+	{
+		//printf("Error: bit per sample must be 8 or 16\n");
+		return 0;
+	}
+}
+
+int Audio::Manager::GetSamplesPerBuffer() const
+{
+	Assert(impl);
+
+	return impl->samplingRate / impl->sourceBufferCount;
+}
+
+int Audio::Manager::GetBytesPerBuffer() const
+{
+	Assert(impl);
+
+	return GetSamplesPerBuffer() * impl->chanelCounts * (impl->bitsPerSample / 8);
+}
+
 bool Audio::Manager::Initialize()
 {
 	Assert(impl);
 
 	ALuint error = 0;
-
-	impl->context = 0;
-	impl->device = 0;
-	impl->channels = AUDIO_CHANNEL_COUNT;
-	impl->bitsPerSample = AUDIO_BITS_PER_SAMPLE;
-	impl->sampleRate = AUDIO_SAMPLING_RATE;
 
 	// device
 	impl->device = alcOpenDevice(NULL);
@@ -844,7 +937,14 @@ bool Audio::Manager::Initialize()
 
 	// context
 	impl->context = alcCreateContext(impl->device, NULL);
+	if (!impl->context)
+		return false;
 	alcMakeContextCurrent(impl->context);
+
+	impl->sourceBufferCount = AUDIO_SOURCE_BUFFER_COUNT;
+	impl->chanelCounts = AUDIO_CHANNEL_COUNT;
+	impl->samplingRate = AUDIO_SAMPLING_RATE;
+	impl->bitsPerSample = AUDIO_BITS_PER_SAMPLE;	
 
 	alSpeedOfSound(1.0);
 	alDopplerVelocity(1.0);
