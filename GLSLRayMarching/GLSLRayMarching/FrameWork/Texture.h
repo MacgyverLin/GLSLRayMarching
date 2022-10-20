@@ -172,8 +172,6 @@ public:
 	Texture::MagFilter GetMagFilter() const;
 
 	virtual void GetResolution(unsigned int* w_ = nullptr, unsigned int* h_ = nullptr, unsigned int* d_ = nullptr) const = 0;
-
-	virtual void Tick() = 0;
 public:
 protected:
 	Texture::Format GetFormat(unsigned int nrComponents_, Texture::DynamicRange dynamicRange_) const;
@@ -200,10 +198,6 @@ public:
 
 	virtual void GetResolution(unsigned int* w_ = nullptr, unsigned int* h_ = nullptr, unsigned int* d_ = nullptr) const;
 	unsigned int GetWidth() const;
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -229,10 +223,6 @@ public:
 	virtual void GetResolution(unsigned int* w_ = nullptr, unsigned int* h_ = nullptr, unsigned int* d_ = nullptr) const;
 	unsigned int GetWidth() const;
 	unsigned int GetHeight() const;
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -260,10 +250,6 @@ public:
 	unsigned int GetWidth() const;
 	unsigned int GetHeight() const;
 	unsigned int GetDepth() const;
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -302,10 +288,6 @@ public:
 
 	void GetResolution(unsigned int* w_ = nullptr, unsigned int* h_ = nullptr, unsigned int* d_ = nullptr) const;
 	unsigned int GetSize() const;
-
-	virtual void Tick() override
-	{
-	}
 private:
 
 public:
@@ -332,10 +314,6 @@ public:
 	virtual void GetResolution(unsigned int* w_ = nullptr, unsigned int* h_ = nullptr, unsigned int* d_ = nullptr) const;
 	unsigned int GetWidth() const;
 	unsigned int GetLayerCount() const;
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -363,10 +341,6 @@ public:
 	unsigned int GetWidth() const;
 	unsigned int GetHeight() const;
 	unsigned int GetLayerCount() const;
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -405,10 +379,6 @@ public:
 	void GetResolution(unsigned int* w_ = nullptr, unsigned int* h_ = nullptr, unsigned int* d_ = nullptr) const;
 	unsigned int GetSize() const;
 	unsigned int GetLayerCount() const;
-
-	virtual void Tick() override
-	{
-	}
 private:
 
 public:
@@ -428,10 +398,6 @@ public:
 
 	bool Initiate(const std::string& path_);
 	void Terminate();
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -448,10 +414,6 @@ public:
 
 	bool Initiate(const std::string& path_, bool vflip_);
 	void Terminate();
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -468,10 +430,6 @@ public:
 
 	bool Initiate(const std::string& path_, bool vflip_);
 	void Terminate();
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 
@@ -488,10 +446,6 @@ public:
 
 	bool Initiate(const std::string& path_, bool vflip_);
 	void Terminate();
-
-	virtual void Tick() override
-	{
-	}
 protected:
 private:
 

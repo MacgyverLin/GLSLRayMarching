@@ -27,14 +27,12 @@ public:
 		return Texture2D::Initiate(1280, 720, 4, Texture::DynamicRange::LOW, &buffer[0]);
 	}
 
-	virtual void Update()
-	{
-		Texture2D::Update(&buffer[0]);
-	}
-
-	virtual void Tick() override
+	virtual void UpdateData()
 	{
 		// !!!!!!!!! TODO, ¡ıº“√» 
+		// FFMEG.GetData();
+
+		Texture2D::Update(&buffer[0]);
 	}
 private:
 private:

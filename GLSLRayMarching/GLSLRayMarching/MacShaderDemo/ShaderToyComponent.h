@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "Video.h"
 #include "ShaderToyRenderer.h"
+#include "Audio.h"
 
 class ShaderToyComponent : public Video::Graphics3Component
 {
@@ -31,6 +32,8 @@ public:
 	virtual void OnTerminate() override;
 private:
 	ShaderToyRenderer* shaderToyRenderer;
+	Audio::ListenerComponent listenerComponent;
+	Audio::StreamSourceComponent streamSourceComponent;
 };
 
 #endif
