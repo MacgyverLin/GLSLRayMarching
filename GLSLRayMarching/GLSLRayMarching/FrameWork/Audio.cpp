@@ -598,7 +598,7 @@ void Audio::StreamSourceComponent::OnRender()
 	{
 		::Error("alSourceUnqueueBuffers 1 : %d", error);
 	}
-	::Debug("Queued %d, Processed %d\n", queued, processed);
+	// ::Debug("Queued %d, Processed %d\n", queued, processed);
 
 	// If some buffers have been played, unqueue them
 	// then load new audio into them, then add them to the queue
@@ -626,7 +626,7 @@ void Audio::StreamSourceComponent::OnRender()
 			
 			ALint queued = 0;
 			alGetSourceiv(impl->source, AL_BUFFERS_QUEUED, &queued);
-			::Debug("Queued %d\n", queued);
+			//::Debug("Queued %d\n", queued);
 
 			std::vector<char>& buffer = dataBuffers[RP].buffer;
 			if (RP != WP)
