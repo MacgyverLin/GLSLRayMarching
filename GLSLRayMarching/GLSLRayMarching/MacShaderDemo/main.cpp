@@ -31,7 +31,7 @@ Service<Audio> AudioService("Audio");
 #include "GeometryTextureScene.h"
 #include "GeoMipmapTerrainScene.h"
 #include "GeoMorphTerrainScene.h"
-#include "LightFieldRendererScene.h"
+#include "LightFieldRendererScene.h" 
 #include "LightPropagationVolumesScene.h"
 
 Scene::Creator<DefaultScene> DefaultSceneCreator("Default");
