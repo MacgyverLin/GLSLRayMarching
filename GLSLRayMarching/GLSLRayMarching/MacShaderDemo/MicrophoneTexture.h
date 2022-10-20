@@ -27,15 +27,12 @@ public:
 		return Texture2D::Initiate(512, 2, 1, Texture::DynamicRange::LOW, &buffer[0]);
 	}
 
-	virtual void Update()
-	{
-		Texture2D::Update(&buffer[0]);
-	}
-
-	virtual void Tick() override
+	virtual void UpdateData()
 	{
 		// !!!!!!!!! TODO, ¡ıº“√» 
 		// Platform::GetMicroPhone().GetData();
+
+		Texture2D::Update(&buffer[0]);
 	}
 private:
 private:

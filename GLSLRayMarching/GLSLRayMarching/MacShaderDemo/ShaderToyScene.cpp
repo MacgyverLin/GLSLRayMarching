@@ -12,8 +12,6 @@
 ShaderToyScene::ShaderToyScene()
 : shaderToyCamera(gameObject)
 , shaderToyComponent(gameObject)
-, listenerComponent(gameObject)
-, streamSourceComponent(gameObject)
 {
 }
 
@@ -28,17 +26,11 @@ bool ShaderToyScene::OnInitiate()
 
 bool ShaderToyScene::OnStart()
 {
-	streamSourceComponent.Play();
-
 	return true;
 }
 
 bool ShaderToyScene::OnUpdate()
 {
-	std::vector<char> data;
-	// streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
-	streamSourceComponent.GetEmptyData(data);
-	streamSourceComponent.FillData(&data[0], data.size());
 	return true;
 }
 

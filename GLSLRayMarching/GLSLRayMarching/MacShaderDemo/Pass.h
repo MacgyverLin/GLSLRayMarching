@@ -114,14 +114,6 @@ public:
 
 	bool Render(unsigned int width, unsigned height, double time, double deltaTime, Vector4 mouse, Vector2 mouseDelta, int frameCounter)
 	{
-		for (int i = 0; i < iChannels.size(); i++)
-		{
-			if (iChannels[i].texture)
-			{
-				iChannels[i].texture->Tick();
-			}
-		}
-
 		int faceCount = 1;
 		if (renderTarget)
 		{
