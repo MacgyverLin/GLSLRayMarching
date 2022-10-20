@@ -256,7 +256,7 @@ public:
 		const std::vector<std::string>& GetJoystickNames();				// Retrieves a list of input device axisNames corresponding to the index of an Axis configured within Input Manager.
 
 		typedef std::function<void(const Input::Event&)> EventCallBack;
-		typedef std::list<EventCallBack *> EventCallBacks;
+		typedef std::list<EventCallBack> EventCallBackList;
 
 		void AddEventListener(const char *name, EventCallBack eventCallBack);
 		void RemoveEventListener(EventCallBack eventCallBack);
@@ -269,7 +269,7 @@ public:
 	private:
 		std::map<const char*, Input> inputs;
 
-		std::map<const char*, EventCallBacks> eventCallBacksMap;
+		std::map<const char*, EventCallBackList> eventCallBackLists;
 	};
 
 	///////////////////////////////////////////////////////////////////////

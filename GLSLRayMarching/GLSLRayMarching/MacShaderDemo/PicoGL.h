@@ -675,7 +675,7 @@ namespace PicoGL
 	class Shader
 	{
 	public:
-		Shader(PicoGL::Constant type, const char* const* source, int sourceLength);
+		Shader(PicoGL::Constant type, const char* source, int sourceLength);
 
 		/**
 			Delete this shader.
@@ -1039,8 +1039,8 @@ namespace PicoGL
 	{
 	public:
 		Program(State* state,
-			const char* const* vsSource, int vsSourceLength,
-			const char* const* fsSource, int fsSourceLength,
+			const char* vsSource, int vsSourceLength,
+			const char* fsSource, int fsSourceLength,
 			const std::vector<const char*>& xformFeedbackVars = {});
 
 		Program(State* state, Shader* vShader, Shader* fShader, const std::vector<const char*>& xformFeedbackVars = {});
@@ -2035,8 +2035,8 @@ namespace PicoGL
 			@param {Array} [xformFeedbackVars] Transform feedback varyings.
 			@return {Program} New Program object.
 		*/
-		Program* CreateProgram(const char* const* vsSource, unsigned int vsSourceLength,
-			const char* const* fsSource, unsigned int fsSourceLength,
+		Program* CreateProgram(const char* vsSource, unsigned int vsSourceLength,
+			const char* fsSource, unsigned int fsSourceLength,
 			const std::vector<const char*>& xformFeedbackVars = {});
 
 		Program* CreateProgram(Shader* vShader, Shader* fShader, const std::vector<const char*>& xformFeedbackVars = {});
@@ -2050,7 +2050,7 @@ namespace PicoGL
 			@param {string} source Shader source.
 			@return {Shader} New Shader object.
 		*/
-		Shader* CreateShader(PicoGL::Constant type, const char* const* source, int sourceLength);
+		Shader* CreateShader(PicoGL::Constant type, const char* source, int sourceLength);
 
 		/**
 			Create a vertex array.

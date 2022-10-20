@@ -261,14 +261,17 @@ Vector2 Input::Manager::GetMouseMovement()
 
 void Input::Manager::AddEventListener(const char* name, EventCallBack eventCallBack)
 {
-	eventCallBacksMap[name].push_back(&eventCallBack);
+	eventCallBackLists[name].push_back(eventCallBack);
 }
 
 void Input::Manager::RemoveEventListener(EventCallBack eventCallBack)
 {
-	for (auto& eventCallBacks : eventCallBacksMap)
+	for (auto& eventCallBackListItr : eventCallBackLists)
 	{
-		eventCallBacks.second.remove(&eventCallBack);
+		auto& eventCallBackList = eventCallBackListItr.second;
+
+		// auto eventCallBackItr =  std::find(eventCallBackList.begin(), eventCallBackList.end(), eventCallBack);
+		// eventCallBackList.erase(eventCallBackItr);
 	}
 }
 
@@ -279,12 +282,13 @@ bool Input::Manager::Initialize()
 
 bool Input::Manager::Update()
 {
-	for (auto& eventCallBacks : eventCallBacksMap)
+	for (auto& eventCallBacks : eventCallBackLists)
 	{
 		for (auto& eventCallBack : eventCallBacks.second)
 		{
 			Input::Event e;
-			(*eventCallBack)(e);
+			
+			eventCallBack(e);
 		}
 	}
 

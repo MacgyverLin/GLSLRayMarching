@@ -3,6 +3,7 @@
 #include "camera-array.h"
 #include "fbo.h"
 #include "util.h"
+#include "Graphics.h"
 
 Vector3 closestPointBetweenRays(const Vector3&p0, const Vector3&d0, const Vector3 &p1, const Vector3&d1);
 

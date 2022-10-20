@@ -22,11 +22,11 @@ LPVCamera::LPVCamera(const Vector3& position_, const Quaternion& orientation_)
 , lastMousePos(Vector2::Zero)
 , keys()
 {
-	Input::Manager::GetInstance().AddEventListener("keydown", std::bind(&LPVCamera::KeyDownListener, this, std::placeholders::_1));
-	Input::Manager::GetInstance().AddEventListener("keyup", std::bind(&LPVCamera::KeyUpListener, this, std::placeholders::_1));
-	Input::Manager::GetInstance().AddEventListener("mousedown", std::bind(&LPVCamera::MouseKeyDownListener, this, std::placeholders::_1));
-	Input::Manager::GetInstance().AddEventListener("mouseup", std::bind(&LPVCamera::MouseKeyUpListener, this, std::placeholders::_1));
-	Input::Manager::GetInstance().AddEventListener("mousemove", std::bind(&LPVCamera::MouseMoveListener, this, std::placeholders::_1));
+	//Input::Manager::GetInstance().AddEventListener("keydown", std::bind(&LPVCamera::KeyDownListener, this, std::placeholders::_1));
+	// Input::Manager::GetInstance().AddEventListener("keyup", std::bind(&LPVCamera::KeyUpListener, this, std::placeholders::_1));
+	// Input::Manager::GetInstance().AddEventListener("mousedown", std::bind(&LPVCamera::MouseKeyDownListener, this, std::placeholders::_1));
+	// Input::Manager::GetInstance().AddEventListener("mouseup", std::bind(&LPVCamera::MouseKeyUpListener, this, std::placeholders::_1));
+	// Input::Manager::GetInstance().AddEventListener("mousemove", std::bind(&LPVCamera::MouseMoveListener, this, std::placeholders::_1));
 }
 
 LPVCamera::~LPVCamera()

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include "Graphics.h"
 
 CameraArray::CameraArray(const std::filesystem::path& path)
 {

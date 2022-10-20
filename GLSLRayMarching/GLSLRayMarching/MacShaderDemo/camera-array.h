@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Platform.h"
-#include "Graphics.h"
 #include "Vector2.h"
 #include "Matrix4.h"
 
