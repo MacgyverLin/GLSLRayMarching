@@ -40,8 +40,6 @@ private:
 	GameObject gameObject;
 	ShaderToyCamera shaderToyCamera;
 	ShaderToyComponent shaderToyComponent;
-	Audio::ListenerComponent listenerComponent;
-	Audio::StreamSourceComponent streamSourceComponent;
 };
 
 #endif

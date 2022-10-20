@@ -28,14 +28,12 @@ public:
 		return Texture1D::Initiate(512, 1, Texture::DynamicRange::LOW, &buffer[0]);
 	}
 
-	virtual void Update()
-	{
-		Texture1D::Update(&buffer[0]);
-	}
-
-	virtual void Tick() override
+	virtual void UpdateData()
 	{
 		// !!!!!!!!! TODO, ¡ıº“√» 
+		// XXX().GetData();
+
+		Texture1D::Update(&buffer[0]);
 	}
 private:
 private:
