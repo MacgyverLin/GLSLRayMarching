@@ -712,7 +712,7 @@ if(options.find(#key) != options.end()) \
 			::Debug("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s\n", infoLog);
 		};
 
-		/*
+#if 0
 		this.gl = gl;
 		this.shader = gl.createShader(type);
 		gl.shaderSource(this.shader, source);
@@ -727,7 +727,7 @@ if(options.find(#key) != options.end()) \
 				console.error(`${i + 1}: ${lines[i]}`);
 			}
 		}
-		*/
+#endif
 	}
 
 	/**
@@ -743,13 +743,13 @@ if(options.find(#key) != options.end()) \
 			glDeleteShader(this->shader);
 			this->shader = 0;
 		}
-		/*
+#if 0
 		if (this.shader) {
 			this.gl.deleteShader(this.shader);
 			this.shader = null;
 		}
 		return this;
-		*/
+#endif
 	}
 
 
@@ -772,13 +772,13 @@ if(options.find(#key) != options.end()) \
 		this->active = false;
 		this->result = 0;
 
-		/*
+#if 0
 		this.gl = gl;
 		this.query = gl.createQuery();
 		this.target = target;
 		this.active = false;
 		this.result = null;
-		*/
+#endif
 	}
 
 	/**
@@ -797,14 +797,14 @@ if(options.find(#key) != options.end()) \
 
 		return this;
 
-		/*
+#if 0
 		if (!this.active) {
 			this.gl.beginQuery(this.target, this.query);
 			this.result = null;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -822,14 +822,14 @@ if(options.find(#key) != options.end()) \
 
 		return this;
 
-		/*
+#if 0
 		if (!this.active) {
 			this.gl.endQuery(this.target);
 			this.active = true;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -857,7 +857,7 @@ if(options.find(#key) != options.end()) \
 
 		return false;
 
-		/*
+#if 0
 		if (this.active && this.gl.getQueryParameter(this.query, this.gl.QUERY_RESULT_AVAILABLE)) {
 			this.active = false;
 			// Note(Tarek): Casting because FF incorrectly returns booleans.
@@ -867,7 +867,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return false;
-		*/
+#endif
 	}
 
 	/**
@@ -884,14 +884,14 @@ if(options.find(#key) != options.end()) \
 			this->query = 0;
 		}
 
-		/*
+#if 0
 		if (this.query) {
 			this.gl.deleteQuery(this.query);
 			this.query = null;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 
@@ -1481,6 +1481,787 @@ if(options.find(#key) != options.end()) \
 	}
 
 
+	PicoGL::Program::UniformClass::UniformClass(unsigned int uniformHandle, unsigned int uniformInfoType, unsigned int uniformNumElements)
+	{
+		static std::map<unsigned int, int> UNIFORM_CACHE_TYPE_DATA_SIZE =
+		{
+			{ GL_BOOL, 1},
+			{ GL_INT, 1},
+			{ GL_SAMPLER_2D, 1},
+			{ GL_INT_SAMPLER_2D, 1},
+			{ GL_UNSIGNED_INT_SAMPLER_2D, 1},
+			{ GL_SAMPLER_2D_SHADOW, 1},
+			{ GL_SAMPLER_2D_ARRAY, 1},
+			{ GL_INT_SAMPLER_2D_ARRAY, 1},
+			{ GL_UNSIGNED_INT_SAMPLER_2D_ARRAY, 1},
+			{ GL_SAMPLER_2D_ARRAY_SHADOW, 1},
+			{ GL_SAMPLER_CUBE, 1},
+			{ GL_INT_SAMPLER_CUBE, 1},
+			{ GL_UNSIGNED_INT_SAMPLER_CUBE, 1},
+			{ GL_SAMPLER_CUBE_SHADOW, 1},
+			{ GL_SAMPLER_3D, 1},
+			{ GL_INT_SAMPLER_3D, 1},
+			{ GL_UNSIGNED_INT_SAMPLER_3D, 1},
+			{ GL_UNSIGNED_INT,1},
+			{ GL_FLOAT, 1},
+			{ GL_FLOAT_VEC2, 2},
+			{ GL_FLOAT_VEC3, 3},
+			{ GL_FLOAT_VEC4, 4},
+			{ GL_INT_VEC2, 2},
+			{ GL_INT_VEC3, 3},
+			{ GL_INT_VEC4, 4},
+			{ GL_UNSIGNED_INT_VEC2, 2},
+			{ GL_UNSIGNED_INT_VEC3, 3},
+			{ GL_UNSIGNED_INT_VEC4, 4},
+			{ GL_BOOL_VEC2, 2},
+			{ GL_BOOL_VEC3, 3},
+			{ GL_BOOL_VEC4, 4},
+			{ GL_FLOAT_MAT2, 4},
+			{ GL_FLOAT_MAT3, 9},
+			{ GL_FLOAT_MAT4, 16},
+			{ GL_FLOAT_MAT2x3, 6},
+			{ GL_FLOAT_MAT2x4, 8},
+			{ GL_FLOAT_MAT3x2, 6},
+			{ GL_FLOAT_MAT3x4, 12},
+			{ GL_FLOAT_MAT4x2, 8},
+			{ GL_FLOAT_MAT4x3, 12}
+		};
+
+		this->uniformHandle = uniformHandle;
+		this->uniformInfoType = uniformInfoType;
+		this->uniformNumElements = uniformNumElements;
+
+		this->cache.resize(UNIFORM_CACHE_TYPE_DATA_SIZE[uniformInfoType] * 4 * uniformNumElements);
+	}
+
+	void PicoGL::Program::UniformClass::Set(const int& value)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+
+		int* cacheValue = (int*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform1iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const unsigned int& value)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+
+		unsigned int* cacheValue = (unsigned int*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform1uiv(uniformHandle, uniformNumElements, (const unsigned int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const float& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+
+		float* cacheValue = (float*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform1fv(uniformHandle, uniformNumElements, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const bool& value)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+
+		bool* cacheValue = (bool*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform1iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const IVector2& value)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+
+		IVector2* cacheValue = (IVector2*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform2iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const UIVector2& value)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+
+		UIVector2* cacheValue = (UIVector2*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform2uiv(uniformHandle, uniformNumElements, (const unsigned int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Vector2& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+
+		Vector2* cacheValue = (Vector2*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform2fv(uniformHandle, uniformNumElements, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const BVector2& value)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+
+		BVector2* cacheValue = (BVector2*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform2iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const IVector3& value)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+
+		IVector3* cacheValue = (IVector3*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform3iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const UIVector3& value)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+
+		UIVector3* cacheValue = (UIVector3*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform3uiv(uniformHandle, uniformNumElements, (const unsigned int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Vector3& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+
+		Vector3* cacheValue = (Vector3*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform3fv(uniformHandle, uniformNumElements, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const BVector3& value)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+
+		BVector3* cacheValue = (BVector3*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform3iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const IVector4& value)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+
+		IVector4* cacheValue = (IVector4*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform4iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const UIVector4& value)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+
+		UIVector4* cacheValue = (UIVector4*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform4uiv(uniformHandle, uniformNumElements, (const unsigned int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Vector4& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+
+		Vector4* cacheValue = (Vector4*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform4fv(uniformHandle, uniformNumElements, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const BVector4& value)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+
+		BVector4* cacheValue = (BVector4*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniform4iv(uniformHandle, uniformNumElements, (const int*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix22& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT2);
+
+		Matrix22* cacheValue = (Matrix22*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix2fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix32& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT2x3);
+
+		Matrix32* cacheValue = (Matrix32*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix2x3fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix42& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT2x4);
+
+		Matrix42* cacheValue = (Matrix42*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix2x4fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix23& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT3x2);
+
+		Matrix23* cacheValue = (Matrix23*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix3x2fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix33& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT3);
+
+		Matrix33* cacheValue = (Matrix33*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix3fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix43& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT3x4);
+
+		Matrix43* cacheValue = (Matrix43*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix3x4fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix24& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT4x2);
+
+		Matrix24* cacheValue = (Matrix24*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix4x2fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix34& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT4x3);
+
+		Matrix34* cacheValue = (Matrix34*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix4x3fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix44& value)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT4);
+
+		Matrix44* cacheValue = (Matrix44*)(&cache[0]);
+		if (*cacheValue != value)
+		{
+			*cacheValue = value;
+			glUniformMatrix4fv(uniformHandle, uniformNumElements, GL_FALSE, (const float*)(&value));
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const int* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+		Assert(this->uniformNumElements <= count);
+
+		int* cacheValue = (int*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Vector2));
+				glUniform1iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const unsigned int* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+		Assert(this->uniformNumElements <= count);
+
+		unsigned int* cacheValue = (unsigned int*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Vector2));
+				glUniform1uiv(uniformHandle, count, (const unsigned int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const float* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+		Assert(this->uniformNumElements <= count);
+
+		float* cacheValue = (float*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(float));
+				glUniform1fv(uniformHandle, count, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const bool* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+		Assert(this->uniformNumElements <= count);
+
+		bool* cacheValue = (bool*)(&cache[0]);
+		int a = sizeof(bool);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(bool));
+				glUniform1iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const IVector2* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+		Assert(this->uniformNumElements <= count);
+
+		IVector2* cacheValue = (IVector2*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(IVector2));
+				glUniform2iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const UIVector2* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+		Assert(this->uniformNumElements <= count);
+
+		UIVector2* cacheValue = (UIVector2*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(UIVector2));
+				glUniform2uiv(uniformHandle, count, (const unsigned int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Vector2* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+		Assert(this->uniformNumElements <= count);
+
+		Vector2* cacheValue = (Vector2*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Vector2));
+				glUniform2fv(uniformHandle, count, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const BVector2* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+		Assert(this->uniformNumElements <= count);
+
+		BVector2* cacheValue = (BVector2*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(BVector2));
+				glUniform2iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const IVector3* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+		Assert(this->uniformNumElements <= count);
+
+		IVector3* cacheValue = (IVector3*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(IVector3));
+				glUniform3iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const UIVector3* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+		Assert(this->uniformNumElements <= count);
+
+		UIVector3* cacheValue = (UIVector3*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(UIVector3));
+				glUniform3uiv(uniformHandle, count, (const unsigned int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Vector3* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+		Assert(this->uniformNumElements <= count);
+
+		Vector3* cacheValue = (Vector3*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Vector3));
+				glUniform3fv(uniformHandle, count, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const BVector3* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+		Assert(this->uniformNumElements <= count);
+
+		BVector3* cacheValue = (BVector3*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(BVector3));
+				glUniform3iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const IVector4* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_INT);
+		Assert(this->uniformNumElements <= count);
+
+		IVector4* cacheValue = (IVector4*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(IVector4));
+				glUniform4iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const UIVector4* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_UNSIGNED_INT);
+		Assert(this->uniformNumElements <= count);
+
+		UIVector4* cacheValue = (UIVector4*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(UIVector4));
+				glUniform4uiv(uniformHandle, count, (const unsigned int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Vector4* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT);
+		Assert(this->uniformNumElements <= count);
+
+		Vector4* cacheValue = (Vector4*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Vector4));
+				glUniform4fv(uniformHandle, count, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const BVector4* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_BOOL);
+		Assert(this->uniformNumElements <= count);
+
+		BVector4* cacheValue = (BVector4*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(BVector4));
+				glUniform4iv(uniformHandle, count, (const int*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix22* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT2);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix22* cacheValue = (Matrix22*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix22));
+				glUniformMatrix2fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix32* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT2x3);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix32* cacheValue = (Matrix32*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix32));
+				glUniformMatrix2x3fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix42* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT2x4);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix42* cacheValue = (Matrix42*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix42));
+				glUniformMatrix2x4fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix23* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT3x2);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix23* cacheValue = (Matrix23*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix23));
+				glUniformMatrix3x2fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix33* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT3);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix33* cacheValue = (Matrix33*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix33));
+				glUniformMatrix3fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix43* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT3x4);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix43* cacheValue = (Matrix43*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix43));
+				glUniformMatrix3x4fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix24* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT4x2);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix24* cacheValue = (Matrix24*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix24));
+				glUniformMatrix4x2fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix34* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT4x3);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix34* cacheValue = (Matrix34*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix34));
+				glUniformMatrix4x3fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+	void PicoGL::Program::UniformClass::Set(const Matrix44* value, int count)
+	{
+		Assert(this->uniformInfoType == GL_FLOAT_MAT4);
+		Assert(this->uniformNumElements <= count);
+
+		Matrix44* cacheValue = (Matrix44*)(&cache[0]);
+		for (int i = 0; i < count; i++)
+		{
+			if (cacheValue[i] != value[i])
+			{
+				::MemCpy(cacheValue, value, count * sizeof(Matrix44));
+				glUniformMatrix4fv(uniformHandle, count, GL_FALSE, (const float*)(&value));
+				return;
+			}
+		}
+	}
+
+
+
 	/**
 		WebGL program consisting of compiled and linked vertex and fragment
 		shaders.
@@ -1492,7 +2273,6 @@ if(options.find(#key) != options.end()) \
 		@prop {Object} uniforms Map of uniform names to handles.
 		@prop {Object} appState Tracked GL state.
 	*/
-
 	Program::Program(State* state,
 		const char* vsSource, int vsSourceLength,
 		const char* fsSource, int fsSourceLength,
@@ -1512,7 +2292,140 @@ if(options.find(#key) != options.end()) \
 
 	void Program::CreateProgramInternal(State* state, Shader* vShader, Shader* fShader, bool ownVertexShader, bool ownFragmentShader, const std::vector<const char*>& xformFeedbackVars)
 	{
-		/*
+		unsigned int program = glCreateProgram();
+		glAttachShader(program, vShader->shader);
+		glAttachShader(program, fShader->shader);
+		if (xformFeedbackVars.size()) {
+			glTransformFeedbackVaryings(program, xformFeedbackVars.size(), &xformFeedbackVars[0], GL_SEPARATE_ATTRIBS);
+		}
+		glLinkProgram(program);
+
+		int status;
+		glGetProgramiv(program, GL_LINK_STATUS, &status);
+		if (!status) {
+			char infoLog[512];
+			int length = 0;
+			glGetProgramInfoLog(program, 512, &length, infoLog);
+			Error(infoLog);
+		}
+
+		if (ownVertexShader) {
+			delete vShader;
+		}
+
+		if (ownFragmentShader) {
+			delete fShader;
+		}
+
+		this->program = program;
+		this->state = state;
+		this->transformFeedback = xformFeedbackVars;
+		this->uniforms = std::map<std::string, UniformClass*>();
+		this->uniformBlocks = std::map<std::string, int>();
+		this->uniformBlockCount = 0;
+		this->samplers = std::map<std::string, int>();
+		this->samplerCount = 0;
+
+		glUseProgram(program);
+
+		int numUniforms = 0;
+		glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &numUniforms);
+		
+		bool hasUniformClass = false;
+		int textureUnit;
+		for (int i = 0; i < numUniforms; ++i) {
+			int uniformInfo_length;
+			int uniformInfo_size;
+			GLenum uniformInfo_type;
+			char uniformInfo_name[512];
+			glGetActiveUniform(program, i, 512, &uniformInfo_length, &uniformInfo_size, &uniformInfo_type, uniformInfo_name);
+			
+			int uniformHandle = glGetUniformLocation(this->program, uniformInfo_name);
+			GLenum type = uniformInfo_type;
+			int numElements = uniformInfo_size;
+
+			switch (type) 
+			{
+			case GL_SAMPLER_2D:
+			case GL_INT_SAMPLER_2D:
+			case GL_UNSIGNED_INT_SAMPLER_2D:
+			case GL_SAMPLER_2D_SHADOW:
+			case GL_SAMPLER_2D_ARRAY:
+			case GL_INT_SAMPLER_2D_ARRAY:
+			case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
+			case GL_SAMPLER_2D_ARRAY_SHADOW:
+			case GL_SAMPLER_CUBE:
+			case GL_INT_SAMPLER_CUBE:
+			case GL_UNSIGNED_INT_SAMPLER_CUBE:
+			case GL_SAMPLER_CUBE_SHADOW:
+			case GL_SAMPLER_3D:
+			case GL_INT_SAMPLER_3D:
+			case GL_UNSIGNED_INT_SAMPLER_3D:
+				textureUnit = this->samplerCount++;
+				this->samplers[uniformInfo_name] = textureUnit;
+				glUniform1i(uniformHandle, textureUnit);
+				break;
+			case GL_INT:
+			case GL_UNSIGNED_INT:
+			case GL_FLOAT:
+				hasUniformClass = true;// UniformClass = numElements > 1 ? MultiNumericUniform : SingleComponentUniform;
+				break;
+			case GL_BOOL:
+				hasUniformClass = true;// UniformClass = numElements > 1 ? MultiBoolUniform : SingleComponentUniform;
+				break;
+			case GL_FLOAT_VEC2:
+			case GL_INT_VEC2:
+			case GL_UNSIGNED_INT_VEC2:
+			case GL_FLOAT_VEC3:
+			case GL_INT_VEC3:
+			case GL_UNSIGNED_INT_VEC3:
+			case GL_FLOAT_VEC4:
+			case GL_INT_VEC4:
+			case GL_UNSIGNED_INT_VEC4:
+				hasUniformClass = true;// UniformClass = MultiNumericUniform;
+				break;
+			case GL_BOOL_VEC2:
+			case GL_BOOL_VEC3:
+			case GL_BOOL_VEC4:
+				hasUniformClass = true;// UniformClass = MultiBoolUniform;
+				break;
+			case GL_FLOAT_MAT2:
+			case GL_FLOAT_MAT3:
+			case GL_FLOAT_MAT4:
+			case GL_FLOAT_MAT2x3:
+			case GL_FLOAT_MAT2x4:
+			case GL_FLOAT_MAT3x2:
+			case GL_FLOAT_MAT3x4:
+			case GL_FLOAT_MAT4x2:
+			case GL_FLOAT_MAT4x3:
+				hasUniformClass = true;// UniformClass = MatrixUniform;
+				break;
+			default:
+				Error("Unrecognized type for uniform ", uniformInfo_name);
+				break;
+			}
+
+			if (hasUniformClass) {
+				this->uniforms[uniformInfo_name] = new UniformClass(uniformHandle, type, numElements);
+			}
+		}
+
+		int numUniformBlocks = 0;
+		glGetProgramiv(program, GL_ACTIVE_UNIFORM_BLOCKS, &numUniformBlocks);
+
+		for (int i = 0; i < numUniformBlocks; ++i) {
+			char blockName[512];
+			int length = 0;
+			glGetActiveUniformBlockName(this->program, i, 512, &length, blockName);
+			unsigned int blockIndex = glGetUniformBlockIndex(this->program, blockName);
+
+			int uniformBlockBase = this->uniformBlockCount++;
+			glUniformBlockBinding(this->program, blockIndex, uniformBlockBase);
+			this->uniformBlocks[blockName] = uniformBlockBase;
+		}
+
+		glUseProgram(0);
+#if 0
 		let program = gl.createProgram();
 		gl.attachShader(program, vShader.shader);
 		gl.attachShader(program, fShader.shader);
@@ -1632,7 +2545,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		gl.useProgram(null);
-		*/
+#endif
 	}
 
 
@@ -1643,14 +2556,18 @@ if(options.find(#key) != options.end()) \
 		@return {Program} The Program object.
 	*/
 	Program::~Program() {
-		/*
+		if (this->program) {
+			glDeleteProgram(this->program);
+			this->program = 0;
+		}
+#if 0
 		if (this.program) {
 			this.gl.deleteProgram(this.program);
 			this.program = null;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 
@@ -1663,6 +2580,11 @@ if(options.find(#key) != options.end()) \
 		@return {Program} The Program object.
 	*/
 	Program* Program::Bind() {
+		if (this->state->program != this) {
+			glUseProgram(this->program);
+			this->state->program = this;
+		}
+
 		return this;
 		/*
 		if (this.appState.program != = this) {
@@ -1696,6 +2618,10 @@ if(options.find(#key) != options.end()) \
 
 	Texture::Texture(State* state, PicoGL::Constant target, const void* image, int width, int height, int depth, bool is3D, const Options& options)
 	{
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// !!!!!! ÀîÌÎ for how to use const Options& options in constructor  Check
+		//  App* App::ReadPixel(int x, int y, void* outColor, const Options& options)
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		/*
 		let defaultType = options.format == = CONSTANTS.DEPTH_COMPONENT ? CONSTANTS.UNSIGNED_SHORT : CONSTANTS.UNSIGNED_BYTE;
 
@@ -2062,13 +2988,13 @@ if(options.find(#key) != options.end()) \
 		return this;
 		/*
 		if (this.appState.transformFeedback != = this) {
-			this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.transformFeedback);
+			this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this->transformFeedback);
 
-			for (let i = 0, len = this.angleBugBuffers.length; i < len; ++i) {
-				this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, i, this.angleBugBuffers[i].buffer);
+			for (let i = 0, len = this->angleBugBuffers.length; i < len; ++i) {
+				this->gl.bindBufferBase(this->gl.TRANSFORM_FEEDBACK_BUFFER, i, this->angleBugBuffers[i].buffer);
 			}
 
-			this.appState.transformFeedback = this;
+			this->appState.transformFeedback = this;
 		}
 
 		return this;
@@ -2092,6 +3018,129 @@ if(options.find(#key) != options.end()) \
 	*/
 	UniformBuffer::UniformBuffer(State* state, const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage)
 	{
+		glCreateBuffers(1, &this->buffer);
+		this->dataViews = std::map<PicoGL::Constant, void*>();
+		this->offsets.resize(layout.size());
+		this->sizes.resize(layout.size());
+		this->types.resize(layout.size());
+		this->size = 0;
+		this->usage = usage;
+		this->state = state;
+
+		this->currentBase = -1;
+
+		for (int i = 0, len = layout.size(); i < len; ++i) {
+			PicoGL::Constant type = layout[i];
+			switch (type) {
+			case PicoGL::Constant::FLOAT:
+			case PicoGL::Constant::INT:
+			case PicoGL::Constant::UNSIGNED_INT:
+			case PicoGL::Constant::BOOL:
+				this->offsets[i] = this->size;
+				this->sizes[i] = 1;
+
+				if (type == PicoGL::Constant::INT) {
+					this->types[i] = PicoGL::Constant::INT;
+				}
+				else if (type == PicoGL::Constant::UNSIGNED_INT) {
+					this->types[i] = PicoGL::Constant::UNSIGNED_INT;
+				}
+				else {
+					this->types[i] = PicoGL::Constant::FLOAT;
+				}
+
+				this->size++;
+				break;
+			case PicoGL::Constant::FLOAT_VEC2:
+			case PicoGL::Constant::INT_VEC2:
+			case PicoGL::Constant::UNSIGNED_INT_VEC2:
+			case PicoGL::Constant::BOOL_VEC2:
+				this->size += this->size % 2;
+				this->offsets[i] = this->size;
+				this->sizes[i] = 2;
+
+				if (type == PicoGL::Constant::INT_VEC2) {
+					this->types[i] = PicoGL::Constant::INT;
+				}
+				else if (type == PicoGL::Constant::UNSIGNED_INT_VEC2) {
+					this->types[i] = PicoGL::Constant::UNSIGNED_INT;
+				}
+				else {
+					this->types[i] = PicoGL::Constant::FLOAT;
+				}
+
+				this->size += 2;
+				break;
+			case PicoGL::Constant::FLOAT_VEC3:
+			case PicoGL::Constant::INT_VEC3:
+			case PicoGL::Constant::UNSIGNED_INT_VEC3:
+			case PicoGL::Constant::BOOL_VEC3:
+			case PicoGL::Constant::FLOAT_VEC4:
+			case PicoGL::Constant::INT_VEC4:
+			case PicoGL::Constant::UNSIGNED_INT_VEC4:
+			case PicoGL::Constant::BOOL_VEC4:
+				this->size += (4 - this->size % 4) % 4;
+				this->offsets[i] = this->size;
+				this->sizes[i] = 4;
+
+				if (type == PicoGL::Constant::INT_VEC4 || type == PicoGL::Constant::INT_VEC3) {
+					this->types[i] = PicoGL::Constant::INT;
+				}
+				else if (type == PicoGL::Constant::UNSIGNED_INT_VEC4 || type == PicoGL::Constant::UNSIGNED_INT_VEC3) {
+					this->types[i] = PicoGL::Constant::UNSIGNED_INT;
+				}
+				else {
+					this->types[i] = PicoGL::Constant::FLOAT;
+				}
+
+				this->size += 4;
+				break;
+			case PicoGL::Constant::FLOAT_MAT2:
+			case PicoGL::Constant::FLOAT_MAT2x3:
+			case PicoGL::Constant::FLOAT_MAT2x4:
+				this->size += (4 - this->size % 4) % 4;
+				this->offsets[i] = this->size;
+				this->sizes[i] = 8;
+				this->types[i] = PicoGL::Constant::FLOAT;
+
+				this->size += 8;
+				break;
+			case PicoGL::Constant::FLOAT_MAT3:
+			case PicoGL::Constant::FLOAT_MAT3x2:
+			case PicoGL::Constant::FLOAT_MAT3x4:
+				this->size += (4 - this->size % 4) % 4;
+				this->offsets[i] = this->size;
+				this->sizes[i] = 12;
+				this->types[i] = PicoGL::Constant::FLOAT;
+
+				this->size += 12;
+				break;
+			case PicoGL::Constant::FLOAT_MAT4:
+			case PicoGL::Constant::FLOAT_MAT4x2:
+			case PicoGL::Constant::FLOAT_MAT4x3:
+				this->size += (4 - this->size % 4) % 4;
+				this->offsets[i] = this->size;
+				this->sizes[i] = 16;
+				this->types[i] = PicoGL::Constant::FLOAT;
+
+				this->size += 16;
+				break;
+			default:
+				::Error("Unsupported type for uniform buffer.");
+			}
+		}
+
+		this->size += (4 - this->size % 4) % 4;
+
+		this->data.resize(this->size);
+		this->dataViews[PicoGL::Constant::FLOAT] = &this->data[0];
+		this->dataViews[PicoGL::Constant::INT] = &this->data[0];
+		this->dataViews[PicoGL::Constant::UNSIGNED_INT] = &this->data[0];
+
+
+		glBindBuffer(GL_UNIFORM_BUFFER, this->buffer);
+		glBufferData(GL_UNIFORM_BUFFER, this->size * 4, nullptr, GetGLEnum(this->usage));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 #if 0
 		this.gl = gl;
 		this.buffer = gl.createBuffer();
@@ -2240,8 +3289,30 @@ if(options.find(#key) != options.end()) \
 		@return {UniformBuffer} The UniformBuffer object.
 	*/
 	UniformBuffer* UniformBuffer::Update(int index) {
+		char* dat;
+		int offset;
+		int size;
+		if (index == -1) {
+			int begin = 0;
+
+			dat = (char*)(&data[0]);
+			offset = 0 * 4;
+			size = data.size() * 4;
+		}
+		else {
+			int begin = this->offsets[index];
+
+			dat = (char*)(&data[begin]);
+			offset = begin * 4;
+			size = this->sizes[index] * 4;
+		}
+
+		glBindBuffer(GL_UNIFORM_BUFFER, this->buffer);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset, size, dat);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 		return this;
-		/*
+#if 0
 		let data;
 		let offset;
 		if (index == = undefined) {
@@ -2260,7 +3331,7 @@ if(options.find(#key) != options.end()) \
 		this.gl.bindBuffer(this.gl.UNIFORM_BUFFER, null);
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -2270,7 +3341,16 @@ if(options.find(#key) != options.end()) \
 		@return {UniformBuffer} The UniformBuffer object.
 	*/
 	UniformBuffer::~UniformBuffer() {
-		/*
+		if (this->buffer) 
+		{
+			glDeleteBuffers(1, &this->buffer);
+			this->buffer = 0;
+
+			if (this->currentBase != -1 && this->state->uniformBuffers[this->currentBase] == this) {
+				this->state->uniformBuffers[this->currentBase] = nullptr;
+			}
+		}
+#if 0
 		if (this.buffer) {
 			this.gl.deleteBuffer(this.buffer);
 			this.buffer = null;
@@ -2281,7 +3361,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -2292,8 +3372,26 @@ if(options.find(#key) != options.end()) \
 		@return {UniformBuffer} The UniformBuffer object.
 	*/
 	UniformBuffer* UniformBuffer::Bind(int base) {
+		UniformBuffer* currentBuffer = this->state->uniformBuffers[base];
+
+		if (currentBuffer != this) {
+
+			if (currentBuffer) {
+				currentBuffer->currentBase = -1;
+			}
+
+			if (this->currentBase != -1) {
+				this->state->uniformBuffers[this->currentBase] = nullptr;
+			}
+
+			glBindBufferBase(GL_UNIFORM_BUFFER, base, this->buffer);
+
+			state->uniformBuffers[base] = this;
+			this->currentBase = base;
+		}
+
 		return this;
-		/*
+#if 0
 		let currentBuffer = this.appState.uniformBuffers[base];
 
 		if (currentBuffer != = this) {
@@ -2313,7 +3411,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**

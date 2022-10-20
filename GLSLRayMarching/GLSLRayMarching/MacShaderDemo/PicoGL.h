@@ -651,17 +651,17 @@ namespace PicoGL
 	{
 	};
 
-	class Shader;
+	class Shader; // 
 	class Query;
-	class App;
+	class App; //
 	class Cubemap;
 	class DrawCall;
 	class Framebuffer;
-	class Program;
+	class Program; //
 	class Texture;
 	class Timer;
 	class TransformFeedback;
-	class UniformBuffer;
+	class UniformBuffer; //
 	class VertexArray;
 	class VertexBuffer;
 	class State;
@@ -674,6 +674,7 @@ namespace PicoGL
 	*/
 	class Shader
 	{
+		friend class Program;
 	public:
 		Shader(PicoGL::Constant type, const char* source, int sourceLength);
 
@@ -1037,6 +1038,92 @@ namespace PicoGL
 
 	class Program
 	{
+	private:
+		class UniformClass
+		{
+		public:
+			UniformClass(unsigned int uniformHandle, unsigned int uniformInfoType, unsigned int uniformNumElements);
+
+			void Set(const int& value);
+			void Set(const unsigned int& value);
+			void Set(const float& value);
+			void Set(const bool& value);
+
+			void Set(const IVector2& value);
+			void Set(const UIVector2& value);
+			void Set(const Vector2& value);
+			void Set(const BVector2& value);
+
+			void Set(const IVector3& value);
+			void Set(const UIVector3& value);
+			void Set(const Vector3& value);
+			void Set(const BVector3& value);
+
+			void Set(const IVector4& value);
+			void Set(const UIVector4& value);
+			void Set(const Vector4& value);
+			void Set(const BVector4& value);
+
+			void Set(const Matrix22& value);
+			void Set(const Matrix32& value);
+			void Set(const Matrix42& value);
+
+			void Set(const Matrix23& value);
+			void Set(const Matrix33& value);
+			void Set(const Matrix43& value);
+
+			void Set(const Matrix24& value);
+			void Set(const Matrix34& value);
+			void Set(const Matrix44& value);
+
+			void Set(const int* value, int count);
+			void Set(const unsigned int* value, int count);
+			void Set(const float* value, int count);
+			void Set(const bool* value, int count);
+
+			void Set(const IVector2* value, int count);
+			void Set(const UIVector2* value, int count);
+			void Set(const Vector2* value, int count);
+			void Set(const BVector2* value, int count);
+
+			void Set(const IVector3* value, int count);
+			void Set(const UIVector3* value, int count);
+			void Set(const Vector3* value, int count);
+			void Set(const BVector3* value, int count);
+
+			void Set(const IVector4* value, int count);
+			void Set(const UIVector4* value, int count);
+			void Set(const Vector4* value, int count);
+			void Set(const BVector4* value, int count);
+
+			void Set(const Matrix22* value, int count);
+			void Set(const Matrix32* value, int count);
+			void Set(const Matrix42* value, int count);
+
+			void Set(const Matrix23* value, int count);
+			void Set(const Matrix33* value, int count);
+			void Set(const Matrix43* value, int count);
+
+			void Set(const Matrix24* value, int count);
+			void Set(const Matrix34* value, int count);
+			void Set(const Matrix44* value, int count);
+		private:
+			unsigned int uniformHandle;
+			unsigned int uniformInfoType;
+			unsigned int uniformNumElements;
+
+			std::vector<unsigned char> cache;
+
+		};
+	private:
+		unsigned int program;
+		State* state;
+		std::vector<const char*> transformFeedback;
+		std::map<std::string, UniformClass*> uniforms;
+		std::map<std::string, int> uniformBlocks;
+		int uniformBlockCount;
+		std::map<std::string, int> samplers;
+		int samplerCount;
 	public:
 		Program(State* state,
 			const char* vsSource, int vsSourceLength,
@@ -1063,13 +1150,25 @@ namespace PicoGL
 			@return {Program} The Program object.
 		*/
 		template<class T>
-		Program* Uniform(const char* name, const T& value) {
+		Program& Uniform(const char* name, const T& value)
+		{
+			uniforms[name].Set(value);
+
 			return this;
-			/*
+
+#if 0
 			this.uniforms[name].set(value);
 
 			return this;
-			*/
+#endif
+		}
+
+		template<class T>
+		Program& Uniform(const char* name, const T* value, int count)
+		{
+			uniforms[name].Set(value, count);
+
+			return *this;
 		}
 
 		// 
@@ -1081,8 +1180,6 @@ namespace PicoGL
 			@return {Program} The Program object.
 		*/
 		Program* Bind();
-	private:
-		State* state;
 	};
 
 	/**
@@ -1236,6 +1333,17 @@ namespace PicoGL
 	class UniformBuffer
 	{
 	private:
+		unsigned int buffer;
+		std::vector<float> data;
+		std::map<PicoGL::Constant, void*> dataViews;
+		std::vector<int> offsets;
+		std::vector<int> sizes;
+		std::vector<PicoGL::Constant> types;
+		int size = 0;
+		PicoGL::Constant usage;
+		State* state;
+
+		int currentBase;
 	public:
 		UniformBuffer(State* state, const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage);
 
