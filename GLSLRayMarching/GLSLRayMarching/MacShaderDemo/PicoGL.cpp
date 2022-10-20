@@ -696,12 +696,11 @@ if(options.find(#key) != options.end()) \
 		@class
 		@prop {WebGLShader} shader The shader.
 	*/
-	Shader::Shader(PicoGL::Constant type, const char* const* source, int sourceLength)
+	Shader::Shader(PicoGL::Constant type, const char* source, int sourceLength)
 	{
 		this->shader = glCreateShader(GetGLEnum(type));
 
-		int length;
-		glShaderSource(this->shader, sourceLength, source, &length);
+		glShaderSource(this->shader, 1, &source, &sourceLength);
 		glCompileShader(this->shader);
 
 		int success;
@@ -1495,8 +1494,8 @@ if(options.find(#key) != options.end()) \
 	*/
 
 	Program::Program(State* state,
-		const char* const* vsSource, int vsSourceLength,
-		const char* const* fsSource, int fsSourceLength,
+		const char* vsSource, int vsSourceLength,
+		const char* fsSource, int fsSourceLength,
 		const std::vector<const char*>& xformFeedbackVars)
 	{
 		Shader* vShader = new Shader(PicoGL::Constant::VERTEX_SHADER, vsSource, vsSourceLength);
@@ -3566,8 +3565,8 @@ if(options.find(#key) != options.end()) \
 		@param {Array} [xformFeedbackVars] Transform feedback varyings.
 		@return {Program} New Program object.
 	*/
-	Program* App::CreateProgram(const char* const* vsSource, unsigned int vsSourceLength,
-		const char* const* fsSource, unsigned int fsSourceLength,
+	Program* App::CreateProgram(const char* vsSource, unsigned int vsSourceLength,
+		const char* fsSource, unsigned int fsSourceLength,
 		const std::vector<const char*>& xformFeedbackVars) {
 		return new Program(&this->state, vsSource, vsSourceLength, fsSource, fsSourceLength, xformFeedbackVars);
 	}
@@ -3585,7 +3584,7 @@ if(options.find(#key) != options.end()) \
 		@param {string} source Shader source.
 		@return {Shader} New Shader object.
 	*/
-	Shader* App::CreateShader(PicoGL::Constant type, const char* const* source, int sourceLength) {
+	Shader* App::CreateShader(PicoGL::Constant type, const char* source, int sourceLength) {
 		return new Shader(type, source, sourceLength);
 	}
 

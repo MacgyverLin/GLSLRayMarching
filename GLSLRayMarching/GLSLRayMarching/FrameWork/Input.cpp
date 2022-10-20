@@ -283,8 +283,9 @@ bool Input::Manager::Update()
 	{
 		for (auto& eventCallBack : eventCallBacks.second)
 		{
-			Input::Event e;
-			(*eventCallBack)(e);
+			// Input::Event e;
+			
+			// (*eventCallBack)(e);
 		}
 	}
 

@@ -1612,8 +1612,8 @@ PicoGL::Program* LPVSceneRenderer::MakeShader(const std::string& name, std::map<
 	LPVShaderLoader::ShaderResult programData = shaderLoaderData[name];
 	PicoGL::Program* program = app->CreateProgram
 	(
-		(const char* const*)programData.vertexSource.c_str(), programData.vertexSource.size(),
-		(const char* const*)programData.fragmentSource.c_str(), programData.fragmentSource.size()
+		programData.vertexSource.c_str(), programData.vertexSource.size(),
+		programData.fragmentSource.c_str(), programData.fragmentSource.size()
 	);
 	return program;
 #if 0
