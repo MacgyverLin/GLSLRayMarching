@@ -27,14 +27,12 @@ public:
 		return Texture2D::Initiate(512, 2, 1, Texture::DynamicRange::LOW, &buffer[0]);
 	}
 
-	virtual void Update()
+	virtual void UpdateData()
 	{
-		Texture2D::Update(&buffer[0]);
-	}
+		// !!!!!!!!! TODO, ¡ıº“√» 
+		// Webcam.GetData();
 
-	virtual void Tick() override
-	{
-		// Platform::GetWebcam().GetData();   // !!!!!!!!! TODO, ¡ıº“√» 
+		Texture2D::Update(&buffer[0]);
 	}
 private:
 private:

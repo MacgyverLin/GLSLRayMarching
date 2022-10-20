@@ -48,7 +48,7 @@ public:
 		keytoggle[int(keycode)] = Platform::GetKeyHold(keycode) ? 0 : 255;
 	}
 
-	virtual void Tick()
+	void UpdateData()
 	{
 		for (int keycode = (int)Platform::KeyCode::A; keycode <= (int)Platform::KeyCode::Z; keycode += 1)
 		{
@@ -67,8 +67,6 @@ public:
 		UpdateKey(Platform::KeyCode::RightControl);
 		UpdateKey(Platform::KeyCode::LeftAlt);
 		UpdateKey(Platform::KeyCode::RightAlt);
-
-		//Debug("%d\n", buffer[256 * 0 + 98]);
 
 		Texture2D::Update(&buffer[0]);
 	}

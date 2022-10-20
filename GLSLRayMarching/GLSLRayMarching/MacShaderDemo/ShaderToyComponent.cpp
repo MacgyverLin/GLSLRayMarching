@@ -4,8 +4,10 @@
 //////////////////////////////////////////////////////////////
 ShaderToyComponent::ShaderToyComponent(GameObject& gameObject_)
 	: Graphics3Component(gameObject_)
+	, listenerComponent(gameObject_)
+	, streamSourceComponent(gameObject_)
 {
-	shaderToyRenderer = new ShaderToyRenderer();
+	shaderToyRenderer = new ShaderToyRenderer(streamSourceComponent);
 }
 
 ShaderToyComponent::~ShaderToyComponent()
@@ -73,7 +75,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Path Tracing Cornell Box 2");
 	//return shaderToyRenderer->Initiate("Demos/Path Tracing (+ELS)");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Path tracing cornellbox with MIS");
-	//return shaderToyRenderer->Initiate("Demos/[NV15] Space Curvature");
+	//return shaderToyRenderer->Initiate("Demos/[NV15] Space Curvature");streamSourceComponentU
 	//return shaderToyRenderer->Initiate("Demos/Buoy");
 	//return shaderToyRenderer->Initiate("Demos/Music - Pirates");
 	//return shaderToyRenderer->Initiate("Demos/Fork Heartfelt Nepse 180");
