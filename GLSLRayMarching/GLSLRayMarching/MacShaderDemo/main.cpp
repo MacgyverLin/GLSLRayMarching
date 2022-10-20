@@ -31,7 +31,7 @@ Service<Audio> AudioService("Audio");
 #include "GeometryTextureScene.h"
 #include "GeoMipmapTerrainScene.h"
 #include "GeoMorphTerrainScene.h"
-#include "LightFieldRendererScene.h"
+#include "LightFieldRendererScene.h" 
 #include "LightPropagationVolumesScene.h"
 
 Scene::Creator<DefaultScene> DefaultSceneCreator("Default");
@@ -77,9 +77,9 @@ private:
 
 int main(int argc, char** argv)
 {
-	//  ¡ıº“√»  make some change here
+	// ¿Óù˝ do change here as well
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
-	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "ShaderToy"))
+	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "LightPropagationVolumes"))
 		return -1;
 
 	macShaderDemoApp.Start();
