@@ -36,7 +36,8 @@ bool ShaderToyScene::OnStart()
 bool ShaderToyScene::OnUpdate()
 {
 	std::vector<char> data;
-	streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
+	// streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
+	streamSourceComponent.GetEmptyData(data);
 	streamSourceComponent.FillData(&data[0], data.size());
 	return true;
 }
