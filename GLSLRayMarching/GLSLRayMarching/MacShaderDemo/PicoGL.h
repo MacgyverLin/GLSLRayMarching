@@ -1235,6 +1235,7 @@ namespace PicoGL
 
 	class UniformBuffer
 	{
+	private:
 	public:
 		UniformBuffer(State* state, const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage);
 
@@ -1289,8 +1290,6 @@ namespace PicoGL
 			@return {UniformBuffer} The UniformBuffer object.
 		*/
 		UniformBuffer* Bind(int base);
-	private:
-		State* state;
 	};
 
 	/**

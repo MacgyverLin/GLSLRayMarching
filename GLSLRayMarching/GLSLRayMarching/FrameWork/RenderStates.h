@@ -4,7 +4,6 @@
 #include "Platform.h"
 #include "ColorRGBA.h"
 #include "Vector2.h"
-#include "Graphics.h"
 
 ////////////////////////////////////////////////////////////////////////
 class BlendState

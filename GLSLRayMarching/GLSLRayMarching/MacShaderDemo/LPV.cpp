@@ -2,6 +2,10 @@
 
 //////////////////////////////////////////////////////////////
 LPV::LPV(int shadowMapSmallSize, int lpvGridSize)
+: injectionFramebuffer(nullptr)
+, geometryInjectionFramebuffer(nullptr)
+, propagationFramebuffer(nullptr)
+, accumulatedBuffer(nullptr)
 {
 }
 

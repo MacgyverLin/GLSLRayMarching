@@ -5,7 +5,6 @@
 
 //#include <nanogui/canvas.h>
 //#include <glm/glm.hpp>
-#include "Graphics.h"
 
 #include "shader.h"
 #include "quad.h"

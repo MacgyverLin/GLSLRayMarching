@@ -2091,10 +2091,9 @@ if(options.find(#key) != options.end()) \
 		@prop {number} size The size of the buffer (in 4-byte items).
 		@prop {GLEnum} usage Usage pattern of the buffer.
 	*/
-
 	UniformBuffer::UniformBuffer(State* state, const std::vector<PicoGL::Constant>& layout, PicoGL::Constant usage)
 	{
-		/*
+#if 0
 		this.gl = gl;
 		this.buffer = gl.createBuffer();
 		this.dataViews = {};
@@ -2220,7 +2219,8 @@ if(options.find(#key) != options.end()) \
 		this.gl.bindBuffer(this.gl.UNIFORM_BUFFER, this.buffer);
 		this.gl.bufferData(this.gl.UNIFORM_BUFFER, this.size * 4, this.usage);
 		this.gl.bindBuffer(this.gl.UNIFORM_BUFFER, null);
-		*/
+
+#endif
 	}
 
 	/**

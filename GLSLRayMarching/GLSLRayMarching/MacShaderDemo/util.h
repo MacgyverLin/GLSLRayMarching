@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics.h"
+#include "Math.h"
 
 inline std::ostream& operator<<(std::ostream& out, const Vector3& v)
 {
