@@ -7,10 +7,180 @@
 LPVSceneRenderer::LPVSceneRenderer(GameObject& gameObject_)
 	: Graphics3Component(gameObject_)
 {
+	app = nullptr;
+	picoTimer = nullptr;
+	defaultShader = nullptr;
+	rsmShader = nullptr;
+	simpleShadowMapShader = nullptr;
+	lpv = nullptr;
+	rsmShader = nullptr;
+	blitTextureDrawCall = nullptr;
+	environmentDrawCall = nullptr;
+	sceneUniforms = nullptr;
+	shadowMapFramebuffer = nullptr;
+
+	camera = nullptr;
+	directionalLight = nullptr;
+	shaderLoader = nullptr;
+	fullscreenVertexArray = nullptr;
+	textureBlitShader = nullptr;
+	lightInjectShader = nullptr;
+	geometryInjectShader = nullptr;
+	lightPropagationShader = nullptr;
+	environmentShader = nullptr;
+	lpvDebugShader = nullptr;
+	probeVertexArray = nullptr;
+
+	probeDrawCall = nullptr;
 }
 
 LPVSceneRenderer::~LPVSceneRenderer()
 {
+	if (app)
+	{
+		delete app;
+		app = nullptr;
+	}
+
+	if (picoTimer)
+	{
+		delete picoTimer;
+		picoTimer = nullptr;
+	}
+
+	if (defaultShader)
+	{
+		delete defaultShader;
+		defaultShader = nullptr;
+	}
+
+	if (rsmShader)
+	{
+		delete rsmShader;
+		rsmShader = nullptr;
+	}
+
+
+	if (simpleShadowMapShader)
+	{
+		delete simpleShadowMapShader;
+		simpleShadowMapShader = nullptr;
+	}
+
+	if (lpv)
+	{
+		delete lpv;
+		lpv = nullptr;
+	}
+
+	if (rsmShader)
+	{
+		delete rsmShader;
+		rsmShader = nullptr;
+	}
+
+
+	if (blitTextureDrawCall)
+	{
+		delete blitTextureDrawCall;
+		blitTextureDrawCall = nullptr;
+	}
+
+	if (environmentDrawCall)
+	{
+		delete environmentDrawCall;
+		environmentDrawCall = nullptr;
+	}
+
+	if (sceneUniforms)
+	{
+		delete sceneUniforms;
+		sceneUniforms = nullptr;
+	}
+
+	if (shadowMapFramebuffer)
+	{
+		delete shadowMapFramebuffer;
+		shadowMapFramebuffer = nullptr;
+	}
+
+	for (auto& rsmFramebuffer : rsmFramebuffers)
+	{
+		if (rsmFramebuffer)
+		{
+			delete rsmFramebuffer;
+			rsmFramebuffer = nullptr;
+		}
+	}
+	rsmFramebuffers.clear();
+
+	if (camera)
+	{
+		delete camera;
+		camera = nullptr;
+	}
+
+	if (directionalLight)
+	{
+		delete directionalLight;
+		directionalLight = nullptr;
+	}
+
+	if (shaderLoader)
+	{
+		delete shaderLoader;
+		shaderLoader = nullptr;
+	}
+
+	if (fullscreenVertexArray)
+	{
+		delete fullscreenVertexArray;
+		fullscreenVertexArray = nullptr;
+	}
+
+	if (textureBlitShader)
+	{
+		delete textureBlitShader;
+		textureBlitShader = nullptr;
+	}
+
+	if (lightInjectShader)
+	{
+		delete lightInjectShader;
+		lightInjectShader = nullptr;
+	}
+
+	if (geometryInjectShader)
+	{
+		delete geometryInjectShader;
+		geometryInjectShader = nullptr;
+	}
+
+	if (lightPropagationShader)
+	{
+		delete lightPropagationShader;
+		lightPropagationShader = nullptr;
+	}
+
+	if (environmentShader)
+	{
+		delete environmentShader;
+		environmentShader = nullptr;
+	}
+
+	if (lpvDebugShader)
+	{
+		delete lpvDebugShader;
+		lpvDebugShader = nullptr;
+	}
+
+	if (probeVertexArray)
+	{
+		delete probeVertexArray;
+		probeVertexArray = nullptr;
+	}
+
+	probeDrawCall = nullptr;
 }
 
 bool LPVSceneRenderer::OnInitiate()
@@ -728,18 +898,18 @@ void LPVSceneRenderer::SetupSceneUniforms()
 			//PicoGL.FLOAT_MAT4 /* 4 - projection from view matrix */
 		}
 	)
-	->Set(0, ambientColor)
-	//->Set(1, directionalLight.color)
-	//->Set(2, directionalLight.direction)
-	//->Set(3, camera.viewMatrix)
-	//->Set(4, camera.projectionMatrix)
-	->Update();
+		->Set(0, ambientColor)
+		//->Set(1, directionalLight.color)
+		//->Set(2, directionalLight.direction)
+		//->Set(3, camera.viewMatrix)
+		//->Set(4, camera.projectionMatrix)
+		->Update();
 
 	/*
 		camera.onViewMatrixChange = function(newValue) {
 			sceneUniforms.set(3, newValue).update();
 		};
-	
+
 		camera.onProjectionMatrixChange = function(newValue) {
 			sceneUniforms.set(4, newValue).update();
 		};
@@ -782,8 +952,8 @@ void LPVSceneRenderer::SetupSceneUniforms()
 PicoGL::VertexArray* LPVSceneRenderer::CreateVertexArrayFromMeshInfo(const LPVObjLoader::ObjectInfo& meshInfo)
 {
 	PicoGL::VertexBuffer* positions = app->CreateVertexBuffer(PicoGL::Constant::FLOAT, 3, &meshInfo.positions[0], meshInfo.positions.size() * sizeof(meshInfo.positions[0]));
-	PicoGL::VertexBuffer* normals   = app->CreateVertexBuffer(PicoGL::Constant::FLOAT, 3, &meshInfo.normals[0], meshInfo.normals.size() * sizeof(meshInfo.normals[0]));
-	PicoGL::VertexBuffer* tangents  = app->CreateVertexBuffer(PicoGL::Constant::FLOAT, 4, &meshInfo.tangents[0], meshInfo.tangents.size() * sizeof(meshInfo.tangents[0]));
+	PicoGL::VertexBuffer* normals = app->CreateVertexBuffer(PicoGL::Constant::FLOAT, 3, &meshInfo.normals[0], meshInfo.normals.size() * sizeof(meshInfo.normals[0]));
+	PicoGL::VertexBuffer* tangents = app->CreateVertexBuffer(PicoGL::Constant::FLOAT, 4, &meshInfo.tangents[0], meshInfo.tangents.size() * sizeof(meshInfo.tangents[0]));
 	PicoGL::VertexBuffer* texCoords = app->CreateVertexBuffer(PicoGL::Constant::FLOAT, 2, &meshInfo.uvs[0], meshInfo.uvs.size() * sizeof(meshInfo.uvs[0]));
 
 	PicoGL::VertexArray* vertexArray = app->CreateVertexArray()
@@ -959,7 +1129,7 @@ void LPVSceneRenderer::SetupProbeDrawCall(PicoGL::VertexArray* vertexArray, Pico
 
 		probeDrawCall = app.createDrawCall(shader, vertexArray);
 
-}
+	}
 #endif
 }
 
@@ -1276,13 +1446,13 @@ void LPVSceneRenderer::RenderScene(PicoGL::Framebuffer* framebuffer)
 			Vector3 spotLightViewDirection = sLight->ViewSpaceDirection(camera);
 			float spotLightConeAngle = sLight->ConeAngle();
 			ColorRGBA spotLightColor = sLight->Color();
-	
+
 			LPVSpotLight spotLight(spotLightViewPosition, spotLightViewDirection, spotLightConeAngle, spotLightColor);
 
 			std::ostringstream stringStream;
 			stringStream << "u_spot_light[" << (j - 1) << "].";
 			stringStream.str();
-			mesh.drawCall 
+			mesh.drawCall
 				->Uniform((stringStream.str() + "color").c_str(), spotLight.Color())
 				->Uniform((stringStream.str() + "cone").c_str(), spotLight.ConeAngle())
 				->Uniform((stringStream.str() + "view_position").c_str(), spotLightViewDirection)
@@ -1429,7 +1599,7 @@ void LPVSceneRenderer::RenderEnvironment(const Matrix4& inverseViewProjection)
 			->Uniform("u_environment_brightness", environment_brightness)
 			->Draw();
 
-}
+	}
 #if 0
 	function renderEnvironment(inverseViewProjection) {
 
@@ -1645,18 +1815,18 @@ bool LPVSceneRenderer::IsDataTexture(const std::string& imageName)
 PicoGL::Texture* LPVSceneRenderer::LoadTexture(const char* imageName, const PicoGL::Options& options)
 {
 	PicoGL::Options textureOptions;
-	if (textureOptions.size()==0)
+	if (textureOptions.size() == 0)
 	{
 		textureOptions["minFilter"] = PicoGL::Constant::LINEAR_MIPMAP_NEAREST;
 		textureOptions["magFilter"] = PicoGL::Constant::LINEAR;
 		textureOptions["mipmaps"] = PicoGL::Constant::TRUE;
 
-		if (IsDataTexture(imageName)) 
+		if (IsDataTexture(imageName))
 		{
 			textureOptions["internalFormat"] = PicoGL::Constant::RGB8;
 			textureOptions["format"] = PicoGL::Constant::RGB;
 		}
-		else 
+		else
 		{
 			textureOptions["internalFormat"] = PicoGL::Constant::SRGB8_ALPHA8;
 			textureOptions["format"] = PicoGL::Constant::RGBA;
@@ -1708,7 +1878,7 @@ PicoGL::Texture* LPVSceneRenderer::LoadTexture(const char* imageName, const Pico
 			texture.resize(image.width, image.height);
 			texture.data(image);
 			texturesLoaded++;
-	};
+		};
 		image.src = 'assets/' + imageName;
 		return texture;
 
