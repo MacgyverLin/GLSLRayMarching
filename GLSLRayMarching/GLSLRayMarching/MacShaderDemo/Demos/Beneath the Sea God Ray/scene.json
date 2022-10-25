@@ -2,59 +2,26 @@
   "passes": [
     {
       "shader": "image.glsl",
-      "ichannel0": {
-        "texture2d": "tex0.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip": false
-      },
-      "ichannel1": {
-        "texture2d": "tex1.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip": false
-      },
-      "ichannel2": {
-        "texture2d": "tex1.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip": false
-      },
-      "ichannel3": {
-        "gui": [
-          {
-            "checkbox": null,
-            "name": "Test1",
-            "value": true
-          },
-          {
-            "checkbox": null,
-            "name": "Test2",
-            "value": false
-          },
-          {
-            "intslider": null,
-            "name": "Test3",
-            "value": 5,
-            "min": 1,
-            "max": 10
-          },
-          {
-            "floatslider": null,
-            "name": "Test4",
-            "value": 5.0,
-            "min": 1.0,
-            "max": 10.0
-          },
-          {
-            "vec4slider": null,
-            "name": "Test4",
-            "value": [ 5.0, 4.0, 4.0, 1.0 ],
-            "min": 1.0,
-            "max": 10.0
-          }
-        ]
-      },
+      "channels": [
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex1.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex1.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        }
+      ],
       "rendertarget": "image"
     }
   ]
