@@ -183,13 +183,13 @@ public:
 			Document shaderToyDoc;
 			shaderToyDoc.Parse(shaderToyCode.c_str());
 
-			if (!CreateCommon(shaderToyDoc))
+			if (!CreateCommon(shaderToyDoc, folder_))
 				return false;
 
-			if (!CreatePasses(shaderToyDoc, folder_, common.GetShaderPath()))
+			if (!CreatePasses(shaderToyDoc, folder_))
 				return false;
 
-			if (!CreatePostprocessPasses(common.GetShaderPath()))
+			if (!CreatePostprocessPasses())
 				return false;
 		}
 		catch (std::ifstream::failure&)
@@ -216,7 +216,7 @@ public:
 		return passes[i];
 	}
 private:
-	bool CreateCommon(rapidjson::Document& shaderToyDoc)
+	bool CreateCommon(rapidjson::Document& shaderToyDoc, const char *folder)
 	{
 		if (shaderToyDoc.HasMember("common"))
 		{
@@ -224,7 +224,11 @@ private:
 
 			if (commonsJson.HasMember("shader"))
 			{
-				common.shader = commonsJson["shader"].GetString();
+				std::string url = folder;
+				url += "/";
+				url += commonsJson["shader"].GetString();
+
+				common.shader = url;
 				common.valid = true;
 			}
 			else
@@ -242,7 +246,7 @@ private:
 		return true;
 	}
 
-	bool CreatePasses(rapidjson::Document& shaderToyDoc, const char* folder_, const char* commonShaderURL)
+	bool CreatePasses(rapidjson::Document& shaderToyDoc, const char* folder_)
 	{
 		std::string folder = folder_;
 
@@ -254,7 +258,7 @@ private:
 				passes.resize(passesJson.Size());
 				for (int i = 0; i < passesJson.Size(); i++)
 				{
-					if (!CreatePass(passes[i], passesJson[i], folder, commonShaderURL))
+					if (!CreatePass(passes[i], passesJson[i], folder))
 						return false;
 				}
 			}
@@ -299,7 +303,7 @@ private:
 		return data;
 	}
 
-	bool CreatePass(Pass& pass, const rapidjson::Value& passJson, std::string& folder, const char* commonShaderURL)
+	bool CreatePass(Pass& pass, const rapidjson::Value& passJson, std::string& folder)
 	{
 		if (passJson.IsObject())
 		{
@@ -430,7 +434,7 @@ private:
 		return true;
 	}
 
-	bool CreatePostprocessPasses(const char* commonShaderPath)
+	bool CreatePostprocessPasses()
 	{
 		/*
 		if (!CreatePostprocessPass(
@@ -465,8 +469,7 @@ private:
 			{ "linear", "linear" , "linear", "linear" },					// input filter
 			{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
 			"Demos/AMD_FSR/copy.glsl",
-			"backbuffer",
-			commonShaderPath))
+			"backbuffer"))
 			return false;
 
 		return true;
@@ -477,8 +480,7 @@ private:
 		const std::vector<const char*> channelFilters,
 		const std::vector<const char*> channelWraps,
 		const char* shaderFileName,
-		const char* renderTarget,
-		const char* commonShaderURL)
+		const char* renderTarget)
 	{
 		for (int i = 0; i < channelTextureNames.size(); i++)
 		{
