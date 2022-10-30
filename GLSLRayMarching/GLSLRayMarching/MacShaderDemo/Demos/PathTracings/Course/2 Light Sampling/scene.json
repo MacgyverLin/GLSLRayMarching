@@ -2,39 +2,45 @@
   "passes": [
     {
       "shader": "bufferb.glsl",
-      "ichannel0": {
-        "buffer": "bufferb",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "bufferb"
     },
     {
       "shader": "buffera.glsl",
-      "ichannel0": {
-        "buffer": "buffera",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel1": {
-        "buffer": "bufferb",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "buffera"
     },
     {
       "shader": "image.glsl",
-      "ichannel0": {
-        "buffer": "buffera",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel1": {
-        "buffer": "bufferb",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "image"
     }
   ]

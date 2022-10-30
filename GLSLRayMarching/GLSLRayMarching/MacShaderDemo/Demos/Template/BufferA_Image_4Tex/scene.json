@@ -2,30 +2,32 @@
   "passes": [
     {
       "shader": "image.glsl",
-      "ichannel0": {
-        "texture2d": "tex0.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip": false
-      },
-      "ichannel1": {
-        "texture2d": "tex1.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip": false
-      },
-      "ichannel2": {
-        "texture2d": "tex2.png",
-        "filter": "linear",
-        "wrap": "repeat",
-        "vflip": false
-      },
-      "ichannel3": {
-        "texture2d": "tex3.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip": false
-      },
+      "channels": [
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex1.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex2.png",
+          "filter": "linear",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex3.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        }
+      ],
       "rendertarget": "image"
     }
   ]

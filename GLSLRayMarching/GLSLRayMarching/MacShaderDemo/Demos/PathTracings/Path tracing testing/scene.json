@@ -5,59 +5,67 @@
   "passes": [
     {
       "shader": "buffera.glsl",
-      "ichannel0": {
-        "buffer": "buffera",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "image"
     },
     {
       "shader": "bufferb.glsl",
-      "ichannel0": {
-        "buffer": "buffera",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel1": {
-        "buffer": "bufferb",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel2": {
-        "texture2d": "tex_1_2.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip" : true
-      },
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texture2d": "tex_1_2.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
       "rendertarget": "bufferb"
     },
     {
       "shader": "bufferc.glsl",
-      "ichannel0": {
-        "buffer": "bufferb",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel1": {
-        "buffer": "bufferc",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel2": {
-        "buffer": "buffera",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferc",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "bufferc"
     },
     {
       "shader": "image.glsl",
-      "ichannel0": {
-        "buffer": "bufferc",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "bufferc",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "image"
     }
   ]

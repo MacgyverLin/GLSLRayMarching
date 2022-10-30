@@ -72,10 +72,10 @@ bool ShaderToyComponent::OnInitiate()
 bool ShaderToyComponent::OnStart()
 {
 	//return shaderToyRenderer->Initiate("Demos/default");
-	//return shaderToyRenderer->Initiate("Demos/Path Tracing Cornell Box 2");
-	//return shaderToyRenderer->Initiate("Demos/Path Tracing (+ELS)");
+	//???????????return shaderToyRenderer->Initiate("Demos/PathTracings/Path Tracing Cornell Box 2");
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Path Tracing (+ELS)");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Path tracing cornellbox with MIS");
-	//return shaderToyRenderer->Initiate("Demos/[NV15] Space Curvature");streamSourceComponentU
+	//return shaderToyRenderer->Initiate("Demos/[NV15] Space Curvature");//streamSourceComponentU
 	//return shaderToyRenderer->Initiate("Demos/Buoy");
 	//return shaderToyRenderer->Initiate("Demos/Music - Pirates");
 	//return shaderToyRenderer->Initiate("Demos/Fork Heartfelt Nepse 180");
@@ -91,9 +91,9 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/JustForFuns/MO");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Bidirectional path tracing");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Demofox Path Tracing 1");
-	return shaderToyRenderer->Initiate("Demos/PathTracings/Demofox Path Tracing 2");
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Demofox Path Tracing 2");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Path Tracer MIS");
-	//return shaderToyRenderer->Initiate("Demos/PathTracings/PBR Material Gold");
+	//????????????return shaderToyRenderer->Initiate("Demos/PathTracings/PBR Material Gold");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Room DI");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Monte Carlo path tracer");
 	//return shaderToyRenderer->Initiate("Demos/Post process - SSAO");
@@ -107,10 +107,10 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Desert Sand");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Elevated");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Lake in highland");
-	////return shaderToyRenderer->Initiate("Demos/Terrains/Mountains");
-	////return shaderToyRenderer->Initiate("Demos/Terrains/Rainforest");
+	//return shaderToyRenderer->Initiate("Demos/Terrains/Mountains");
+	//return shaderToyRenderer->Initiate("Demos/Terrains/Rainforest");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
-	////return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
+	//return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
 	
 	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
 
@@ -129,8 +129,8 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Bidirectional path tracing");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Room DI");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Spatiotemporal Variance-Guided Filtering");
-	//return shaderToyRenderer->Initiate("Demos/PathTracings/StepByStepTutorial");
-	//return shaderToyRenderer->Initiate("Demos/PathTracings/Cornell MIS");	
+	//??????return shaderToyRenderer->Initiate("Demos/PathTracings/StepByStepTutorial");
+	//该路径下无文件return shaderToyRenderer->Initiate("Demos/PathTracings/Cornell MIS");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/5 Caustics");
 
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/8 SubSurface");	
@@ -140,9 +140,20 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/4 Bidirectional path tracing");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/2 Light Sampling");
-	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
+	//??????return shaderToyRenderer->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/9 Step By Step");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/10 Step By Step");
+	
+	
+	//return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
+	//return shaderToyRenderer->Initiate("Demos/Hand-drawn Sketch");
+	//return shaderToyRenderer->Initiate("Demos/Shader try of Star of Bethlehem"); 
+	//return shaderToyRenderer->Initiate("Demos/Template/BufferA_Image"); 
+	//return shaderToyRenderer->Initiate("Demos/Template/BufferA_Image_4Tex"); 
+	//return shaderToyRenderer->Initiate("Demos/Template/Common_Image"); 
+	//return shaderToyRenderer->Initiate("Demos/Where The Water Go"); 
+
+
 }
 
 bool ShaderToyComponent::OnUpdate()
