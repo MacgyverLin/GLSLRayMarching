@@ -75,7 +75,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Path Tracing Cornell Box 2");
 	//return shaderToyRenderer->Initiate("Demos/Path Tracing (+ELS)");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Path tracing cornellbox with MIS");
-	//return shaderToyRenderer->Initiate("Demos/[NV15] Space Curvature");streamSourceComponentU
+	//return shaderToyRenderer->Initiate("Demos/[NV15] Space Curvature");
 	//return shaderToyRenderer->Initiate("Demos/Buoy");
 	//return shaderToyRenderer->Initiate("Demos/Music - Pirates");
 	//return shaderToyRenderer->Initiate("Demos/Fork Heartfelt Nepse 180");
@@ -91,7 +91,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/JustForFuns/MO");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Bidirectional path tracing");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Demofox Path Tracing 1");
-	return shaderToyRenderer->Initiate("Demos/PathTracings/Demofox Path Tracing 2");
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Demofox Path Tracing 2");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Path Tracer MIS");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/PBR Material Gold");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Room DI");
@@ -105,11 +105,12 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Scattering/RealySimpleAtmosphericScatter");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Cloudy Terrain");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Desert Sand");
-	//return shaderToyRenderer->Initiate("Demos/Terrains/Elevated");
+	return shaderToyRenderer->Initiate("Demos/Terrains/Elevated");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Lake in highland");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Mountains");
 	////return shaderToyRenderer->Initiate("Demos/Terrains/Rainforest");
-	//return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
+	// return shaderToyRenderer->Initiate("Demos/Fractal");
+	// return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
 	////return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
 	
 	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
