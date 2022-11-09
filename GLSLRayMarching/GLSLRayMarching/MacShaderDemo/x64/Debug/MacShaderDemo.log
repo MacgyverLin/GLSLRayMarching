@@ -1,0 +1,351 @@
+﻿  LPVMtlLoader.cpp
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\LPVCommon.h(90,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\LPVCommon.h(194,20): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  main.cpp
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\KeyboardTexture.h(19,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(155,32): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(155,29): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(155,26): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(166,67): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(166,44): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(169,54): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(169,47): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(173,57): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(173,50): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(228,34): warning C4244: '=': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(229,34): warning C4244: '=': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\Pass.h(230,34): warning C4244: '=': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\ShaderToyConfig.h(211,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\ShaderToyConfig.h(255,23): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\ShaderToyConfig.h(309,22): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\ShaderToyRenderer.h(513,1): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\Camera.h(68,45): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DNJoint.h(58,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DNJoint.h(102,39): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2D2Joint.h(39,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2D2Joint.h(43,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DCCDJoint.h(23,15): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DCCDJoint.h(71,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DCCDJoint.h(116,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DCCDJoint.h(66,10): warning C4101: 'turnAngle': unreferenced local variable
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DCCDJoint.h(145,29): warning C4244: 'return': conversion from 'unsigned __int64' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DFABRIKJoint.h(19,15): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DFABRIKJoint.h(77,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DFABRIKJoint.h(126,29): warning C4244: 'return': conversion from 'unsigned __int64' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(35,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(61,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(63,19): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(165,40): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(170,1): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(230,96): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(230,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(270,50): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(270,30): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(277,40): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(282,1): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(318,96): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(318,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(345,96): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(345,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(383,1): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(383,50): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(383,30): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(390,40): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(395,1): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(431,96): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(431,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(458,96): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(458,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(495,50): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(495,30): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(502,40): warning C4244: 'argument': conversion from 'float' to 'const unsigned __int64', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(507,1): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(545,96): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(545,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(572,96): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(572,73): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeometryTextureScene.h(283,21): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeometryTextureScene.h(296,89): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeometryTextureScene.h(296,66): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeometryTextureScene.h(298,86): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeometryTextureScene.h(298,63): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeometryTextureScene.h(314,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(46,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(48,22): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(50,23): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(65,1): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(351,36): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(351,32): warning C4244: 'argument': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(402,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(462,30): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(473,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(612,21): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(614,22): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(619,102): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(619,77): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(619,46): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(619,27): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(621,48): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(621,29): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(627,21): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(629,22): warning C4018: '<': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(638,29): warning C4018: '<=': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(640,29): warning C4018: '<=': signed/unsigned mismatch
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(737,73): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(737,56): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(759,73): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(759,56): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(869,1): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(882,71): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(882,54): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(911,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmap.h(921,23): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(221,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(222,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(431,101): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(431,74): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(493,94): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(493,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(494,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorph.h(494,61): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\TerrainCameraComponent.h(36,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\TerrainCameraComponent.h(68,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\TerrainCameraComponent.h(70,19): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmapTerrainScene.h(105,100): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMipmapTerrainScene.h(105,77): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorphTerrainScene.h(108,99): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\GeoMorphTerrainScene.h(108,76): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\LPVCommon.h(90,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\LPVCommon.h(194,20): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\LPVSpotLight.h(11,14): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\Shape.h(124,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\Shape.h(120): message : while compiling class template member function 'bool Shape<IK2DFABRIKJointShape::UniformData>::End(void)'
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(505): message : see reference to function template instantiation 'bool Shape<IK2DFABRIKJointShape::UniformData>::End(void)' being compiled
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\MacShaderDemo\IKShapes.h(506): message : see reference to class template instantiation 'Shape<IK2DFABRIKJointShape::UniformData>' being compiled
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\GradientDescent.h(67,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\GradientDescent.h(66): message : while compiling class template member function 'int GradientDescent<Vector2>::GetValueCount(void) const'
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DNJoint.h(102): message : see reference to function template instantiation 'int GradientDescent<Vector2>::GetValueCount(void) const' being compiled
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DNJoint.h(113): message : see reference to class template instantiation 'GradientDescent<Vector2>' being compiled
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\GradientDescent.h(29,15): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\GradientDescent.h(26): message : while compiling class template member function 'GradientDescent<Vector2> &GradientDescent<Vector2>::Begin(float,float,float)'
+C:\programs\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\IK2DNJoint.h(21): message : see reference to function template instantiation 'GradientDescent<Vector2> &GradientDescent<Vector2>::Begin(float,float,float)' being compiled
+  Generating Code...
+  LINK : C:\programs\GLSLRayMarching\GLSLRayMarching\x64\Debug\MacShaderDemo.exe not found or not built by the last incremental link; performing full link
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  MacShaderDemo.vcxproj -> C:\programs\GLSLRayMarching\GLSLRayMarching\x64\Debug\MacShaderDemo.exe

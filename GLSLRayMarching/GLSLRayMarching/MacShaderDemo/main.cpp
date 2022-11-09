@@ -77,7 +77,6 @@ private:
 
 int main(int argc, char** argv)
 {
-	// ¿Óù˝ do change here as well
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
 	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "LightPropagationVolumes"))
 		return -1;

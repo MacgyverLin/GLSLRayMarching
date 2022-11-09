@@ -5,22 +5,46 @@
 #include "Video.h"
 #include "LPVCommon.h"
 #include "ColorRGBA.h"
+#include <fstream>
 
 class LPVMtlLoader
 {
 public:
 	struct MaterialInfo
 	{
-		bool hasMapKd;
+		ColorRGBA Ka;
 		ColorRGBA Kd;
+		ColorRGBA Ks;
+		ColorRGBA Ke;
+		ColorRGBA Tf;
+
+		float Ns;
+		float Ni;
+		float d;
+		float Tr;
+
+		int illum;
+
+		bool hasMapKa;
+		std::string map_Ka;
+
+		bool hasMapKd;
 		std::string map_Kd;
 
 		bool hasMapKs;
-		ColorRGBA Ks;
 		std::string map_Ks;
-		
+
+		bool hasMapd;
+		std::string map_d;
+
 		bool hasMapNorm;
 		std::string map_norm;
+
+		bool hasMapbump;
+		std::string map_bump;
+
+		bool hasbump;
+		std::string bump;
 	};
 	LPVMtlLoader();
 
