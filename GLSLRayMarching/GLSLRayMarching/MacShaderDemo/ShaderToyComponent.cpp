@@ -84,7 +84,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Clouds/Cheap Cloud Flythrough");//
 	//return shaderToyRenderer->Initiate("Demos/Clouds/Cloud");//
 	//return shaderToyRenderer->Initiate("Demos/Clouds/CloudFight");//
-	return shaderToyRenderer->Initiate("Demos/Clouds/Cloud2");//
+	//return shaderToyRenderer->Initiate("Demos/Clouds/Cloud2");//
 	//return shaderToyRenderer->Initiate("Demos/default");
 	//return shaderToyRenderer->Initiate("Demos/Greek Temple");
 	//return shaderToyRenderer->Initiate("Demos/JustForFuns/Hexagonal Grid Traversal - 3D");		
@@ -152,6 +152,47 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Template/BufferA_Image_4Tex"); 
 	//return shaderToyRenderer->Initiate("Demos/Template/Common_Image"); 
 	//return shaderToyRenderer->Initiate("Demos/Where The Water Go"); 
+
+
+	//return shaderToyRenderer->Initiate("Demos/Wednesday messing around");
+	//return shaderToyRenderer->Initiate("Demos/Tunnel Experiment #2"); 
+	//return shaderToyRenderer->Initiate("Demos/Controllable Machinery");
+	//return shaderToyRenderer->Initiate("Demos/Coastal Landscape");
+	//return shaderToyRenderer->Initiate("Demos/Pig Squad 9 Year Anniversary");
+	//return shaderToyRenderer->Initiate("Demos/Cubic Dispersal");
+	//return shaderToyRenderer->Initiate("Demos/Color processing");
+	//return shaderToyRenderer->Initiate("Demos/Space ship");
+	//return shaderToyRenderer->Initiate("Demos/Stars and galaxy");
+	//return shaderToyRenderer->Initiate("Demos/Party Concert Visuals 2020");
+	//return shaderToyRenderer->Initiate("Demos/OMZG Shader Royale - NuSan");
+	//return shaderToyRenderer->Initiate("Demos/RME4 - Crater");
+	//return shaderToyRenderer->Initiate("Demos/CLUB-CAVE-09");
+	//return shaderToyRenderer->Initiate("Demos/Alexander horned sphere zoom");
+	//return shaderToyRenderer->Initiate("Demos/Spiraled Layers");
+	//return shaderToyRenderer->Initiate("Demos/Taste of Noise 7");
+	//return shaderToyRenderer->Initiate("Demos/Cable nest");
+	//return shaderToyRenderer->Initiate("Demos/Apollian with a twist");
+	//return shaderToyRenderer->Initiate("Demos/Night Sneakings");
+	//return shaderToyRenderer->Initiate("Demos/Energy plant");
+	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
+	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
+	//return shaderToyRenderer->Initiate("Demos/Neon Dance");
+	//return shaderToyRenderer->Initiate("Demos/Extruded Truchet Pattern");
+	//return shaderToyRenderer->Initiate("Demos/Liberation of the True Self");
+	//return shaderToyRenderer->Initiate("Demos/Dry ice 2");
+	//return shaderToyRenderer->Initiate("Demos/PUMA CLYDE CONCEPT");
+	//return shaderToyRenderer->Initiate("Demos/Neon Tunnel");
+	//return shaderToyRenderer->Initiate("Demos/Not Day");
+	//return shaderToyRenderer->Initiate("Demos/Warped Extruded Skewed Grid");
+	//return shaderToyRenderer->Initiate("Demos/Underground Passageway");
+	
+
+    //return shaderToyRenderer->Initiate("Demos/Waterfall - Procedural GFX");
+    /////return shaderToyRenderer->Initiate("Demos/Twizzly Circle Mess");
+	/////return shaderToyRenderer->Initiate("Demos/simple refraction test");
+	/////return shaderToyRenderer->Initiate("Demos/Desperate Distraction");
+    ////return shaderToyRenderer->Initiate("Demos/Asymmetric Hexagon Landscape");
+
 
 
 }
