@@ -142,7 +142,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>../../../3rdparty/OpenAL/libs/Win64/OpenAL32.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>
@@ -167,7 +167,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>../../../3rdparty/OpenAL/libs/Win64/OpenAL32.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core.lib; </AdditionalDependencies>
+      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>

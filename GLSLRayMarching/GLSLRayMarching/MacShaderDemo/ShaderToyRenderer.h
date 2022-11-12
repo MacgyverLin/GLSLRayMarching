@@ -507,10 +507,10 @@ public:
 
 
 
-		std::vector<char> data;
-		streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
+		//std::vector<char> data;
+		//streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
 		// streamSourceComponent.GetEmptyData(data);
-		streamSourceComponent.FillData(&data[0], data.size());
+		//streamSourceComponent.FillData(&data[0], data.size());
 
 		return true;
 	}
