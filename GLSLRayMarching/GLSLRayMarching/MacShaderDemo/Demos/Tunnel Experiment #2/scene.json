@@ -1,0 +1,48 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        },
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        },
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        },
+        {
+          "texture2d": "tex3.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

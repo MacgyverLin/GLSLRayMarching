@@ -230,12 +230,14 @@
   "passes": [
     {
       "shader": "image.glsl",
-      "ichannel0": {
-        "texture2d": "tex0.png",
-        "filter": "mipmap",
-        "wrap": "repeat",
-        "vflip": true
-      },
+      "channels": [
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
       "rendertarget": "image"
     }
   ]

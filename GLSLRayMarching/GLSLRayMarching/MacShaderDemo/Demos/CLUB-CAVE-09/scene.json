@@ -1,0 +1,32 @@
+{
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+        {
+          "texture2d": "tex0.png",
+          "filter": "linear",
+          "wrap": "repeat",
+          "vflip": true
+        },
+        {
+          "buffer": "buffera",
+          "filter": "nearest",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "nearest",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

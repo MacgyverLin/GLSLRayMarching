@@ -5,57 +5,67 @@
   "passes": [
     {
       "shader": "buffera.glsl",
-      "ichannel0": {
-        "buffer": "buffera",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel1": {
-        "keyboard": "",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "keyboard": "",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "buffera"
     },
     {
       "shader": "bufferb.glsl",
-      "ichannel0": {
-        "buffer": "buffera",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
-      "ichannel1": {
-        "buffer": "bufferb",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "bufferb"
     },
     {
       "shader": "bufferc.glsl",
-      "ichannel0": {
-        "buffer": "bufferb",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "bufferc"
     },
     {
       "shader": "bufferd.glsl",
-      "ichannel0": {
-        "buffer": "bufferc",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "bufferc",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "bufferd"
     },
     {
       "shader": "image.glsl",
-      "ichannel0": {
-        "buffer": "bufferd",
-        "filter": "linear",
-        "wrap": "clamp"
-      },
+      "channels": [
+        {
+          "buffer": "bufferd",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
       "rendertarget": "image"
     }
   ]
