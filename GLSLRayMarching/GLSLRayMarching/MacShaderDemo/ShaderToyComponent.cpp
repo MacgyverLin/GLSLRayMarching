@@ -172,7 +172,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Taste of Noise 7");
 	//return shaderToyRenderer->Initiate("Demos/Cable nest");
 	//return shaderToyRenderer->Initiate("Demos/Apollian with a twist");
-	return shaderToyRenderer->Initiate("Demos/Night Sneakings");
+	//return shaderToyRenderer->Initiate("Demos/Night Sneakings");
 	//return shaderToyRenderer->Initiate("Demos/Energy plant");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
@@ -193,8 +193,7 @@ bool ShaderToyComponent::OnStart()
 	/////return shaderToyRenderer->Initiate("Demos/Desperate Distraction");
     ////return shaderToyRenderer->Initiate("Demos/Asymmetric Hexagon Landscape");
 
-
-
+	return shaderToyRenderer->Initiate("Demos/Octagrams");
 }
 
 bool ShaderToyComponent::OnUpdate()
