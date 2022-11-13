@@ -10,7 +10,7 @@
 #include "Audio.h"
 #include "GameObject.h"
 
-// #define ENABLE_AUDIO 
+#define ENABLE_AUDIO 
 
 #ifdef ENABLE_AUDIO
 #include <al.h>
@@ -736,7 +736,7 @@ void Audio::ListenerComponent::SetGain(float gain)
 }
 
 float Audio::ListenerComponent::GetGain() const
-{
+{ 
 	Assert(impl);
 
 	return impl->gain;

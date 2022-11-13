@@ -92,6 +92,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/rapidjson/include;   ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN32/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,7 +110,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/rapidjson/include;   ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/rapidjson/include;   ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN32/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +154,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/rapidjson/include;    ../../../3rdparty/rapidjson/include; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

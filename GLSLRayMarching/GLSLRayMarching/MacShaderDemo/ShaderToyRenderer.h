@@ -505,12 +505,10 @@ public:
 		webcamTexture.UpdateData();
 		microphoneTexture.UpdateData();
 
-
-
-		//std::vector<char> data;
-		//streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
-		// streamSourceComponent.GetEmptyData(data);
-		//streamSourceComponent.FillData(&data[0], data.size());
+		std::vector<char> data;
+		streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
+		//streamSourceComponent.GetEmptyData(data);
+		streamSourceComponent.FillData(&data[0], data.size());
 
 		return true;
 	}

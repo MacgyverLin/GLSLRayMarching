@@ -1,7 +1,6 @@
 #include "ShaderToyCamera.h"
 #include "Video.h"
 #include "RenderStates.h"
-
 //////////////////////////////////////////////////////////////
 ShaderToyCamera::ShaderToyCamera(GameObject& gameObject_)
 : CameraComponent(gameObject_)

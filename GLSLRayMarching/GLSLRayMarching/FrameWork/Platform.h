@@ -10,6 +10,7 @@
 #define _Platform_h_
 
 // include some basics Headers
+#include <stdint.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
