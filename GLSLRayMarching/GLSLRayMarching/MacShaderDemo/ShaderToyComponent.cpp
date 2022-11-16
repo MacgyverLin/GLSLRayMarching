@@ -193,7 +193,10 @@ bool ShaderToyComponent::OnStart()
 	/////return shaderToyRenderer->Initiate("Demos/Desperate Distraction");
     ////return shaderToyRenderer->Initiate("Demos/Asymmetric Hexagon Landscape");
 
-	return shaderToyRenderer->Initiate("Demos/Octagrams");
+	//return shaderToyRenderer->Initiate("Demos/Octagrams");
+	//return shaderToyRenderer->Initiate("Demos/Glass Polyhedron");
+	//return shaderToyRenderer->Initiate("Demos/Sirenian Dawn");
+	return shaderToyRenderer->Initiate("Demos/Another better ocean");
 }
 
 bool ShaderToyComponent::OnUpdate()
