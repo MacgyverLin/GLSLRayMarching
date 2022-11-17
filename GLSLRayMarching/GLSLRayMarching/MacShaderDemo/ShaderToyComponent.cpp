@@ -172,7 +172,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Taste of Noise 7");
 	//return shaderToyRenderer->Initiate("Demos/Cable nest");
 	//return shaderToyRenderer->Initiate("Demos/Apollian with a twist");
-	return shaderToyRenderer->Initiate("Demos/Night Sneakings");
+	//return shaderToyRenderer->Initiate("Demos/Night Sneakings");
 	//return shaderToyRenderer->Initiate("Demos/Energy plant");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
@@ -185,13 +185,67 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Not Day");
 	//return shaderToyRenderer->Initiate("Demos/Warped Extruded Skewed Grid");
 	//return shaderToyRenderer->Initiate("Demos/Underground Passageway");
-	
 
-    //return shaderToyRenderer->Initiate("Demos/Waterfall - Procedural GFX");
+
+	//return shaderToyRenderer->Initiate("Demos/Re-entry");
+	//return shaderToyRenderer->Initiate("Demos/Shine On You Crazy Ball");
+	//return shaderToyRenderer->Initiate("Demos/Abandoned Construction");
+	return shaderToyRenderer->Initiate("Demos/Tempting the Mariner");
+	//return shaderToyRenderer->Initiate("Demos/Blurry Spheres");
+	//return shaderToyRenderer->Initiate("Demos/Echeveria II"); 
+	//return shaderToyRenderer->Initiate("Demos/Alien Core");
+	//return shaderToyRenderer->Initiate("Demos/Boxy Pikachu");
+	//return shaderToyRenderer->Initiate("Demos/Triangle Grid Contouring");
+	//return shaderToyRenderer->Initiate("Demos/Abstract Terrain Objects");
+	//return shaderToyRenderer->Initiate("Demos/The Amazing World of Gumball");
+	//return shaderToyRenderer->Initiate("Demos/Backlit Lighthouse");
+	//return shaderToyRenderer->Initiate("Demos/Patience 2");
+	//return shaderToyRenderer->Initiate("Demos/Anthropo[s]cene is dead");
+	//return shaderToyRenderer->Initiate("Demos/Geodesic tiling");
+	//return shaderToyRenderer->Initiate("Demos/At The Mountains");
+	//return shaderToyRenderer->Initiate("Demos/Protean clouds");
+	//return shaderToyRenderer->Initiate("Demos/dez");
+	//return shaderToyRenderer->Initiate("Demos/Digiverse - worms (a.ka pasta)");
+	//return shaderToyRenderer->Initiate("Demos/Ocean Structure");
+    //return shaderToyRenderer->Initiate("Demos/Rising Box");
+	//return shaderToyRenderer->Initiate("Demos/[SH18]ForgottenLand");
+	//return shaderToyRenderer->Initiate("Demos/Desert Bus");
+	//return shaderToyRenderer->Initiate("Demos/Neon Lit Hexagons");
+	//return shaderToyRenderer->Initiate("Demos/[SH18] Rabbit Character");
+	//return shaderToyRenderer->Initiate("Demos/Shuto Highway 83");
+	//return shaderToyRenderer->Initiate("Demos/glyphspinner");
+	//return shaderToyRenderer->Initiate("Demos/Server Room");
+	//return shaderToyRenderer->Initiate("Demos/Repelling");
+	//return shaderToyRenderer->Initiate("Demos/sphere intersect pub");
+	//return shaderToyRenderer->Initiate("Demos/The red hiker");
+    //return shaderToyRenderer->Initiate("Demos/The Eye");
+	//return shaderToyRenderer->Initiate("Demos/Desert Canyon");
+	//return shaderToyRenderer->Initiate("Demos/Neon World");
+	//return shaderToyRenderer->Initiate("Demos/Simple Greeble - Split4");
+	//return shaderToyRenderer->Initiate("Demos/Alphaville");
+	//return shaderToyRenderer->Initiate("Demos/Iceberg");
+	//return shaderToyRenderer->Initiate("Demos/Moebius Ants");
+	//return shaderToyRenderer->Initiate("Demos/The evolution of motion");
+	//return shaderToyRenderer->Initiate("Demos/Flux Core");
+	//return shaderToyRenderer->Initiate("Demos/Fruxis");
+
+
+	
+    
+   
+
+    //The following demos rendering results are different from the correct results, or cannot be run.
+    ////return shaderToyRenderer->Initiate("Demos/Waterfall - Procedural GFX");
     /////return shaderToyRenderer->Initiate("Demos/Twizzly Circle Mess");
 	/////return shaderToyRenderer->Initiate("Demos/simple refraction test");
 	/////return shaderToyRenderer->Initiate("Demos/Desperate Distraction");
     ////return shaderToyRenderer->Initiate("Demos/Asymmetric Hexagon Landscape");
+    ////return shaderToyRenderer->Initiate("Demos/Coronavirus-2020");
+    ////return shaderToyRenderer->Initiate("Demos/Ball Room Dance");
+	////return shaderToyRenderer->Initiate("Demos/Ethics Gradient");
+	////return shaderToyRenderer->Initiate("Demos/Squishy balls");
+    ////return shaderToyRenderer->Initiate("Demos/Androgynous bolts");
+    
 
 
 
