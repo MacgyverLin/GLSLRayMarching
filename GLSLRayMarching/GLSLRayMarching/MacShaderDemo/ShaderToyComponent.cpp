@@ -190,7 +190,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Re-entry");
 	//return shaderToyRenderer->Initiate("Demos/Shine On You Crazy Ball");
 	//return shaderToyRenderer->Initiate("Demos/Abandoned Construction");
-	return shaderToyRenderer->Initiate("Demos/Tempting the Mariner");
+	//return shaderToyRenderer->Initiate("Demos/Tempting the Mariner");
 	//return shaderToyRenderer->Initiate("Demos/Blurry Spheres");
 	//return shaderToyRenderer->Initiate("Demos/Echeveria II"); 
 	//return shaderToyRenderer->Initiate("Demos/Alien Core");
@@ -226,7 +226,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Iceberg");
 	//return shaderToyRenderer->Initiate("Demos/Moebius Ants");
 	//return shaderToyRenderer->Initiate("Demos/The evolution of motion");
-	//return shaderToyRenderer->Initiate("Demos/Flux Core");
+	return shaderToyRenderer->Initiate("Demos/Flux Core");
 	//return shaderToyRenderer->Initiate("Demos/Fruxis");
 
 
