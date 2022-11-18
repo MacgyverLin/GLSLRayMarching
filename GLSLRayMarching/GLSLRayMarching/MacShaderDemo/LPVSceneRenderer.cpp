@@ -1472,9 +1472,9 @@ void LPVSceneRenderer::RenderScene(PicoGL::Framebuffer* framebuffer)
 			->Uniform("u_render_indirect_light", render_indirect_light)
 			->Uniform("u_indirect_light_attenuation", indirect_light_attenuation)
 			->Texture("u_shadow_map", shadowMap)
-			->Texture("u_red_indirect_light", framebuffer->GetColorTextures()[0])
-			->Texture("u_green_indirect_light", framebuffer->GetColorTextures()[1])
-			->Texture("u_blue_indirect_light", framebuffer->GetColorTextures()[2])
+			->Texture("u_red_indirect_light", framebuffer->GetColorTextures().at(0))
+			->Texture("u_green_indirect_light", framebuffer->GetColorTextures().at(1))
+			->Texture("u_blue_indirect_light", framebuffer->GetColorTextures().at(2))
 			->Draw();
 
 
@@ -1548,9 +1548,9 @@ void LPVSceneRenderer::RenderLpvCells(const Matrix4& viewProjection)
 		PicoGL::Framebuffer* lpvbuffers = lpv->accumulatedBuffer;
 
 		probeDrawCall
-			->Texture("u_lpv_red", lpvbuffers->GetColorTextures()[0])
-			->Texture("u_lpv_green", lpvbuffers->GetColorTextures()[1])
-			->Texture("u_lpv_blue", lpvbuffers->GetColorTextures()[2])
+			->Texture("u_lpv_red", lpvbuffers->GetColorTextures().at(0))
+			->Texture("u_lpv_green", lpvbuffers->GetColorTextures().at(1))
+			->Texture("u_lpv_blue", lpvbuffers->GetColorTextures().at(2))
 			->Uniform("u_lpv_size", lpvGridSize)
 			->Uniform("u_projection_from_world", viewProjection)
 			->Draw();

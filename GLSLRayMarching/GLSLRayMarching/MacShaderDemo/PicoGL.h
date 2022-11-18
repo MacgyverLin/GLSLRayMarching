@@ -292,6 +292,21 @@ namespace PicoGL
 		FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL,
 		FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE,
 		COLOR_ATTACHMENT0,
+		COLOR_ATTACHMENT1,
+		COLOR_ATTACHMENT2,
+		COLOR_ATTACHMENT3,
+		COLOR_ATTACHMENT4,
+		COLOR_ATTACHMENT5,
+		COLOR_ATTACHMENT6,
+		COLOR_ATTACHMENT7,
+		COLOR_ATTACHMENT8,
+		COLOR_ATTACHMENT9,
+		COLOR_ATTACHMENT10,
+		COLOR_ATTACHMENT11,
+		COLOR_ATTACHMENT12,
+		COLOR_ATTACHMENT13,
+		COLOR_ATTACHMENT14,
+		COLOR_ATTACHMENT15,
 		DEPTH_ATTACHMENT,
 		STENCIL_ATTACHMENT,
 		DEPTH_STENCIL_ATTACHMENT,
@@ -467,21 +482,6 @@ namespace PicoGL
 		RENDERBUFFER_SAMPLES,
 		FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER,
 		MAX_COLOR_ATTACHMENTS,
-		COLOR_ATTACHMENT1,
-		COLOR_ATTACHMENT2,
-		COLOR_ATTACHMENT3,
-		COLOR_ATTACHMENT4,
-		COLOR_ATTACHMENT5,
-		COLOR_ATTACHMENT6,
-		COLOR_ATTACHMENT7,
-		COLOR_ATTACHMENT8,
-		COLOR_ATTACHMENT9,
-		COLOR_ATTACHMENT10,
-		COLOR_ATTACHMENT11,
-		COLOR_ATTACHMENT12,
-		COLOR_ATTACHMENT13,
-		COLOR_ATTACHMENT14,
-		COLOR_ATTACHMENT15,
 		FRAMEBUFFER_INCOMPLETE_MULTISAMPLE,
 		MAX_SAMPLES,
 		HALF_FLOAT,
@@ -636,6 +636,7 @@ namespace PicoGL
 
 		MAX_TEXTURE_UNITS,
 		MAX_UNIFORM_BUFFERS,
+		MAX_UNIFORM_LOCATIONS,
 		COMPRESSED_TYPES
 	};
 
@@ -739,6 +740,49 @@ namespace PicoGL
 			@return {Query} The Query object.
 		*/
 		~Query();
+	};
+
+	/**
+		Tranform feedback object.
+
+		@class
+		@prop {WebGLRenderingContext} gl The WebGL context.
+		@prop {WebGLTransformFeedback} transformFeedback Transform feedback object.
+		@prop {Object} appState Tracked GL state.
+	*/
+	class TransformFeedback
+	{
+	public:
+		TransformFeedback(State* state);
+
+		/**
+			Bind a feedback buffer to capture transform output.
+
+			@method
+			@param {number} index Index of transform feedback varying to capture.
+			@param {VertexBuffer} buffer Buffer to record output into.
+			@return {TransformFeedback} The TransformFeedback object.
+		*/
+		TransformFeedback* FeedbackBuffer(int index, VertexBuffer* buffer);
+
+		/**
+			Delete this transform feedback.
+
+			@method
+			@return {TransformFeedback} The TransformFeedback object.
+		*/
+		~TransformFeedback();
+
+		/**
+			Bind this transform feedback.
+
+			@method
+			@ignore
+			@return {TransformFeedback} The TransformFeedback object.
+		*/
+		TransformFeedback* Bind();
+	private:
+		State* state;
 	};
 
 
@@ -884,7 +928,26 @@ namespace PicoGL
 
 		~DrawCall();
 	private:
+		PicoGL::Program* currentProgram;
+		PicoGL::VertexArray* currentVertexArray;
+		PicoGL::TransformFeedback* currentTransformFeedback;
 		State* state;
+		
+		std::map<int, int> uniformIndices;
+		std::vector<std::string> uniformNames;
+		std::vector<int> uniformValues;
+		int uniformCount;
+		std::vector<PicoGL::UniformBuffer*> uniformBuffers;
+		std::vector<std::string> uniformBlockNames;
+		std::map<int, int> uniformBlockBases;
+		int uniformBlockCount;
+		std::map<int, int> samplerIndices;
+		std::vector<PicoGL::Texture*> textures;
+		int textureCount;
+		PicoGL::Constant primitive;
+
+		int numElements;
+		int numInstances;
 	};
 
 	/**
@@ -987,17 +1050,17 @@ namespace PicoGL
 			return numColorTargets;
 		}
 
-		const std::vector < Texture*>& GetColorTextures()
+		const std::map<int, Texture*>& GetColorTextures()
 		{
 			return colorTextures;
 		}
 
-		const std::vector < Texture*>& GetColorAttachments()
+		const std::map<int, PicoGL::Constant>& GetColorAttachments()
 		{
-			return  colorAttachments;
+			return colorAttachments;
 		}
 
-		const std::vector<Texture*>& GetColorTextureTargets()
+		const std::map<int, PicoGL::Constant>& GetColorTextureTargets()
 		{
 			return colorTextureTargets;
 		}
@@ -1007,7 +1070,7 @@ namespace PicoGL
 			return depthTexture;
 		}
 
-		Texture* DepthTextureTarget()
+		PicoGL::Constant DepthTextureTarget()
 		{
 			return depthTextureTarget;
 		}
@@ -1017,11 +1080,11 @@ namespace PicoGL
 
 		int numColorTargets;
 
-		std::vector < Texture*> colorTextures;
-		std::vector < Texture*> colorAttachments;
-		std::vector<Texture*> colorTextureTargets;
+		std::map<int, Texture*> colorTextures;
+		std::map<int, PicoGL::Constant> colorAttachments;
+		std::map<int, PicoGL::Constant> colorTextureTargets;
 		Texture* depthTexture;
-		Texture* depthTextureTarget;
+		PicoGL::Constant depthTextureTarget;
 	};
 
 	/**
@@ -1038,6 +1101,7 @@ namespace PicoGL
 
 	class Program
 	{
+		friend class DrawCall;
 	private:
 		class UniformClass
 		{
@@ -1150,9 +1214,9 @@ namespace PicoGL
 			@return {Program} The Program object.
 		*/
 		template<class T>
-		Program& Uniform(const char* name, const T& value)
+		Program* Uniform(const char* name, const T& value)
 		{
-			uniforms[name].Set(value);
+			uniforms[name]->Set(value);
 
 			return this;
 
@@ -1164,11 +1228,11 @@ namespace PicoGL
 		}
 
 		template<class T>
-		Program& Uniform(const char* name, const T* value, int count)
+		Program* Uniform(const char* name, const T* value, int count)
 		{
 			uniforms[name].Set(value, count);
 
-			return *this;
+			return this;
 		}
 
 		// 
@@ -1202,6 +1266,7 @@ namespace PicoGL
 	*/
 	class Texture
 	{
+		friend class Framebuffer;
 	public:
 		Texture(State* state, PicoGL::Constant target, const void* image, int width, int height, int depth, bool is3D, const Options& options);
 		/**
@@ -1245,7 +1310,9 @@ namespace PicoGL
 		*/
 		Texture* Bind(int unit);
 	private:
+		unsigned int texture;
 		State* state;
+		bool is3D;
 	};
 
 	/**
@@ -1272,50 +1339,6 @@ namespace PicoGL
 	};
 
 	/**
-		Tranform feedback object.
-
-		@class
-		@prop {WebGLRenderingContext} gl The WebGL context.
-		@prop {WebGLTransformFeedback} transformFeedback Transform feedback object.
-		@prop {Object} appState Tracked GL state.
-	*/
-	class TransformFeedback
-	{
-	public:
-		TransformFeedback(State* state);
-
-		/**
-			Bind a feedback buffer to capture transform output.
-
-			@method
-			@param {number} index Index of transform feedback varying to capture.
-			@param {VertexBuffer} buffer Buffer to record output into.
-			@return {TransformFeedback} The TransformFeedback object.
-		*/
-		TransformFeedback* FeedbackBuffer(int index, VertexBuffer* buffer);
-
-		/**
-			Delete this transform feedback.
-
-			@method
-			@return {TransformFeedback} The TransformFeedback object.
-		*/
-		~TransformFeedback();
-
-		/**
-			Bind this transform feedback.
-
-			@method
-			@ignore
-			@return {TransformFeedback} The TransformFeedback object.
-		*/
-		TransformFeedback* Bind();
-	private:
-		State* state;
-	};
-
-
-	/**
 		Storage for uniform data. Data is stored in std140 layout.
 
 		@class
@@ -1339,7 +1362,7 @@ namespace PicoGL
 		std::vector<int> offsets;
 		std::vector<int> sizes;
 		std::vector<PicoGL::Constant> types;
-		int size = 0;
+		int size;
 		PicoGL::Constant usage;
 		State* state;
 
@@ -1415,6 +1438,8 @@ namespace PicoGL
 	*/
 	class VertexArray
 	{
+		friend class VertexBuffer;
+		friend class DrawCall;
 	public:
 		VertexArray(State* state);
 
@@ -1521,7 +1546,14 @@ namespace PicoGL
 		*/
 		VertexArray* AttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer, bool instanced, bool integer, bool normalized);
 	private:
+		unsigned int vertexArray;
 		State* state;
+		int numElements;
+		PicoGL::Constant indexType;
+		int instancedBuffers;
+		bool indexed;
+		int numInstances;
+		bool instanced;
 	};
 
 	/**
@@ -1540,6 +1572,7 @@ namespace PicoGL
 	*/
 	class VertexBuffer
 	{
+		friend class VertexArray;
 	public:
 		VertexBuffer(State* state, PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage = PicoGL::Constant::STATIC_DRAW, bool indexType = false);
 
@@ -1560,8 +1593,16 @@ namespace PicoGL
 			@return {VertexBuffer} The VertexBuffer object.
 		*/
 		~VertexBuffer();
-	private:
+	private:		
+		unsigned int buffer;
 		State* state;
+		PicoGL::Constant type;
+		int itemSize;
+		int numItems;
+		int numColumns;
+		PicoGL::Constant usage;
+		bool indexArray;
+		int binding;
 	};
 
 	//////////////////////////////////////////////////////////////////////

@@ -287,6 +287,21 @@ namespace PicoGL
 			GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL,
 			GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE,
 			GL_COLOR_ATTACHMENT0,
+			GL_COLOR_ATTACHMENT1,
+			GL_COLOR_ATTACHMENT2,
+			GL_COLOR_ATTACHMENT3,
+			GL_COLOR_ATTACHMENT4,
+			GL_COLOR_ATTACHMENT5,
+			GL_COLOR_ATTACHMENT6,
+			GL_COLOR_ATTACHMENT7,
+			GL_COLOR_ATTACHMENT8,
+			GL_COLOR_ATTACHMENT9,
+			GL_COLOR_ATTACHMENT10,
+			GL_COLOR_ATTACHMENT11,
+			GL_COLOR_ATTACHMENT12,
+			GL_COLOR_ATTACHMENT13,
+			GL_COLOR_ATTACHMENT14,
+			GL_COLOR_ATTACHMENT15,
 			GL_DEPTH_ATTACHMENT,
 			GL_STENCIL_ATTACHMENT,
 			GL_DEPTH_STENCIL_ATTACHMENT,
@@ -462,21 +477,6 @@ namespace PicoGL
 			GL_RENDERBUFFER_SAMPLES,
 			GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER,
 			GL_MAX_COLOR_ATTACHMENTS,
-			GL_COLOR_ATTACHMENT1,
-			GL_COLOR_ATTACHMENT2,
-			GL_COLOR_ATTACHMENT3,
-			GL_COLOR_ATTACHMENT4,
-			GL_COLOR_ATTACHMENT5,
-			GL_COLOR_ATTACHMENT6,
-			GL_COLOR_ATTACHMENT7,
-			GL_COLOR_ATTACHMENT8,
-			GL_COLOR_ATTACHMENT9,
-			GL_COLOR_ATTACHMENT10,
-			GL_COLOR_ATTACHMENT11,
-			GL_COLOR_ATTACHMENT12,
-			GL_COLOR_ATTACHMENT13,
-			GL_COLOR_ATTACHMENT14,
-			GL_COLOR_ATTACHMENT15,
 			GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE,
 			GL_MAX_SAMPLES,
 			GL_HALF_FLOAT,
@@ -633,7 +633,9 @@ namespace PicoGL
 			0
 		};
 
-		return glEnums[((int)picoGLConstant) + 1];
+		unsigned int v =  glEnums[((int)picoGLConstant) + 1];
+
+		return v;
 	}
 
 	static std::map<GLenum, int> TYPE_SIZE =
@@ -709,7 +711,7 @@ if(options.find(#key) != options.end()) \
 		{
 			char infoLog[512];
 			glGetShaderInfoLog(success, 512, NULL, infoLog);
-			::Debug("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s\n", infoLog);
+			::Error("%s\n", infoLog);
 		};
 
 #if 0
@@ -894,6 +896,90 @@ if(options.find(#key) != options.end()) \
 #endif
 	}
 
+	/**
+		Tranform feedback object.
+
+		@class
+		@prop {WebGLRenderingContext} gl The WebGL context.
+		@prop {WebGLTransformFeedback} transformFeedback Transform feedback object.
+		@prop {Object} appState Tracked GL state.
+	*/
+	TransformFeedback::TransformFeedback(State* state)
+	{
+		/*
+		this.gl = gl;
+		this.transformFeedback = gl.createTransformFeedback();
+		this.appState = appState;
+
+		// TODO(Tarek): Need to rebind buffers due to bug in ANGLE.
+		// Remove this when that's fixed.
+		this.angleBugBuffers = [];
+		*/
+	}
+
+	/**
+		Bind a feedback buffer to capture transform output.
+
+		@method
+		@param {number} index Index of transform feedback varying to capture.
+		@param {VertexBuffer} buffer Buffer to record output into.
+		@return {TransformFeedback} The TransformFeedback object.
+	*/
+	TransformFeedback* TransformFeedback::FeedbackBuffer(int index, VertexBuffer* buffer) {
+		return this;
+		/*
+		this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.transformFeedback);
+		this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, index, buffer.buffer);
+		this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, null);
+		this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, index, null);
+
+		this.angleBugBuffers[index] = buffer;
+
+		return this;
+		*/
+	}
+
+	/**
+		Delete this transform feedback.
+
+		@method
+		@return {TransformFeedback} The TransformFeedback object.
+	*/
+	TransformFeedback::~TransformFeedback() {
+		/*
+		if (this.transformFeedback) {
+			this.gl.deleteTransformFeedback(this.transformFeedback);
+			this.transformFeedback = null;
+		}
+
+		return this;
+		*/
+	}
+
+	/**
+		Bind this transform feedback.
+
+		@method
+		@ignore
+		@return {TransformFeedback} The TransformFeedback object.
+	*/
+	TransformFeedback* TransformFeedback::Bind() {
+		return this;
+		/*
+		if (this.appState.transformFeedback != = this) {
+			this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this->transformFeedback);
+
+			for (let i = 0, len = this->angleBugBuffers.length; i < len; ++i) {
+				this->gl.bindBufferBase(this->gl.TRANSFORM_FEEDBACK_BUFFER, i, this->angleBugBuffers[i].buffer);
+			}
+
+			this->appState.transformFeedback = this;
+		}
+
+		return this;
+		*/
+	}
+
 
 
 	/**
@@ -1053,7 +1139,28 @@ if(options.find(#key) != options.end()) \
 
 	DrawCall::DrawCall(State* state, Program* program, VertexArray* vertexArray, PicoGL::Constant primitive)
 	{
-		/*
+#if 1
+		this->currentProgram = program;
+		this->currentVertexArray = vertexArray;
+		this->currentTransformFeedback = nullptr;
+		this->state = state;
+
+		this->uniformIndices = std::map<int, int>();
+		this->uniformNames = std::vector<std::string>(WEBGL_INFO[PicoGL::Constant::MAX_UNIFORM_LOCATIONS]);
+		this->uniformValues = std::vector<int>(WEBGL_INFO[PicoGL::Constant::MAX_UNIFORM_LOCATIONS]);
+		this->uniformCount = 0;
+		this->uniformBuffers = std::vector<PicoGL::UniformBuffer*>(WEBGL_INFO[PicoGL::Constant::MAX_UNIFORM_BUFFERS]);
+		this->uniformBlockNames = std::vector<std::string>(WEBGL_INFO[PicoGL::Constant::MAX_UNIFORM_BUFFERS]);
+		this->uniformBlockBases = std::map<int, int>();
+		this->uniformBlockCount = 0;
+		this->samplerIndices = std::map<int, int>();
+		this->textures = std::vector<PicoGL::Texture*>(WEBGL_INFO[PicoGL::Constant::MAX_TEXTURE_UNITS]);
+		this->textureCount = 0;
+		this->primitive = primitive;
+
+		this->numElements = this->currentVertexArray->numElements;
+		this->numInstances = this->currentVertexArray->numInstances;
+#else
 		this.gl = gl;
 		this.currentProgram = program;
 		this.currentVertexArray = vertexArray;
@@ -1075,7 +1182,7 @@ if(options.find(#key) != options.end()) \
 
 		this.numElements = this.currentVertexArray.numElements;
 		this.numInstances = this.currentVertexArray.numInstances;
-		*/
+#endif
 	}
 
 	/**
@@ -1086,12 +1193,15 @@ if(options.find(#key) != options.end()) \
 		@return {DrawCall} The DrawCall object.
 	*/
 	DrawCall* DrawCall::TransformFeedback(PicoGL::TransformFeedback* transformFeedback) {
+#if 1
+		this->currentTransformFeedback = transformFeedback;
+
 		return this;
-		/*
+#else
 		this.currentTransformFeedback = transformFeedback;
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1103,13 +1213,17 @@ if(options.find(#key) != options.end()) \
 	@return {DrawCall} The DrawCall object.
 	*/
 	DrawCall* DrawCall::Texture(const char* name, PicoGL::Texture* texture) {
+#if 1
+		int unit = this->currentProgram->samplers[name];
+		this->textures[unit] = texture;
+
 		return this;
-		/*
+#else
 		let unit = this.currentProgram.samplers[name];
 		this.textures[unit] = texture;
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1121,13 +1235,17 @@ if(options.find(#key) != options.end()) \
 		@return {DrawCall} The DrawCall object.
 	*/
 	DrawCall* DrawCall::UniformBlock(const char* name, PicoGL::UniformBuffer* buffer) {
+#if 1
+		int base = this->currentProgram->uniformBlocks[name];
+		this->uniformBuffers[base] = buffer;
+
 		return this;
-		/*
+#else
 		let base = this.currentProgram.uniformBlocks[name];
 		this.uniformBuffers[base] = buffer;
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1138,8 +1256,16 @@ if(options.find(#key) != options.end()) \
 		 @return {DrawCall} The DrawCall object.
 	 */
 	DrawCall* DrawCall::ElementCount(int count) {
+#if 1
+		if (count > 0) {
+			this->numElements = Math::Min(count, this->currentVertexArray->numElements);
+		}
+		else {
+			this->numElements = this->currentVertexArray->numElements;
+		}
+
 		return this;
-		/*
+#else
 		if (count > 0) {
 			this.numElements = Math.min(count, this.currentVertexArray.numElements);
 		}
@@ -1148,7 +1274,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1159,8 +1285,16 @@ if(options.find(#key) != options.end()) \
 		@return {DrawCall} The DrawCall object.
 	*/
 	DrawCall* DrawCall::InstanceCount(int count) {
+#if 1
+		if (count > 0) {
+			this->numInstances = Math::Min(count, this->currentVertexArray->numInstances);
+		}
+		else {
+			this->numInstances = this->currentVertexArray->numInstances;
+		}
+
 		return this;
-		/*
+#else
 		if (count > 0) {
 			this.numInstances = Math.min(count, this.currentVertexArray.numInstances);
 		}
@@ -1169,7 +1303,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1179,8 +1313,62 @@ if(options.find(#key) != options.end()) \
 		@return {DrawCall} The DrawCall object.
 	*/
 	DrawCall* DrawCall::Draw() {
+#if 1
+		std::vector<std::string>& uniformNames = this->uniformNames;
+		std::vector<int>& uniformValues = this->uniformValues;
+		std::vector<PicoGL::UniformBuffer*>& uniformBuffers = this->uniformBuffers;
+		int uniformBlockCount = this->currentProgram->uniformBlockCount;
+		std::vector<PicoGL::Texture*>& textures = this->textures;
+		int textureCount = this->currentProgram->samplerCount;
+
+		this->currentProgram->Bind();
+		this->currentVertexArray->Bind();
+
+		for (int uIndex = 0; uIndex < this->uniformCount; ++uIndex) {
+			this->currentProgram->Uniform(uniformNames[uIndex].c_str(), uniformValues[uIndex]);
+		}
+
+		for (int base = 0; base < uniformBlockCount; ++base) {
+			uniformBuffers[base]->Bind(base);
+		}
+
+		for (int tIndex = 0; tIndex < textureCount; ++tIndex) {
+			textures[tIndex]->Bind(tIndex);
+		}
+
+		if (this->currentTransformFeedback) {
+			this->currentTransformFeedback->Bind();
+			glBeginTransformFeedback(GetGLEnum(this->primitive));
+		}
+
+		if (this->currentVertexArray->instanced) {
+			if (this->currentVertexArray->indexed) {
+				glDrawElementsInstanced(GetGLEnum(this->primitive), this->numElements, GetGLEnum(this->currentVertexArray->indexType), 0, this->numInstances);
+			}
+			else {
+				glDrawArraysInstanced(GetGLEnum(this->primitive), 0, this->numElements, this->numInstances);
+			}
+		}
+		else if (this->currentVertexArray->indexed) {
+			glDrawElements(GetGLEnum(this->primitive), this->numElements, GetGLEnum(this->currentVertexArray->indexType), 0);
+		}
+		else {
+			glDrawArrays(GetGLEnum(this->primitive), 0, this->numElements);
+		}
+
+		if (this->currentTransformFeedback) {
+			glEndTransformFeedback();
+
+			// TODO!!!!!!!
+			// TODO(Tarek): Need to rebind buffers due to bug in ANGLE.
+			// Remove this when that's fixed.
+			// for (int i = 0, len = this->currentTransformFeedback->angleBugBuffers.length; i < len; ++i) {
+			// 	this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, i, null);
+			// }
+		}
+
 		return this;
-		/*
+#else
 		let uniformNames = this.uniformNames;
 		let uniformValues = this.uniformValues;
 		let uniformBuffers = this.uniformBuffers;
@@ -1233,11 +1421,31 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	DrawCall::~DrawCall()
 	{
+		currentProgram = nullptr;
+		currentVertexArray = nullptr;
+		currentTransformFeedback = nullptr;
+		state = nullptr;
+		
+		uniformIndices.clear();
+		uniformNames.clear();
+		uniformValues.clear();
+		uniformCount = 0;
+		uniformBuffers.clear();
+		uniformBlockNames.clear();
+		uniformBlockBases.clear();
+		uniformBlockCount = 0;
+		samplerIndices.clear();
+		textures.clear();
+		textureCount = 0;
+		primitive = PicoGL::Constant::NONE;
+		
+		numElements = 0;
+		numInstances = 0;
 	}
 
 
@@ -1255,7 +1463,18 @@ if(options.find(#key) != options.end()) \
 	*/
 	Framebuffer::Framebuffer(State* state)
 	{
-		/*
+#if 1
+		glCreateFramebuffers(1, &this->framebuffer);
+		this->state = state;
+
+		this->numColorTargets = 0;
+
+		this->colorTextures = std::map<int, PicoGL::Texture*>();
+		this->colorAttachments = std::map<int, PicoGL::Constant>();
+		this->colorTextureTargets = std::map<int, PicoGL::Constant>();
+		this->depthTexture = nullptr;
+		this->depthTextureTarget = PicoGL::Constant::NONE;
+#else
 		this.gl = gl;
 		this.framebuffer = gl.createFramebuffer();
 		this.appState = appState;
@@ -1267,7 +1486,7 @@ if(options.find(#key) != options.end()) \
 		this.colorTextureTargets = [];
 		this.depthTexture = null;
 		this.depthTextureTarget = null;
-		*/
+#endif
 	}
 
 	/**
@@ -1281,10 +1500,35 @@ if(options.find(#key) != options.end()) \
 		 @return {Framebuffer} The Framebuffer object.
 	 */
 	Framebuffer* Framebuffer::ColorTarget(int index, Texture* texture) {
-		// target = texture->is3D ? 0 : PicoGL::Constant::TEXTURE_2D
+#if 1
+		PicoGL::Constant target = texture->is3D ? PicoGL::Constant::TEXTURE_3D : PicoGL::Constant::TEXTURE_2D;
+	
+		this->colorAttachments[index] = PicoGL::Constant((int)PicoGL::Constant::COLOR_ATTACHMENT0 + index);
+
+		Framebuffer* currentFramebuffer = this->BindAndCaptureState();
+
+		this->colorTextures[index] = texture;
+		this->colorTextureTargets[index] = target;
+
+		if (texture->is3D) {
+			glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, GetGLEnum(this->colorAttachments[index]), texture->texture, 0, GetGLEnum(target));
+		}
+		else {
+			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GetGLEnum(this->colorAttachments[index]), GetGLEnum(target), texture->texture, 0);
+		}
+
+		std::vector<unsigned int> attachments;
+		for (auto& colorAttachment : colorAttachments)
+		{
+			attachments.push_back(GetGLEnum(colorAttachment.second));
+		}
+		glDrawBuffers(attachments.size(), &attachments[0]);
+		numColorTargets++;
+
+		RestoreState(currentFramebuffer);
 
 		return this;
-		/*
+#else
 		this.colorAttachments[index] = CONSTANTS.COLOR_ATTACHMENT0 + index;
 
 		let currentFramebuffer = this.bindAndCaptureState();
@@ -1305,7 +1549,7 @@ if(options.find(#key) != options.end()) \
 		this.restoreState(currentFramebuffer);
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1318,9 +1562,27 @@ if(options.find(#key) != options.end()) \
 		@return {Framebuffer} The Framebuffer object.
 	*/
 	PicoGL::Framebuffer* Framebuffer::DepthTarget(PicoGL::Texture* texture) {
-		// target = texture->is3D ? 0 : PicoGL::Constant::TEXTURE_2D
+#if 1
+		PicoGL::Constant target = texture->is3D ? PicoGL::Constant::TEXTURE_3D : PicoGL::Constant::TEXTURE_2D;
+
+		Framebuffer* currentFramebuffer = this->BindAndCaptureState();
+
+		this->depthTexture = texture;
+		this->depthTextureTarget = target;
+
+		if (texture->is3D) {
+			glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, GetGLEnum(PicoGL::Constant::DEPTH_ATTACHMENT), texture->texture, 0, GetGLEnum(target));
+		}
+		else {
+			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GetGLEnum(PicoGL::Constant::DEPTH_ATTACHMENT), GetGLEnum(target), texture->texture, 0);
+		}
+
+		this->RestoreState(currentFramebuffer);
+
 		return this;
-		/*
+#else
+		// target = texture->is3D ? 0 : PicoGL::Constant::TEXTURE_2D
+
 		let currentFramebuffer = this.bindAndCaptureState();
 
 		this.depthTexture = texture;
@@ -1336,7 +1598,7 @@ if(options.find(#key) != options.end()) \
 		this.restoreState(currentFramebuffer);
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1348,15 +1610,34 @@ if(options.find(#key) != options.end()) \
 		@return {Framebuffer} The Framebuffer object.
 	*/
 	Framebuffer* Framebuffer::Resize(int width, int height, int depth) {
-		if (width == -1)
-			width = Platform::GetWidth();
-		if (height == -1)
-			height = Platform::GetWidth();
-		if (depth)
-			depth = 1;
+#if 1
+		Framebuffer* currentFramebuffer = this->BindAndCaptureState();
+
+		for (int i = 0; i < this->numColorTargets; ++i) {
+			PicoGL::Texture* texture = this->colorTextures[i];
+			texture->Resize(width, height, depth);
+			if (texture->is3D) {
+				glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, GetGLEnum(this->colorAttachments[i]), texture->texture, 0, GetGLEnum(this->colorTextureTargets[i]));
+			}
+			else {
+				glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GetGLEnum(this->colorAttachments[i]), GetGLEnum(this->colorTextureTargets[i]), texture->texture, 0);
+			}
+		}
+
+		if (this->depthTexture) {
+			this->depthTexture->Resize(width, height, depth);
+			if (this->depthTexture->is3D) {
+				glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, this->depthTexture->texture, 0, GetGLEnum(this->depthTextureTarget));
+			}
+			else {
+				glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GetGLEnum(this->depthTextureTarget), this->depthTexture->texture, 0);
+			}
+		}
+
+		this->RestoreState(currentFramebuffer);
 
 		return this;
-		/*
+#else
 		let currentFramebuffer = this.bindAndCaptureState();
 
 		for (let i = 0; i < this.numColorTargets; ++i) {
@@ -1383,7 +1664,7 @@ if(options.find(#key) != options.end()) \
 		this.restoreState(currentFramebuffer);
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1393,14 +1674,19 @@ if(options.find(#key) != options.end()) \
 		@return {Framebuffer} The Framebuffer object.
 	*/
 	Framebuffer::~Framebuffer() {
-		/*
+#if 1
+		if (this->framebuffer) {
+			glDeleteFramebuffers(1, &this->framebuffer);
+			this->framebuffer = 0;
+		}
+#else
 		if (this.framebuffer) {
 			this.gl.deleteFramebuffer(this.framebuffer);
 			this.framebuffer = null;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1411,15 +1697,21 @@ if(options.find(#key) != options.end()) \
 		@return {Framebuffer} The Framebuffer object.
 	*/
 	Framebuffer* Framebuffer::BindForDraw() {
+#if 1
+		if (this->state->drawFramebuffer !=  this) {
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->framebuffer);
+			this->state->drawFramebuffer = this;
+		}
+
 		return this;
-		/*
+#else
 		if (this.appState.drawFramebuffer != = this) {
 			this.gl.bindFramebuffer(this.gl.DRAW_FRAMEBUFFER, this.framebuffer);
 			this.appState.drawFramebuffer = this;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1430,15 +1722,21 @@ if(options.find(#key) != options.end()) \
 		@return {Framebuffer} The Framebuffer object.
 	*/
 	Framebuffer* Framebuffer::BindForRead() {
+#if 1
+		if (this->state->readFramebuffer != this) {
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, this->framebuffer);
+			this->state->readFramebuffer = this;
+		}
+
 		return this;
-		/*
+#else
 		if (this.appState.readFramebuffer != = this) {
 			this.gl.bindFramebuffer(this.gl.READ_FRAMEBUFFER, this.framebuffer);
 			this.appState.readFramebuffer = this;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -1450,8 +1748,15 @@ if(options.find(#key) != options.end()) \
 		@return {Framebuffer} The Framebuffer object.
 	*/
 	Framebuffer* Framebuffer::BindAndCaptureState() {
-		return this;
-		/*
+#if 1
+		Framebuffer* currentFramebuffer = this->state->drawFramebuffer;
+
+		if (currentFramebuffer != this) {
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->framebuffer);
+		}
+
+		return currentFramebuffer;
+#else
 		let currentFramebuffer = this.appState.drawFramebuffer;
 
 		if (currentFramebuffer != = this) {
@@ -1459,7 +1764,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return currentFramebuffer;
-		*/
+#endif
 	}
 
 	/**
@@ -1470,14 +1775,19 @@ if(options.find(#key) != options.end()) \
 		@return {Framebuffer} The Framebuffer object.
 	*/
 	Framebuffer* Framebuffer::RestoreState(Framebuffer* framebuffer) {
+#if 1
+		if (framebuffer != this) {
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer ? framebuffer->framebuffer : 0);
+		}
+
 		return this;
-		/*
+#else
 		if (framebuffer != = this) {
 			this.gl.bindFramebuffer(this.gl.DRAW_FRAMEBUFFER, framebuffer ? framebuffer.framebuffer : null);
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 
@@ -2916,92 +3226,6 @@ if(options.find(#key) != options.end()) \
 	{
 	}
 
-
-	/**
-		Tranform feedback object.
-
-		@class
-		@prop {WebGLRenderingContext} gl The WebGL context.
-		@prop {WebGLTransformFeedback} transformFeedback Transform feedback object.
-		@prop {Object} appState Tracked GL state.
-	*/
-	TransformFeedback::TransformFeedback(State* state)
-	{
-		/*
-		this.gl = gl;
-		this.transformFeedback = gl.createTransformFeedback();
-		this.appState = appState;
-
-		// TODO(Tarek): Need to rebind buffers due to bug in ANGLE.
-		// Remove this when that's fixed.
-		this.angleBugBuffers = [];
-		*/
-	}
-
-	/**
-		Bind a feedback buffer to capture transform output.
-
-		@method
-		@param {number} index Index of transform feedback varying to capture.
-		@param {VertexBuffer} buffer Buffer to record output into.
-		@return {TransformFeedback} The TransformFeedback object.
-	*/
-	TransformFeedback* TransformFeedback::FeedbackBuffer(int index, VertexBuffer* buffer) {
-		return this;
-		/*
-		this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.transformFeedback);
-		this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, index, buffer.buffer);
-		this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, null);
-		this.gl.bindBufferBase(this.gl.TRANSFORM_FEEDBACK_BUFFER, index, null);
-
-		this.angleBugBuffers[index] = buffer;
-
-		return this;
-		*/
-	}
-
-	/**
-		Delete this transform feedback.
-
-		@method
-		@return {TransformFeedback} The TransformFeedback object.
-	*/
-	TransformFeedback::~TransformFeedback() {
-		/*
-		if (this.transformFeedback) {
-			this.gl.deleteTransformFeedback(this.transformFeedback);
-			this.transformFeedback = null;
-		}
-
-		return this;
-		*/
-	}
-
-	/**
-		Bind this transform feedback.
-
-		@method
-		@ignore
-		@return {TransformFeedback} The TransformFeedback object.
-	*/
-	TransformFeedback* TransformFeedback::Bind() {
-		return this;
-		/*
-		if (this.appState.transformFeedback != = this) {
-			this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this->transformFeedback);
-
-			for (let i = 0, len = this->angleBugBuffers.length; i < len; ++i) {
-				this->gl.bindBufferBase(this->gl.TRANSFORM_FEEDBACK_BUFFER, i, this->angleBugBuffers[i].buffer);
-			}
-
-			this->appState.transformFeedback = this;
-		}
-
-		return this;
-		*/
-	}
-
-
 	/**
 		Storage for uniform data. Data is stored in std140 layout.
 
@@ -3430,7 +3654,16 @@ if(options.find(#key) != options.end()) \
 
 	VertexArray::VertexArray(State* state)
 	{
-		/*
+#if 1
+		glCreateVertexArrays(1, &this->vertexArray);
+		this->state = state;
+		this->numElements = 0;
+		this->indexType = PicoGL::Constant::NONE;
+		this->instancedBuffers = 0;
+		this->indexed = false;
+		this->instanced = false;
+		this->numInstances = 0;
+#else
 		this.gl = gl;
 		this.vertexArray = gl.createVertexArray();
 		this.appState = appState;
@@ -3439,7 +3672,7 @@ if(options.find(#key) != options.end()) \
 		this.instancedBuffers = 0;
 		this.indexed = false;
 		this.numInstances = 0;
-		*/
+#endif
 	}
 
 	/**
@@ -3542,8 +3775,19 @@ if(options.find(#key) != options.end()) \
 		@return {VertexArray} The VertexArray object.
 	*/
 	VertexArray* VertexArray::IndexBuffer(VertexBuffer* vertexBuffer) {
+#if 1
+		glBindVertexArray(this->vertexArray);
+		glBindBuffer(vertexBuffer->binding, vertexBuffer->buffer);
+
+		this->numElements = vertexBuffer->numItems * 3;
+		this->indexType = vertexBuffer->type;
+		this->indexed = true;
+
+		glBindVertexArray(0);
+		glBindBuffer(vertexBuffer->binding, 0);
+
 		return this;
-		/*
+#else
 		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.bindBuffer(vertexBuffer.binding, vertexBuffer.buffer);
 
@@ -3555,7 +3799,7 @@ if(options.find(#key) != options.end()) \
 		this.gl.bindBuffer(vertexBuffer.binding, null);
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -3565,7 +3809,13 @@ if(options.find(#key) != options.end()) \
 		@return {VertexArray} The VertexArray object.
 	*/
 	VertexArray::~VertexArray() {
-		/*
+#if 1
+		if (this->vertexArray) {
+			glDeleteVertexArrays(1, &this->vertexArray);
+			this->vertexArray = 0;
+		}
+		glBindVertexArray(0);
+#else
 		if (this.vertexArray) {
 			this.gl.deleteVertexArray(this.vertexArray);
 			this.vertexArray = null;
@@ -3573,7 +3823,7 @@ if(options.find(#key) != options.end()) \
 		this.gl.bindVertexArray(null);
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -3584,15 +3834,21 @@ if(options.find(#key) != options.end()) \
 		@return {VertexArray} The VertexArray object.
 	*/
 	VertexArray* VertexArray::Bind() {
+#if 1
+		if (this->state->vertexArray != this) {
+			glBindVertexArray(this->vertexArray);
+			this->state->vertexArray = this;
+		}
+
 		return this;
-		/*
+#else
 		if (this.appState.vertexArray != = this) {
 			this.gl.bindVertexArray(this.vertexArray);
 			this.appState.vertexArray = this;
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -3603,8 +3859,52 @@ if(options.find(#key) != options.end()) \
 		@return {VertexArray} The VertexArray object.
 	*/
 	VertexArray* VertexArray::AttributeBuffer(int attributeIndex, VertexBuffer* vertexBuffer, bool instanced, bool integer, bool normalized) {
+#if 1
+		glBindVertexArray(this->vertexArray);
+		glBindBuffer(vertexBuffer->binding, vertexBuffer->buffer);
+
+		int numColumns = vertexBuffer->numColumns;
+
+		for (int i = 0; i < numColumns; ++i) {
+			if (integer) {
+				glVertexAttribIPointer(
+					attributeIndex + i,
+					vertexBuffer->itemSize,
+					GetGLEnum(vertexBuffer->type),
+					numColumns * vertexBuffer->itemSize * TYPE_SIZE[GetGLEnum(vertexBuffer->type)],
+					(const void*)(i * vertexBuffer->itemSize * TYPE_SIZE[GetGLEnum(vertexBuffer->type)]));
+			}
+			else {
+				glVertexAttribPointer(
+					attributeIndex + i,
+					vertexBuffer->itemSize,
+					GetGLEnum(vertexBuffer->type),
+					normalized,
+					numColumns * vertexBuffer->itemSize * TYPE_SIZE[GetGLEnum(vertexBuffer->type)],
+					(const void*)(i * vertexBuffer->itemSize * TYPE_SIZE[GetGLEnum(vertexBuffer->type)]));
+			}
+
+			if (instanced) {
+				glVertexAttribDivisor(attributeIndex + i, 1);
+			}
+
+			glEnableVertexAttribArray(attributeIndex + i);
+		}
+
+		this->instanced = instanced;
+
+		if (instanced) {
+			this->numInstances = vertexBuffer->numItems;
+		}
+		else {
+			this->numElements = vertexBuffer->numItems;
+		}
+
+		glBindVertexArray(0);
+		glBindBuffer(vertexBuffer->binding, 0);
+
 		return this;
-		/*
+#else
 		this.gl.bindVertexArray(this.vertexArray);
 		this.gl.bindBuffer(vertexBuffer.binding, vertexBuffer.buffer);
 
@@ -3649,7 +3949,7 @@ if(options.find(#key) != options.end()) \
 		this.gl.bindBuffer(vertexBuffer.binding, null);
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -3666,9 +3966,76 @@ if(options.find(#key) != options.end()) \
 		@prop {GLEnum} binding GL binding point (ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER).
 		@prop {Object} appState Tracked GL state.
 	*/
-	VertexBuffer::VertexBuffer(State* state, PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage, bool indexType)
+	VertexBuffer::VertexBuffer(State* state, PicoGL::Constant type, int itemSize, const void* data, unsigned int dataLength, PicoGL::Constant usage, bool indexArray)
 	{
+#if 1
+		int numColumns;
+		switch (type) {
+		case PicoGL::Constant::FLOAT_MAT4:
+		case PicoGL::Constant::FLOAT_MAT4x2:
+		case PicoGL::Constant::FLOAT_MAT4x3:
+			numColumns = 4;
+			break;
+		case PicoGL::Constant::FLOAT_MAT3:
+		case PicoGL::Constant::FLOAT_MAT3x2:
+		case PicoGL::Constant::FLOAT_MAT3x4:
+			numColumns = 3;
+			break;
+		case PicoGL::Constant::FLOAT_MAT2:
+		case PicoGL::Constant::FLOAT_MAT2x3:
+		case PicoGL::Constant::FLOAT_MAT2x4:
+			numColumns = 2;
+			break;
+		default:
+			numColumns = 1;
+		}
+
+		switch (type) {
+		case PicoGL::Constant::FLOAT_MAT4:
+		case PicoGL::Constant::FLOAT_MAT3x4:
+		case PicoGL::Constant::FLOAT_MAT2x4:
+			itemSize = 4;
+			type = PicoGL::Constant::FLOAT;
+			break;
+		case PicoGL::Constant::FLOAT_MAT3:
+		case PicoGL::Constant::FLOAT_MAT4x3:
+		case PicoGL::Constant::FLOAT_MAT2x3:
+			itemSize = 3;
+			type = PicoGL::Constant::FLOAT;
+			break;
+		case PicoGL::Constant::FLOAT_MAT2:
+		case PicoGL::Constant::FLOAT_MAT3x2:
+		case PicoGL::Constant::FLOAT_MAT4x2:
+			itemSize = 2;
+			type = PicoGL::Constant::FLOAT;
+			break;
+		}
+
 		/*
+		int dataLength;
+		if (typeof data == "number") {
+			dataLength = data;
+			data *= PicoGL::Constant::TYPE_SIZE[type];
+		}
+		else {
+			dataLength = data.length;
+		}
+		*/
+
+		glCreateBuffers(1, &this->buffer);
+		this->state = state;
+		this->type = type;
+		this->itemSize = itemSize;
+		this->numItems = dataLength / (itemSize * numColumns);
+		this->numColumns = numColumns;
+		this->usage = usage;
+		this->indexArray = indexArray;
+		this->binding = this->indexArray ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
+
+		glBindBuffer(this->binding, this->buffer);
+		glBufferData(this->binding, dataLength, data, GetGLEnum(this->usage));
+		glBindBuffer(this->binding, 0);
+#else
 		let numColumns;
 		switch (type) {
 		case CONSTANTS.FLOAT_MAT4:
@@ -3734,7 +4101,7 @@ if(options.find(#key) != options.end()) \
 		gl.bindBuffer(this.binding, this.buffer);
 		gl.bufferData(this.binding, data, this.usage);
 		gl.bindBuffer(this.binding, null);
-		*/
+#endif
 	}
 
 	/**
@@ -3746,8 +4113,23 @@ if(options.find(#key) != options.end()) \
 		@return {VertexBuffer} The VertexBuffer object.
 	*/
 	VertexBuffer* VertexBuffer::Data(void* data, unsigned int dataLength) {
+#if 1
+		// Don't want to update vertex array bindings
+		VertexArray* currentVertexArray = this->state->vertexArray;
+		if (currentVertexArray) {
+			glBindVertexArray(0);
+		}
+
+		glBindBuffer(this->binding, this->buffer);
+		glBufferSubData(this->binding, 0, dataLength, data);
+		glBindBuffer(this->binding, 0);
+
+		if (currentVertexArray) {
+			glBindVertexArray(currentVertexArray->vertexArray);
+		}
+
 		return this;
-		/*
+#else
 		// Don't want to update vertex array bindings
 		let currentVertexArray = this.appState.vertexArray;
 		if (currentVertexArray) {
@@ -3763,7 +4145,7 @@ if(options.find(#key) != options.end()) \
 		}
 
 		return this;
-		*/
+#endif
 	}
 
 	/**
@@ -3773,6 +4155,12 @@ if(options.find(#key) != options.end()) \
 		@return {VertexBuffer} The VertexBuffer object.
 	*/
 	VertexBuffer::~VertexBuffer() {
+#if 1
+		if (this->buffer) {
+			glDeleteBuffers(1, &this->buffer);
+			this->buffer = 0;
+		}
+#else
 		/*
 		if (this.buffer) {
 			this.gl.deleteBuffer(this.buffer);
@@ -3781,6 +4169,7 @@ if(options.find(#key) != options.end()) \
 
 		return this;
 		*/
+#endif
 	}
 
 
@@ -3847,6 +4236,7 @@ if(options.find(#key) != options.end()) \
 
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &WEBGL_INFO[PicoGL::Constant::MAX_TEXTURE_UNITS]);
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &WEBGL_INFO[PicoGL::Constant::MAX_UNIFORM_BUFFERS]);
+		glGetIntegerv(GL_MAX_UNIFORM_LOCATIONS, &WEBGL_INFO[PicoGL::Constant::MAX_UNIFORM_LOCATIONS]);
 
 		this->state = State
 		(

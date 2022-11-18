@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 {
 	// ¿Óù˝DO SOMETHING
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
-	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "ShaderToy"))
+	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MacShaderDemo", "LightPropagationVolumes"))
 		return -1;
 
 	macShaderDemoApp.Start();
