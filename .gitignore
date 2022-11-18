@@ -4,3 +4,6 @@
 *.exe
 *.obj
 *.suo
+./vs/*.*
+*.def
+*.log
