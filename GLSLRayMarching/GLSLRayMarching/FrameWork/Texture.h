@@ -207,6 +207,26 @@ protected:
 private:
 };
 
+class DynamicTexture1D : public Texture1D
+{
+public:
+	DynamicTexture1D()
+	{
+	}
+
+	virtual ~DynamicTexture1D()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
 class Texture2D : public Texture
 {
 public:
@@ -232,6 +252,27 @@ protected:
 	unsigned int height;
 private:
 };
+
+class DynamicTexture2D : public Texture2D
+{
+public:
+	DynamicTexture2D()
+	{
+	}
+
+	virtual ~DynamicTexture2D()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
 
 class Texture3D : public Texture
 {
@@ -260,6 +301,27 @@ protected:
 	unsigned int depth;
 private:
 };
+
+class DynamicTexture3D : public Texture3D
+{
+public:
+	DynamicTexture3D()
+	{
+	}
+
+	virtual ~DynamicTexture3D()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
 
 // !!!!!!!!! NEED CHECK all TextureCubemap method, ¡ıº“√» 
 class TextureCubemap : public Texture
@@ -296,6 +358,27 @@ private:
 	unsigned int size;
 	unsigned int faceDataSize;
 };
+
+class DynamicTextureCubemap : public TextureCubemap
+{
+public:
+	DynamicTextureCubemap()
+	{
+	}
+
+	virtual ~DynamicTextureCubemap()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
 
 /////////////////////////////////////////////////////////
 class Texture1DArray : public Texture

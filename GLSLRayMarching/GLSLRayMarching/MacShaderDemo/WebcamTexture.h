@@ -9,11 +9,11 @@
 #include "GUI.h"
 #include "FrameWork.h"
 
-class WebcamTexture : public Texture2D
+class WebcamTexture : public DynamicTexture2D
 {
 public:
 	WebcamTexture()
-		: Texture2D()
+		: DynamicTexture2D()
 		, buffer(1280 * 720 * 4)
 	{
 	}
@@ -27,12 +27,12 @@ public:
 		return Texture2D::Initiate(512, 2, 1, Texture::DynamicRange::LOW, &buffer[0]);
 	}
 
-	virtual void UpdateData()
+	virtual void Tick(float dt) override
 	{
 		// !!!!!!!!! TODO, ¡ıº“√» 
 		// Webcam.GetData();
 
-		Texture2D::Update(&buffer[0]);
+		DynamicTexture2D::Update(&buffer[0]);
 	}
 private:
 private:

@@ -9,12 +9,13 @@
 #include "GUI.h"
 #include "FrameWork.h"
 
-class VideoTexture : public Texture2D
+class VideoTexture : public DynamicTexture2D
 {
 public:
 	VideoTexture()
-		: Texture2D()
-		, buffer(1280 * 720 * 4)
+		: DynamicTexture2D()
+		, buffer(0)
+		, decoder(nullptr)
 	{
 	}
 
@@ -24,20 +25,44 @@ public:
 
 	bool Initiate(const std::string& url, bool vflip_)
 	{
-		return Texture2D::Initiate(1280, 720, 4, Texture::DynamicRange::LOW, &buffer[0]);
+		decoder = Platform::CreateVideoDecoder();
+		assert(decoder);
+		
+		if (!decoder->Initiate(url.c_str()))
+			return false;
+
+		buffer.resize(decoder->GetWidth() * decoder->GetHeight() * 3);
+		if (!Texture2D::Initiate(decoder->GetWidth(), decoder->GetHeight(), 3, Texture::DynamicRange::LOW, &buffer[0]))
+			return false;
+
+		return true;
 	}
 
-	virtual void UpdateData()
+	void Terminate()
 	{
-		// !!!!!!!!! TODO, Áõ¼ÒÃÈ 
-		// FFMEG.GetData();
+		Texture2D::Terminate();
 
-		Texture2D::Update(&buffer[0]);
+		if (decoder)
+		{
+			decoder->Terminate();
+
+			Platform::ReleaseVideoDecoder(decoder);
+		}
+	}
+
+	virtual void Tick(float dt) override
+	{
+		if (decoder)
+		{
+			decoder->Update(&buffer[0]);
+
+			DynamicTexture2D::Update(&buffer[0]);
+		}
 	}
 private:
 private:
+	Platform::VideoDecoder* decoder;
 	std::vector<char> buffer;
 };
-
 
 #endif

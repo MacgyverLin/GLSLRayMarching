@@ -9,12 +9,12 @@
 #include "GUI.h"
 #include "FrameWork.h"
 
-class MicrophoneTexture : public Texture2D
+class MicrophoneTexture : public DynamicTexture2D
 {
 public:
 	MicrophoneTexture()
-		: Texture2D()
-		, buffer(1280 * 720 * 4)
+		: DynamicTexture2D()
+		, buffer(0)
 	{
 	}
 
@@ -24,19 +24,44 @@ public:
 
 	bool Initiate()
 	{
-		return Texture2D::Initiate(512, 2, 1, Texture::DynamicRange::LOW, &buffer[0]);
+		microphone = Platform::CreateMicrophone(0);
+		assert(microphone);
+
+		if (!microphone->Initiate())
+			return false;
+
+		buffer.resize(1024 * 2);
+		if (!Texture2D::Initiate(1024, 2, 1, Texture::DynamicRange::HIGH, &buffer[0]))
+			return false;
+
+		return true;
 	}
 
-	virtual void UpdateData()
+	void Terminate()
 	{
-		// !!!!!!!!! TODO, Áõ¼ÒÃÈ 
-		// Platform::GetMicroPhone().GetData();
+		Texture2D::Terminate();
 
-		Texture2D::Update(&buffer[0]);
+		if (microphone)
+		{
+			microphone->Terminate();
+
+			Platform::ReleaseMicrophone(microphone);
+		}
+	}
+
+	virtual void Tick(float dt) override
+	{
+		if (microphone)
+		{
+			microphone->Update(buffer);
+
+			DynamicTexture2D::Update(&buffer[0]);
+		}
 	}
 private:
 private:
-	std::vector<char> buffer;
+	Platform::Microphone* microphone;
+	std::vector<float> buffer;
 };
 
 #endif

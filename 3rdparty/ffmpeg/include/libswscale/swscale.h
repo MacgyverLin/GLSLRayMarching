@@ -23,23 +23,24 @@
 
 /**
  * @file
- * @ingroup lsws
+ * @ingroup libsws
  * external API header
- */
-
-/**
- * @defgroup lsws Libswscale
- * @{
  */
 
 #include <stdint.h>
 
 #include "libavutil/avutil.h"
+#include "libavutil/frame.h"
 #include "libavutil/log.h"
 #include "libavutil/pixfmt.h"
 #include "version.h"
 
 /**
+ * @defgroup libsws libswscale
+ * Color conversion and scaling library.
+ *
+ * @{
+ *
  * Return the LIBSWSCALE_VERSION_INT constant.
  */
 unsigned swscale_version(void);
@@ -75,7 +76,7 @@ const char *swscale_license(void);
 #define SWS_PRINT_INFO              0x1000
 
 //the following 3 flags are not completely implemented
-//internal chrominace subsampling info
+//internal chrominance subsampling info
 #define SWS_FULL_CHR_H_INT    0x2000
 //input subsampling info
 #define SWS_FULL_CHR_H_INP    0x4000
@@ -83,20 +84,6 @@ const char *swscale_license(void);
 #define SWS_ACCURATE_RND      0x40000
 #define SWS_BITEXACT          0x80000
 #define SWS_ERROR_DIFFUSION  0x800000
-
-#if FF_API_SWS_CPU_CAPS
-/**
- * CPU caps are autodetected now, those flags
- * are only provided for API compatibility.
- */
-#define SWS_CPU_CAPS_MMX      0x80000000
-#define SWS_CPU_CAPS_MMXEXT   0x20000000
-#define SWS_CPU_CAPS_MMX2     0x20000000
-#define SWS_CPU_CAPS_3DNOW    0x40000000
-#define SWS_CPU_CAPS_ALTIVEC  0x10000000
-#define SWS_CPU_CAPS_BFIN     0x01000000
-#define SWS_CPU_CAPS_SSE2     0x02000000
-#endif
 
 #define SWS_MAX_REDUCE_CUTOFF 0.002
 
@@ -107,6 +94,7 @@ const char *swscale_license(void);
 #define SWS_CS_SMPTE170M      5
 #define SWS_CS_SMPTE240M      7
 #define SWS_CS_DEFAULT        5
+#define SWS_CS_BT2020         9
 
 /**
  * Return a pointer to yuv<->rgb coefficients for the given colorspace
@@ -166,6 +154,7 @@ struct SwsContext *sws_alloc_context(void);
  * @return zero or positive value on success, a negative value on
  * error
  */
+av_warn_unused_result
 int sws_init_context(struct SwsContext *sws_context, SwsFilter *srcFilter, SwsFilter *dstFilter);
 
 /**
@@ -174,7 +163,6 @@ int sws_init_context(struct SwsContext *sws_context, SwsFilter *srcFilter, SwsFi
  */
 void sws_freeContext(struct SwsContext *swsContext);
 
-#if FF_API_SWS_GETCONTEXT
 /**
  * Allocate and return an SwsContext. You need it to perform
  * scaling/conversion operations using sws_scale().
@@ -186,16 +174,20 @@ void sws_freeContext(struct SwsContext *swsContext);
  * @param dstH the height of the destination image
  * @param dstFormat the destination image format
  * @param flags specify which algorithm and options to use for rescaling
+ * @param param extra parameters to tune the used scaler
+ *              For SWS_BICUBIC param[0] and [1] tune the shape of the basis
+ *              function, param[0] tunes f(1) and param[1] f´(1)
+ *              For SWS_GAUSS param[0] tunes the exponent and thus cutoff
+ *              frequency
+ *              For SWS_LANCZOS param[0] tunes the width of the window function
  * @return a pointer to an allocated context, or NULL in case of error
  * @note this function is to be removed after a saner alternative is
  *       written
- * @deprecated Use sws_getCachedContext() instead.
  */
 struct SwsContext *sws_getContext(int srcW, int srcH, enum AVPixelFormat srcFormat,
                                   int dstW, int dstH, enum AVPixelFormat dstFormat,
                                   int flags, SwsFilter *srcFilter,
                                   SwsFilter *dstFilter, const double *param);
-#endif
 
 /**
  * Scale the image slice in srcSlice and put the resulting scaled
@@ -228,6 +220,97 @@ int sws_scale(struct SwsContext *c, const uint8_t *const srcSlice[],
               uint8_t *const dst[], const int dstStride[]);
 
 /**
+ * Scale source data from src and write the output to dst.
+ *
+ * This is merely a convenience wrapper around
+ * - sws_frame_start()
+ * - sws_send_slice(0, src->height)
+ * - sws_receive_slice(0, dst->height)
+ * - sws_frame_end()
+ *
+ * @param dst The destination frame. See documentation for sws_frame_start() for
+ *            more details.
+ * @param src The source frame.
+ *
+ * @return 0 on success, a negative AVERROR code on failure
+ */
+int sws_scale_frame(struct SwsContext *c, AVFrame *dst, const AVFrame *src);
+
+/**
+ * Initialize the scaling process for a given pair of source/destination frames.
+ * Must be called before any calls to sws_send_slice() and sws_receive_slice().
+ *
+ * This function will retain references to src and dst, so they must both use
+ * refcounted buffers (if allocated by the caller, in case of dst).
+ *
+ * @param dst The destination frame.
+ *
+ *            The data buffers may either be already allocated by the caller or
+ *            left clear, in which case they will be allocated by the scaler.
+ *            The latter may have performance advantages - e.g. in certain cases
+ *            some output planes may be references to input planes, rather than
+ *            copies.
+ *
+ *            Output data will be written into this frame in successful
+ *            sws_receive_slice() calls.
+ * @param src The source frame. The data buffers must be allocated, but the
+ *            frame data does not have to be ready at this point. Data
+ *            availability is then signalled by sws_send_slice().
+ * @return 0 on success, a negative AVERROR code on failure
+ *
+ * @see sws_frame_end()
+ */
+int sws_frame_start(struct SwsContext *c, AVFrame *dst, const AVFrame *src);
+
+/**
+ * Finish the scaling process for a pair of source/destination frames previously
+ * submitted with sws_frame_start(). Must be called after all sws_send_slice()
+ * and sws_receive_slice() calls are done, before any new sws_frame_start()
+ * calls.
+ */
+void sws_frame_end(struct SwsContext *c);
+
+/**
+ * Indicate that a horizontal slice of input data is available in the source
+ * frame previously provided to sws_frame_start(). The slices may be provided in
+ * any order, but may not overlap. For vertically subsampled pixel formats, the
+ * slices must be aligned according to subsampling.
+ *
+ * @param slice_start first row of the slice
+ * @param slice_height number of rows in the slice
+ *
+ * @return a non-negative number on success, a negative AVERROR code on failure.
+ */
+int sws_send_slice(struct SwsContext *c, unsigned int slice_start,
+                   unsigned int slice_height);
+
+/**
+ * Request a horizontal slice of the output data to be written into the frame
+ * previously provided to sws_frame_start().
+ *
+ * @param slice_start first row of the slice; must be a multiple of
+ *                    sws_receive_slice_alignment()
+ * @param slice_height number of rows in the slice; must be a multiple of
+ *                     sws_receive_slice_alignment(), except for the last slice
+ *                     (i.e. when slice_start+slice_height is equal to output
+ *                     frame height)
+ *
+ * @return a non-negative number if the data was successfully written into the output
+ *         AVERROR(EAGAIN) if more input data needs to be provided before the
+ *                         output can be produced
+ *         another negative AVERROR code on other kinds of scaling failure
+ */
+int sws_receive_slice(struct SwsContext *c, unsigned int slice_start,
+                      unsigned int slice_height);
+
+/**
+ * @return alignment required for output slices requested with sws_receive_slice().
+ *         Slice offsets and sizes passed to sws_receive_slice() must be
+ *         multiples of the value returned from this function.
+ */
+unsigned int sws_receive_slice_alignment(const struct SwsContext *c);
+
+/**
  * @param dstRange flag indicating the while-black range of the output (1=jpeg / 0=mpeg)
  * @param srcRange flag indicating the while-black range of the input (1=jpeg / 0=mpeg)
  * @param table the yuv2rgb coefficients describing the output yuv space, normally ff_yuv2rgb_coeffs[x]
@@ -235,14 +318,22 @@ int sws_scale(struct SwsContext *c, const uint8_t *const srcSlice[],
  * @param brightness 16.16 fixed point brightness correction
  * @param contrast 16.16 fixed point contrast correction
  * @param saturation 16.16 fixed point saturation correction
+#if LIBSWSCALE_VERSION_MAJOR > 6
+ * @return negative error code on error, non negative otherwise
+#else
  * @return -1 if not supported
+#endif
  */
 int sws_setColorspaceDetails(struct SwsContext *c, const int inv_table[4],
                              int srcRange, const int table[4], int dstRange,
                              int brightness, int contrast, int saturation);
 
 /**
+#if LIBSWSCALE_VERSION_MAJOR > 6
+ * @return negative error code on error, non negative otherwise
+#else
  * @return -1 if not supported
+#endif
  */
 int sws_getColorspaceDetails(struct SwsContext *c, int **inv_table,
                              int *srcRange, int **table, int *dstRange,
@@ -260,18 +351,6 @@ SwsVector *sws_allocVec(int length);
 SwsVector *sws_getGaussianVec(double variance, double quality);
 
 /**
- * Allocate and return a vector with length coefficients, all
- * with the same value c.
- */
-SwsVector *sws_getConstVec(double c, int length);
-
-/**
- * Allocate and return a vector with just one coefficient, with
- * value 1.0.
- */
-SwsVector *sws_getIdentityVec(void);
-
-/**
  * Scale all the coefficients of a by the scalar value.
  */
 void sws_scaleVec(SwsVector *a, double scalar);
@@ -280,22 +359,6 @@ void sws_scaleVec(SwsVector *a, double scalar);
  * Scale all the coefficients of a so that their sum equals height.
  */
 void sws_normalizeVec(SwsVector *a, double height);
-void sws_convVec(SwsVector *a, SwsVector *b);
-void sws_addVec(SwsVector *a, SwsVector *b);
-void sws_subVec(SwsVector *a, SwsVector *b);
-void sws_shiftVec(SwsVector *a, int shift);
-
-/**
- * Allocate and return a clone of the vector a, that is a vector
- * with the same coefficients as a.
- */
-SwsVector *sws_cloneVec(SwsVector *a);
-
-/**
- * Print with av_log() a textual representation of the vector a
- * if log_level <= av_log_level.
- */
-void sws_printVec2(SwsVector *a, AVClass *log_ctx, int log_level);
 
 void sws_freeVec(SwsVector *a);
 

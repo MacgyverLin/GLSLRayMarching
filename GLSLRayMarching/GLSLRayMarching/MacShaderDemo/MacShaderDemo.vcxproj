@@ -110,14 +110,16 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/rapidjson/include;   ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/zlib/build/Debug; ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/ffmpeg/lib; ../../../3rdparty/zlib/build/Debug; ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
       <AdditionalDependencies>FrameWork.lib; zlibd.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,7 +156,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/rapidjson/include;    ../../../3rdparty/rapidjson/include; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -162,8 +164,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FrameWork.lib; zlibd.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/ffmpeg/lib; ../../../3rdparty/zlib/build/Release; ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FrameWork.lib; zlib.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
