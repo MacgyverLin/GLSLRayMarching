@@ -6,7 +6,9 @@
         {},
         {},
         {
-          "keyboard":""
+          "keyboard": "",
+          "filter": "nearest",
+          "wrap": "clamp"
         }
       ],
       "rendertarget": "image"
