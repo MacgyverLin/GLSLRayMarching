@@ -1391,20 +1391,28 @@ bool TextureCubeMapFile::Initiate(const std::string& path_, bool vflip_)
 		if (isHDR)
 		{
 			data[i] = stbi_loadf(cubemapFacePath.c_str(), &width, &height, &nrComponents, 0);
-			if (!data[i])
+			if (data[i])
+			{
+				if (vflip_)
+					stbi__vertical_flip(data[i], width, height, nrComponents * 4);
+			}
+			else
+			{
 				failed = true;
-
-			if (vflip_)
-				stbi__vertical_flip(data[i], width, height, nrComponents * 4);
+			}
 		}
 		else
 		{
 			data[i] = stbi_load(cubemapFacePath.c_str(), &width, &height, &nrComponents, 0);
-			if (!data[i])
+			if (data[i])
+			{
+				if (vflip_)
+					stbi__vertical_flip(data[i], width, height, nrComponents * 1);
+			}
+			else
+			{
 				failed = true;
-
-			if (vflip_)
-				stbi__vertical_flip(data[i], width, height, nrComponents * 1);
+			}
 		}
 	}
 
@@ -1414,8 +1422,10 @@ bool TextureCubeMapFile::Initiate(const std::string& path_, bool vflip_)
 		bool result = TextureCubemap::Initiate(width, nrComponents, precision, data);
 
 		for (int i = 0; i < 6; i++)
-			stbi_image_free(data[i]);
-
+		{
+			if(data[i])
+				stbi_image_free(data[i]);
+		}
 		return true;
 	}
 	else
