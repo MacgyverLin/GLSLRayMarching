@@ -1,0 +1,9 @@
+# Compiled source #
+###################
+*.com
+*.exe
+*.obj
+*.suo
+./vs/*.*
+*.def
+*.log
