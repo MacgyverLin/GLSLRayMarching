@@ -1,0 +1,14 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=../Build/lib
+includedir=../Build/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 59.20.100
+Requires: 
+Requires.private: libswresample >= 4.4.100, libavutil >= 57.21.100
+Conflicts:
+Libs: -L${libdir}  -lavcodec 
+Libs.private: -lm -latomic -lmfplat -lmfuuid -lole32 -lstrmiids -lole32 -luser32
+Cflags: -I${includedir}
