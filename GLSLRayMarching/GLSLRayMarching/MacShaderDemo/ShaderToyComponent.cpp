@@ -201,10 +201,14 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/in my crawl space");
 	//return shaderToyRenderer->Initiate("Demos/Gas Giant!");
 	//return shaderToyRenderer->Initiate("Demos/Pegasus Galaxy");
+	//return shaderToyRenderer->Initiate("Demos/Polygonal Terrain");
+	return shaderToyRenderer->Initiate("Demos/Diamonds are Forever");
 
 //错误：
+	//无法运行：Assertion failed: IsBool(), file ...\GLSLRayMarching\3rdparty\rapidjson\include\rapidjson\document.h, line 1163
+	//return shaderToyRenderer->Initiate("Demos/Gem Bloom FX");//https://www.shadertoy.com/view/MssczX
 	//无法运行：Assertion failed: (alGetError() != 0), file ...\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\Audio.cpp, line 564
-	return shaderToyRenderer->Initiate("Demos/synthetic aperture");//https://www.shadertoy.com/view/ldlSzX
+	//return shaderToyRenderer->Initiate("Demos/synthetic aperture");//https://www.shadertoy.com/view/ldlSzX
 	//正常运行但是显示不真实：
 	//return shaderToyRenderer->Initiate("Demos/Another better ocean");//https://www.shadertoy.com/view/Xdlczl
 }
