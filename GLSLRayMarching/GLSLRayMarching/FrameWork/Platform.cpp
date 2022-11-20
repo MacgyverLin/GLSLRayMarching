@@ -143,14 +143,14 @@ public:
 		return true;
 	}
 
-	bool Update(std::vector<unsigned char>& buffer)
+	bool Update(std::vector<unsigned char>& buffer, bool flip)
 	{
 #if (PLATFORM == GLFW)
 		buffer.resize(VI.getWidth(dev)* VI.getHeight(dev) * 3);
 
 		if (VI.isFrameNew(dev))
 		{
-			VI.getPixels(dev, &buffer[0], true);
+			VI.getPixels(dev, &buffer[0], true, flip);
 		}
 
 		return true;
@@ -286,11 +286,11 @@ bool Platform::WebCam::Initiate()
 	return impl->Initiate();
 }
 
-bool Platform::WebCam::Update(std::vector<unsigned char>& buffer)
+bool Platform::WebCam::Update(std::vector<unsigned char>& buffer, bool flip)
 {
 	Assert(impl);
 
-	return impl->Update(buffer);
+	return impl->Update(buffer, flip);
 }
 
 bool Platform::WebCam::Pause()
@@ -903,6 +903,16 @@ public:
 #endif
 	}
 
+	int GetSampleCount()
+	{
+		return Samples;
+	}
+
+	int GetChannelCount()
+	{
+		return Channel;
+	}
+private:
 	HANDLE h;
 	BOOL s_bMic;
 	BOOL s_bEcho;
@@ -959,6 +969,20 @@ void Platform::Microphone::Terminate()
 	Assert(impl);
 
 	return impl->Terminate();
+}
+
+int Platform::Microphone::GetSampleCount()
+{
+	Assert(impl);
+
+	return impl->GetSampleCount();
+}
+
+int Platform::Microphone::GetChannelCount()
+{
+	Assert(impl);
+
+	return impl->GetChannelCount();
 }
 
 //////////////////////////////////////////////////////

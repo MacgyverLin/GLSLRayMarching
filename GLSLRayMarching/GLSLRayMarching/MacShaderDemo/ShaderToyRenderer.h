@@ -182,7 +182,7 @@ public:
 		WebcamTexture* texture = new WebcamTexture();
 		if (!texture)
 			return nullptr;
-		if (!texture->Initiate())
+		if (!texture->Initiate(vflip_))
 		{
 			delete texture;
 			return nullptr;

@@ -65,6 +65,9 @@
     <Filter Include="Source Files\System\Services\Audio">
       <UniqueIdentifier>{e2de53c1-513d-489e-b694-a8edacd7eee2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\FFT">
+      <UniqueIdentifier>{dc8858a6-6a2d-43a4-b605-dcb63e7463c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -536,6 +539,27 @@
     </ClInclude>
     <ClInclude Include="webcam3rdparty.h">
       <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="check_fft.hpp">
+      <Filter>Source Files\FFT</Filter>
+    </ClInclude>
+    <ClInclude Include="copy_array.hpp">
+      <Filter>Source Files\FFT</Filter>
+    </ClInclude>
+    <ClInclude Include="error_handling.hpp">
+      <Filter>Source Files\FFT</Filter>
+    </ClInclude>
+    <ClInclude Include="fft.h">
+      <Filter>Source Files\FFT</Filter>
+    </ClInclude>
+    <ClInclude Include="fft.hpp">
+      <Filter>Source Files\FFT</Filter>
+    </ClInclude>
+    <ClInclude Include="fft_impl.hpp">
+      <Filter>Source Files\FFT</Filter>
+    </ClInclude>
+    <ClInclude Include="fft_settings.h">
+      <Filter>Source Files\FFT</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

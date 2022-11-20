@@ -11,7 +11,8 @@
         {
           "webcam": "0",
           "filter": "linear",
-          "wrap": "repeat"
+          "wrap": "clamp",
+          "vflip": true
         },
         {
           "texture2d": "tex0.png",

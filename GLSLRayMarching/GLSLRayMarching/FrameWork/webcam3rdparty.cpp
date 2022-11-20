@@ -1583,7 +1583,7 @@ void videoInput::processPixels(unsigned char * src, unsigned char * dst, int wid
 		int x = 0;
 		int y = 0;
 
-		if(bFlip){
+		if(!bFlip){
 			for(int y = 0; y < height; y++){
 				memcpy(dst + (y * widthInBytes), src + ( (height -y -1) * widthInBytes), widthInBytes);
 			}
@@ -1592,7 +1592,7 @@ void videoInput::processPixels(unsigned char * src, unsigned char * dst, int wid
 			memcpy(dst, src, numBytes);
 		}
 	}else{
-		if(bFlip){
+		if(!bFlip){
 
 			int x = 0;
 			int y = (height - 1) * widthInBytes;

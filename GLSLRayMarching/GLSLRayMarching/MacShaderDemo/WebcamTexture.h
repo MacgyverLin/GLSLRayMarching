@@ -16,6 +16,7 @@ public:
 		: DynamicTexture2D()
 		, buffer(0)
 		, webcam(nullptr)
+		, flip(false)
 	{
 	}
 
@@ -23,8 +24,10 @@ public:
 	{
 	}
 
-	bool Initiate()
+	bool Initiate(bool flip_)
 	{
+		flip = flip_;
+
 		webcam = Platform::CreateWebCam(0);
 		assert(webcam);
 
@@ -53,7 +56,7 @@ public:
 	{
 		if (webcam)
 		{
-			webcam->Update(buffer);
+			webcam->Update(buffer, flip);
 
 			DynamicTexture2D::Update(&buffer[0]);
 		}
@@ -61,6 +64,7 @@ public:
 private:
 private:
 	Platform::WebCam* webcam;
+	bool flip;
 	std::vector<unsigned char> buffer;
 };
 

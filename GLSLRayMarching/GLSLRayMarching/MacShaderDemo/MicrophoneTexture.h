@@ -8,13 +8,14 @@
 #include "VertexBuffer.h"
 #include "GUI.h"
 #include "FrameWork.h"
+#include "FFT.hpp"
 
 class MicrophoneTexture : public DynamicTexture2D
 {
 public:
 	MicrophoneTexture()
 		: DynamicTexture2D()
-		, buffer(0)
+		, maxBuffer(0)
 		, microphone(nullptr)
 	{
 	}
@@ -31,8 +32,8 @@ public:
 		if (!microphone->Initiate())
 			return false;
 
-		buffer.resize(1024 * 2);
-		if (!DynamicTexture2D::Initiate(1024, 2, 1, Texture::DynamicRange::HIGH, &buffer[0]))
+		maxBuffer.resize(microphone->GetSampleCount() * microphone->GetChannelCount());
+		if (!DynamicTexture2D::Initiate(microphone->GetSampleCount(), microphone->GetChannelCount(), 1, Texture::DynamicRange::HIGH, nullptr))
 			return false;
 
 		return true;
@@ -54,15 +55,34 @@ public:
 	{
 		if (microphone)
 		{
+			std::vector<float> buffer(microphone->GetSampleCount() * microphone->GetChannelCount());
 			microphone->Update(buffer);
 
-			DynamicTexture2D::Update(&buffer[0]);
+			UpdateMaxBuffer(buffer);
+
+			DynamicTexture2D::Update(&maxBuffer[0]);
 		}
 	}
 private:
+	void UpdateMaxBuffer(const std::vector<float>& buffer)
+	{
+		const char* error_description;
+		std::vector<complex_type> fftBuffer(buffer.size());
+		simple_fft::FFT(buffer, fftBuffer, buffer.size(), error_description);
+
+		for (int i = 0; i < buffer.size(); i++)
+		{
+			float d = Math::Sqrt(fftBuffer[i].real() * fftBuffer[i].real() + fftBuffer[i].imag() * fftBuffer[i].imag())*0.02;
+
+			if (d > maxBuffer[i])
+				maxBuffer[i] = d;
+			else
+				maxBuffer[i] *= 0.99;
+		}
+	}
 private:
 	Platform::Microphone* microphone;
-	std::vector<float> buffer;
+	std::vector<float> maxBuffer;
 };
 
 #endif
