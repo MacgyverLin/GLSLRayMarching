@@ -1,0 +1,44 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "cubemapbuffera.glsl",
+      "channels": [
+        {
+          "cubemapbuffer": "cubemapbuffera",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": true
+        },
+        
+        {
+          "texture2d": "tex1.png",
+          "filter": "nearest",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "cubemapbuffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "cubemapbuffer": "cubemapbuffera",
+          "filter": "nearest",
+          "wrap": "clamp",
+          "vflip": true
+        },
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}
