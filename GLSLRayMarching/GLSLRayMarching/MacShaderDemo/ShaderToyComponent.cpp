@@ -193,10 +193,20 @@ bool ShaderToyComponent::OnStart()
 	/////return shaderToyRenderer->Initiate("Demos/Desperate Distraction");
     ////return shaderToyRenderer->Initiate("Demos/Asymmetric Hexagon Landscape");
 
+//正常：
 	//return shaderToyRenderer->Initiate("Demos/Octagrams");
 	//return shaderToyRenderer->Initiate("Demos/Glass Polyhedron");
 	//return shaderToyRenderer->Initiate("Demos/Sirenian Dawn");
-	return shaderToyRenderer->Initiate("Demos/Another better ocean");
+	//return shaderToyRenderer->Initiate("Demos/Flux Core");
+	//return shaderToyRenderer->Initiate("Demos/in my crawl space");
+	//return shaderToyRenderer->Initiate("Demos/Gas Giant!");
+	//return shaderToyRenderer->Initiate("Demos/Pegasus Galaxy");
+
+//错误：
+	//无法运行：Assertion failed: (alGetError() != 0), file ...\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\Audio.cpp, line 564
+	return shaderToyRenderer->Initiate("Demos/synthetic aperture");//https://www.shadertoy.com/view/ldlSzX
+	//正常运行但是显示不真实：
+	//return shaderToyRenderer->Initiate("Demos/Another better ocean");//https://www.shadertoy.com/view/Xdlczl
 }
 
 bool ShaderToyComponent::OnUpdate()

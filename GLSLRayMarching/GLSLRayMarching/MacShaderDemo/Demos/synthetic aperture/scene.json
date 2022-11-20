@@ -3,6 +3,11 @@
     {
       "shader": "image.glsl",
       "channels": [
+        {},
+        {},
+        {
+          "keyboard":""
+        }
       ],
       "rendertarget": "image"
     }

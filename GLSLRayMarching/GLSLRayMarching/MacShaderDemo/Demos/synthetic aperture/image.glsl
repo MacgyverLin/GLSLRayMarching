@@ -10,7 +10,7 @@ const float k = 2.*3.14159/.04,  // 2 Pi / wavelenght
 #define t iTime
 
 bool keyToggle(int ascii) {
-	return false;//(texture(iChannel2,vec2((.5+float(ascii))/256.,0.75)).x > 0.)
+	return (texture(iChannel2,vec2((.5+float(ascii))/256.,0.75)).x > 0.);
 }
 
 float rnd(float i) {
