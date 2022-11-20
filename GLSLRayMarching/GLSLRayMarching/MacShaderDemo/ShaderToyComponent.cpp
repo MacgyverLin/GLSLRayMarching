@@ -174,8 +174,10 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Apollian with a twist");
 	//return shaderToyRenderer->Initiate("Demos/Night Sneakings");
 	//return shaderToyRenderer->Initiate("Demos/Energy plant");
-	//return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
+	return shaderToyRenderer->Initiate("Demos/CubemapTest");
+	return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
 	return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
+	return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
 	//return shaderToyRenderer->Initiate("Demos/Neon Dance");

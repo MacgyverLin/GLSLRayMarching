@@ -340,8 +340,8 @@ public:
 	TextureCubemap();
 	virtual ~TextureCubemap();
 
-	bool Initiate(unsigned int size_, Texture::Format format_, void* src_);
-	bool Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_);
+	bool Initiate(unsigned int size_, Texture::Format format_, void* src_[6]);
+	bool Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_[6]);
 	void Terminate();
 
 	void Update(Side side_, unsigned int x_, unsigned int y_, unsigned int w_, unsigned int h_, void* src_, int mipLevel_ = -1);
@@ -358,6 +358,7 @@ private:
 	unsigned int size;
 	unsigned int faceDataSize;
 };
+
 
 class DynamicTextureCubemap : public TextureCubemap
 {

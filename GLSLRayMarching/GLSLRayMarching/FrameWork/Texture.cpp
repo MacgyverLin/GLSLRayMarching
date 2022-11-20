@@ -20,7 +20,7 @@ static unsigned int textureGLTypes[] =
 static unsigned int textureGLWraps[] =
 {
 	GL_REPEAT,
-	GL_CLAMP
+	GL_CLAMP_TO_EDGE
 };
 
 static unsigned int textureGLMinFilters[] =
@@ -725,7 +725,7 @@ TextureCubemap::~TextureCubemap()
 	Terminate();
 }
 
-bool TextureCubemap::Initiate(unsigned int size_, Texture::Format format_, void* src_)
+bool TextureCubemap::Initiate(unsigned int size_, Texture::Format format_, void* src_[6])
 {
 	Assert(impl);
 
@@ -736,7 +736,6 @@ bool TextureCubemap::Initiate(unsigned int size_, Texture::Format format_, void*
 	Formats f = textureGLFormats[(int)impl->format];
 
 	faceDataSize = (unsigned int)(size_ * size_ * f.bytePerPixels);
-	unsigned char* dataPtr = (unsigned char*)src_;
 
 	glGenTextures(1, &impl->handle);
 	glBindTexture(textureType, impl->handle);
@@ -748,29 +747,27 @@ bool TextureCubemap::Initiate(unsigned int size_, Texture::Format format_, void*
 
 	if (impl->format >= Texture::Format::COMPRESSED_R11_EAC)
 	{
-		glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), src_); dataPtr += faceDataSize;
-		glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), src_); dataPtr += faceDataSize;
-		glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), src_); dataPtr += faceDataSize;
-		glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), src_); dataPtr += faceDataSize;
-		glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), src_); dataPtr += faceDataSize;
-		glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), src_); dataPtr += faceDataSize;
+		for (int i = 0; i < 6; i++)
+		{
+			void* ptr = src_ ? (src_[i] ? src_[i] : NULL) : NULL;
+			glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, f.internal, size, size, 0, (GLsizei)(f.bytePerPixels * size * size), ptr);
+		}
 	}
 	else
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, f.internal, size, size, 0, f.format, f.type, src_ ? dataPtr : NULL); dataPtr += faceDataSize;
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, f.internal, size, size, 0, f.format, f.type, src_ ? dataPtr : NULL); dataPtr += faceDataSize;
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, f.internal, size, size, 0, f.format, f.type, src_ ? dataPtr : NULL); dataPtr += faceDataSize;
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, f.internal, size, size, 0, f.format, f.type, src_ ? dataPtr : NULL); dataPtr += faceDataSize;
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, f.internal, size, size, 0, f.format, f.type, src_ ? dataPtr : NULL); dataPtr += faceDataSize;
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, f.internal, size, size, 0, f.format, f.type, src_ ? dataPtr : NULL); dataPtr += faceDataSize;
+		for (int i = 0; i < 6; i++)
+		{
+			void* ptr = src_ ? (src_[i] ? src_[i] : NULL) : NULL;
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, f.internal, size, size, 0, f.format, f.type, ptr);
+		}
 	}
 
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-	
+
 	return Texture::Initiate();
 }
 
-bool TextureCubemap::Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_)
+bool TextureCubemap::Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_[6])
 {
 	return Initiate(size_, GetFormat(nrComponents_, dynamicRange_), src_);
 }
@@ -1374,29 +1371,52 @@ bool TextureCubeMapFile::Initiate(const std::string& path_, bool vflip_)
 	bool isHDR = stbi_is_hdr(path_.c_str());
 
 	int width, height, nrComponents;
-	void* data = nullptr;
-	if (isHDR)
-	{
-		data = stbi_loadf(path_.c_str(), &width, &height, &nrComponents, 0);
-		if (vflip_)
-			stbi__vertical_flip(data, width, height, nrComponents * 4);
+	void* data[6] = { nullptr , nullptr , nullptr , nullptr , nullptr , nullptr };
 
-	}
-	else
+
+	bool failed = false;
+	for (int i = 0; i < 6; i++)
 	{
-		data = stbi_load(path_.c_str(), &width, &height, &nrComponents, 0);
-		if (vflip_)
-			stbi__vertical_flip(data, width, height, nrComponents * 1);
+		std::string pathnoext = path_.substr(0, path_.find_last_of("."));
+		std::string ext = path_.substr(path_.find_last_of(".") + 1);
+		std::string number = "0";
+		number[0] += i;
+
+		std::string cubemapFacePath;
+		if (i != 0)
+			cubemapFacePath = pathnoext + "_" + number + "." + ext;
+		else
+			cubemapFacePath = path_;
+
+		if (isHDR)
+		{
+			data[i] = stbi_loadf(cubemapFacePath.c_str(), &width, &height, &nrComponents, 0);
+			if (!data[i])
+				failed = true;
+
+			if (vflip_)
+				stbi__vertical_flip(data[i], width, height, nrComponents * 4);
+		}
+		else
+		{
+			data[i] = stbi_load(cubemapFacePath.c_str(), &width, &height, &nrComponents, 0);
+			if (!data[i])
+				failed = true;
+
+			if (vflip_)
+				stbi__vertical_flip(data[i], width, height, nrComponents * 1);
+		}
 	}
 
-	if (data)
+	if (!failed)
 	{
 		Texture::DynamicRange precision = isHDR ? Texture::DynamicRange::HIGH : Texture::DynamicRange::LOW;
 		bool result = TextureCubemap::Initiate(width, nrComponents, precision, data);
 
-		stbi_image_free(data);
+		for (int i = 0; i < 6; i++)
+			stbi_image_free(data[i]);
 
-		return result;
+		return true;
 	}
 	else
 	{
