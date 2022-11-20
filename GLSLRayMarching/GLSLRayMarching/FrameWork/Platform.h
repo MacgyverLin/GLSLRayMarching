@@ -450,8 +450,8 @@ public:
 		WebCam();
 		~WebCam();
 
-		bool Initiate(const char* filename);
-		bool Update(void *data);
+		bool Initiate();
+		bool Update(std::vector<unsigned char>& buffer);
 		bool Pause();
 		void Resume();
 		void Terminate();

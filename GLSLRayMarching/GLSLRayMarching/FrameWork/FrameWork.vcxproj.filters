@@ -271,6 +271,9 @@
     <ClCompile Include="Audio.cpp">
       <Filter>Source Files\System\Services\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="webcam3rdparty.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -530,6 +533,9 @@
     </ClInclude>
     <ClInclude Include="Audio.h">
       <Filter>Source Files\System\Services\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="webcam3rdparty.h">
+      <Filter>Source Files\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

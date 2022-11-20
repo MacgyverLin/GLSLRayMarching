@@ -25,7 +25,7 @@ public:
 
 	bool Initiate(const std::string& url, bool vflip_)
 	{
-		return Texture2D::Initiate(512, 1, 1, Texture::DynamicRange::LOW, &buffer[0]);
+		return DynamicTexture2D::Initiate(512, 1, 1, Texture::DynamicRange::LOW, &buffer[0]);
 	}
 
 	virtual void Tick(float dt) override

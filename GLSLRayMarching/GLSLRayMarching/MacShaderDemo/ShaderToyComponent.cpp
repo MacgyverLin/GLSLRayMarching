@@ -111,8 +111,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Rainforest");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
 	//return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
-	
-	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
+
 
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
@@ -174,14 +173,17 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Apollian with a twist");
 	//return shaderToyRenderer->Initiate("Demos/Night Sneakings");
 	//return shaderToyRenderer->Initiate("Demos/Energy plant");
-return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
+
+	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
+	return shaderToyRenderer->Initiate("Demos/WebCamTextureTest");
+	return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
+	return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
 	return shaderToyRenderer->Initiate("Demos/Cubemaps/Geometric Cellular Surfaces");
 	return shaderToyRenderer->Initiate("Demos/Cubemaps/Cubemaps");
 	return shaderToyRenderer->Initiate("Demos/A cup of champagne");
 	return shaderToyRenderer->Initiate("Demos/Diamonds/Gem Bloom FX");
 	return shaderToyRenderer->Initiate("Demos/CubemapTest");
 	return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
-	return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
 	//return shaderToyRenderer->Initiate("Demos/Neon Dance");

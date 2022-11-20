@@ -25,7 +25,7 @@ public:
 
 	bool Initiate()
 	{
-		if (!Texture2D::Initiate(256, 3, 1, Texture::DynamicRange::LOW, &buffer[0]))
+		if (!DynamicTexture2D::Initiate(256, 3, 1, Texture::DynamicRange::LOW, &buffer[0]))
 			return false;
 
 		SetMinFilter(Texture::MinFilter::Nearest);

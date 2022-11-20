@@ -15,6 +15,7 @@ public:
 	MicrophoneTexture()
 		: DynamicTexture2D()
 		, buffer(0)
+		, microphone(nullptr)
 	{
 	}
 
@@ -31,7 +32,7 @@ public:
 			return false;
 
 		buffer.resize(1024 * 2);
-		if (!Texture2D::Initiate(1024, 2, 1, Texture::DynamicRange::HIGH, &buffer[0]))
+		if (!DynamicTexture2D::Initiate(1024, 2, 1, Texture::DynamicRange::HIGH, &buffer[0]))
 			return false;
 
 		return true;
@@ -39,7 +40,7 @@ public:
 
 	void Terminate()
 	{
-		Texture2D::Terminate();
+		DynamicTexture2D::Terminate();
 
 		if (microphone)
 		{

@@ -65,18 +65,69 @@ Platform::SystemTime::~SystemTime()
 }
 
 //////////////////////////////////////////////////////
+#include "webcam3rdparty.h"
+
 class Platform::WebCam::Impl
 {
 public:
 	Platform::WebCam::Impl()
 	{
+		dev = 0;
 	}
 
-	bool Initiate(const char* filename)
+	bool Initiate()
 	{
 #if (PLATFORM == GLFW)
-		// !!!!!!!!! TODO, ¡ıº“√»
-		// update microphone, if necessary
+		//uncomment for silent setup
+		//videoInput::setVerbose(false); 
+
+		//uncomment for multithreaded setup
+		//videoInput::setComMultiThreaded(true); 
+
+		//optional static function to list devices
+		//for silent listDevices use listDevices(true);
+		int numDevices = videoInput::listDevices();
+
+		//you can also now get the device list as a vector of strings 
+		std::vector <std::string> list = videoInput::getDeviceList();
+		for (size_t i = 0; i < list.size(); i++) {
+			Info("[%i] device is %s\n", i, list[i].c_str());
+		}
+
+		//by default we use a callback method
+		//this updates whenever a new frame
+		//arrives if you are only ocassionally grabbing frames
+		//you might want to set this to false as the callback caches the last
+		//frame for performance reasons. 
+		VI.setUseCallback(true);
+
+		//try and setup device with id 0 and id 1
+		//if only one device is found the second 
+		//setupDevice should return false
+
+		//if you want to capture at a different frame rate (default is 30) 
+		//specify it here, you are not guaranteed to get this fps though.
+		//m_imp->VI.setIdealFramerate(dev, 60);
+
+		//we can specifiy the dimensions we want to capture at
+		//if those sizes are not possible VI will look for the next nearest matching size
+		//m_imp->VI.setRequestedMediaSubType((int)MEDIASUBTYPE_MJPG);
+		VI.setupDevice(dev, 640, 480, VI_COMPOSITE);
+
+		//once the device is setup you can try and
+		//set the format - this is useful if your device
+		//doesn't remember what format you set it to
+		//m_imp->VI.setFormat(dev, VI_NTSC_M);					//optional set the format
+
+		//we allocate our buffer based on the number
+		//of pixels in each frame - this will be width * height * 3
+		//frame_size = m_imp->VI.getSize(dev);
+		//frame.resize(frame_size);
+
+		if (VI.getSize(dev) < 1) return false;
+
+		return true;
+
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -92,11 +143,17 @@ public:
 		return true;
 	}
 
-	bool Update(void* buffer)
+	bool Update(std::vector<unsigned char>& buffer)
 	{
 #if (PLATFORM == GLFW)
-		// !!!!!!!!! TODO, ¡ıº“√»
-		// Get Microphone data from deviceHandle here
+		buffer.resize(VI.getWidth(dev)* VI.getHeight(dev) * 3);
+
+		if (VI.isFrameNew(dev))
+		{
+			VI.getPixels(dev, &buffer[0], true);
+		}
+
+		return true;
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -109,14 +166,11 @@ public:
 #else
 #pragma error("unsupported PLATFORM type. Please make sure PLATFORM is defined")
 #endif
-		return true;
 	}
 
 	bool Pause()
 	{
 #if (PLATFORM == GLFW)
-		// !!!!!!!!! TODO, ¡ıº“√»
-		// system pause, do something for microphone, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -135,8 +189,6 @@ public:
 	void Resume()
 	{
 #if (PLATFORM == GLFW)
-		// !!!!!!!!! TODO, ¡ıº“√»
-		// system pause, do something for microphone, if necessary
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -154,8 +206,7 @@ public:
 	void Terminate()
 	{
 #if (PLATFORM == GLFW)
-		// !!!!!!!!! TODO, ¡ıº“√»
-		// delete Win32 Microphone related data here
+		VI.stopDevice(dev);
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -170,11 +221,10 @@ public:
 #endif
 	}
 
-	int GetWidth() const
+	int GetWidth()
 	{
 #if (PLATFORM == GLFW)
-		// !!!!!!!!! TODO, ¡ıº“√»
-		// delete Win32 Microphone related data here
+		return VI.getWidth(dev);
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -190,11 +240,10 @@ public:
 		return 0;
 	}
 
-	int GetHeight() const
+	int GetHeight()
 	{
 #if (PLATFORM == GLFW)
-		// !!!!!!!!! TODO, ¡ıº“√»
-		// delete Win32 Microphone related data here
+		return VI.getHeight(dev);
 #elif (PLATFORM == MACOSX)
 #elif (PLATFORM == LINUX)
 #elif (PLATFORM == ANDROID)
@@ -209,7 +258,11 @@ public:
 #endif
 		return 0;
 	}
+private:
+	videoInput	VI;
+	int			dev;
 };
+
 
 Platform::WebCam::WebCam()
 	: impl(nullptr)
@@ -226,18 +279,18 @@ Platform::WebCam::~WebCam()
 	}
 }
 
-bool Platform::WebCam::Initiate(const char* filename)
+bool Platform::WebCam::Initiate()
 {
 	Assert(impl);
 
-	return impl->Initiate(filename);
+	return impl->Initiate();
 }
 
-bool Platform::WebCam::Update(void* data)
+bool Platform::WebCam::Update(std::vector<unsigned char>& buffer)
 {
 	Assert(impl);
 
-	return impl->Update(data);
+	return impl->Update(buffer);
 }
 
 bool Platform::WebCam::Pause()
@@ -422,7 +475,7 @@ private:
 	};
 
 	// fill callback
-	void inFunc(void* dest, void* src, int samples) 
+	void inFunc(void* dest, void* src, int samples)
 	{
 		t_snd* s = (t_snd*)src;
 		t_snd* d = (t_snd*)dest;
@@ -480,18 +533,18 @@ private:
 		//printf("%3.4f %3.4f\r", abs(d[0]), abs(d[1]));
 	}
 
-	void outFunc(void* dest, void* src, int samples) 
+	void outFunc(void* dest, void* src, int samples)
 	{
 	}
 
-	HANDLE SoundInit() 
+	HANDLE SoundInit()
 	{
 		return (HANDLE)_beginthread(SoundThreadProc, 0, this);
 	}
 
-	void SoundTerm(HANDLE hThread) 
+	void SoundTerm(HANDLE hThread)
 	{
-		if (!hThread) 
+		if (!hThread)
 			return;
 
 		PostThreadMessage(GetThreadId(hThread), WM_QUIT, 0, 0);
@@ -508,7 +561,7 @@ private:
 		samples /= sizeof(t_snd);
 		samples /= Channel;
 
-		for (int i = 0; i < samples; i++) 
+		for (int i = 0; i < samples; i++)
 		{
 			float v = bound(snd2float(s[i * 2 + 0]) * s_volume);
 			d[i * 2 + 0] = v;
@@ -516,7 +569,7 @@ private:
 		}
 	}
 
-	static VOID SoundThreadProc(void* ptr) 
+	static VOID SoundThreadProc(void* ptr)
 	{
 		enum {
 			SoundIn = 0,
@@ -551,7 +604,7 @@ private:
 		DWORD countin = 0;
 		WAVEHDR whdrin[BufNum];
 
-		impl->buffer.resize(Samples*2);
+		impl->buffer.resize(Samples * 2);
 
 		waveInOpen(&hwi, WAVE_MAPPER, &wfx, (DWORD_PTR)ahEvents[SoundIn], 0, CALLBACK_EVENT);
 		std::vector<std::vector<char> > soundbuffer;
@@ -575,16 +628,16 @@ private:
 			waveInAddBuffer(hwi, &whdrin[i], sizeof(WAVEHDR));
 		}
 
-//#define WAVE_OUT
+		//#define WAVE_OUT
 #ifdef WAVE_OUT
 		waveOutOpen(&hwo, WAVE_MAPPER, &wfx, (DWORD_PTR)ahEvents[SoundOut], 0, CALLBACK_EVENT);
 		std::vector<std::vector<char> > soundbufferout;
 		soundbufferout.resize(BufNum);
-		for (int i = 0; i < BufNum; i++) 
+		for (int i = 0; i < BufNum; i++)
 		{
 			soundbufferout[i].resize(Samples * wfx.nBlockAlign);
-			WAVEHDR tempout = 
-			{ 
+			WAVEHDR tempout =
+			{
 				&soundbufferout[i][0],
 				(DWORD)(Samples * wfx.nBlockAlign),
 				0,
@@ -592,7 +645,7 @@ private:
 				0,
 				0,
 				NULL,
-				0 
+				0
 			};
 			whdrout[i] = tempout;
 		}
@@ -603,18 +656,18 @@ private:
 
 		// Start MSG
 		MSG msg;
-		for (;;) 
+		for (;;)
 		{
-			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) 
+			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 			{
-				if (msg.message == WM_QUIT) 
+				if (msg.message == WM_QUIT)
 					break;
 			}
 
 			DWORD dwSignal = WaitForMultipleObjects(SoundMax, ahEvents, FALSE, 1000);
 
 			// IN
-			if (dwSignal == WAIT_OBJECT_0 + 0) 
+			if (dwSignal == WAIT_OBJECT_0 + 0)
 			{
 				if (whdrin[countin].dwFlags & WHDR_DONE)
 				{
@@ -632,27 +685,27 @@ private:
 			}
 
 			// OUT
-			if (dwSignal == WAIT_OBJECT_0 + 1) 
+			if (dwSignal == WAIT_OBJECT_0 + 1)
 			{
 				;
 			}
 		}
 
 		// in
-		do 
+		do
 		{
 			countin = 0;
 			for (int i = 0; i < BufNum; i++)
 			{
 				countin += !(whdrin[i].dwFlags & WHDR_DONE);
 			}
-			if (countin) 
+			if (countin)
 				Sleep(50);
 		} while (countin);
 
 		// out
 #ifdef WAVE_OUT
-		do 
+		do
 		{
 			countout = 0;
 			for (int i = 0; i < BufNum; i++)
@@ -661,7 +714,7 @@ private:
 		} while (countout);
 #endif
 
-		for (int i = 0; i < BufNum; i++) 
+		for (int i = 0; i < BufNum; i++)
 		{
 			waveInUnprepareHeader(hwi, &whdrin[i], sizeof(WAVEHDR));
 
@@ -679,14 +732,14 @@ private:
 		waveOutClose(hwo);
 #endif
 
-		for (int i = 0; i < SoundMax; i++) 
+		for (int i = 0; i < SoundMax; i++)
 		{
-			if (ahEvents[i]) 
+			if (ahEvents[i])
 				CloseHandle(ahEvents[i]);
 		}
 	}
 
-	HANDLE micStart(BOOL bMicOn) 
+	HANDLE micStart(BOOL bMicOn)
 	{
 		s_bEcho = FALSE;
 		if (s_bMic) {
@@ -698,13 +751,13 @@ private:
 		return SoundInit();
 	}
 
-	void micEnd(HANDLE handle) 
+	void micEnd(HANDLE handle)
 	{
 		SoundTerm(handle);
 		s_bMic = FALSE;
 	}
 
-	void micOn(void) 
+	void micOn(void)
 	{
 		s_bMic = TRUE;
 		if (s_bEcho)
@@ -713,13 +766,13 @@ private:
 			s_state = STATE_REVERB;
 	}
 
-	void micOff(void) 
+	void micOff(void)
 	{
 		s_bMic = FALSE;
 		s_state = STATE_NO_SOUND;
 	}
 
-	void micEchoOn(void) 
+	void micEchoOn(void)
 	{
 		s_bEcho = TRUE;
 		if (s_bMic)
@@ -728,7 +781,7 @@ private:
 			s_state = STATE_NO_SOUND;
 	}
 
-	void micEchoOff(void) 
+	void micEchoOff(void)
 	{
 		s_bEcho = FALSE;
 		if (s_bMic)
@@ -737,7 +790,7 @@ private:
 			s_state = STATE_NO_SOUND;
 	}
 
-	void micVolume(float volume) 
+	void micVolume(float volume)
 	{
 		s_volume = volume;
 	}
@@ -941,8 +994,8 @@ public:
 		video_stream = NULL;
 		video_stream_idx = 0;
 
-		video_dst_data[4] = { NULL};
-		video_dst_linesize[4] = {0 };
+		video_dst_data[4] = { NULL };
+		video_dst_linesize[4] = { 0 };
 		video_dst_bufsize = 0;
 
 		sws_ctx = NULL;
@@ -957,7 +1010,7 @@ public:
 
 	int output_video_frame(void* buffer, AVFrame* frame)
 	{
-		if (frame->width != width || frame->height != height || frame->format != pix_fmt) 
+		if (frame->width != width || frame->height != height || frame->format != pix_fmt)
 		{
 			/* To handle this change, one could call av_image_alloc again and
 			 * decode the following frames into another rawvideo file. */
@@ -1024,7 +1077,7 @@ public:
 			// frame available, but there were no errors during decoding
 			if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
 				return 0;
-			else if (ret < 0) 
+			else if (ret < 0)
 			{
 				Error("Error during decoding (%s)\n", av_make_error_string(buf, AV_ERROR_MAX_STRING_SIZE, ret));
 				return ret;
@@ -1200,7 +1253,7 @@ public:
 		av_dump_format(fmt_ctx, 0, src_filename.c_str(), 0);
 
 		if (!audio_stream && !video_stream) {
-			Error( "Could not find audio or video stream in the input, aborting\n");
+			Error("Could not find audio or video stream in the input, aborting\n");
 			ret = 1;
 			return false;
 		}
@@ -1246,7 +1299,7 @@ public:
 		int ret;
 
 		/* read frames from the file */
-		while (av_read_frame(fmt_ctx, pkt) >= 0) 
+		while (av_read_frame(fmt_ctx, pkt) >= 0)
 		{
 			// check if the packet belongs to a stream we are interested in, otherwise
 			// skip it
@@ -1488,7 +1541,7 @@ bool Platform::VideoDecoder::Initiate(const char* filename)
 	return impl->Initiate(filename);
 }
 
-bool Platform::VideoDecoder::Update(void *buffer)
+bool Platform::VideoDecoder::Update(void* buffer)
 {
 	Assert(impl);
 

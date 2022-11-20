@@ -32,7 +32,7 @@ public:
 			return false;
 
 		buffer.resize(decoder->GetWidth() * decoder->GetHeight() * 3);
-		if (!Texture2D::Initiate(decoder->GetWidth(), decoder->GetHeight(), 3, Texture::DynamicRange::LOW, &buffer[0]))
+		if (!DynamicTexture2D::Initiate(decoder->GetWidth(), decoder->GetHeight(), 3, Texture::DynamicRange::LOW, &buffer[0]))
 			return false;
 
 		return true;
@@ -40,7 +40,7 @@ public:
 
 	void Terminate()
 	{
-		Texture2D::Terminate();
+		DynamicTexture2D::Terminate();
 
 		if (decoder)
 		{

@@ -14,7 +14,8 @@ class WebcamTexture : public DynamicTexture2D
 public:
 	WebcamTexture()
 		: DynamicTexture2D()
-		, buffer(1280 * 720 * 4)
+		, buffer(0)
+		, webcam(nullptr)
 	{
 	}
 
@@ -22,21 +23,45 @@ public:
 	{
 	}
 
-	bool Initiate(bool flip_)
+	bool Initiate()
 	{
-		return Texture2D::Initiate(512, 2, 1, Texture::DynamicRange::LOW, &buffer[0]);
+		webcam = Platform::CreateWebCam(0);
+		assert(webcam);
+
+		if (!webcam->Initiate())
+			return false;
+
+		if (!DynamicTexture2D::Initiate(webcam->GetWidth(), webcam->GetHeight(), 3, Texture::DynamicRange::LOW, nullptr))
+			return false;
+
+		return true;
+	}
+
+	void Terminate()
+	{
+		DynamicTexture2D::Terminate();
+
+		if (webcam)
+		{
+			webcam->Terminate();
+
+			Platform::ReleaseWebCam(webcam);
+		}
 	}
 
 	virtual void Tick(float dt) override
 	{
-		// !!!!!!!!! TODO, Áõ¼ÒÃÈ 
-		// Webcam.GetData();
+		if (webcam)
+		{
+			webcam->Update(buffer);
 
-		DynamicTexture2D::Update(&buffer[0]);
+			DynamicTexture2D::Update(&buffer[0]);
+		}
 	}
 private:
 private:
-	std::vector<char> buffer;
+	Platform::WebCam* webcam;
+	std::vector<unsigned char> buffer;
 };
 
 #endif

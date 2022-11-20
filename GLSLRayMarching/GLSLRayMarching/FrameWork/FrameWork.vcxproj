@@ -239,6 +239,7 @@
     <ClCompile Include="Vector4.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Video.cpp" />
+    <ClCompile Include="webcam3rdparty.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB3.h" />
@@ -327,6 +328,7 @@
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="Video.h" />
+    <ClInclude Include="webcam3rdparty.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
