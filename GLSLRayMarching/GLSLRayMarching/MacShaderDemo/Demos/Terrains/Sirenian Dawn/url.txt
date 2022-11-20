@@ -1,16 +1,1 @@
-{
-  "passes": [
-    {
-      "shader": "image.glsl",
-      "channels": [
-        {
-          "texture2d": "tex0.jpg",
-          "filter": "mipmap",
-          "wrap": "repeat",
-          "vflip": true
-        }
-      ],
-      "rendertarget": "image"
-    }
-  ]
-}
+https://www.shadertoy.com/view/XsyGWV

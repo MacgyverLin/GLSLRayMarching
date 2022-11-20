@@ -26,7 +26,8 @@ class ShaderToyRenderer
 {
 public:
 	ShaderToyRenderer(Audio::StreamSourceComponent& streamSourceComponent_)
-		: textures()
+		: staticTextures()
+		, dynamicTextures()
 		, black()
 		, soundFrameBuffer()
 		, bufferAFrameBuffer()
@@ -161,6 +162,51 @@ public:
 			return nullptr;
 	}
 
+	Texture* AddKeyboardTexture(const char* url_)
+	{
+		KeyboardTexture* texture = new KeyboardTexture();
+		if (!texture)
+			return nullptr;
+		if (!texture->Initiate())
+		{
+			delete texture;
+			return nullptr;
+		}
+
+		dynamicTextures.push_back(texture);
+		return texture;
+	}
+
+	Texture* AddWebcamTexture(const char* url_, bool vflip_)
+	{
+		WebcamTexture* texture = new WebcamTexture();
+		if (!texture)
+			return nullptr;
+		if (!texture->Initiate(vflip_))
+		{
+			delete texture;
+			return nullptr;
+		}
+
+		dynamicTextures.push_back(texture);
+		return texture;
+	}
+
+	Texture* AddMicrophoneTexture(const char* url_)
+	{
+		MicrophoneTexture* texture = new MicrophoneTexture();
+		if (!texture)
+			return nullptr;
+		if (!texture->Initiate())
+		{
+			delete texture;
+			return nullptr;
+		}
+
+		dynamicTextures.push_back(texture);
+		return texture;
+	}
+
 	Texture* AddSoundCloudTexture(const char* url_, bool vflip_)
 	{
 		SoundCloudTexture* texture = new SoundCloudTexture();
@@ -172,7 +218,7 @@ public:
 			return nullptr;
 		}
 
-		textures.push_back(texture);
+		dynamicTextures.push_back(texture);
 		return texture;
 	}
 
@@ -187,7 +233,7 @@ public:
 			return nullptr;
 		}
 
-		textures.push_back(texture);
+		staticTextures.push_back(texture);
 		return texture;
 	}
 
@@ -202,7 +248,7 @@ public:
 			return nullptr;
 		}
 
-		textures.push_back(texture);
+		staticTextures.push_back(texture);
 		return texture;
 	}
 
@@ -211,13 +257,14 @@ public:
 		VideoTexture* texture = new VideoTexture();
 		if (!texture)
 			return nullptr;
+
 		if (!texture->Initiate(path, vflip_))
 		{
 			delete texture;
 			return nullptr;
 		}
 
-		textures.push_back(texture);
+		dynamicTextures.push_back(texture);
 		return texture;
 	}
 
@@ -248,13 +295,6 @@ public:
 		std::vector<char> colors(32 * 32 * 4);
 		memset(&colors[0], 0, (32 * 32 * 4));
 		if (!black.Initiate(32, 32, 4, Texture::DynamicRange::LOW, &colors[0]))
-			return false;
-
-		if (!keyboardTexture.Initiate())
-			return false;
-		if (!webcamTexture.Initiate(false))
-			return false;
-		if (!microphoneTexture.Initiate())
 			return false;
 
 		if (!soundFrameBuffer.Initiate(512, 2, 1, Texture::DynamicRange::LOW))
@@ -348,11 +388,29 @@ public:
 			// Setup channels's texture
 			if (channel.IsKeyboard())
 			{
-				pass.SetChannelTexture(j, &keyboardTexture); // !!!!!!!!! TODO, ¡ıº“√» 
+				std::string url = channel.keyboard;  	// !!!!!!!!! TODO, ¡ıº“√»
+
+				Texture* texture = AddKeyboardTexture(url.c_str());
+				if (!texture)
+				{
+					Debug("channel %d: failed to load soundcloud %s\n", j, url.c_str());
+					return false;
+				}
+
+				pass.SetChannelTexture(j, texture);
 			}
 			else if (channel.IsMicrophone()) 
 			{
-				pass.SetChannelTexture(j, &microphoneTexture); 	// !!!!!!!!! TODO, ¡ıº“√»
+				std::string url = channel.microphone;  	// !!!!!!!!! TODO, ¡ıº“√»
+
+				Texture* texture = AddMicrophoneTexture(url.c_str());
+				if (!texture)
+				{
+					Debug("channel %d: failed to load soundcloud %s\n", j, url.c_str());
+					return false;
+				}
+
+				pass.SetChannelTexture(j, texture);
 			}
 			else if (channel.IsSoundcloud())
 			{
@@ -411,7 +469,16 @@ public:
 			}
 			else if (channel.IsWebcam())			// !!!!!!!!! TODO, ¡ıº“√»
 			{
-				pass.SetChannelTexture(j, &webcamTexture);
+				std::string url = channel.microphone;  	// !!!!!!!!! TODO, ¡ıº“√»
+
+				Texture* texture = AddWebcamTexture(url.c_str(), pass.GetChannel(j).vFlip);
+				if (!texture)
+				{
+					Debug("channel %d: failed to load soundcloud %s\n", j, url.c_str());
+					return false;
+				}
+
+				pass.SetChannelTexture(j, texture);
 			}
 			else if (channel.IsBuffer())
 			{
@@ -501,21 +568,22 @@ public:
 				return false;
 		}
 
-		keyboardTexture.UpdateData();
-		webcamTexture.UpdateData();
-		microphoneTexture.UpdateData();
+		for(int i=0 ;i< dynamicTextures.size(); i++)
+			dynamicTextures[i]->Tick(deltaTime);
 
+		/*
 		std::vector<char> data;
 		streamSourceComponent.GetSineWaveData(data, 1000, 1.0f);
 		//streamSourceComponent.GetEmptyData(data);
 		streamSourceComponent.FillData(&data[0], data.size());
+		*/
 
 		return true;
 	}
 
 	void Terminate()
 	{
-		for (auto texture : textures)
+		for (auto& texture : staticTextures)
 		{
 			if (texture)
 			{
@@ -525,12 +593,21 @@ public:
 				texture = nullptr;
 			}
 		}
-		textures.clear();
+		staticTextures.clear();
+
+		for (auto& texture : dynamicTextures)
+		{
+			if (texture)
+			{
+				texture->Terminate();
+
+				delete texture;
+				texture = nullptr;
+			}
+		}
+		dynamicTextures.clear();
 
 		black.Terminate();
-		keyboardTexture.Terminate();
-		webcamTexture.Terminate();
-		microphoneTexture.Terminate();
 
 		soundFrameBuffer.Terminate();
 		bufferAFrameBuffer.Terminate();
@@ -551,12 +628,13 @@ public:
 	}
 protected:
 private:
-	std::vector<Texture*> textures;
+	std::vector<Texture*> staticTextures;
+	std::vector<DynamicTexture2D*> dynamicTextures;
 	Texture2D black;
 
-	KeyboardTexture keyboardTexture;
-	WebcamTexture webcamTexture;
-	MicrophoneTexture microphoneTexture;
+	//KeyboardTexture keyboardTexture;
+	//WebcamTexture webcamTexture;
+	//MicrophoneTexture microphoneTexture;
 
 	TextureFrameBuffer2D soundFrameBuffer;
 	TextureFrameBuffer2D bufferAFrameBuffer;

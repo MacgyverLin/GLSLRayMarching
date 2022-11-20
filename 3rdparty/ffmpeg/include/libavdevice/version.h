@@ -25,9 +25,9 @@
  * Libavdevice version macros
  */
 
-#include "libavutil/avutil.h"
+#include "libavutil/version.h"
 
-#define LIBAVDEVICE_VERSION_MAJOR  55
+#define LIBAVDEVICE_VERSION_MAJOR  59
 #define LIBAVDEVICE_VERSION_MINOR   5
 #define LIBAVDEVICE_VERSION_MICRO 100
 
@@ -46,5 +46,6 @@
  * dropped at a future version bump. The defines themselves are not part of
  * the public API and may change, break or disappear at any time.
  */
+#define FF_API_DEVICE_CAPABILITIES (LIBAVDEVICE_VERSION_MAJOR < 60)
 
 #endif /* AVDEVICE_VERSION_H */

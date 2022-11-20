@@ -199,7 +199,7 @@ void FileOutputStream::Rewind()
 
 #define CHECK_ERR(err, msg) { \
     if (err != Z_OK) { \
-        fprintf(stderr, "%s error: %d\n", msg, err); \
+        Error("%s error: %d\n", msg, err); \
         exit(1); \
     } \
 }

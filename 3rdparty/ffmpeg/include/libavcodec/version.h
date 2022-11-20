@@ -1,5 +1,4 @@
 /*
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -26,11 +25,11 @@
  * Libavcodec version macros.
  */
 
-#include "libavutil/avutil.h"
+#include "libavutil/version.h"
 
-#define LIBAVCODEC_VERSION_MAJOR 55
-#define LIBAVCODEC_VERSION_MINOR  39
-#define LIBAVCODEC_VERSION_MICRO 101
+#define LIBAVCODEC_VERSION_MAJOR  59
+#define LIBAVCODEC_VERSION_MINOR  20
+#define LIBAVCODEC_VERSION_MICRO 100
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
                                                LIBAVCODEC_VERSION_MINOR, \
@@ -46,59 +45,24 @@
  * FF_API_* defines may be placed below to indicate public API that will be
  * dropped at a future version bump. The defines themselves are not part of
  * the public API and may change, break or disappear at any time.
+ *
+ * @note, when bumping the major version it is recommended to manually
+ * disable each FF_API_* in its own commit instead of disabling them all
+ * at once through the bump. This improves the git bisect-ability of the change.
  */
 
-#ifndef FF_API_REQUEST_CHANNELS
-#define FF_API_REQUEST_CHANNELS (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_ALLOC_CONTEXT
-#define FF_API_ALLOC_CONTEXT    (LIBAVCODEC_VERSION_MAJOR < 55)
-#endif
-#ifndef FF_API_AVCODEC_OPEN
-#define FF_API_AVCODEC_OPEN     (LIBAVCODEC_VERSION_MAJOR < 55)
-#endif
-#ifndef FF_API_OLD_DECODE_AUDIO
-#define FF_API_OLD_DECODE_AUDIO (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_OLD_TIMECODE
-#define FF_API_OLD_TIMECODE (LIBAVCODEC_VERSION_MAJOR < 55)
-#endif
-
-#ifndef FF_API_OLD_ENCODE_AUDIO
-#define FF_API_OLD_ENCODE_AUDIO (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_OLD_ENCODE_VIDEO
-#define FF_API_OLD_ENCODE_VIDEO (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_CODEC_ID
-#define FF_API_CODEC_ID          (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_AVCODEC_RESAMPLE
-#define FF_API_AVCODEC_RESAMPLE  (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_DEINTERLACE
-#define FF_API_DEINTERLACE       (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_DESTRUCT_PACKET
-#define FF_API_DESTRUCT_PACKET   (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_GET_BUFFER
-#define FF_API_GET_BUFFER        (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_MISSING_SAMPLE
-#define FF_API_MISSING_SAMPLE    (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_LOWRES
-#define FF_API_LOWRES            (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_CAP_VDPAU
-#define FF_API_CAP_VDPAU         (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_BUFS_VDPAU
-#define FF_API_BUFS_VDPAU        (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
-#ifndef FF_API_VOXWARE
-#define FF_API_VOXWARE           (LIBAVCODEC_VERSION_MAJOR < 56)
-#endif
+#define FF_API_OPENH264_SLICE_MODE (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_OPENH264_CABAC      (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_UNUSED_CODEC_CAPS   (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_THREAD_SAFE_CALLBACKS (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_DEBUG_MV          (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_GET_FRAME_CLASS     (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_AUTO_THREADS        (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_INIT_PACKET         (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_AVCTX_TIMEBASE    (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_MPEGVIDEO_OPTS      (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_FLAG_TRUNCATED      (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_SUB_TEXT_FORMAT     (LIBAVCODEC_VERSION_MAJOR < 60)
+#define FF_API_MJPEG_PRED          (LIBAVCODEC_VERSION_MAJOR < 60)
 
 #endif /* AVCODEC_VERSION_H */

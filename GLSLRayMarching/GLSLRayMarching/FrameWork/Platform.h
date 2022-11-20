@@ -450,13 +450,14 @@ public:
 		WebCam();
 		~WebCam();
 
-		bool Initiate();
-		bool PreUpdate();
-		bool PostUpdate();
+		bool Initiate(const char* filename);
+		bool Update(void *data);
 		bool Pause();
 		void Resume();
 		void Terminate();
-		void GetData();
+
+		int GetWidth() const;
+		int GetHeight() const;
 	private:
 		Impl* impl;
 	};
@@ -470,19 +471,38 @@ public:
 		~Microphone();
 
 		bool Initiate();
-		bool PreUpdate();
-		bool PostUpdate();
+		bool Update(std::vector<float>& buffer);
 		bool Pause();
 		void Resume();
 		void Terminate();
-		void GetData();
 	private:
 		Impl* impl;
 	};
 
 	////////////////////////////////////////////////////////////////////
+	class VideoDecoder
+	{
+		class Impl;
+	public:
+		VideoDecoder();
+		~VideoDecoder();
 
+		bool Initiate(const char* filename);
+		bool Update(void* buffer);
+		bool Pause();
+		void Resume();
+		void Terminate();
 
+		int GetWidth() const;
+		int GetHeight() const;
+	private:
+		Impl* impl;
+	};
+
+	static bool InitiateFFMPEG();
+	static void TerminateFFMPEG();
+
+	////////////////////////////////////////////////////////////////////
 	static bool Instantiate(int width_, int height_, const char* appName_, const char* InitalizeScene_);
 	static bool PreUpdate();
 	static bool PostUpdate();
@@ -515,8 +535,15 @@ public:
 	static float GetMouseDY();
 
 	static Platform::SystemTime GetSystemTime();
-	static Platform::Microphone GetMicrophone();
-	static Platform::WebCam GetWebCam();
+
+	static Platform::Microphone* CreateMicrophone(int id);
+	static void ReleaseMicrophone(Platform::Microphone* microphone);
+
+	static Platform::WebCam* CreateWebCam(int id);
+	static void ReleaseWebCam(Platform::WebCam* webCam);
+
+	static Platform::VideoDecoder* CreateVideoDecoder();
+	static void ReleaseVideoDecoder(Platform::VideoDecoder* videoDecoder);
 	
 	static void EnableCursor();
 	static void DisableCursor();
