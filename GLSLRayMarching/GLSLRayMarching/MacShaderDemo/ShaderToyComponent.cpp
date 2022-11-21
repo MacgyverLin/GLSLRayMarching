@@ -175,7 +175,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Night Sneakings");
 	//return shaderToyRenderer->Initiate("Demos/Energy plant");
 	//return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
-	return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
+	//return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
 	//return shaderToyRenderer->Initiate("Demos/Neon Dance");
@@ -228,7 +228,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Iceberg");
 	//return shaderToyRenderer->Initiate("Demos/Moebius Ants");
 	//return shaderToyRenderer->Initiate("Demos/The evolution of motion");
-	return shaderToyRenderer->Initiate("Demos/Flux Core");
+	//return shaderToyRenderer->Initiate("Demos/Flux Core");
 	//return shaderToyRenderer->Initiate("Demos/Fruxis");
 
 
@@ -258,7 +258,10 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Gas Giant!");
 	//return shaderToyRenderer->Initiate("Demos/Pegasus Galaxy");
 	//return shaderToyRenderer->Initiate("Demos/Polygonal Terrain");
-	return shaderToyRenderer->Initiate("Demos/Diamonds are Forever");
+	//return shaderToyRenderer->Initiate("Demos/Diamonds are Forever");
+	//return shaderToyRenderer->Initiate("Demos/Raymarching - Primitives");
+	//return shaderToyRenderer->Initiate("Demos/Tux Family Trip");
+	return shaderToyRenderer->Initiate("Demos/Sea Creature");
 
 //错误：
 	//无法运行：Assertion failed: IsBool(), file ...\GLSLRayMarching\3rdparty\rapidjson\include\rapidjson\document.h, line 1163
