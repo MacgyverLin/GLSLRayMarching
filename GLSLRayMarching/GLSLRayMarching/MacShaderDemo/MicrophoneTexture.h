@@ -32,8 +32,8 @@ public:
 		if (!microphone->Initiate())
 			return false;
 
-		maxBuffer.resize(microphone->GetSampleCount() * microphone->GetChannelCount());
-		if (!DynamicTexture2D::Initiate(microphone->GetSampleCount(), microphone->GetChannelCount(), 1, Texture::DynamicRange::HIGH, nullptr))
+		maxBuffer.resize(microphone->GetSampleCount() / 2 * microphone->GetChannelCount());
+		if (!DynamicTexture2D::Initiate(microphone->GetSampleCount() / 2, microphone->GetChannelCount(), 1, Texture::DynamicRange::HIGH, nullptr))
 			return false;
 
 		return true;
@@ -70,9 +70,19 @@ private:
 		std::vector<complex_type> fftBuffer(buffer.size());
 		simple_fft::FFT(buffer, fftBuffer, buffer.size(), error_description);
 
-		for (int i = 0; i < buffer.size(); i++)
+		for (int i = 0; i < maxBuffer.size(); i++)
 		{
-			float d = Math::Sqrt(fftBuffer[i].real() * fftBuffer[i].real() + fftBuffer[i].imag() * fftBuffer[i].imag())*0.02;
+			/*
+			const complex_type& v0 = fftBuffer[(i << 1) + 0];
+			const complex_type& v1 = fftBuffer[(i << 1) + 0];
+
+			float d0 = Math::Sqrt(v0.real() * v0.real() + v0.imag() * v0.imag()) * 0.02;
+			float d1 = Math::Sqrt(v1.real() * v1.real() + v1.imag() * v1.imag()) * 0.02;
+			float d = (d0 + d1) / 2.0f;
+			*/
+			const complex_type& v0 = fftBuffer[i];
+			float d0 = Math::Sqrt(v0.real() * v0.real() + v0.imag() * v0.imag()) * 0.02;
+			float d = d0;
 
 			if (d > maxBuffer[i])
 				maxBuffer[i] = d;

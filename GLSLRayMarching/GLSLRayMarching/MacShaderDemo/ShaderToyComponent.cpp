@@ -175,7 +175,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Energy plant");
 
 	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
-	return shaderToyRenderer->Initiate("Demos/WebCamTextureTest");
+	//return shaderToyRenderer->Initiate("Demos/WebCamTextureTest");
 	return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
 	return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
 	return shaderToyRenderer->Initiate("Demos/Cubemaps/Geometric Cellular Surfaces");
@@ -236,7 +236,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Iceberg");
 	//return shaderToyRenderer->Initiate("Demos/Moebius Ants");
 	//return shaderToyRenderer->Initiate("Demos/The evolution of motion");
-	return shaderToyRenderer->Initiate("Demos/Flux Core");
+	//return shaderToyRenderer->Initiate("Demos/Flux Core");
 	//return shaderToyRenderer->Initiate("Demos/Fruxis");
 
 
