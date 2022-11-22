@@ -1,6 +1,6 @@
 #include "ShaderToyComponent.h"
 #include "FrameWork.h"
-
+ 
 //////////////////////////////////////////////////////////////
 ShaderToyComponent::ShaderToyComponent(GameObject& gameObject_)
 	: Graphics3Component(gameObject_)
@@ -111,8 +111,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Rainforest");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
 	//return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
-	
-	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
+
 
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
@@ -130,7 +129,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Room DI");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Spatiotemporal Variance-Guided Filtering");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/StepByStepTutorial");
-	//该路径下无此文件return shaderToyRenderer->Initiate("Demos/PathTracings/Cornell MIS");	
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Cornell MIS");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/5 Caustics");
 
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/8 SubSurface");	
@@ -174,6 +173,17 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Apollian with a twist");
 	//return shaderToyRenderer->Initiate("Demos/Night Sneakings");
 	//return shaderToyRenderer->Initiate("Demos/Energy plant");
+
+	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
+	//return shaderToyRenderer->Initiate("Demos/WebCamTextureTest");
+	return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
+	return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
+	return shaderToyRenderer->Initiate("Demos/Cubemaps/Geometric Cellular Surfaces");
+	return shaderToyRenderer->Initiate("Demos/Cubemaps/Cubemaps");
+	return shaderToyRenderer->Initiate("Demos/A cup of champagne");
+	return shaderToyRenderer->Initiate("Demos/Diamonds/Gem Bloom FX");
+	return shaderToyRenderer->Initiate("Demos/CubemapTest");
+	return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
 	//return shaderToyRenderer->Initiate("Demos/Neon Dance");
@@ -226,7 +236,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Iceberg");
 	//return shaderToyRenderer->Initiate("Demos/Moebius Ants");
 	//return shaderToyRenderer->Initiate("Demos/The evolution of motion");
-	return shaderToyRenderer->Initiate("Demos/Flux Core");
+	//return shaderToyRenderer->Initiate("Demos/Flux Core");
 	//return shaderToyRenderer->Initiate("Demos/Fruxis");
 
 

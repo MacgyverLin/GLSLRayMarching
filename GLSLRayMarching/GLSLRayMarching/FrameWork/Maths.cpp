@@ -25,7 +25,7 @@ const float Math::Radian2Degree = 180.0f / Math::OnePi;
 
 float Math::Sgn(float value)
 {
-	return value >= 0 ? 1.0 : -1.0;
+	return value >= 0 ? 1.0f : -1.0f;
 }
 
 float Math::Sin(float value)

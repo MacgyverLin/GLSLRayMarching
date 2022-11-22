@@ -1,0 +1,26 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "microphone": "0",
+          "filter": "linear",
+          "wrap": "repeat"
+        },
+        {
+          "webcam": "0",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": true
+        },
+        {
+          "texture2d": "tex0.png",
+          "filter": "linear",
+          "wrap": "repeat"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

@@ -86,9 +86,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS; __STDC_CONSTANT_MACROS; __STDC_FORMAT_MACROS; _CRT_SECURE_NO_WARNINGS; WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN32/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/ffmpeg/include; ../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN32/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -96,11 +96,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ..\..\..\3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib;Winmm.lib;swscale.lib;swresample.lib;postproc.lib;avutil.lib;avformat.lib;avfilter.lib;avdevice.lib;avcodec.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ..\..\..\3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib;../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,9 +108,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS; __STDC_CONSTANT_MACROS; __STDC_FORMAT_MACROS; _CRT_SECURE_NO_WARNINGS; WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN32/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/ffmpeg/include; ../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN32/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -121,20 +120,19 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib;swscale.lib;swresample.lib;postproc.lib;avutil.lib;avformat.lib;avfilter.lib;avdevice.lib;avcodec.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib;../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; _DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS; __STDC_CONSTANT_MACROS; __STDC_FORMAT_MACROS; _CRT_SECURE_NO_WARNINGS; _DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/ffmpeg/include; ../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,11 +140,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>../../../3rdparty/OpenAL/libs/Win64/OpenAL32.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib; swscale.lib; swresample.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; OpenAL32.lib;./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib; ../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,9 +152,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS; NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS; __STDC_CONSTANT_MACROS; __STDC_FORMAT_MACROS; _CRT_SECURE_NO_WARNINGS; NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/ffmpeg/include; ../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -167,11 +164,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>../../../3rdparty/OpenAL/libs/Win64/OpenAL32.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib; swscale.lib; swresample.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; OpenAL32.lib;./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core.lib; </AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib;../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -243,6 +239,7 @@
     <ClCompile Include="Vector4.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Video.cpp" />
+    <ClCompile Include="webcam3rdparty.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB3.h" />
@@ -250,8 +247,15 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Capsule3.h" />
+    <ClInclude Include="check_fft.hpp" />
     <ClInclude Include="ColorRGBA.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="copy_array.hpp" />
+    <ClInclude Include="error_handling.hpp" />
+    <ClInclude Include="fft.h" />
+    <ClInclude Include="fft.hpp" />
+    <ClInclude Include="fft_impl.hpp" />
+    <ClInclude Include="fft_settings.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="Frame3.h" />
     <ClInclude Include="FrameBuffer.h" />
@@ -331,6 +335,7 @@
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="Video.h" />
+    <ClInclude Include="webcam3rdparty.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

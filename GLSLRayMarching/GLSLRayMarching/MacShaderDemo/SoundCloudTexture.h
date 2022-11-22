@@ -10,11 +10,11 @@
 #include "FrameWork.h"
 
 // Sound from Web
-class SoundCloudTexture : public Texture1D
+class SoundCloudTexture : public DynamicTexture2D
 {
 public:
 	SoundCloudTexture()
-		: Texture1D()
+		: DynamicTexture2D()
 		, buffer(1280 * 720 * 4)
 	{
 	}
@@ -25,15 +25,12 @@ public:
 
 	bool Initiate(const std::string& url, bool vflip_)
 	{
-		return Texture1D::Initiate(512, 1, Texture::DynamicRange::LOW, &buffer[0]);
+		return DynamicTexture2D::Initiate(512, 1, 1, Texture::DynamicRange::LOW, &buffer[0]);
 	}
 
-	virtual void UpdateData()
+	virtual void Tick(float dt) override
 	{
-		// !!!!!!!!! TODO, ¡ıº“√» 
-		// XXX().GetData();
-
-		Texture1D::Update(&buffer[0]);
+		DynamicTexture2D::Update(&buffer[0]);
 	}
 private:
 private:

@@ -556,13 +556,14 @@ public:
 			fShaderCode + "\n" +
 			fShaderMain;
 
-
+		/*
 		FILE* fptr = fopen("test.log", "wt");
 		if (fptr)
 		{
 			fprintf(fptr, "%s\n", fShader.c_str());
 			fclose(fptr);
 		}
+		*/
 
 		return shaderProgram.CreateFromSource(vShaderCode.c_str(), fShader.c_str());
 	}

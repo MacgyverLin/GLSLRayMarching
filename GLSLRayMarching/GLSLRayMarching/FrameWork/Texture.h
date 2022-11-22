@@ -207,6 +207,26 @@ protected:
 private:
 };
 
+class DynamicTexture1D : public Texture1D
+{
+public:
+	DynamicTexture1D()
+	{
+	}
+
+	virtual ~DynamicTexture1D()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
 class Texture2D : public Texture
 {
 public:
@@ -232,6 +252,27 @@ protected:
 	unsigned int height;
 private:
 };
+
+class DynamicTexture2D : public Texture2D
+{
+public:
+	DynamicTexture2D()
+	{
+	}
+
+	virtual ~DynamicTexture2D()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
 
 class Texture3D : public Texture
 {
@@ -261,6 +302,27 @@ protected:
 private:
 };
 
+class DynamicTexture3D : public Texture3D
+{
+public:
+	DynamicTexture3D()
+	{
+	}
+
+	virtual ~DynamicTexture3D()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
+
 // !!!!!!!!! NEED CHECK all TextureCubemap method, ¡ıº“√» 
 class TextureCubemap : public Texture
 {
@@ -278,8 +340,8 @@ public:
 	TextureCubemap();
 	virtual ~TextureCubemap();
 
-	bool Initiate(unsigned int size_, Texture::Format format_, void* src_);
-	bool Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_);
+	bool Initiate(unsigned int size_, Texture::Format format_, void* src_[6]);
+	bool Initiate(unsigned int size_, unsigned int nrComponents_, Texture::DynamicRange dynamicRange_, void* src_[6]);
 	void Terminate();
 
 	void Update(Side side_, unsigned int x_, unsigned int y_, unsigned int w_, unsigned int h_, void* src_, int mipLevel_ = -1);
@@ -296,6 +358,28 @@ private:
 	unsigned int size;
 	unsigned int faceDataSize;
 };
+
+
+class DynamicTextureCubemap : public TextureCubemap
+{
+public:
+	DynamicTextureCubemap()
+	{
+	}
+
+	virtual ~DynamicTextureCubemap()
+	{
+	}
+
+	virtual void Tick(float dt) = 0;
+protected:
+private:
+
+public:
+protected:
+private:
+};
+
 
 /////////////////////////////////////////////////////////
 class Texture1DArray : public Texture

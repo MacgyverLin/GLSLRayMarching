@@ -558,7 +558,7 @@ void Audio::StreamSourceComponent::OnTerminate()
 		if(buffers[i])
 			alDeleteBuffers(1, &buffers[i]);
 	}
-	Assert(alGetError() != AL_NO_ERROR);
+	//Assert(alGetError() == AL_NO_ERROR);
 
 	Audio::SourceComponent::OnTerminate();
 }

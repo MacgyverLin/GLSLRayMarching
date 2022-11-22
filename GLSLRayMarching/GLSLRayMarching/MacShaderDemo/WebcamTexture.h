@@ -9,12 +9,14 @@
 #include "GUI.h"
 #include "FrameWork.h"
 
-class WebcamTexture : public Texture2D
+class WebcamTexture : public DynamicTexture2D
 {
 public:
 	WebcamTexture()
-		: Texture2D()
-		, buffer(1280 * 720 * 4)
+		: DynamicTexture2D()
+		, buffer(0)
+		, webcam(nullptr)
+		, flip(false)
 	{
 	}
 
@@ -24,19 +26,46 @@ public:
 
 	bool Initiate(bool flip_)
 	{
-		return Texture2D::Initiate(512, 2, 1, Texture::DynamicRange::LOW, &buffer[0]);
+		flip = flip_;
+
+		webcam = Platform::CreateWebCam(0);
+		assert(webcam);
+
+		if (!webcam->Initiate())
+			return false;
+
+		if (!DynamicTexture2D::Initiate(webcam->GetWidth(), webcam->GetHeight(), 3, Texture::DynamicRange::LOW, nullptr))
+			return false;
+
+		return true;
 	}
 
-	virtual void UpdateData()
+	void Terminate()
 	{
-		// !!!!!!!!! TODO, Áõ¼ÒÃÈ 
-		// Webcam.GetData();
+		DynamicTexture2D::Terminate();
 
-		Texture2D::Update(&buffer[0]);
+		if (webcam)
+		{
+			webcam->Terminate();
+
+			Platform::ReleaseWebCam(webcam);
+		}
+	}
+
+	virtual void Tick(float dt) override
+	{
+		if (webcam)
+		{
+			webcam->Update(buffer, flip);
+
+			DynamicTexture2D::Update(&buffer[0]);
+		}
 	}
 private:
 private:
-	std::vector<char> buffer;
+	Platform::WebCam* webcam;
+	bool flip;
+	std::vector<unsigned char> buffer;
 };
 
 #endif

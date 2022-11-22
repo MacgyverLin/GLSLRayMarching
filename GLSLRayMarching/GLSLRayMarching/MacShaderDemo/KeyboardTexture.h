@@ -9,11 +9,11 @@
 #include "GUI.h"
 #include "FrameWork.h"
 
-class KeyboardTexture : public Texture2D
+class KeyboardTexture : public DynamicTexture2D
 {
 public:
 	KeyboardTexture()
-		: Texture2D()
+		: DynamicTexture2D()
 		, buffer(256 * 3)
 	{
 		MemSet(&buffer[0], 0, buffer.size());
@@ -25,7 +25,7 @@ public:
 
 	bool Initiate()
 	{
-		if (!Texture2D::Initiate(256, 3, 1, Texture::DynamicRange::LOW, &buffer[0]))
+		if (!DynamicTexture2D::Initiate(256, 3, 1, Texture::DynamicRange::LOW, &buffer[0]))
 			return false;
 
 		SetMinFilter(Texture::MinFilter::Nearest);
@@ -37,6 +37,9 @@ public:
 		return true;
 	}
 
+	// ...............................................
+	// ...............................................
+	// ...............................................
 	void UpdateKey(Platform::KeyCode keycode)
 	{
 		unsigned char* keydown = &buffer[256 * 0];
@@ -48,7 +51,7 @@ public:
 		keytoggle[int(keycode)] = Platform::GetKeyHold(keycode) ? 0 : 255;
 	}
 
-	void UpdateData()
+	virtual void Tick(float dt) override
 	{
 		for (int keycode = (int)Platform::KeyCode::A; keycode <= (int)Platform::KeyCode::Z; keycode += 1)
 		{
@@ -68,7 +71,7 @@ public:
 		UpdateKey(Platform::KeyCode::LeftAlt);
 		UpdateKey(Platform::KeyCode::RightAlt);
 
-		Texture2D::Update(&buffer[0]);
+		DynamicTexture2D::Update(&buffer[0]);
 	}
 private:
 private:
