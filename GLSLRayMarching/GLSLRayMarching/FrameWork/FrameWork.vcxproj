@@ -239,6 +239,7 @@
     <ClCompile Include="Vector4.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Video.cpp" />
+    <ClCompile Include="webcam3rdparty.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB3.h" />
@@ -246,8 +247,15 @@
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Capsule3.h" />
+    <ClInclude Include="check_fft.hpp" />
     <ClInclude Include="ColorRGBA.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="copy_array.hpp" />
+    <ClInclude Include="error_handling.hpp" />
+    <ClInclude Include="fft.h" />
+    <ClInclude Include="fft.hpp" />
+    <ClInclude Include="fft_impl.hpp" />
+    <ClInclude Include="fft_settings.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="Frame3.h" />
     <ClInclude Include="FrameBuffer.h" />
@@ -327,6 +335,7 @@
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="Video.h" />
+    <ClInclude Include="webcam3rdparty.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

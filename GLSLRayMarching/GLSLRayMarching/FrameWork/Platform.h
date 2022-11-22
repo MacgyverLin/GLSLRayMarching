@@ -450,8 +450,8 @@ public:
 		WebCam();
 		~WebCam();
 
-		bool Initiate(const char* filename);
-		bool Update(void *data);
+		bool Initiate();
+		bool Update(std::vector<unsigned char>& buffer, bool flip);
 		bool Pause();
 		void Resume();
 		void Terminate();
@@ -475,6 +475,8 @@ public:
 		bool Pause();
 		void Resume();
 		void Terminate();
+		int GetSampleCount();
+		int GetChannelCount();
 	private:
 		Impl* impl;
 	};
