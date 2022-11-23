@@ -176,14 +176,14 @@ bool ShaderToyComponent::OnStart()
 
 	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
 	//return shaderToyRenderer->Initiate("Demos/WebCamTextureTest");
-	return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
-	return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
-	return shaderToyRenderer->Initiate("Demos/Cubemaps/Geometric Cellular Surfaces");
-	return shaderToyRenderer->Initiate("Demos/Cubemaps/Cubemaps");
-	return shaderToyRenderer->Initiate("Demos/A cup of champagne");
-	return shaderToyRenderer->Initiate("Demos/Diamonds/Gem Bloom FX");
-	return shaderToyRenderer->Initiate("Demos/CubemapTest");
-	return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
+	//return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
+	//return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Geometric Cellular Surfaces");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Cubemaps");
+	//return shaderToyRenderer->Initiate("Demos/A cup of champagne");
+	//return shaderToyRenderer->Initiate("Demos/Diamonds/Gem Bloom FX");
+	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
+	//return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
 	//return shaderToyRenderer->Initiate("Demos/Neon Dance");
@@ -240,9 +240,32 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Fruxis");
 
 
-	
-    
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Reprojection II");
+	return shaderToyRenderer->Initiate("Demos/Cubemaps/Candlestick"); 
+    //return shaderToyRenderer->Initiate("Demos/Cubemaps/Snowy Woods");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Raytracing Textures and Cubemaps");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Christmas Tree Star");
+    //return shaderToyRenderer->Initiate("Demos/Webcam/Video on Tablet");
+	//return shaderToyRenderer->Initiate("Demos/Webcam/ZX Spectrum attribute clash");
+	//return shaderToyRenderer->Initiate("Demos/Webcam/Edge Detector");
+	//return shaderToyRenderer->Initiate("Demos/Webcam/Webcam 'Giant in a lake'");
+	//return shaderToyRenderer->Initiate("Demos/Webcam/Meta CRT - Single Pass");
+    //return shaderToyRenderer->Initiate("Demos/Microphone/Fractal Audio 01");
+    //return shaderToyRenderer->Initiate("Demos/Microphone/Tension Rings");
+	//return shaderToyRenderer->Initiate("Demos/Microphone/Mellow Manypus jeanNshuti");
+	//return shaderToyRenderer->Initiate("Demos/Microphone/Input - Microphone");
+	//return shaderToyRenderer->Initiate("Demos/Microphone/Solines");
+    //return shaderToyRenderer->Initiate("Demos/Video/VCR distortion");
+    //return shaderToyRenderer->Initiate("Demos/Video/mpeg artifacts");
+    //return shaderToyRenderer->Initiate("Demos/Wolfenstein 3D");
+	//return shaderToyRenderer->Initiate("Demos/Rounded Voxels");
+	//return shaderToyRenderer->Initiate("Demos/Unreal Intro");
+	//return shaderToyRenderer->Initiate("Demos/Near miss!");
+
+
    
+
+
 
     //The following demos rendering results are different from the correct results, or cannot be run.
     ////return shaderToyRenderer->Initiate("Demos/Waterfall - Procedural GFX");
@@ -255,6 +278,8 @@ bool ShaderToyComponent::OnStart()
 	////return shaderToyRenderer->Initiate("Demos/Ethics Gradient");
 	////return shaderToyRenderer->Initiate("Demos/Squishy balls");
     ////return shaderToyRenderer->Initiate("Demos/Androgynous bolts");
+	////return shaderToyRenderer->Initiate("Demos/Webcam/Motion Detection");
+    ////return shaderToyRenderer->Initiate("Demos/Webcam/Playing with a coke");
     
 
 

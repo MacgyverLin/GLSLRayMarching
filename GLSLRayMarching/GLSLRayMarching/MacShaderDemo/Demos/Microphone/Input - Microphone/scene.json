@@ -1,0 +1,15 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "microphone": "0",
+          "filter": "linear",
+          "wrap": "repeat"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

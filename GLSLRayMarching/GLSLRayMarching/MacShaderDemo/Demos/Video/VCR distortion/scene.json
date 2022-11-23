@@ -1,0 +1,22 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "texturevideo": "video1.mp4",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": true
+        },
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

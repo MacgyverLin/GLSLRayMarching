@@ -1,0 +1,49 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "cubemapbuffera.glsl",
+      "channels": [
+        {
+          "buffer": "cubemapbuffera",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": true
+        },
+        {
+          "texturecubemap": "94284d43be78f00eb6b298e6d78656a1b34e2b91b34940d02f1ca8b22310e8a0.png",
+          "filter": "mipmap",
+          "wrap": "clamp",
+          "vflip": false
+        }
+      ],
+      "rendertarget": "cubemapbuffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "cubemapbuffer": "cubemapbuffera",
+          "filter": "nearest",
+          "wrap": "clamp",
+          "vflip": true
+        },
+        {
+          "texturecubemap": "94284d43be78f00eb6b298e6d78656a1b34e2b91b34940d02f1ca8b22310e8a0.png",
+          "filter": "mipmap",
+          "wrap": "clamp",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}
