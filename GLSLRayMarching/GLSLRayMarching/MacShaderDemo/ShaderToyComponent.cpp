@@ -241,10 +241,10 @@ bool ShaderToyComponent::OnStart()
 
 
 	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Reprojection II");
-	return shaderToyRenderer->Initiate("Demos/Cubemaps/Candlestick"); 
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Candlestick"); 
     //return shaderToyRenderer->Initiate("Demos/Cubemaps/Snowy Woods");
 	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Raytracing Textures and Cubemaps");
-	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Christmas Tree Star");
+	return shaderToyRenderer->Initiate("Demos/Cubemaps/Christmas Tree Star");
     //return shaderToyRenderer->Initiate("Demos/Webcam/Video on Tablet");
 	//return shaderToyRenderer->Initiate("Demos/Webcam/ZX Spectrum attribute clash");
 	//return shaderToyRenderer->Initiate("Demos/Webcam/Edge Detector");
