@@ -244,7 +244,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Candlestick"); 
     //return shaderToyRenderer->Initiate("Demos/Cubemaps/Snowy Woods");
 	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Raytracing Textures and Cubemaps");
-	return shaderToyRenderer->Initiate("Demos/Cubemaps/Christmas Tree Star");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Christmas Tree Star");
     //return shaderToyRenderer->Initiate("Demos/Webcam/Video on Tablet");
 	//return shaderToyRenderer->Initiate("Demos/Webcam/ZX Spectrum attribute clash");
 	//return shaderToyRenderer->Initiate("Demos/Webcam/Edge Detector");
@@ -262,10 +262,34 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Unreal Intro");
 	//return shaderToyRenderer->Initiate("Demos/Near miss!");
 
+    //return shaderToyRenderer->Initiate("Demos/Columns and Lights");
+	//return shaderToyRenderer->Initiate("Demos/Abandoned base on Mars");
+	//return shaderToyRenderer->Initiate("Demos/Old Warehouse");
+	//return shaderToyRenderer->Initiate("Demos/Haunted Forest");
+	return shaderToyRenderer->Initiate("Demos/Minefield");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+
 
    
-
-
 
     //The following demos rendering results are different from the correct results, or cannot be run.
     ////return shaderToyRenderer->Initiate("Demos/Waterfall - Procedural GFX");
