@@ -266,12 +266,12 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Abandoned base on Mars");
 	//return shaderToyRenderer->Initiate("Demos/Old Warehouse");
 	//return shaderToyRenderer->Initiate("Demos/Haunted Forest");
-	return shaderToyRenderer->Initiate("Demos/Minefield");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
+	//return shaderToyRenderer->Initiate("Demos/Minefield");
+	//return shaderToyRenderer->Initiate("Demos/Moonlight");
+	//return shaderToyRenderer->Initiate("Demos/Industry");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Flower");
+	//return shaderToyRenderer->Initiate("Demos/Foggy Mountains 2");
+	return shaderToyRenderer->Initiate("Demos/Venice");
 	return shaderToyRenderer->Initiate("Demos/");
 	return shaderToyRenderer->Initiate("Demos/");
 	return shaderToyRenderer->Initiate("Demos/");
