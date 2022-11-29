@@ -11,6 +11,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>"LightPropagationVolumes" "Demos/Scattering/Atmospheric scattering explained"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <RemoteDebuggerCommandArguments>"LightPropagationVolumes" "Demos/Scattering/Atmospheric scattering explained"</RemoteDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>"Demos/Scattering/Atmospheric scattering explained"</LocalDebuggerCommandArguments>

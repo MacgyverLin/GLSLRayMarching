@@ -176,14 +176,14 @@ bool ShaderToyComponent::OnStart()
 
 	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
 	//return shaderToyRenderer->Initiate("Demos/WebCamTextureTest");
-	return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
+	//return shaderToyRenderer->Initiate("Demos/MicrophoneTextureTest");
 	//return shaderToyRenderer->Initiate("Demos/VideoTextureTest");
-	return shaderToyRenderer->Initiate("Demos/Cubemaps/Geometric Cellular Surfaces");
-	return shaderToyRenderer->Initiate("Demos/Cubemaps/Cubemaps");
-	return shaderToyRenderer->Initiate("Demos/A cup of champagne");
-	return shaderToyRenderer->Initiate("Demos/Diamonds/Gem Bloom FX");
-	return shaderToyRenderer->Initiate("Demos/CubemapTest");
-	return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Geometric Cellular Surfaces");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Cubemaps");
+	//return shaderToyRenderer->Initiate("Demos/A cup of champagne");
+	//return shaderToyRenderer->Initiate("Demos/Diamonds/Gem Bloom FX");
+	//return shaderToyRenderer->Initiate("Demos/CubemapTest");
+	//return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
 	//return shaderToyRenderer->Initiate("Demos/Rounded Voronoi Borders");
 	//return shaderToyRenderer->Initiate("Demos/Controllable Hexapod 2");
 	//return shaderToyRenderer->Initiate("Demos/Neon Dance");
@@ -266,17 +266,22 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Gas Giant!");
 	//return shaderToyRenderer->Initiate("Demos/Pegasus Galaxy");
 	//return shaderToyRenderer->Initiate("Demos/Polygonal Terrain");
+	//return shaderToyRenderer->Initiate("Demos/Another better ocean");
 	//return shaderToyRenderer->Initiate("Demos/Diamonds are Forever");
+	//return shaderToyRenderer->Initiate("Demos/synthetic aperture");
 	//return shaderToyRenderer->Initiate("Demos/Raymarching - Primitives");
 	//return shaderToyRenderer->Initiate("Demos/Tux Family Trip");
-	return shaderToyRenderer->Initiate("Demos/Sea Creature");
+	//return shaderToyRenderer->Initiate("Demos/Sea Creature");
+	//return shaderToyRenderer->Initiate("Demos/Input - Keyboard");
+	//return shaderToyRenderer->Initiate("Demos/Image Based PBR Material");
+	//return shaderToyRenderer->Initiate("Demos/Christmas Tree Star");
+	//return shaderToyRenderer->Initiate("Demos/Rainforest");
+	//return shaderToyRenderer->Initiate("Demos/Ray Marching Part 6");
+	//return shaderToyRenderer->Initiate("Demos/Creation by Silexars");
+	return shaderToyRenderer->Initiate("Demos/Clouds/Clouds");
 
 	//无法运行：Assertion failed: IsBool(), file ...\GLSLRayMarching\3rdparty\rapidjson\include\rapidjson\document.h, line 1163
 	//return shaderToyRenderer->Initiate("Demos/Gem Bloom FX");//https://www.shadertoy.com/view/MssczX
-	//无法运行：Assertion failed: (alGetError() != 0), file ...\GLSLRayMarching\GLSLRayMarching\GLSLRayMarching\FrameWork\Audio.cpp, line 564
-	//return shaderToyRenderer->Initiate("Demos/synthetic aperture");//https://www.shadertoy.com/view/ldlSzX
-	//正常运行但是显示不真实：
-	//return shaderToyRenderer->Initiate("Demos/Another better ocean");//https://www.shadertoy.com/view/Xdlczl
 }
 
 bool ShaderToyComponent::OnUpdate()
