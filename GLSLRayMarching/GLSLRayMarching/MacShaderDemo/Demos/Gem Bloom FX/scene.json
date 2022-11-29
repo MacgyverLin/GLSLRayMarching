@@ -4,13 +4,15 @@
       "shader": "buffera.glsl",
       "channels": [
         {
-          "texture2d": "tex0.jpg",
+          "texturecubemap": "585f9546c092f53ded45332b343144396c0b2d70d9965f585ebc172080d8aa58.jpg",
           "filter": "mipmap",
+          "wrap": "clamp",
           "vflip": "true"
         },
         {
-          "texture2d": "tex1.jpg",
-          "filter": "repeat",
+          "texture2d": "79520a3d3a0f4d3caa440802ef4362e99d54e12b1392973e4ea321840970a88a.jpg",
+          "filter": "mipmap",
+          "wrap": "repeat",
           "vflip": "true"
         }
       ],
@@ -30,8 +32,12 @@
     {
       "shader": "image.glsl",
       "channels": [
-        {},
-        {},
+        {
+          "buffer": "buffera"
+        },
+        {
+          "buffer": "buffera"
+        },
         {
           "buffer": "buffera",
           "filter": "linear",

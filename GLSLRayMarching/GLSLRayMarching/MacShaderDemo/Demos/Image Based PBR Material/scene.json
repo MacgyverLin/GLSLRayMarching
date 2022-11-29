@@ -1,0 +1,66 @@
+{
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "bufferb.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texture2d": "3083c722c0c738cad0f468383167a0d246f91af2bfa373e9c5c094fb8c8413e0.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "f735bee5b64ef98879dc618b016ecf7939a5756040c2cde21ccb15e69a6e1cfb.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        }
+      ],
+      "rendertarget": "bufferb"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texturecubemap": "585f9546c092f53ded45332b343144396c0b2d70d9965f585ebc172080d8aa58.jpg",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": false
+        },
+        {
+          "texturecubemap": "793a105653fbdadabdc1325ca08675e1ce48ae5f12e37973829c87bea4be3232.png",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": false
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}
