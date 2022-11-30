@@ -1,0 +1,34 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "texture2d": "tex0.jpg",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex1.jpg",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex2.png",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        },
+        {
+          "texture2d": "tex3.jpg",
+          "filter": "mipmap",
+          "wrap": "repeat",
+          "vflip": false
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

@@ -271,22 +271,18 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Industry");
 	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Flower");
 	//return shaderToyRenderer->Initiate("Demos/Foggy Mountains 2");
-	return shaderToyRenderer->Initiate("Demos/Venice");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
+	//return shaderToyRenderer->Initiate("Demos/Venice");
+	//return shaderToyRenderer->Initiate("Demos/Woods");
+	//return shaderToyRenderer->Initiate("Demos/Generators");
+	//return shaderToyRenderer->Initiate("Demos/Misty Lake");
+    //return shaderToyRenderer->Initiate("Demos/The Popular Shader");
+	//return shaderToyRenderer->Initiate("Demos/The cubitree");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Solstice");
+	//return shaderToyRenderer->Initiate("Demos/Fish swimming");
+	//return shaderToyRenderer->Initiate("Demos/Jack-o'-lantern");
+	//return shaderToyRenderer->Initiate("Demos/Morning city");
+	return shaderToyRenderer->Initiate("Demos/Somewhere in 1993");
+
 
 
    
@@ -304,6 +300,7 @@ bool ShaderToyComponent::OnStart()
     ////return shaderToyRenderer->Initiate("Demos/Androgynous bolts");
 	////return shaderToyRenderer->Initiate("Demos/Webcam/Motion Detection");
     ////return shaderToyRenderer->Initiate("Demos/Webcam/Playing with a coke");
+	////return shaderToyRenderer->Initiate("Demos/Brigthton Beach");
     
 
 
