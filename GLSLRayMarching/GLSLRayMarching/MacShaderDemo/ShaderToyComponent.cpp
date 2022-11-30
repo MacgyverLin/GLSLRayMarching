@@ -260,28 +260,59 @@ bool ShaderToyComponent::OnStart()
 //正常：
 	//return shaderToyRenderer->Initiate("Demos/Octagrams");
 	//return shaderToyRenderer->Initiate("Demos/Glass Polyhedron");
+	//return shaderToyRenderer->Initiate("Demos/Another better ocean");
 	//return shaderToyRenderer->Initiate("Demos/Sirenian Dawn");
 	//return shaderToyRenderer->Initiate("Demos/Flux Core");
 	//return shaderToyRenderer->Initiate("Demos/in my crawl space");
+	//return shaderToyRenderer->Initiate("Demos/synthetic aperture");
 	//return shaderToyRenderer->Initiate("Demos/Gas Giant!");
 	//return shaderToyRenderer->Initiate("Demos/Pegasus Galaxy");
 	//return shaderToyRenderer->Initiate("Demos/Polygonal Terrain");
-	//return shaderToyRenderer->Initiate("Demos/Another better ocean");
 	//return shaderToyRenderer->Initiate("Demos/Diamonds are Forever");
-	//return shaderToyRenderer->Initiate("Demos/synthetic aperture");
 	//return shaderToyRenderer->Initiate("Demos/Raymarching - Primitives");
 	//return shaderToyRenderer->Initiate("Demos/Tux Family Trip");
 	//return shaderToyRenderer->Initiate("Demos/Sea Creature");
+	//return shaderToyRenderer->Initiate("Demos/Path traced GI");
+	//return shaderToyRenderer->Initiate("Demos/Equi-Angular Sampling");
+	//return shaderToyRenderer->Initiate("Demos/Kleinian Seahorse");
+	//return shaderToyRenderer->Initiate("Demos/Particles Party");
+	//return shaderToyRenderer->Initiate("Demos/Cube lines");
 	//return shaderToyRenderer->Initiate("Demos/Input - Keyboard");
 	//return shaderToyRenderer->Initiate("Demos/Image Based PBR Material");
 	//return shaderToyRenderer->Initiate("Demos/Christmas Tree Star");
 	//return shaderToyRenderer->Initiate("Demos/Rainforest");
 	//return shaderToyRenderer->Initiate("Demos/Ray Marching Part 6");
+	//return shaderToyRenderer->Initiate("Demos/Clouds/Clouds");
+	//return shaderToyRenderer->Initiate("Demos/Photorealism");
+	//return shaderToyRenderer->Initiate("Demos/Tiny VPT");
+	//return shaderToyRenderer->Initiate("Demos/Path traced Rayleigh scattering");
+	//return shaderToyRenderer->Initiate("Demos/Glossy Reflections");
 	//return shaderToyRenderer->Initiate("Demos/Creation by Silexars");
-	return shaderToyRenderer->Initiate("Demos/Clouds/Clouds");
+	//return shaderToyRenderer->Initiate("Demos/Silhouette edge detection");
+	//return shaderToyRenderer->Initiate("Demos/Pseudo Realtime Path Tracing");
+	//return shaderToyRenderer->Initiate("Demos/tinted glass lamborghini");
+	//return shaderToyRenderer->Initiate("Demos/Fast Octree Path Tracing");
+	//return shaderToyRenderer->Initiate("Demos/Path Traced Neural Bunny");
+	//return shaderToyRenderer->Initiate("Demos/Tracing Warm Light");
 
 	//无法运行：Assertion failed: IsBool(), file ...\GLSLRayMarching\3rdparty\rapidjson\include\rapidjson\document.h, line 1163
 	//return shaderToyRenderer->Initiate("Demos/Gem Bloom FX");//https://www.shadertoy.com/view/MssczX
+	//显示有问题，没有动画，一段时间后画面很奇怪
+	//return shaderToyRenderer->Initiate("Demos/Orbiting Thomas precession");//https://www.shadertoy.com/view/mdsXWl
+	//黑屏，无显示
+	//return shaderToyRenderer->Initiate("Demos/Fast Path Tracing[Lab]!");//https://www.shadertoy.com/view/XdVfRm
+	//噪点很多
+	//return shaderToyRenderer->Initiate("Demos/Demofox Path Tracing 2");//https://www.shadertoy.com/view/WsBBR3
+	//阴影有问题
+	//return shaderToyRenderer->Initiate("Demos/Real time path tracing");//https://www.shadertoy.com/view/wtcXz4
+	//显示有问题，可能跟空channel有关
+	//return shaderToyRenderer->Initiate("Demos/Bidirectional Tracer Reproj");//https://www.shadertoy.com/view/NtSSDW
+	//噪点很大
+	//return shaderToyRenderer->Initiate("Demos/Tiny VPT 2");//https://www.shadertoy.com/view/4dByDy
+	//很模糊
+	return shaderToyRenderer->Initiate("Demos/Volumetric path tracing");//https://www.shadertoy.com/view/wsVSDd
+	//有拖影
+	//return shaderToyRenderer->Initiate("Demos/Real Time Path Tracing2");//https://www.shadertoy.com/view/slfGWr
 }
 
 bool ShaderToyComponent::OnUpdate()

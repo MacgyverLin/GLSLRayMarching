@@ -1,0 +1,32 @@
+{
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texturecubemap": "585f9546c092f53ded45332b343144396c0b2d70d9965f585ebc172080d8aa58.jpg",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": false
+        }
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

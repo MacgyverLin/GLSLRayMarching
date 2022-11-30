@@ -1,0 +1,78 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "bufferb.glsl",
+      "channels": [
+      ],
+      "rendertarget": "bufferb"
+    },
+    {
+      "shader": "bufferc.glsl",
+      "channels": [
+        {
+          "buffer": "bufferc",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "bufferc"
+    },
+    {
+      "shader": "bufferd.glsl",
+      "channels": [
+        {
+          "buffer": "bufferc",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texture2d": "cb49c003b454385aa9975733aff4571c62182ccdda480aaba9a8d250014f00ec.png",
+          "filter": "nearest",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "bufferd"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "bufferd",
+          "filter": "mipmap",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}
