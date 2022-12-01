@@ -1,0 +1,10 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

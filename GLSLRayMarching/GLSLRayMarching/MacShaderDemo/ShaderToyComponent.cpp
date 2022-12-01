@@ -268,6 +268,8 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Gas Giant!");
 	//return shaderToyRenderer->Initiate("Demos/Pegasus Galaxy");
 	//return shaderToyRenderer->Initiate("Demos/Polygonal Terrain");
+
+//正常：
 	//return shaderToyRenderer->Initiate("Demos/Diamonds are Forever");
 	//return shaderToyRenderer->Initiate("Demos/Raymarching - Primitives");
 	//return shaderToyRenderer->Initiate("Demos/Tux Family Trip");
@@ -310,9 +312,20 @@ bool ShaderToyComponent::OnStart()
 	//噪点很大
 	//return shaderToyRenderer->Initiate("Demos/Tiny VPT 2");//https://www.shadertoy.com/view/4dByDy
 	//很模糊
-	return shaderToyRenderer->Initiate("Demos/Volumetric path tracing");//https://www.shadertoy.com/view/wsVSDd
+	//return shaderToyRenderer->Initiate("Demos/Volumetric path tracing");//https://www.shadertoy.com/view/wsVSDd
 	//有拖影
 	//return shaderToyRenderer->Initiate("Demos/Real Time Path Tracing2");//https://www.shadertoy.com/view/slfGWr
+
+//正常：
+	//return shaderToyRenderer->Initiate("Demos/cartoon video");
+	//return shaderToyRenderer->Initiate("Demos/Acid geometry");
+	//return shaderToyRenderer->Initiate("Demos/Cartoon Planet");
+	//return shaderToyRenderer->Initiate("Demos/Basic Cel Shading");
+
+	//画面不一样
+	//return shaderToyRenderer->Initiate("Demos/Carcassonne_");//https://www.shadertoy.com/view/tdX3D2
+	//画面闪烁
+	return shaderToyRenderer->Initiate("Demos/Extruded Asymmetric Hexagons");//https://www.shadertoy.com/view/tdKyWh
 }
 
 bool ShaderToyComponent::OnUpdate()
