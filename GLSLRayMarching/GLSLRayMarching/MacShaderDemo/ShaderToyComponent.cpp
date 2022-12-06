@@ -281,9 +281,31 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Fish swimming");
 	//return shaderToyRenderer->Initiate("Demos/Jack-o'-lantern");
 	//return shaderToyRenderer->Initiate("Demos/Morning city");
-	return shaderToyRenderer->Initiate("Demos/Somewhere in 1993");
+	//return shaderToyRenderer->Initiate("Demos/Somewhere in 1993");
 
 
+
+
+	//return shaderToyRenderer->Initiate("Demos/doski canady");
+	//return shaderToyRenderer->Initiate("Demos/Kepler 256o");
+	//return shaderToyRenderer->Initiate("Demos/OnOff Spikes");
+	//return shaderToyRenderer->Initiate("Demos/Terrain Tubes");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Mobius balls");
+	//return shaderToyRenderer->Initiate("Demos/Train Ride");
+	//return shaderToyRenderer->Initiate("Demos/Winter");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Snowglobe_v2");
+	//return shaderToyRenderer->Initiate("Demos/Manta Ray");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Light Bulb");
+	//return shaderToyRenderer->Initiate("Demos/Tokyo");
+	return shaderToyRenderer->Initiate("Demos/Nightfall");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
 
    
 
