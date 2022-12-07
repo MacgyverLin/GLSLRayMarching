@@ -297,15 +297,15 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Manta Ray");
 	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Light Bulb");
 	//return shaderToyRenderer->Initiate("Demos/Tokyo");
-	return shaderToyRenderer->Initiate("Demos/Nightfall");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
+	//return shaderToyRenderer->Initiate("Demos/Nightfall");
+	//return shaderToyRenderer->Initiate("Demos/Space Race");
+	//return shaderToyRenderer->Initiate("Demos/Infinite City");
+	//return shaderToyRenderer->Initiate("Demos/Canyon");
+	//return shaderToyRenderer->Initiate("Demos/Cloud Ten");
+	//return shaderToyRenderer->Initiate("Demos/FlappyBird");
+	//return shaderToyRenderer->Initiate("Demos/Postcard");
+	//return shaderToyRenderer->Initiate("Demos/sakura revisited");
+	return shaderToyRenderer->Initiate("Demos/Congrats Luxo Jr");
 
    
 
