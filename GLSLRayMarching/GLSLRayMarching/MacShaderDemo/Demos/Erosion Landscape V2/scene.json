@@ -1,0 +1,133 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "nearest",
+          "wrap": "clamp"
+        },
+        {
+          "keyboard": "",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "bufferb.glsl",
+      "channels": [
+        {
+          "buffer": "bufferb",
+          "filter": "nearest",
+          "wrap": "repeat"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "nearest",
+          "wrap": "repeat"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "nearest",
+          "wrap": "clamp"
+        },
+        {
+          "keyboard": "",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "bufferb"
+    },
+    {
+      "shader": "bufferc.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "nearest",
+          "wrap": "clamp"
+        },
+        {
+          
+          "keyboard": "",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "bufferc"
+    },
+    {
+      "shader": "bufferd.glsl",
+      "channels": [
+        {
+          "buffer": "bufferc",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "keyboard": "",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "bufferd"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "bufferc",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "keyboard": "",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

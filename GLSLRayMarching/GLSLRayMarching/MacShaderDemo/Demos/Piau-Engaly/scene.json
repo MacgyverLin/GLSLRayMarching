@@ -1,0 +1,13 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

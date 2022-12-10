@@ -321,11 +321,35 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Acid geometry");
 	//return shaderToyRenderer->Initiate("Demos/Cartoon Planet");
 	//return shaderToyRenderer->Initiate("Demos/Basic Cel Shading");
+	//return shaderToyRenderer->Initiate("Demos/Low Poly Planet");
+	//return shaderToyRenderer->Initiate("Demos/Cartoon ride");
+	//return shaderToyRenderer->Initiate("Demos/Cartoon ride");
+	//return shaderToyRenderer->Initiate("Demos/Belt Trick But Square");
+	//return shaderToyRenderer->Initiate("Demos/Larva");
+	//return shaderToyRenderer->Initiate("Demos/Charlie Brown");
+	//return shaderToyRenderer->Initiate("Demos/[twitch] Lava Temple");
+	//return shaderToyRenderer->Initiate("Demos/Cartoon landscape");
+	//return shaderToyRenderer->Initiate("Demos/space rock (vlllll)");
+	//return shaderToyRenderer->Initiate("Demos/Complex Tunnels");
+	//return shaderToyRenderer->Initiate("Demos/Disco Sewers");
+	//return shaderToyRenderer->Initiate("Demos/Judgment Day");
+	//return shaderToyRenderer->Initiate("Demos/Honeycomb Tunnels");
+	//return shaderToyRenderer->Initiate("Demos/Web tunnels");
+	//return shaderToyRenderer->Initiate("Demos/Volcanic");
+	//return shaderToyRenderer->Initiate("Demos/Neptune Racing");
+	//return shaderToyRenderer->Initiate("Demos/Snowy Forest");
+	//return shaderToyRenderer->Initiate("Demos/Voronoi Farms");
+	//return shaderToyRenderer->Initiate("Demos/Forest Train Ride");
+	//return shaderToyRenderer->Initiate("Demos/Piau-Engaly");
+	//return shaderToyRenderer->Initiate("Demos/Flying in canyon");
+	return shaderToyRenderer->Initiate("Demos/Erosion Landscape V2");
 
 	//画面不一样
 	//return shaderToyRenderer->Initiate("Demos/Carcassonne_");//https://www.shadertoy.com/view/tdX3D2
 	//画面闪烁
 	return shaderToyRenderer->Initiate("Demos/Extruded Asymmetric Hexagons");//https://www.shadertoy.com/view/tdKyWh
+	//画面不对
+	return shaderToyRenderer->Initiate("Demos/Julia Islands"); //https://www.shadertoy.com/view/Nl2Gzw
 }
 
 bool ShaderToyComponent::OnUpdate()

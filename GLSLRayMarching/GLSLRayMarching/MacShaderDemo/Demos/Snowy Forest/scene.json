@@ -1,0 +1,21 @@
+{
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}
