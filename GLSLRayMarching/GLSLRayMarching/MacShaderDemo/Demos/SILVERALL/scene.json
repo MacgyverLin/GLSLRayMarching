@@ -1,0 +1,16 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "texturecubemap": "793a105653fbdadabdc1325ca08675e1ce48ae5f12e37973829c87bea4be3232.png",
+          "filter": "linear",
+          "wrap": "clamp",
+          "vflip": false
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

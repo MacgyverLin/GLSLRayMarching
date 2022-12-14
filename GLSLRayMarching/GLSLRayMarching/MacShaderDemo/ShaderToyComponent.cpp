@@ -342,7 +342,17 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Forest Train Ride");
 	//return shaderToyRenderer->Initiate("Demos/Piau-Engaly");
 	//return shaderToyRenderer->Initiate("Demos/Flying in canyon");
-	return shaderToyRenderer->Initiate("Demos/Erosion Landscape V2");
+	//return shaderToyRenderer->Initiate("Demos/Erosion Landscape V2");
+	//return shaderToyRenderer->Initiate("Demos/Alien landscape");
+	//return shaderToyRenderer->Initiate("Demos/Forkscape");
+	//return shaderToyRenderer->Initiate("Demos/Alien landscape2");
+	//return shaderToyRenderer->Initiate("Demos/Alien terrain");
+	//return shaderToyRenderer->Initiate("Demos/Terrain Explorer 2");
+	//return shaderToyRenderer->Initiate("Demos/Polygon Landscapes");
+	//return shaderToyRenderer->Initiate("Demos/SILVERALL");
+	//return shaderToyRenderer->Initiate("Demos/Pijpleiding naar Okkie's snor");
+	//return shaderToyRenderer->Initiate("Demos/Ukiyo-e Japanese Woodblock Print");
+	return shaderToyRenderer->Initiate("Demos/Misty Terraces");
 
 	//画面不一样
 	//return shaderToyRenderer->Initiate("Demos/Carcassonne_");//https://www.shadertoy.com/view/tdX3D2
@@ -350,6 +360,10 @@ bool ShaderToyComponent::OnStart()
 	return shaderToyRenderer->Initiate("Demos/Extruded Asymmetric Hexagons");//https://www.shadertoy.com/view/tdKyWh
 	//画面不对
 	return shaderToyRenderer->Initiate("Demos/Julia Islands"); //https://www.shadertoy.com/view/Nl2Gzw
+	//颜色偏深
+	return shaderToyRenderer->Initiate("Demos/Procedurally generated landscape");//https://www.shadertoy.com/view/7tXcRj
+	//画面不正确
+	return shaderToyRenderer->Initiate("Demos/Tundra");//https://www.shadertoy.com/view/fsVSzy
 }
 
 bool ShaderToyComponent::OnUpdate()
