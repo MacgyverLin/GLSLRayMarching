@@ -1,0 +1,18 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

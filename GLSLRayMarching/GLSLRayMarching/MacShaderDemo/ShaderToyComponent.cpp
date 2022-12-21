@@ -305,7 +305,43 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/FlappyBird");
 	//return shaderToyRenderer->Initiate("Demos/Postcard");
 	//return shaderToyRenderer->Initiate("Demos/sakura revisited");
-	return shaderToyRenderer->Initiate("Demos/Congrats Luxo Jr");
+	//return shaderToyRenderer->Initiate("Demos/Congrats Luxo Jr");
+
+    
+
+	//return shaderToyRenderer->Initiate("Demos/Piano");
+	//return shaderToyRenderer->Initiate("Demos/[SIG15] Eve Arrives");
+	//return shaderToyRenderer->Initiate("Demos/jetstream");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Playing marble");
+	//return shaderToyRenderer->Initiate("Demos/Sun surface");
+	//return shaderToyRenderer->Initiate("Demos/La calanque");
+	//return shaderToyRenderer->Initiate("Demos/Snail");
+	//return shaderToyRenderer->Initiate("Demos/Garage");
+	//return shaderToyRenderer->Initiate("Demos/Parking Garage");
+	//return shaderToyRenderer->Initiate("Demos/Blocks");
+	//return shaderToyRenderer->Initiate("Demos/Gas Giant!");
+	//return shaderToyRenderer->Initiate("Demos/Fantasy scene");
+	//return shaderToyRenderer->Initiate("Demos/Bobsled");
+	//return shaderToyRenderer->Initiate("Demos/A bad day");
+	//return shaderToyRenderer->Initiate("Demos/Ha'tak arrival");
+	//return shaderToyRenderer->Initiate("Demos/Paternoster");
+	//return shaderToyRenderer->Initiate("Demos/Elephant Ear Plants");
+	//return shaderToyRenderer->Initiate("Demos/Elevated coast");
+	//return shaderToyRenderer->Initiate("Demos/Pikachu Thunderbolt");
+	return shaderToyRenderer->Initiate("Demos/After rain");
+
+
+
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
 
    
 
@@ -323,6 +359,7 @@ bool ShaderToyComponent::OnStart()
 	////return shaderToyRenderer->Initiate("Demos/Webcam/Motion Detection");
     ////return shaderToyRenderer->Initiate("Demos/Webcam/Playing with a coke");
 	////return shaderToyRenderer->Initiate("Demos/Brigthton Beach");
+	////return shaderToyRenderer->Initiate("Demos/Terrian");
     
 
 
