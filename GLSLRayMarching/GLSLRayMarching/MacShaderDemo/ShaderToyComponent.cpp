@@ -328,20 +328,30 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Elephant Ear Plants");
 	//return shaderToyRenderer->Initiate("Demos/Elevated coast");
 	//return shaderToyRenderer->Initiate("Demos/Pikachu Thunderbolt");
-	return shaderToyRenderer->Initiate("Demos/After rain");
+	//return shaderToyRenderer->Initiate("Demos/After rain");
 
 
 
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
+	//return shaderToyRenderer->Initiate("Demos/fishing village v2");
+	//return shaderToyRenderer->Initiate("Demos/BlackHole");
+	//return shaderToyRenderer->Initiate("Demos/Voronoian Waterway");
+	//return shaderToyRenderer->Initiate("Demos/Ladybug");//fps is low
+	//return shaderToyRenderer->Initiate("Demos/Snowy Forest");
+	//return shaderToyRenderer->Initiate("Demos/Dolphin");
+	//return shaderToyRenderer->Initiate("Demos/The Exorcist");
+	//return shaderToyRenderer->Initiate("Demos/Lonely Waters");
+	//return shaderToyRenderer->Initiate("Demos/Storm in a teacup");
+	//return shaderToyRenderer->Initiate("Demos/Cubemaps/Recursive Raytracer (no diffuse)");
+	//return shaderToyRenderer->Initiate("Demos/Raymarching Engine Demo");
+	//return shaderToyRenderer->Initiate("Demos/Ready Player One");
+	//return shaderToyRenderer->Initiate("Demos/Abstract City");
+	//return shaderToyRenderer->Initiate("Demos/Bridge");
+	//return shaderToyRenderer->Initiate("Demos/Fractal Cabin In The Woods");
+	//return shaderToyRenderer->Initiate("Demos/Mushroom");
+	//return shaderToyRenderer->Initiate("Demos/Timewarp");
+	//return shaderToyRenderer->Initiate("Demos/Ray marching 2D Clouds");
+	//return shaderToyRenderer->Initiate("Demos/Alien ocean");
+	return shaderToyRenderer->Initiate("Demos/[TDF2017] Ocean");
 
    
 
