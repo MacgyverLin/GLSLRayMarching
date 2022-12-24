@@ -371,7 +371,6 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/River Flight (optimized)");
 	//return shaderToyRenderer->Initiate("Demos/Desert Ducks");
 	//return shaderToyRenderer->Initiate("Demos/Lighthouse at Alexandria");
-	//return shaderToyRenderer->Initiate("Demos/Desert Passage II");
 	//return shaderToyRenderer->Initiate("Demos/[TWITCH] Bored circuit");
 	//return shaderToyRenderer->Initiate("Demos/Misty Flight");
 	//return shaderToyRenderer->Initiate("Demos/Pillar-Studded Landscape");
@@ -385,8 +384,10 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/[TWITCH] The reaper's gallows");
 	//return shaderToyRenderer->Initiate("Demos/JuliaLand");
 
+	//画面闪烁
+	//return shaderToyRenderer->Initiate("Demos/Desert Passage II");//https://www.shadertoy.com/view/WdGcDt
 	//画面模糊
-	return shaderToyRenderer->Initiate("Demos/Kleinian Landscape");//https://www.shadertoy.com/view/WttBRr
+	//return shaderToyRenderer->Initiate("Demos/Kleinian Landscape");//https://www.shadertoy.com/view/WttBRr
 	//画面不对
 	return shaderToyRenderer->Initiate("Demos/Mountainous Landscape");//https://www.shadertoy.com/view/wlsBW7
 
