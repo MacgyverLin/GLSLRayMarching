@@ -1,0 +1,31 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "cubemapbuffera.glsl",
+      "channels": [
+        {
+          "buffer": "cubemapbuffera",
+          "filter": "nearest",
+          "wrap": "clamp",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "cubemapbuffera"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "cubemapbuffera",
+          "filter": "nearest",
+          "wrap": "clamp",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

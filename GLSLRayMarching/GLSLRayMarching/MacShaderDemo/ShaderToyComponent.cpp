@@ -323,7 +323,6 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Basic Cel Shading");
 	//return shaderToyRenderer->Initiate("Demos/Low Poly Planet");
 	//return shaderToyRenderer->Initiate("Demos/Cartoon ride");
-	//return shaderToyRenderer->Initiate("Demos/Cartoon ride");
 	//return shaderToyRenderer->Initiate("Demos/Belt Trick But Square");
 	//return shaderToyRenderer->Initiate("Demos/Larva");
 	//return shaderToyRenderer->Initiate("Demos/Charlie Brown");
@@ -352,18 +351,52 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/SILVERALL");
 	//return shaderToyRenderer->Initiate("Demos/Pijpleiding naar Okkie's snor");
 	//return shaderToyRenderer->Initiate("Demos/Ukiyo-e Japanese Woodblock Print");
-	return shaderToyRenderer->Initiate("Demos/Misty Terraces");
+	//return shaderToyRenderer->Initiate("Demos/Misty Terraces");
 
 	//画面不一样
 	//return shaderToyRenderer->Initiate("Demos/Carcassonne_");//https://www.shadertoy.com/view/tdX3D2
 	//画面闪烁
-	return shaderToyRenderer->Initiate("Demos/Extruded Asymmetric Hexagons");//https://www.shadertoy.com/view/tdKyWh
+	//return shaderToyRenderer->Initiate("Demos/Extruded Asymmetric Hexagons");//https://www.shadertoy.com/view/tdKyWh
 	//画面不对
-	return shaderToyRenderer->Initiate("Demos/Julia Islands"); //https://www.shadertoy.com/view/Nl2Gzw
+	//return shaderToyRenderer->Initiate("Demos/Julia Islands"); //https://www.shadertoy.com/view/Nl2Gzw
 	//颜色偏深
-	return shaderToyRenderer->Initiate("Demos/Procedurally generated landscape");//https://www.shadertoy.com/view/7tXcRj
+	//return shaderToyRenderer->Initiate("Demos/Procedurally generated landscape");//https://www.shadertoy.com/view/7tXcRj
 	//画面不正确
-	return shaderToyRenderer->Initiate("Demos/Tundra");//https://www.shadertoy.com/view/fsVSzy
+	//return shaderToyRenderer->Initiate("Demos/Tundra");//https://www.shadertoy.com/view/fsVSzy
+
+//正常
+	//return shaderToyRenderer->Initiate("Demos/Mountain Lake with Tower");
+	//return shaderToyRenderer->Initiate("Demos/Day 381");
+	//return shaderToyRenderer->Initiate("Demos/Day 377");
+	//return shaderToyRenderer->Initiate("Demos/River Flight (optimized)");
+	//return shaderToyRenderer->Initiate("Demos/Desert Ducks");
+	//return shaderToyRenderer->Initiate("Demos/Lighthouse at Alexandria");
+	//return shaderToyRenderer->Initiate("Demos/Desert Passage II");
+	//return shaderToyRenderer->Initiate("Demos/[TWITCH] Bored circuit");
+	//return shaderToyRenderer->Initiate("Demos/Misty Flight");
+	//return shaderToyRenderer->Initiate("Demos/Pillar-Studded Landscape");
+	//return shaderToyRenderer->Initiate("Demos/Noise landscape");
+	//return shaderToyRenderer->Initiate("Demos/[TWITCH] DNA tracer");
+	//return shaderToyRenderer->Initiate("Demos/Line Segment Depth-of-Field");
+	//return shaderToyRenderer->Initiate("Demos/Raymarched Moonscape");
+	//return shaderToyRenderer->Initiate("Demos/Mandalay Canyon");
+	//return shaderToyRenderer->Initiate("Demos/Shark shader");
+	//return shaderToyRenderer->Initiate("Demos/[TWITCH] Pounding Aldebaran");
+	//return shaderToyRenderer->Initiate("Demos/[TWITCH] The reaper's gallows");
+	//return shaderToyRenderer->Initiate("Demos/JuliaLand");
+
+	//画面模糊
+	return shaderToyRenderer->Initiate("Demos/Kleinian Landscape");//https://www.shadertoy.com/view/WttBRr
+	//画面不对
+	return shaderToyRenderer->Initiate("Demos/Mountainous Landscape");//https://www.shadertoy.com/view/wlsBW7
+
+//正常
+	//return shaderToyRenderer->Initiate("Demos/Alien Voxel Landscape");
+	//return shaderToyRenderer->Initiate("Demos/Moon Flight");
+	return shaderToyRenderer->Initiate("Demos/Almost My First Shader");
+	return shaderToyRenderer->Initiate("Demos/");
+	return shaderToyRenderer->Initiate("Demos/");
+
 }
 
 bool ShaderToyComponent::OnUpdate()
