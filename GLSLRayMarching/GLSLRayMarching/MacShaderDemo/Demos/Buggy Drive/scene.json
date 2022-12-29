@@ -1,0 +1,22 @@
+{
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "texture2d": "8979352a182bde7c3c651ba2b2f4e0615de819585cc37b7175bcefbca15a6683.jpg",
+          "filter": "linear",
+          "wrap": "repeat",
+          "vflip": true
+        },
+        {
+          "texture2d": "0c7bf5fe9462d5bffbd11126e82908e39be3ce56220d900f633d58fb432e56f5 (1).png",
+          "filter": "linear",
+          "wrap": "repeat",
+          "vflip": true
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

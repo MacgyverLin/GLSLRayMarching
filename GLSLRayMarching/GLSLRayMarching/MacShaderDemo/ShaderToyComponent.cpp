@@ -389,15 +389,28 @@ bool ShaderToyComponent::OnStart()
 	//画面模糊
 	//return shaderToyRenderer->Initiate("Demos/Kleinian Landscape");//https://www.shadertoy.com/view/WttBRr
 	//画面不对
-	return shaderToyRenderer->Initiate("Demos/Mountainous Landscape");//https://www.shadertoy.com/view/wlsBW7
+	//return shaderToyRenderer->Initiate("Demos/Mountainous Landscape");//https://www.shadertoy.com/view/wlsBW7
 
 //正常
 	//return shaderToyRenderer->Initiate("Demos/Alien Voxel Landscape");
 	//return shaderToyRenderer->Initiate("Demos/Moon Flight");
-	return shaderToyRenderer->Initiate("Demos/Almost My First Shader");
-	return shaderToyRenderer->Initiate("Demos/");
-	return shaderToyRenderer->Initiate("Demos/");
-
+	//return shaderToyRenderer->Initiate("Demos/Almost My First Shader");
+	//return shaderToyRenderer->Initiate("Demos/eroded volcano");
+	//return shaderToyRenderer->Initiate("Demos/River Flight 2");
+	//return shaderToyRenderer->Initiate("Demos/Buggy Drive");
+	//return shaderToyRenderer->Initiate("Demos/Book of the Woods");
+	//return shaderToyRenderer->Initiate("Demos/Into the Woods");
+	//return shaderToyRenderer->Initiate("Demos/Boxing Day");
+	//return shaderToyRenderer->Initiate("Demos/A Simple Diamond");
+	//return shaderToyRenderer->Initiate("Demos/Morey Refracty Objecty Thingy");
+	//return shaderToyRenderer->Initiate("Demos/Refracty Object Thing");
+	//return shaderToyRenderer->Initiate("Demos/Bubble Tower");
+	//return shaderToyRenderer->Initiate("Demos/Fractal Refracty Thing");
+	//return shaderToyRenderer->Initiate("Demos/Diamond with caustics");
+	//return shaderToyRenderer->Initiate("Demos/Refraction Thingy");
+	//return shaderToyRenderer->Initiate("Demos/Diamond Tunnel");
+	//蛇不动
+	return shaderToyRenderer->Initiate("Demos/Snake Run");//https://www.shadertoy.com/view/ltjfR1
 }
 
 bool ShaderToyComponent::OnUpdate()
