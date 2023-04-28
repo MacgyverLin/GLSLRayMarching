@@ -12,7 +12,6 @@
 #include "Platform.h"
 #include "Component.h"
 
-#include <rttr/registration>
 
 enum class color
 {
@@ -120,20 +119,6 @@ private:
 	ID id;
 	std::string name;
 	std::vector<Component*> components;
-
-///////////////////////////////////////////////////////////////
-// test
-public:
-	void set_visible(bool v) { visible = v; }
-	bool get_visible() const { return visible; }
-
-	color color1 = color::blue;
-	point2d position;
-	std::map<color, point2d> dictionary;
-
-	RTTR_ENABLE()
-private:
-	bool visible = false;
 };
 
 #endif

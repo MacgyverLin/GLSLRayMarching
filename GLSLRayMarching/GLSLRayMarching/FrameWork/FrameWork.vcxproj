@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -96,7 +96,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Winmm.lib;Winmm.lib;swscale.lib;swresample.lib;postproc.lib;avutil.lib;avformat.lib;avfilter.lib;avdevice.lib;avcodec.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ..\..\..\3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib;Winmm.lib;swscale.lib;swresample.lib;postproc.lib;avutil.lib;avformat.lib;avfilter.lib;avdevice.lib;avcodec.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib;../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>
@@ -120,7 +120,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Winmm.lib;swscale.lib;swresample.lib;postproc.lib;avutil.lib;avformat.lib;avfilter.lib;avdevice.lib;avcodec.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib;swscale.lib;swresample.lib;postproc.lib;avutil.lib;avformat.lib;avfilter.lib;avdevice.lib;avcodec.lib; ./PathTrace/oidn/lib/OpenImageDenoise.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib;../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>
@@ -140,7 +140,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Winmm.lib; swscale.lib; swresample.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; OpenAL32.lib;./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core_d.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib; swscale.lib; swresample.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; OpenAL32.lib;./PathTrace/oidn/lib/OpenImageDenoise.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib; ../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>
@@ -164,7 +164,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Winmm.lib; swscale.lib; swresample.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; OpenAL32.lib;./PathTrace/oidn/lib/OpenImageDenoise.lib; ../../../3rdparty/rttr/build/lib/$(Configuration)/rttr_core.lib; </AdditionalDependencies>
+      <AdditionalDependencies>Winmm.lib; swscale.lib; swresample.lib; avutil.lib; avformat.lib; avfilter.lib; avdevice.lib; avcodec.lib; OpenAL32.lib;./PathTrace/oidn/lib/OpenImageDenoise.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>../../../3rdparty/ffmpeg/lib;../../../3rdparty/OpenAL/libs/Win64/</AdditionalLibraryDirectories>

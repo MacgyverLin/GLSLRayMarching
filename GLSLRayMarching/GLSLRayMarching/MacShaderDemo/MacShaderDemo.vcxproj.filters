@@ -231,6 +231,15 @@
     <ClInclude Include="ShaderToyRenderer.h">
       <Filter>ShaderToy\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsDemoScene.h">
+      <Filter>PhysicsEngineDemoScene</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsDemoCameraComponent.h">
+      <Filter>PhysicsEngineDemoScene</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsDemoGraphicComponent.h">
+      <Filter>PhysicsEngineDemoScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PathTrace">
@@ -271,6 +280,9 @@
     </Filter>
     <Filter Include="ShaderToy\Renderer\Textures">
       <UniqueIdentifier>{ef8f8696-9af9-4b67-84e5-d85dfe38a943}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsEngineDemoScene">
+      <UniqueIdentifier>{3f56e96d-9931-4691-8f11-cf0c9f62929a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

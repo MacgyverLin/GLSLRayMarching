@@ -9,44 +9,6 @@
 #include "Platform.h"
 #include "Physics3D.h"
 
-/////////////////////////////////////////////////////////////////////
-Physics3D::Manager::Manager()
-{
-}
-
-Physics3D::Manager::~Manager()
-{
-}
-
-Physics3D::Manager& Physics3D::Manager::GetInstance()
-{
-	static Physics3D::Manager instance;
-
-	return instance;
-}
-
-bool Physics3D::Manager::Initialize()
-{
-	return true;
-}
-
-bool Physics3D::Manager::Update()
-{
-	return true;
-}
-
-bool Physics3D::Manager::Pause()
-{
-	return true;
-}
-
-void Physics3D::Manager::Resume()
-{
-}
-
-void Physics3D::Manager::Terminate()
-{
-}
 
 /////////////////////////////////////////////////////////////////////
 bool Physics3D::Service::Initialize()

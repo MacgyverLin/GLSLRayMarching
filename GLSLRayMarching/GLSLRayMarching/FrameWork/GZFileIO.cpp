@@ -27,7 +27,7 @@
 #include <errno.h>
 #endif
 
-#include <zlib.h>
+#include <zlib/zlib.h>
 
 #if 0
 #include <stdio.h>

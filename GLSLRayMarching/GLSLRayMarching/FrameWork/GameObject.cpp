@@ -325,16 +325,3 @@ void GameObject::OnStop()
 void GameObject::OnTerminate()
 {
 }
-
-
-///////////////////////////////////////////////////////////////////////
-RTTR_REGISTRATION
-{
-	rttr::registration::class_<GameObject>("GameObject")
-		.property("visible", &GameObject::get_visible, &GameObject::set_visible)
-		.property("color", &GameObject::color1)
-		.property("name", &GameObject::GetName, &GameObject::SetName)
-		.property("position", &GameObject::position)
-		.property("dictionary", &GameObject::dictionary);
-}
-

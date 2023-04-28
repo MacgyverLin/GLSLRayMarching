@@ -68,6 +68,9 @@
     <Filter Include="Source Files\FFT">
       <UniqueIdentifier>{dc8858a6-6a2d-43a4-b605-dcb63e7463c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\System\Services\Physics3D">
+      <UniqueIdentifier>{e917b070-f97b-43c4-ac0d-84e12877eac0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -184,9 +187,6 @@
     <ClCompile Include="Service.cpp">
       <Filter>Source Files\System\Services</Filter>
     </ClCompile>
-    <ClCompile Include="Physics3D.cpp">
-      <Filter>Source Files\System\Services</Filter>
-    </ClCompile>
     <ClCompile Include="Physics2D.cpp">
       <Filter>Source Files\System\Services</Filter>
     </ClCompile>
@@ -276,6 +276,9 @@
     </ClCompile>
     <ClCompile Include="webcam3rdparty.cpp">
       <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics3D.cpp">
+      <Filter>Source Files\System\Services\Physics3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -406,9 +409,6 @@
       <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="Service.h">
-      <Filter>Source Files\System\Services</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics3D.h">
       <Filter>Source Files\System\Services</Filter>
     </ClInclude>
     <ClInclude Include="Physics2D.h">
@@ -560,6 +560,9 @@
     </ClInclude>
     <ClInclude Include="fft_settings.h">
       <Filter>Source Files\FFT</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics3D.h">
+      <Filter>Source Files\System\Services\Physics3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
