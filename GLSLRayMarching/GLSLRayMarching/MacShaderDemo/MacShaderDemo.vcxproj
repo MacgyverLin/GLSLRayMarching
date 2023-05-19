@@ -110,7 +110,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/fbxsdk/include;../../../3rdparty/zlib/zlib;../FrameWork;../../../3rdparty/stb/include;../../../3rdparty/rapidjson/include;   ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -285,12 +285,17 @@
     <ClInclude Include="LPVLight.h" />
     <ClInclude Include="LPVMtlLoader.h" />
     <ClInclude Include="LPVObjLoader.h" />
+    <ClInclude Include="MarchingCubeMeshGenerator.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshFBXIO.h" />
+    <ClInclude Include="MeshProcessingScene.h" />
+    <ClInclude Include="MeshProcessor.h" />
     <ClInclude Include="MeshIO.h" />
     <ClInclude Include="MeshObjIO.h" />
+    <ClInclude Include="PolygonMeshGenerator.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="PrimitivesRenderer.h" />
+    <ClInclude Include="ProxyInfoGenerator.h" />
     <ClInclude Include="TestGraphicRenderer.h" />
     <ClInclude Include="PhysicsDemoCameraComponent.h" />
     <ClInclude Include="PhysicsDemoScene.h" />
@@ -318,6 +323,7 @@
     <ClInclude Include="SoundCloudTexture.h" />
     <ClInclude Include="TerrainCameraComponent.h" />
     <ClInclude Include="TetGenObjIO.h" />
+    <ClInclude Include="TetrahedronizedMeshGenerator.h" />
     <ClInclude Include="TetrahedronMesh.h" />
     <ClInclude Include="TetrahedronMeshObjIO.h" />
     <ClInclude Include="Triangle.h" />
@@ -327,6 +333,7 @@
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexMerger.h" />
     <ClInclude Include="VideoTexture.h" />
+    <ClInclude Include="VoxelizeMeshGenerator.h" />
     <ClInclude Include="WebcamTexture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

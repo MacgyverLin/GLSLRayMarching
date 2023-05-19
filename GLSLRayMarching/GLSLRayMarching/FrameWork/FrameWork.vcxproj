@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>__STDC_LIMIT_MACROS; __STDC_CONSTANT_MACROS; __STDC_FORMAT_MACROS; _CRT_SECURE_NO_WARNINGS; _DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../../../3rdparty/ffmpeg/include; ../../../3rdparty/OpenAL/include; ./PathTrace/oidn/include; ./PathTrace/RadeonRays; ./PathTrace/tests; ./PathTrace/math; ./PathTrace/loaders; ./PathTrace/core; ../../../3rdparty/rttr/build/src/rttr/..; ../../../3rdparty/rttr/src/rttr/..; ../../../3rdparty/rapidjson/include;  ../../../3rdparty/stb/include; ../../../3rdparty/zlib; ../../../3rdparty/zlib/build;  ../../../3rdparty/glad/include;../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -199,6 +199,7 @@
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="Maths.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Matrix3.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="OutputStream.cpp" />
     <ClCompile Include="PathTrace.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="IK2DCCDJoint.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Matrix3.h" />
     <ClInclude Include="PathTrace.h" />
     <ClInclude Include="ID.h" />
     <ClInclude Include="GZFileIO.h" />

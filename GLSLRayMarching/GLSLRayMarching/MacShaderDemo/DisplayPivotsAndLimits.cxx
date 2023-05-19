@@ -18,11 +18,11 @@ void DisplayPivotsAndLimits(FbxNode* pNode)
     //
     // Pivots
     //
-    Debug("    Pivot Information\n");
+    DisplayString("    Pivot Information\n");
 
     FbxNode::EPivotState lPivotState;
     pNode->GetPivotState(FbxNode::eSourcePivot, lPivotState);
-    Debug("        Pivot State: %s\n", lPivotState == FbxNode::ePivotActive ? "Active" : "Reference");
+    DisplayString("        Pivot State: %s\n", lPivotState == FbxNode::ePivotActive ? "Active" : "Reference");
 
     lTmpVector = pNode->GetPreRotation(FbxNode::eSourcePivot);
     Display3DVector("        Pre-Rotation: %f %f %f\n", lTmpVector);
@@ -49,7 +49,7 @@ void DisplayPivotsAndLimits(FbxNode* pNode)
     bool		lMaxXActive, lMaxYActive, lMaxZActive;
     FbxDouble3	lMinValues, lMaxValues;
 
-    Debug("    Limits Information\n");
+    DisplayString("    Limits Information\n");
 
 	lIsActive = pNode->TranslationActive;
 	lMinXActive = pNode->TranslationMinX;
@@ -61,21 +61,21 @@ void DisplayPivotsAndLimits(FbxNode* pNode)
 	lMinValues = pNode->TranslationMin;
 	lMaxValues = pNode->TranslationMax;
 
-    Debug("        Translation limits: %s\n", lIsActive ? "Active" : "Inactive");
-    Debug("            X\n");
-    Debug("                Min Limit: %s\n", lMinXActive ? "Active" : "Inactive");
+    DisplayString("        Translation limits: %s\n", lIsActive ? "Active" : "Inactive");
+    DisplayString("            X\n");
+    DisplayString("                Min Limit: %s\n", lMinXActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[0]);
-    Debug("                Max Limit: %s\n", lMaxXActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxXActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[0]);
-    Debug("            Y\n");
-    Debug("                Min Limit: %s\n", lMinYActive ? "Active" : "Inactive");
+    DisplayString("            Y\n");
+    DisplayString("                Min Limit: %s\n", lMinYActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[1]);
-    Debug("                Max Limit: %s\n", lMaxYActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxYActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[1]);
-    Debug("            Z\n");
-    Debug("                Min Limit: %s\n", lMinZActive ? "Active" : "Inactive");
+    DisplayString("            Z\n");
+    DisplayString("                Min Limit: %s\n", lMinZActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[2]);
-    Debug("                Max Limit: %s\n", lMaxZActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxZActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[2]);
 
 	lIsActive = pNode->RotationActive;
@@ -88,21 +88,21 @@ void DisplayPivotsAndLimits(FbxNode* pNode)
 	lMinValues = pNode->RotationMin;
 	lMaxValues = pNode->RotationMax;
 
-    Debug("        Rotation limits: %s\n", lIsActive ? "Active" : "Inactive");
-    Debug("            X\n");
-    Debug("                Min Limit: %s\n", lMinXActive ? "Active" : "Inactive");
+    DisplayString("        Rotation limits: %s\n", lIsActive ? "Active" : "Inactive");
+    DisplayString("            X\n");
+    DisplayString("                Min Limit: %s\n", lMinXActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[0]);
-    Debug("                Max Limit: %s\n", lMaxXActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxXActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[0]);
-    Debug("            Y\n");
-    Debug("                Min Limit: %s\n", lMinYActive ? "Active" : "Inactive");
+    DisplayString("            Y\n");
+    DisplayString("                Min Limit: %s\n", lMinYActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[1]);
-    Debug("                Max Limit: %s\n", lMaxYActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxYActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[1]);
-    Debug("            Z\n");
-    Debug("                Min Limit: %s\n", lMinZActive ? "Active" : "Inactive");
+    DisplayString("            Z\n");
+    DisplayString("                Min Limit: %s\n", lMinZActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[2]);
-    Debug("                Max Limit: %s\n", lMaxZActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxZActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[2]);
 
 	lIsActive = pNode->ScalingActive;
@@ -115,21 +115,21 @@ void DisplayPivotsAndLimits(FbxNode* pNode)
 	lMinValues = pNode->ScalingMin;
 	lMaxValues = pNode->ScalingMax;
 
-    Debug("        Scaling limits: %s\n", lIsActive ? "Active" : "Inactive");
-    Debug("            X\n");
-    Debug("                Min Limit: %s\n", lMinXActive ? "Active" : "Inactive");
+    DisplayString("        Scaling limits: %s\n", lIsActive ? "Active" : "Inactive");
+    DisplayString("            X\n");
+    DisplayString("                Min Limit: %s\n", lMinXActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[0]);
-    Debug("                Max Limit: %s\n", lMaxXActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxXActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[0]);
-    Debug("            Y\n");
-    Debug("                Min Limit: %s\n", lMinYActive ? "Active" : "Inactive");
+    DisplayString("            Y\n");
+    DisplayString("                Min Limit: %s\n", lMinYActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[1]);
-    Debug("                Max Limit: %s\n", lMaxYActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxYActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[1]);
-    Debug("            Z\n");
-    Debug("                Min Limit: %s\n", lMinZActive ? "Active" : "Inactive");
+    DisplayString("            Z\n");
+    DisplayString("                Min Limit: %s\n", lMinZActive ? "Active" : "Inactive");
     DisplayDouble("                Min Limit Value: %f\n", lMinValues[2]);
-    Debug("                Max Limit: %s\n", lMaxZActive ? "Active" : "Inactive");
+    DisplayString("                Max Limit: %s\n", lMaxZActive ? "Active" : "Inactive");
     DisplayDouble("                Max Limit Value: %f\n", lMaxValues[2]);
 }
 

@@ -891,8 +891,8 @@ public:
 		return TVector3
 		(
 			Math::UnitRandom(uiSeed_),
-			Math::UnitRandom(uiSeed_),
-			Math::UnitRandom(uiSeed_)
+			Math::UnitRandom(0),
+			Math::UnitRandom(0)
 		);
 	}
 
@@ -901,8 +901,8 @@ public:
 		return TVector3
 		(
 			Math::SymmetricRandom(uiSeed_),
-			Math::SymmetricRandom(uiSeed_),
-			Math::SymmetricRandom(uiSeed_)
+			Math::SymmetricRandom(0),
+			Math::SymmetricRandom(0)
 		);
 	}
 
@@ -911,8 +911,18 @@ public:
 		return TVector3
 		(
 			Math::IntervalRandom(min_.X(), max_.X(), uiSeed_),
-			Math::IntervalRandom(min_.Y(), max_.Y(), uiSeed_),
-			Math::IntervalRandom(min_.Z(), max_.Z(), uiSeed_)
+			Math::IntervalRandom(min_.Y(), max_.Y(), 0),
+			Math::IntervalRandom(min_.Z(), max_.Z(), 0)
+		);
+	}
+
+	static TVector3 RandomEpsilon(unsigned int uiSeed_ = 0)
+	{
+		return TVector3
+		(
+			Math::RandomEpsilon(uiSeed_),
+			Math::RandomEpsilon(0),
+			Math::RandomEpsilon(0)
 		);
 	}
 
@@ -932,6 +942,7 @@ public:
 	static const TVector3 UnitY;     // (0,1,0)
 	static const TVector3 UnitZ;     // (0,0,1)
 	static const TVector3 One;       // (1,1,1)
+	static const TVector3 MaxValue;  // (1,1,1)
 protected:
 private:
 	T m[3];

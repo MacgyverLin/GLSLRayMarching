@@ -44,7 +44,7 @@ void DisplayHierarchy(FbxNode* pNode, int pDepth)
     lString += pNode->GetName();
     lString += "\n";
 
-    Debug(lString.Buffer());
+    DisplayString(lString.Buffer());
 
     for(i = 0; i < pNode->GetChildCount(); i++)
     {

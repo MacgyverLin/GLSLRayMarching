@@ -15,14 +15,14 @@
 void DisplayGlobalLightSettings(FbxGlobalSettings* pGlobalSettings)
 {
     DisplayColor("Ambient Color: ", pGlobalSettings->GetAmbientColor());
-    Debug("");
+    DisplayString("");
 }
 
 
 void DisplayGlobalCameraSettings(FbxGlobalSettings* pGlobalSettings)
 {
-    Debug("Default Camera: ", pGlobalSettings->GetDefaultCamera());
-    Debug("");
+    DisplayString("Default Camera: ", pGlobalSettings->GetDefaultCamera());
+    DisplayString("");
 }
 
 
@@ -30,18 +30,18 @@ void DisplayGlobalTimeSettings(FbxGlobalSettings* pGlobalSettings)
 {
     char lTimeString[256];
 
-    Debug("Time Mode : ", FbxGetTimeModeName(pGlobalSettings->GetTimeMode()));
+    DisplayString("Time Mode : ", FbxGetTimeModeName(pGlobalSettings->GetTimeMode()));
 
     FbxTimeSpan lTs;
     FbxTime     lStart, lEnd;
     pGlobalSettings->GetTimelineDefaultTimeSpan(lTs);
     lStart = lTs.GetStart();
     lEnd   = lTs.GetStop();
-    Debug("Timeline default timespan: ");
-    Debug("     Start: ", lStart.GetTimeString(lTimeString, FbxUShort(256)));
-    Debug("     Stop : ", lEnd.GetTimeString(lTimeString, FbxUShort(256)));
+    DisplayString("Timeline default timespan: ");
+    DisplayString("     Start: ", lStart.GetTimeString(lTimeString, FbxUShort(256)));
+    DisplayString("     Stop : ", lEnd.GetTimeString(lTimeString, FbxUShort(256)));
 
-    Debug("");
+    DisplayString("");
 }
 
 

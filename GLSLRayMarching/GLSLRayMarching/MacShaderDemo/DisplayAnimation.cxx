@@ -36,7 +36,7 @@ void DisplayAnimation(FbxScene* pScene)
         FbxString lOutputString = "Animation Stack Name: ";
         lOutputString += lAnimStack->GetName();
         lOutputString += "\n";
-        Debug(lOutputString);
+        DisplayString(lOutputString);
 
         DisplayAnimation(lAnimStack, pScene->GetRootNode());
     }
@@ -72,7 +72,7 @@ void DisplayAnimation(FbxAnimStack* pAnimStack, FbxNode* pNode, bool isSwitcher)
 			lOutputString += "s";
 	}
 	lOutputString += "\n\n";
-    Debug(lOutputString);
+    DisplayString(lOutputString);
 
     for (l = 0; l < nbAnimLayers; l++)
     {
@@ -81,7 +81,7 @@ void DisplayAnimation(FbxAnimStack* pAnimStack, FbxNode* pNode, bool isSwitcher)
         lOutputString = "AnimLayer ";
         lOutputString += l;
         lOutputString += "\n";
-        Debug(lOutputString);
+        DisplayString(lOutputString);
 
         DisplayAnimation(lAnimLayer, pNode, isSwitcher);
     }
@@ -93,10 +93,10 @@ void DisplayAnimation(FbxAnimStack* pAnimStack, FbxNode* pNode, bool isSwitcher)
 		lOutputString = "AudioLayer ";
 		lOutputString += l;
 		lOutputString += "\n";
-        Debug(lOutputString);
+        DisplayString(lOutputString);
 
 		DisplayAnimation(lAudioLayer, isSwitcher);
-        Debug("\n");
+        DisplayString("\n");
 	}
 }
 
@@ -113,7 +113,7 @@ void DisplayAnimation(FbxAudioLayer* pAudioLayer, bool )
 	lOutputString += "     Nb Audio Clips: ";
 	lOutputString += lClipCount;
     lOutputString += "\n";
-    Debug(lOutputString);
+    DisplayString(lOutputString);
 
 	for (int i = 0; i < lClipCount; i++)
 	{
@@ -123,7 +123,7 @@ void DisplayAnimation(FbxAudioLayer* pAudioLayer, bool )
 		lOutputString += "]:\t";
 		lOutputString += lClip->GetName();
 		lOutputString += "\n";
-        Debug(lOutputString);
+        DisplayString(lOutputString);
 	}
 }
 
@@ -135,10 +135,10 @@ void DisplayAnimation(FbxAnimLayer* pAnimLayer, FbxNode* pNode, bool isSwitcher)
     lOutputString = "     Node Name: ";
     lOutputString += pNode->GetName();
     lOutputString += "\n\n";
-    Debug(lOutputString);
+    DisplayString(lOutputString);
 
     DisplayChannels(pNode, pAnimLayer, DisplayCurveKeys, DisplayListCurveKeys, isSwitcher);
-    Debug("\n");
+    DisplayString("\n");
 
     for(lModelCount = 0; lModelCount < pNode->GetChildCount(); lModelCount++)
     {
@@ -157,57 +157,57 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
         lAnimCurve = pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
         if (lAnimCurve)
         {
-            Debug("        TX\n");
+            DisplayString("        TX\n");
             DisplayCurve(lAnimCurve);
         }
         lAnimCurve = pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
         if (lAnimCurve)
         {
-            Debug("        TY\n");
+            DisplayString("        TY\n");
             DisplayCurve(lAnimCurve);
         }
         lAnimCurve = pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
         if (lAnimCurve)
         {
-            Debug("        TZ\n");
+            DisplayString("        TZ\n");
             DisplayCurve(lAnimCurve);
         }
 
         lAnimCurve = pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
         if (lAnimCurve)
         {
-            Debug("        RX\n");
+            DisplayString("        RX\n");
             DisplayCurve(lAnimCurve);
         }
         lAnimCurve = pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
         if (lAnimCurve)
         {
-            Debug("        RY\n");
+            DisplayString("        RY\n");
             DisplayCurve(lAnimCurve);
         }
         lAnimCurve = pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
         if (lAnimCurve)
         {
-            Debug("        RZ\n");
+            DisplayString("        RZ\n");
             DisplayCurve(lAnimCurve);
         }
 
         lAnimCurve = pNode->LclScaling.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
         if (lAnimCurve)
         {
-            Debug("        SX\n");
+            DisplayString("        SX\n");
             DisplayCurve(lAnimCurve);
         }    
         lAnimCurve = pNode->LclScaling.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
         if (lAnimCurve)
         {
-            Debug("        SY\n");
+            DisplayString("        SY\n");
             DisplayCurve(lAnimCurve);
         }
         lAnimCurve = pNode->LclScaling.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
         if (lAnimCurve)
         {
-            Debug("        SZ\n");
+            DisplayString("        SZ\n");
             DisplayCurve(lAnimCurve);
         }
     }
@@ -220,19 +220,19 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
         lAnimCurve = lNodeAttribute->Color.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COLOR_RED);
         if (lAnimCurve)
         {
-            Debug("        Red\n");
+            DisplayString("        Red\n");
             DisplayCurve(lAnimCurve);
         }
         lAnimCurve = lNodeAttribute->Color.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COLOR_GREEN);
         if (lAnimCurve)
         {
-            Debug("        Green\n");
+            DisplayString("        Green\n");
             DisplayCurve(lAnimCurve);
         }
         lAnimCurve = lNodeAttribute->Color.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COLOR_BLUE);
         if (lAnimCurve)
         {
-            Debug("        Blue\n");
+            DisplayString("        Blue\n");
             DisplayCurve(lAnimCurve);
         }
 
@@ -243,21 +243,21 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
             lAnimCurve = light->Intensity.GetCurve(pAnimLayer);
             if (lAnimCurve)
             {
-                Debug("        Intensity\n");
+                DisplayString("        Intensity\n");
                 DisplayCurve(lAnimCurve);
             }
 
             lAnimCurve = light->OuterAngle.GetCurve(pAnimLayer);
             if (lAnimCurve)
             {
-                Debug("        Outer Angle\n");
+                DisplayString("        Outer Angle\n");
                 DisplayCurve(lAnimCurve);
             }
 
             lAnimCurve = light->Fog.GetCurve(pAnimLayer);
             if (lAnimCurve)
             {
-                Debug("        Fog\n");
+                DisplayString("        Fog\n");
                 DisplayCurve(lAnimCurve);
             }
         }
@@ -269,42 +269,42 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
             lAnimCurve = camera->FieldOfView.GetCurve(pAnimLayer);
             if (lAnimCurve)
             {
-                Debug("        Field of View\n");
+                DisplayString("        Field of View\n");
                 DisplayCurve(lAnimCurve);
             }
 
             lAnimCurve = camera->FieldOfViewX.GetCurve(pAnimLayer);
             if (lAnimCurve)
             {
-                Debug("        Field of View X\n");
+                DisplayString("        Field of View X\n");
                 DisplayCurve(lAnimCurve);
             }
 
             lAnimCurve = camera->FieldOfViewY.GetCurve(pAnimLayer);
             if (lAnimCurve)
             {
-                Debug("        Field of View Y\n");
+                DisplayString("        Field of View Y\n");
                 DisplayCurve(lAnimCurve);
             }
 
             lAnimCurve = camera->OpticalCenterX.GetCurve(pAnimLayer);
             if (lAnimCurve)
             {
-                Debug("        Optical Center X\n");
+                DisplayString("        Optical Center X\n");
                 DisplayCurve(lAnimCurve);
             }
 
             lAnimCurve = camera->OpticalCenterY.GetCurve(pAnimLayer);
             if(lAnimCurve)
             {
-                Debug("        Optical Center Y\n");
+                DisplayString("        Optical Center Y\n");
                 DisplayCurve(lAnimCurve);
             }
 
             lAnimCurve = camera->Roll.GetCurve(pAnimLayer);
             if(lAnimCurve)
             {
-                Debug("        Roll\n");
+                DisplayString("        Roll\n");
                 DisplayCurve(lAnimCurve);
             }
         }
@@ -330,7 +330,7 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
 					lAnimCurve = lGeometry->GetShapeChannel(lBlendShapeIndex, lChannelIndex, pAnimLayer, true);
 					if(lAnimCurve)
 					{
-						Debug("        Shape %s\n", lChannelName);
+						DisplayString("        Shape %s\n", lChannelName);
 						DisplayCurve(lAnimCurve);
 					}
 				}
@@ -366,7 +366,7 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
                     lMessage += ")";
                 };
 
-                Debug(lMessage.Buffer());
+                DisplayString(lMessage.Buffer());
 
                 for( int c = 0; c < lCurveNode->GetCurveCount(0U); c++ )
                 {
@@ -390,14 +390,14 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
                     lMessage += lProperty.GetLabel();
                     lMessage += ")";
                 }
-                Debug(lMessage.Buffer());
+                DisplayString(lMessage.Buffer());
 
                 for( int c = 0; c < lCurveNode->GetCurveCount(0U); c++ )
                 {
                     lAnimCurve = lCurveNode->GetCurve(0U, c);
                     if (lAnimCurve)
                     {
-                        Debug("        Component ", lComponentName1);
+                        DisplayString("        Component ", lComponentName1);
                         DisplayCurve(lAnimCurve);
                     }
                 }
@@ -407,7 +407,7 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
                     lAnimCurve = lCurveNode->GetCurve(1U, c);
                     if (lAnimCurve)
                     {
-                        Debug("        Component ", lComponentName2);
+                        DisplayString("        Component ", lComponentName2);
                         DisplayCurve(lAnimCurve);
                     }
                 }
@@ -417,7 +417,7 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
                     lAnimCurve = lCurveNode->GetCurve(2U, c);
                     if (lAnimCurve)
                     {
-                        Debug("        Component ", lComponentName3);
+                        DisplayString("        Component ", lComponentName3);
                         DisplayCurve(lAnimCurve);
                     }
                 }
@@ -434,7 +434,7 @@ void DisplayChannels(FbxNode* pNode, FbxAnimLayer* pAnimLayer, void (*DisplayCur
                     lMessage += lProperty.GetLabel();
                     lMessage += ")";
                 };
-                Debug(lMessage.Buffer());
+                DisplayString(lMessage.Buffer());
 
                 for( int c = 0; c < lCurveNode->GetCurveCount(0U); c++ )
                 {
@@ -535,7 +535,7 @@ void DisplayCurveKeys(FbxAnimCurve* pCurve)
         }
         lOutputString += " ]";
         lOutputString += "\n";
-        Debug (lOutputString);
+        DisplayString(lOutputString);
     }
 }
 

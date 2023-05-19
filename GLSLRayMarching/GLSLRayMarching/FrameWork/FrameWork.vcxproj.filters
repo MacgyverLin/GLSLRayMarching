@@ -280,6 +280,9 @@
     <ClCompile Include="Physics3D.cpp">
       <Filter>Source Files\System\Services\Physics3D</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix3.cpp">
+      <Filter>Source Files\Maths</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imgui.h">
@@ -563,6 +566,9 @@
     </ClInclude>
     <ClInclude Include="Physics3D.h">
       <Filter>Source Files\System\Services\Physics3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3.h">
+      <Filter>Source Files\Maths</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

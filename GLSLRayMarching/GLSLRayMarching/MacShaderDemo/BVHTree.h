@@ -2,7 +2,7 @@
 #define _BVHTree_h_
 
 #include "Triangle.h"
-#include "AABB.h"
+#include "AABB3.h"
 #include "HitRecord.h"
 #include "Intersect.h"
 #include "Mesh.h"
@@ -14,7 +14,7 @@ public:
 	Triangle triangle;
 	BVHTree* leftChild;
 	BVHTree* rightChild;
-	AABB aabb;
+	AABB3 aabb;
 public:
 	BVHTree(int id, const std::vector<Triangle>& triangles)
 	{

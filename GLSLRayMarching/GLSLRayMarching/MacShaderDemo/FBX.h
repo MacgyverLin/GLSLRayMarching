@@ -8,8 +8,8 @@
    this software in either electronic or hard copy form.
 
 ****************************************************************************************/
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef _FBX_H_
+#define _FBX_H_
 
 #include "Platform.h"
 #include <fbxsdk.h>

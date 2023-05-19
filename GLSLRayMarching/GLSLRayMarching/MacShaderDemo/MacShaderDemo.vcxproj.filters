@@ -447,6 +447,27 @@
     <ClInclude Include="Primitive.h">
       <Filter>PhysicsEngineDemoScene\Renderers</Filter>
     </ClInclude>
+    <ClInclude Include="ProxyInfoGenerator.h">
+      <Filter>PhysicsEngineDemoScene\MeshGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="TetrahedronizedMeshGenerator.h">
+      <Filter>PhysicsEngineDemoScene\MeshGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshProcessor.h">
+      <Filter>PhysicsEngineDemoScene\MeshGenerators\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="MarchingCubeMeshGenerator.h">
+      <Filter>PhysicsEngineDemoScene\MeshGenerators\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="VoxelizeMeshGenerator.h">
+      <Filter>PhysicsEngineDemoScene\MeshGenerators\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="PolygonMeshGenerator.h">
+      <Filter>PhysicsEngineDemoScene\MeshGenerators\Split</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshProcessingScene.h">
+      <Filter>PhysicsEngineDemoScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PathTrace">
@@ -508,6 +529,18 @@
     </Filter>
     <Filter Include="PhysicsEngineDemoScene\Renderers">
       <UniqueIdentifier>{cc80733d-a97b-435e-aa66-9264f99a4efe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsEngineDemoScene\MeshGenerators">
+      <UniqueIdentifier>{1241dee6-2d81-4677-a8ec-b00d9ba72f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsEngineDemoScene\MeshGenerators\Base">
+      <UniqueIdentifier>{dac59a5a-ce79-4e06-a12c-638cc2c404a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsEngineDemoScene\MeshGenerators\Test">
+      <UniqueIdentifier>{9050e28e-1664-4421-b50d-94bcfbeec6d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsEngineDemoScene\MeshGenerators\Split">
+      <UniqueIdentifier>{07d13b3e-8388-4d44-830c-728512f206a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

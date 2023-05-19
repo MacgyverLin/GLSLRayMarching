@@ -2607,6 +2607,7 @@ const char* Format(const char* format, ...)
 
 void Verbose(const char* format, ...)
 {
+	return;
 	char buffer[FORMAT_BUFFER_SIZE];
 
 	va_list aptr;

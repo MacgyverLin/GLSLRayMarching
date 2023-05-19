@@ -38,10 +38,10 @@ void DisplayUserProperties(FbxObject* pObject)
         {
             DisplayInt("        Property ", i);
             FbxString lString = lProperty.GetLabel();
-            Debug("            Display Name: ", lString.Buffer());
+            DisplayString("            Display Name: ", lString.Buffer());
             lString = lProperty.GetName();
-            Debug("            Internal Name: ", lString.Buffer());
-            Debug("            Type: ", lProperty.GetPropertyDataType().GetName());
+            DisplayString("            Internal Name: ", lString.Buffer());
+            DisplayString("            Type: ", lProperty.GetPropertyDataType().GetName());
             if (lProperty.HasMinLimit()) DisplayDouble("            Min Limit: ", lProperty.GetMinLimit());
             if (lProperty.HasMaxLimit()) DisplayDouble("            Max Limit: ", lProperty.GetMaxLimit());
             DisplayBool  ("            Is Animatable: ", lProperty.GetFlag(FbxPropertyFlags::eAnimatable));
@@ -66,7 +66,7 @@ void DisplayUserProperties(FbxObject* pObject)
 
                 lDefault = lProperty.Get<FbxColor>();
                 FBXSDK_sprintf(lBuf, 64, "R=%f, G=%f, B=%f, A=%f", lDefault.mRed, lDefault.mGreen, lDefault.mBlue, lDefault.mAlpha);
-                Debug("            Default Value: ", lBuf);
+                DisplayString("            Default Value: ", lBuf);
             }
 			// INTEGER
 			else if (lPropertyDataType.GetType() == eFbxInt)
@@ -81,7 +81,7 @@ void DisplayUserProperties(FbxObject* pObject)
 
                 lDefault = lProperty.Get<FbxDouble3>();
                 FBXSDK_sprintf(lBuf, 64, "X=%f, Y=%f, Z=%f", lDefault[0], lDefault[1], lDefault[2]);
-                Debug("            Default Value: ", lBuf);
+                DisplayString("            Default Value: ", lBuf);
             }
 			// LIST
 			else if (lPropertyDataType.GetType() == eFbxEnum)
@@ -91,7 +91,7 @@ void DisplayUserProperties(FbxObject* pObject)
 			// UNIDENTIFIED
             else
 			{
-                Debug("            Default Value: UNIDENTIFIED");
+                DisplayString("            Default Value: UNIDENTIFIED");
             }
             i++;
         }

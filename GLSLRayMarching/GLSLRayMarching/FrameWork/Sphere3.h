@@ -13,6 +13,7 @@
 #include "Maths.h"
 #include "InputStream.h"
 #include "OutputStream.h"
+#include "Vector3.h"
 
 	class Sphere3
 	{
@@ -23,14 +24,17 @@
 
 		void Read(InputStream& is)
 		{
+			is >> center;
 			is >> radius;
 		}
 
 		void Write(OutputStream& os) const
 		{
+			os << center;
 			os << radius;
 		}
 
+		Vector3 center;
 		float radius;
 	};
 

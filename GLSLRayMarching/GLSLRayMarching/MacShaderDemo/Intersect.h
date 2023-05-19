@@ -1,9 +1,9 @@
 #ifndef _Intersection_h_
 #define _Intersection_h_
 
-#include "Sphere.h"
+#include "Sphere3.h"
 #include "Vector3.h"
-#include "AABB.h"
+#include "AABB3.h"
 #include "Triangle.h"
 #include "HitRecord.h"
 #include "Ray3.h"
@@ -11,14 +11,14 @@
 class Intersect
 {
 public:
-	static bool Test(const Sphere& sphere0, const Sphere& sphere1)
+	static bool Test(const Sphere3& sphere0, const Sphere3& sphere1)
 	{
 		float distance = (sphere0.center - sphere1.center).Length();
 
 		return distance <= (sphere0.radius + sphere1.radius);
 	}
 
-	static bool Test(const Sphere& sphere, const AABB& aabb)
+	static bool Test(const Sphere3& sphere, const AABB3& aabb)
 	{
 		auto check = [&](
 			const float pn,
@@ -46,36 +46,36 @@ public:
 		// Squared distance
 		float sq = 0.0f;
 
-		sq += check(sphere.center[0], aabb.min[0], aabb.max[0]);
-		sq += check(sphere.center[1], aabb.min[1], aabb.max[1]);
-		sq += check(sphere.center[2], aabb.min[2], aabb.max[2]);
+		sq += check(sphere.center[0], aabb.Min()[0], aabb.Max()[0]);
+		sq += check(sphere.center[1], aabb.Min()[1], aabb.Max()[1]);
+		sq += check(sphere.center[2], aabb.Min()[2], aabb.Max()[2]);
 
 		double squaredDistance = sq;
 
 		return squaredDistance <= (sphere.radius * sphere.radius);
 	}
 
-	static bool Test(const Vector3& p, const AABB& aabb)
+	static bool Test(const Vector3& p, const AABB3& aabb)
 	{
-		return  aabb.min.X() <= p.X() && p.X() < aabb.max.X() &&
-			aabb.min.Y() <= p.Y() && p.Y() < aabb.max.Y() &&
-			aabb.min.Z() <= p.Z() && p.Z() < aabb.max.Z();
+		return  aabb.Min().X() <= p.X() && p.X() < aabb.Max().X() &&
+				aabb.Min().Y() <= p.Y() && p.Y() < aabb.Max().Y() &&
+				aabb.Min().Z() <= p.Z() && p.Z() < aabb.Max().Z();
 	}
 
-	static bool Test(const AABB& aabb0, const AABB& aabb1)
+	static bool Test(const AABB3& aabb0, const AABB3& aabb1)
 	{
-		Vector3 halfExtent0 = aabb0.max - aabb0.min;
-		Vector3 halfExtent1 = aabb1.max - aabb1.min;
+		Vector3 halfExtent0 = aabb0.Max() - aabb0.Min();
+		Vector3 halfExtent1 = aabb1.Max() - aabb1.Min();
 
-		if (Math::FAbs(aabb0.min[0] - aabb1.min[0]) > (halfExtent0[0] + halfExtent1[0])) return false;
-		if (Math::FAbs(aabb0.min[1] - aabb1.min[1]) > (halfExtent0[1] + halfExtent1[1])) return false;
-		if (Math::FAbs(aabb0.min[2] - aabb1.min[2]) > (halfExtent0[2] + halfExtent1[2])) return false;
+		if (Math::FAbs(aabb0.Min()[0] - aabb1.Min()[0]) > (halfExtent0[0] + halfExtent1[0])) return false;
+		if (Math::FAbs(aabb0.Min()[1] - aabb1.Min()[1]) > (halfExtent0[1] + halfExtent1[1])) return false;
+		if (Math::FAbs(aabb0.Min()[2] - aabb1.Min()[2]) > (halfExtent0[2] + halfExtent1[2])) return false;
 
 		// We have an overlap
 		return true;
 	}
 
-	static bool Test(const AABB& aabb, const Triangle& triangle)
+	static bool Test(const AABB3& aabb, const Triangle& triangle)
 	{
 		if (!Test(aabb, triangle.aabb))
 			return false;
@@ -93,21 +93,21 @@ public:
 
 		const Vector3 boxVertices[8] =
 		{
-			Vector3(aabb.min.X(), aabb.min.Y(), aabb.min.Z()),
-			Vector3(aabb.min.X(), aabb.min.Y(), aabb.max.Z()),
-			Vector3(aabb.min.X(), aabb.max.Y(), aabb.min.Z()),
-			Vector3(aabb.min.X(), aabb.max.Y(), aabb.max.Z()),
+			Vector3(aabb.Min().X(), aabb.Min().Y(), aabb.Min().Z()),
+			Vector3(aabb.Min().X(), aabb.Min().Y(), aabb.Max().Z()),
+			Vector3(aabb.Min().X(), aabb.Max().Y(), aabb.Min().Z()),
+			Vector3(aabb.Min().X(), aabb.Max().Y(), aabb.Max().Z()),
 
-			Vector3(aabb.max.X(), aabb.min.Y(), aabb.min.Z()),
-			Vector3(aabb.max.X(), aabb.min.Y(), aabb.max.Z()),
-			Vector3(aabb.max.X(), aabb.max.Y(), aabb.min.Z()),
-			Vector3(aabb.max.X(), aabb.max.Y(), aabb.max.Z())
+			Vector3(aabb.Max().X(), aabb.Min().Y(), aabb.Min().Z()),
+			Vector3(aabb.Max().X(), aabb.Min().Y(), aabb.Max().Z()),
+			Vector3(aabb.Max().X(), aabb.Max().Y(), aabb.Min().Z()),
+			Vector3(aabb.Max().X(), aabb.Max().Y(), aabb.Max().Z())
 		};
 
 		for (int i = 0; i < 3; i++)
 		{
 			Project(triangle.vertex, 3, boxNormals[i], triangleMin, triangleMax);
-			if (triangleMax < aabb.min[i] || triangleMin > aabb.max[i])
+			if (triangleMax < aabb.Min()[i] || triangleMin > aabb.Max()[i])
 			{
 				return false; // No intersection possible.
 			}
@@ -165,14 +165,14 @@ public:
 		}
 	}
 
-	static HitRecord RayCast(const AABB& aabb, const Ray3& ray)
+	static HitRecord RayCast(const AABB3& aabb, const Ray3& ray)
 	{
 		HitRecord result;
 
 		Vector3 dir = ray.direction;// +Vector3::RandomEpsilon();
 
-		Vector3 tMin = (aabb.min - ray.origin) / dir;
-		Vector3 tMax = (aabb.max - ray.origin) / dir;
+		Vector3 tMin = (aabb.Min() - ray.origin) / dir;
+		Vector3 tMax = (aabb.Max() - ray.origin) / dir;
 
 		Vector3 t1 = Vector3::Min(tMin, tMax);
 		Vector3 t2 = Vector3::Max(tMin, tMax);

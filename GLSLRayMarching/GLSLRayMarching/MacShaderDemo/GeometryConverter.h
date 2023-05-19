@@ -1,7 +1,7 @@
 #ifndef _GeometryConverter_h_
 #define _GeometryConverter_h_
 
-#include "AABB.h"
+#include "AABB3.h"
 #include "Vector3.h"
 #include "Vertex.h"
 
@@ -60,24 +60,24 @@ public:
 		}
 	}
 
-	static void Convert(AABB& aabb, const Vector3& v0, const Vector3& v1, const Vector3& v2)
+	static void Convert(AABB3& aabb, const Vector3& v0, const Vector3& v1, const Vector3& v2)
 	{
-		aabb = AABB(Vector3::Min(Vector3::Min(v0, v1), v2), Vector3::Max(Vector3::Max(v0, v1), v2));
+		aabb = AABB3(Vector3::Min(Vector3::Min(v0, v1), v2), Vector3::Max(Vector3::Max(v0, v1), v2));
 	}
 
-	static void Convert(AABB& aabb, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3)
+	static void Convert(AABB3& aabb, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3)
 	{
-		aabb = AABB(Vector3::Min(Vector3::Min(Vector3::Min(v0, v1), v2), v3), Vector3::Max(Vector3::Max(Vector3::Max(v0, v1), v2), v3));
+		aabb = AABB3(Vector3::Min(Vector3::Min(Vector3::Min(v0, v1), v2), v3), Vector3::Max(Vector3::Max(Vector3::Max(v0, v1), v2), v3));
 	}
 
-	static void Convert(AABB& aabb, const std::vector<Vector3>& p)
+	static void Convert(AABB3& aabb, const std::vector<Vector3>& p)
 	{
-		aabb.min = Vector3(Math::MaxValue, Math::MaxValue, Math::MaxValue);
-		aabb.max = -aabb.min;
+		aabb.Min() = Vector3(Math::MaxValue, Math::MaxValue, Math::MaxValue);
+		aabb.Max() = -aabb.Min();
 		for (int i = 0; i < p.size(); i++)
 		{
-			aabb.min = Vector3::Min(aabb.min, p[i]);
-			aabb.max = Vector3::Max(aabb.max, p[i]);
+			aabb.Min() = Vector3::Min(aabb.Min(), p[i]);
+			aabb.Max() = Vector3::Max(aabb.Max(), p[i]);
 		}
 	}
 

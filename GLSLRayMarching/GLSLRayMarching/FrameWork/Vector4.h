@@ -357,6 +357,7 @@ public:
 	static const TVector4 UnitZ;     // (0,0,1,0)
 	static const TVector4 UnitW;     // (0,0,0,1)
 	static const TVector4 One;       // (1,1,1,1)
+	static const TVector4 MaxValue;  // (1,1,1,1)
 protected:
 private:
 

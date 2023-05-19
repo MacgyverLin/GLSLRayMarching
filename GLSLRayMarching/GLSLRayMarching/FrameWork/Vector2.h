@@ -601,6 +601,7 @@ public:
 	static const TVector2 UnitX;     // (1,0)
 	static const TVector2 UnitY;     // (0,1)
 	static const TVector2 One;       // (1,1)
+	static const TVector2 MaxValue;  // (1,1)
 protected:
 private:
 	T m[2];

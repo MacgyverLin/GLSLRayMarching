@@ -44,11 +44,11 @@ void DisplayGenericInfo(FbxNode* pNode, int pDepth)
     lString += pNode->GetName();
     lString += "\n";
 
-    Debug(lString.Buffer());
+    DisplayString(lString.Buffer());
 
     //Display generic info about that Node
     DisplayProperties(pNode);
-    Debug("");
+    DisplayString("");
     for(i = 0; i < pNode->GetChildCount(); i++)
     {
         DisplayGenericInfo(pNode->GetChild(i), pDepth + 1);
@@ -58,7 +58,7 @@ void DisplayGenericInfo(FbxNode* pNode, int pDepth)
 void DisplayProperties(FbxObject* pObject)
 {
 
-    Debug("Name: ", (char *)pObject->GetName());
+    DisplayString("Name: ", (char *)pObject->GetName());
 
     // Display all the properties
     int i,  lCount = 0;
@@ -85,11 +85,11 @@ void DisplayProperties(FbxObject* pObject)
         FbxString lString;
         DisplayInt("        Property ", i);
         lString = lProperty.GetLabel();
-        Debug("            Display Name: ", lString.Buffer());
+        DisplayString("            Display Name: ", lString.Buffer());
         lString = lProperty.GetName();
-        Debug("            Internal Name: ", lString.Buffer());
+        DisplayString("            Internal Name: ", lString.Buffer());
         lString = lProperty.GetPropertyDataType().GetName();
-        Debug("            Type: ",lString.Buffer());
+        DisplayString("            Type: ",lString.Buffer());
         if (lProperty.HasMinLimit()) DisplayDouble("            Min Limit: ", lProperty.GetMinLimit());
         if (lProperty.HasMaxLimit()) DisplayDouble("            Max Limit: ", lProperty.GetMaxLimit());
         DisplayBool  ("            Is Animatable: ", lProperty.GetFlag(FbxPropertyFlags::eAnimatable));
@@ -112,7 +112,7 @@ void DisplayProperties(FbxObject* pObject)
 
                 lDefault = lProperty.Get<FbxColor>();
                 FBXSDK_sprintf(lBuf, 64, "R=%f, G=%f, B=%f, A=%f", lDefault.mRed, lDefault.mGreen, lDefault.mBlue, lDefault.mAlpha);
-                Debug("            Default Value: ", lBuf);
+                DisplayString("            Default Value: ", lBuf);
             }
             break;
 
@@ -127,7 +127,7 @@ void DisplayProperties(FbxObject* pObject)
 
                 lDefault = lProperty.Get<FbxDouble3>();
                 FBXSDK_sprintf(lBuf, 64, "X=%f, Y=%f, Z=%f", lDefault[0], lDefault[1], lDefault[2]);
-                Debug("            Default Value: ", lBuf);
+                DisplayString("            Default Value: ", lBuf);
             }
             break;
 
@@ -140,11 +140,11 @@ void DisplayProperties(FbxObject* pObject)
             break;
         case eFbxString:
             lString = lProperty.Get<FbxString>();
-            Debug("            Default Value: ", lString.Buffer());
+            DisplayString("            Default Value: ", lString.Buffer());
             break;
 
         default:
-            Debug("            Default Value: UNIDENTIFIED");
+            DisplayString("            Default Value: UNIDENTIFIED");
             break;
         }
         i++;

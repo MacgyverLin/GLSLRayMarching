@@ -34,6 +34,7 @@ Service<Audio> AudioService("Audio");
 #include "LightFieldRendererScene.h"
 #include "LightPropagationVolumesScene.h"
 #include "PhysicsDemoScene.h"
+#include "MeshProcessingScene.h"
 
 Scene::Creator<DefaultScene> DefaultSceneCreator("Default");
 Scene::Creator<ShaderToyScene> MacScene1Creator("ShaderToy");
@@ -45,6 +46,7 @@ Scene::Creator<GeoMorphTerrainScene> GeoMorphTerrainSceneCreator("GeoMorphTerrai
 Scene::Creator<LightFieldRendererScene> LightFieldRendererSceneCreator("LightFieldRenderer");
 Scene::Creator<LightPropagationVolumesScene> LightPropagationVolumesSceneCreator("LightPropagationVolumes");
 Scene::Creator<PhysicsDemoScene> PhysicsDemoSceneCreator("PhysicsDemo");
+Scene::Creator<MeshProcessingScene> MeshProcessingSceneCreator("MeshProcessing");
 
 class MacShaderDemoApp : public FrameWork
 {
@@ -81,8 +83,11 @@ int main(int argc, char** argv)
 {
 	// ¿Óù˝DO SOMETHING
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
-	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "PhysicsDemo", "PhysicsDemo"))
-		return -1;
+	//if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "PhysicsDemo", "PhysicsDemo"))
+		//return -1;
+	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MeshProcessing", "MeshProcessing"))
+		return -1; 
+	
 
 	macShaderDemoApp.Start();
 

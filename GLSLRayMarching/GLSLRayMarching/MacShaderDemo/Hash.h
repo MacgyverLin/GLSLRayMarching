@@ -90,15 +90,15 @@ public:
 		}
 	}
 
-	void Query(const AABB& aabb)
+	void Query(const AABB3& aabb)
 	{
-		int x0 = IntCoord(aabb.min.X());
-		int y0 = IntCoord(aabb.min.Y());
-		int z0 = IntCoord(aabb.min.Z());
+		int x0 = IntCoord(aabb.Min().X());
+		int y0 = IntCoord(aabb.Min().Y());
+		int z0 = IntCoord(aabb.Min().Z());
 
-		int x1 = IntCoord(aabb.max.X());
-		int y1 = IntCoord(aabb.max.Y());
-		int z1 = IntCoord(aabb.max.Z());
+		int x1 = IntCoord(aabb.Max().X());
+		int y1 = IntCoord(aabb.Max().Y());
+		int z1 = IntCoord(aabb.Max().Z());
 
 		Query(x0, y0, z0, x1, y1, z1);
 	}

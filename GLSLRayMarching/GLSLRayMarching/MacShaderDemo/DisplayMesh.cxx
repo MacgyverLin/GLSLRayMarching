@@ -38,7 +38,7 @@ void DisplayMesh(FbxNode* pNode)
 {
     FbxMesh* lMesh = (FbxMesh*) pNode->GetNodeAttribute ();
 
-    Debug("Mesh Name: ", (char *) pNode->GetName());
+    DisplayString("Mesh Name: ", (char *) pNode->GetName());
     DisplayMetaDataConnections(lMesh);
     DisplayControlsPoints(lMesh);
     DisplayPolygons(lMesh);
@@ -57,7 +57,7 @@ void DisplayControlsPoints(FbxMesh* pMesh)
 	int i, lControlPointsCount = pMesh->GetControlPointsCount();
 	FbxVector4* lControlPoints = pMesh->GetControlPoints();
 
-	Debug("    Control Points");
+	DisplayString("    Control Points");
 
 	for (i = 0; i < lControlPointsCount; i++)
 	{
@@ -77,7 +77,7 @@ void DisplayControlsPoints(FbxMesh* pMesh)
 		}
 	}
 
-	Debug("");
+	DisplayString("");
 }
 
 
@@ -87,7 +87,7 @@ void DisplayPolygons(FbxMesh* pMesh)
     FbxVector4* lControlPoints = pMesh->GetControlPoints(); 
     char header[100];
 
-    Debug("    Polygons");
+    DisplayString("    Polygons");
 
     int vertexId = 0;
     for (i = 0; i < lPolygonCount; i++)
@@ -110,7 +110,7 @@ void DisplayPolygons(FbxMesh* pMesh)
 				}
 			default:
 				// any other mapping modes don't make sense
-				Debug("        \"unsupported group assignment\"");
+				DisplayString("        \"unsupported group assignment\"");
 				break;
 			}
         }
@@ -122,7 +122,7 @@ void DisplayPolygons(FbxMesh* pMesh)
 			int lControlPointIndex = pMesh->GetPolygonVertex(i, j);
 			if (lControlPointIndex < 0)
 			{
-				Debug("            Coordinates: Invalid index found!");
+				DisplayString("            Coordinates: Invalid index found!");
 				continue;
 			}
 			else
@@ -304,7 +304,7 @@ void DisplayPolygons(FbxMesh* pMesh)
 	{
 		FbxGeometryElementVisibility* leVisibility=pMesh->GetElementVisibility(l);
 
-		Debug("    Edge Visibility : ");
+		DisplayString("    Edge Visibility : ");
 		switch(leVisibility->GetMappingMode())
 		{
 		default:
@@ -321,7 +321,7 @@ void DisplayPolygons(FbxMesh* pMesh)
 			break;
 		}
 	}
-    Debug("");
+    DisplayString("");
 }
 
 void DisplayTextureNames( FbxProperty &pProperty, FbxString& pConnectionString )
@@ -457,7 +457,7 @@ void DisplayMaterialTextureConnections( FbxSurfaceMaterial* pMaterial, char * he
 		lConnectionString = lConnectionString + "...";
 	}
 	FBXSDK_sprintf(header, MAT_HEADER_LENGTH, lConnectionString.Buffer(), pMatId, l);
-	Debug(header);
+	DisplayString(header);
 }
 
 void DisplayMaterialConnections(FbxMesh* pMesh)
@@ -466,7 +466,7 @@ void DisplayMaterialConnections(FbxMesh* pMesh)
 
     char header[MAT_HEADER_LENGTH];
 
-    Debug("    Polygons Material Connections");
+    DisplayString("    Polygons Material Connections");
 
     //check whether the material maps with only one mesh
     bool lIsAllSame = true;
@@ -502,7 +502,7 @@ void DisplayMaterialConnections(FbxMesh* pMesh)
 
 		//no material
 		if(l == 0)
-			Debug("        no material applied");
+			DisplayString("        no material applied");
     }
 
     //For eByPolygon mapping type, just out the material and texture mapping info once
@@ -551,11 +551,11 @@ void DisplayMaterialMapping(FbxMesh* pMesh)
         {
             char header[100];
 			FBXSDK_sprintf(header, 100, "    Material Element %d: ", l);
-            Debug(header);
+            DisplayString(header);
 
 
-            Debug("           Mapping: ", lMappingTypes[leMat->GetMappingMode()]);
-            Debug("           ReferenceMode: ", lReferenceMode[leMat->GetReferenceMode()]);
+            DisplayString("           Mapping: ", lMappingTypes[leMat->GetMappingMode()]);
+            DisplayString("           ReferenceMode: ", lReferenceMode[leMat->GetReferenceMode()]);
 
             int lMaterialCount = 0;
             FbxString lString;
@@ -586,10 +586,10 @@ void DisplayMaterialMapping(FbxMesh* pMesh)
 
                 lString += "\n";
 
-				Debug(lString);
+				DisplayString(lString);
             }
         }
     }
 
-    Debug("");
+    DisplayString("");
 }

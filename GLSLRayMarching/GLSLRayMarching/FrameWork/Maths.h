@@ -29,6 +29,7 @@ public:
 	static float Ceil(float value);
 	static float Floor(float value);
 
+	static int Abs(int value);
 	static float FAbs(float value);
 	static float FMod(float x, float y);
 
@@ -50,6 +51,7 @@ public:
 	static float UnitRandom(unsigned int uiSeed = 0);
 	static float SymmetricRandom(unsigned int uiSeed = 0);
 	static float IntervalRandom(float min, float max, unsigned int uiSeed = 0);
+	static float RandomEpsilon(unsigned int uiSeed = 0);	
 
 	static unsigned int CeilPower2(unsigned int x);
 	static bool isPowerOf2(unsigned int v);

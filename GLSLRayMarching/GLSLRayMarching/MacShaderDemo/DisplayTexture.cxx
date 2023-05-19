@@ -15,15 +15,15 @@ void DisplayTextureInfo(FbxTexture* pTexture, int pBlendMode)
 	FbxFileTexture *lFileTexture = FbxCast<FbxFileTexture>(pTexture);
 	FbxProceduralTexture *lProceduralTexture = FbxCast<FbxProceduralTexture>(pTexture);
 
-    Debug("            Name: \"", (char *) pTexture->GetName(), "\"");
+    DisplayString("            Name: \"", (char *) pTexture->GetName(), "\"");
 	if (lFileTexture)
 	{
-		Debug("            Type: File Texture");
-		Debug("            File Name: \"", (char *) lFileTexture->GetFileName(), "\"");
+		DisplayString("            Type: File Texture");
+		DisplayString("            File Name: \"", (char *) lFileTexture->GetFileName(), "\"");
 	}
 	else if (lProceduralTexture)
 	{
-		Debug("            Type: Procedural Texture");
+		DisplayString("            Type: Procedural Texture");
 	}
     DisplayDouble("            Scale U: ", pTexture->GetScaleU());
     DisplayDouble("            Scale V: ", pTexture->GetScaleV());
@@ -36,7 +36,7 @@ void DisplayTextureInfo(FbxTexture* pTexture, int pBlendMode)
 
     const char* lAlphaSources[] = { "None", "RGB Intensity", "Black" };
 
-    Debug("            Alpha Source: ", lAlphaSources[pTexture->GetAlphaSource()]);
+    DisplayString("            Alpha Source: ", lAlphaSources[pTexture->GetAlphaSource()]);
     DisplayDouble("            Cropping Left: ", pTexture->GetCroppingLeft());
     DisplayDouble("            Cropping Top: ", pTexture->GetCroppingTop());
     DisplayDouble("            Cropping Right: ", pTexture->GetCroppingRight());
@@ -45,13 +45,13 @@ void DisplayTextureInfo(FbxTexture* pTexture, int pBlendMode)
     const char* lMappingTypes[] = { "Null", "Planar", "Spherical", "Cylindrical", 
         "Box", "Face", "UV", "Environment" };
 
-    Debug("            Mapping Type: ", lMappingTypes[pTexture->GetMappingType()]);
+    DisplayString("            Mapping Type: ", lMappingTypes[pTexture->GetMappingType()]);
 
     if (pTexture->GetMappingType() == FbxTexture::ePlanar)
     {
         const char* lPlanarMappingNormals[] = { "X", "Y", "Z" };
 
-        Debug("            Planar Mapping Normal: ", lPlanarMappingNormals[pTexture->GetPlanarMappingNormal()]);
+        DisplayString("            Planar Mapping Normal: ", lPlanarMappingNormals[pTexture->GetPlanarMappingNormal()]);
     }
 
     const char* lBlendModes[]   = { "Translucent", "Additive", "Modulate", "Modulate2", "Over", "Normal", "Dissolve", "Darken", "ColorBurn", "LinearBurn",
@@ -60,20 +60,20 @@ void DisplayTextureInfo(FbxTexture* pTexture, int pBlendMode)
                                     "Luminosity", "Overlay"};   
     
     if(pBlendMode >= 0)
-        Debug("            Blend Mode: ", lBlendModes[pBlendMode]);
+        DisplayString("            Blend Mode: ", lBlendModes[pBlendMode]);
     DisplayDouble("            Alpha: ", pTexture->GetDefaultAlpha());
 
     if (lFileTexture)
     {
         const char* lMaterialUses[] = { "Model Material", "Default Material" };
-        Debug("            Material Use: ", lMaterialUses[lFileTexture->GetMaterialUse()]);
+        DisplayString("            Material Use: ", lMaterialUses[lFileTexture->GetMaterialUse()]);
     }
 
     const char* pTextureUses[] = { "Standard", "Shadow Map", "Light Map", 
         "Spherical Reflexion Map", "Sphere Reflexion Map", "Bump Normal Map" };
 
-    Debug("            Texture Use: ", pTextureUses[pTexture->GetTextureUse()]);
-    Debug("");                
+    DisplayString("            Texture Use: ", pTextureUses[pTexture->GetTextureUse()]);
+    DisplayString("");                
 
 }
 
@@ -108,7 +108,7 @@ void FindAndDisplayTextureInfoByProperty(FbxProperty pProperty, bool& pDisplayHe
 
                         FbxLayeredTexture::EBlendMode lBlendMode;
                         lLayeredTexture->GetTextureBlendMode(k, lBlendMode);
-                        Debug("    Textures for ", pProperty.GetName());
+                        DisplayString("    Textures for ", pProperty.GetName());
                         DisplayInt("        Texture ", k);  
                         DisplayTextureInfo(lTexture, (int) lBlendMode);   
                     }
@@ -127,7 +127,7 @@ void FindAndDisplayTextureInfoByProperty(FbxProperty pProperty, bool& pDisplayHe
                         pDisplayHeader = false;
                     }             
 
-                    Debug("    Textures for ", pProperty.GetName());
+                    DisplayString("    Textures for ", pProperty.GetName());
                     DisplayInt("        Texture ", j);  
                     DisplayTextureInfo(lTexture, -1);
                 }

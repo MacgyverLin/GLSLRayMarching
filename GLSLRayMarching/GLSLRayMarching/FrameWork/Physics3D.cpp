@@ -159,7 +159,7 @@ bool Physics3D::Manager::Update()
 {
 	Assert(impl);
 
-	double dt = Platform::GetDeltaTime();
+	float dt = (float)Platform::GetDeltaTime();
 
 	for (auto& bodyComponent : bodyComponents)
 	{

@@ -33,7 +33,7 @@ void DisplayMaterial(FbxGeometry* pGeometry)
 
             FbxSurfaceMaterial *lMaterial = lNode->GetMaterial(lCount);
 
-            Debug("            Name: \"", (char *) lMaterial->GetName(), "\""); 
+            DisplayString("            Name: \"", (char *) lMaterial->GetName(), "\""); 
 
             //Get the implementation to see if it's a hardware shader.
             const FbxImplementation* lImplementation = GetImplementation(lMaterial, FBXSDK_IMPLEMENTATION_HLSL);
@@ -126,7 +126,7 @@ void DisplayMaterial(FbxGeometry* pGeometry)
                                 ||  FbxUrlDT  == lFbxType
                                 ||  FbxXRefUrlDT  == lFbxType )
                             {
-                                Debug("                String: ", lFbxProp.Get<FbxString>().Buffer());
+                                DisplayString("                String: ", lFbxProp.Get<FbxString>().Buffer());
                             }
                             else if ( FbxDouble2DT == lFbxType)
                             {
@@ -238,12 +238,12 @@ void DisplayMaterial(FbxGeometry* pGeometry)
                 DisplayDouble("            Opacity: ", 1.0-lKFbxDouble1.Get());
             }
             else
-                Debug("Unknown type of Material");
+                DisplayString("Unknown type of Material");
 
             FbxPropertyT<FbxString> lString;
             lString = lMaterial->ShadingModel;
-            Debug("            Shading Model: ", lString.Get().Buffer());
-            Debug("");
+            DisplayString("            Shading Model: ", lString.Get().Buffer());
+            DisplayString("");
         }
     }
 }

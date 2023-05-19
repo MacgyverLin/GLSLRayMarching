@@ -2,7 +2,7 @@
 #define _Triangle_h_
 
 #include "Vector3.h"
-#include "AABB.h"
+#include "AABB3.h"
 #include "GeometryConverter.h"
 
 class Triangle
@@ -11,7 +11,7 @@ public:
 	Vector3 vertex[3];
 
 	Vector3 centroid;
-	AABB aabb;
+	AABB3 aabb;
 public:
 	Triangle()
 	{
@@ -20,7 +20,7 @@ public:
 		this->vertex[2] = Vector3::Zero;
 
 		this->centroid = Vector3::Zero;
-		this->aabb = AABB(Vector3::Zero, Vector3::Zero);
+		this->aabb = AABB3(Vector3::Zero, Vector3::Zero);
 	}
 
 	~Triangle()

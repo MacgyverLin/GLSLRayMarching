@@ -3,6 +3,27 @@
 
 #include "MeshIO.h"
 #include "FBX.h"
+#include "DisplayAnimation.h"
+#include "DisplayCache.h"
+#include "DisplayCamera.h"
+#include "DisplayGenericInfo.h"
+#include "DisplayGlobalSettings.h"
+#include "DisplayHierarchy.h"
+#include "DisplayLight.h"
+#include "DisplayLink.h"
+#include "DisplayLodGroup.h"
+#include "DisplayMarker.h"
+#include "DisplayMaterial.h"
+#include "DisplayMesh.h"
+#include "DisplayNurb.h"
+#include "DisplayPatch.h"
+#include "DisplayPivotsAndLimits.h"
+#include "DisplayPose.h"
+#include "DisplayShape.h"
+#include "DisplaySkeleton.h"
+#include "DisplayTexture.h"
+#include "DisplayUserProperties.h"
+
 
 class MeshFBXIO : public MeshIO<Mesh>
 {
@@ -35,7 +56,7 @@ public:
 			// Destroy all objects created by the FBX SDK.
 			DestroySdkObjects(lSdkManager, lResult);
 
-			Debug("\n\nAn error occurred while loading the scene...");
+			DisplayString("\n\nAn error occurred while loading the scene...");
 			return false;
 		}
 		else
@@ -43,31 +64,31 @@ public:
 			// Display the scene.
 			DisplayMetaData(lScene);
 
-			Debug("\n\n---------------------\nGlobal Light Settings\n---------------------\n\n");
+			DisplayString("\n\n---------------------\nGlobal Light Settings\n---------------------\n\n");
 			DisplayGlobalLightSettings(&lScene->GetGlobalSettings());
 
-			Debug("\n\n----------------------\nGlobal Camera Settings\n----------------------\n\n");
+			DisplayString("\n\n----------------------\nGlobal Camera Settings\n----------------------\n\n");
 			DisplayGlobalCameraSettings(&lScene->GetGlobalSettings());
 
-			Debug("\n\n--------------------\nGlobal Time Settings\n--------------------\n\n");
+			DisplayString("\n\n--------------------\nGlobal Time Settings\n--------------------\n\n");
 			DisplayGlobalTimeSettings(&lScene->GetGlobalSettings());
 
-			Debug("\n\n---------\nHierarchy\n---------\n\n");
+			DisplayString("\n\n---------\nHierarchy\n---------\n\n");
 			DisplayHierarchy(lScene);
 
-			Debug("\n\n------------\nNode Content\n------------\n\n");
+			DisplayString("\n\n------------\nNode Content\n------------\n\n");
 			DisplayContent(lScene);
 
 			if (!LoadMeshScene(mesh, lScene))
 				return false;
 
-			Debug("\n\n----\nPose\n----\n\n");
+			DisplayString("\n\n----\nPose\n----\n\n");
 			DisplayPose(lScene);
 
-			Debug("\n\n---------\nAnimation\n---------\n\n");
+			DisplayString("\n\n---------\nAnimation\n---------\n\n");
 			DisplayAnimation(lScene);
 
-			Debug("\n\n---------\nGeneric Information\n---------\n\n");
+			DisplayString("\n\n---------\nGeneric Information\n---------\n\n");
 			DisplayGenericInfo(lScene);
 
 			// Destroy all objects created by the FBX SDK.
@@ -121,7 +142,7 @@ private:
 
 		if (pNode->GetNodeAttribute() == NULL)
 		{
-			Debug("NULL Node Attribute\n\n");
+			DisplayString("NULL Node Attribute\n\n");
 		}
 		else
 		{
@@ -151,7 +172,7 @@ private:
 	{
 		FbxMesh* lMesh = (FbxMesh*)pNode->GetNodeAttribute();
 
-		//Debug("Mesh Name: ", (char*)pNode->GetName());
+		//DisplayString("Mesh Name: ", (char*)pNode->GetName());
 		//DisplayMetaDataConnections(lMesh);
 		LoadVertices(mesh, pNode, lMesh);
 		LoadPolygons(mesh, lMesh);
@@ -273,7 +294,7 @@ private:
 
 	void LoadPolygons(Mesh& mesh, FbxMesh* pMesh)
 	{
-		Debug("    Polygons");
+		DisplayString("    Polygons");
 
 		int vertexId = 0;
 		for (int polygonIdx = 0; polygonIdx < pMesh->GetPolygonCount(); polygonIdx++)
@@ -296,7 +317,7 @@ private:
 					}
 				default:
 					// any other mapping modes don't make sense
-					Debug("        \"unsupported group assignment\"");
+					DisplayString("        \"unsupported group assignment\"");
 					break;
 				}
 			}
@@ -313,7 +334,7 @@ private:
 					int id = -1;
 					if (lControlPointIndex < 0)
 					{
-						Debug("            Coordinates: Invalid index found!");
+						DisplayString("            Coordinates: Invalid index found!");
 						continue;
 					}
 					else
@@ -581,7 +602,7 @@ private:
 
 		if (pNode->GetNodeAttribute() == NULL)
 		{
-			Debug("NULL Node Attribute\n\n");
+			DisplayString("NULL Node Attribute\n\n");
 		}
 		else
 		{
@@ -642,7 +663,7 @@ private:
 	{
 		if (pNode->GetTarget() != NULL)
 		{
-			Debug("    Target Name: ", (char*)pNode->GetTarget()->GetName());
+			DisplayString("    Target Name: ", (char*)pNode->GetTarget()->GetName());
 		}
 	}
 
@@ -746,26 +767,26 @@ private:
 		FbxDocumentInfo* sceneInfo = pScene->GetSceneInfo();
 		if (sceneInfo)
 		{
-			Debug("\n\n--------------------\nMeta-Data\n--------------------\n\n");
-			Debug("    Title: %s\n", sceneInfo->mTitle.Buffer());
-			Debug("    Subject: %s\n", sceneInfo->mSubject.Buffer());
-			Debug("    Author: %s\n", sceneInfo->mAuthor.Buffer());
-			Debug("    Keywords: %s\n", sceneInfo->mKeywords.Buffer());
-			Debug("    Revision: %s\n", sceneInfo->mRevision.Buffer());
-			Debug("    Comment: %s\n", sceneInfo->mComment.Buffer());
+			DisplayString("\n\n--------------------\nMeta-Data\n--------------------\n\n");
+			DisplayString("    Title: %s\n", sceneInfo->mTitle.Buffer());
+			DisplayString("    Subject: %s\n", sceneInfo->mSubject.Buffer());
+			DisplayString("    Author: %s\n", sceneInfo->mAuthor.Buffer());
+			DisplayString("    Keywords: %s\n", sceneInfo->mKeywords.Buffer());
+			DisplayString("    Revision: %s\n", sceneInfo->mRevision.Buffer());
+			DisplayString("    Comment: %s\n", sceneInfo->mComment.Buffer());
 
 			FbxThumbnail* thumbnail = sceneInfo->GetSceneThumbnail();
 			if (thumbnail)
 			{
-				Debug("    Thumbnail:\n");
+				DisplayString("    Thumbnail:\n");
 
 				switch (thumbnail->GetDataFormat())
 				{
 				case FbxThumbnail::eRGB_24:
-					Debug("        Format: RGB\n");
+					DisplayString("        Format: RGB\n");
 					break;
 				case FbxThumbnail::eRGBA_32:
-					Debug("        Format: RGBA\n");
+					DisplayString("        Format: RGBA\n");
 					break;
 				}
 

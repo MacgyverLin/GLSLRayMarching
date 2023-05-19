@@ -83,6 +83,11 @@ float Math::ATan2(float y, float x)
 	return atan2f(y, x);
 }
 
+int Math::Abs(int value)
+{
+	return abs(value);
+}
+
 float Math::FAbs(float value)
 {
 	return (float)fabs(value);
@@ -172,7 +177,7 @@ float Math::Sign(float value)
 
 float Math::UnitRandom(unsigned int seed)
 {
-	if (seed > 0.0f)
+	if (seed > 0)
 		srand(seed);
 
 	float dRatio = float(rand()) / ((RAND_MAX));
@@ -195,6 +200,11 @@ float Math::IntervalRandom(float min, float max, unsigned int seed)
 
 	float dRatio = float(rand()) / ((RAND_MAX));
 	return min + (max - min) * (dRatio);
+}
+
+float Math::RandomEpsilon(unsigned int uiSeed)
+{
+	return SymmetricRandom(uiSeed) * Math::Epsilon;
 }
 
 unsigned int Math::CeilPower2(unsigned int x)
