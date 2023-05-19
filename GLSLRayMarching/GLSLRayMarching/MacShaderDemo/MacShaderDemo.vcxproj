@@ -289,7 +289,9 @@
     <ClInclude Include="MeshFBXIO.h" />
     <ClInclude Include="MeshIO.h" />
     <ClInclude Include="MeshObjIO.h" />
-    <ClInclude Include="TestGraphicComponent.h" />
+    <ClInclude Include="Primitive.h" />
+    <ClInclude Include="PrimitivesRenderer.h" />
+    <ClInclude Include="TestGraphicRenderer.h" />
     <ClInclude Include="PhysicsDemoCameraComponent.h" />
     <ClInclude Include="PhysicsDemoScene.h" />
     <ClInclude Include="PicoGL.h" />

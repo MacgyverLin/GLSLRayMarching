@@ -18,7 +18,8 @@
 #include "GameObject.h"
 #include "Video.h"
 #include "PhysicsDemoCameraComponent.h"
-#include "TestGraphicComponent.h"
+#include "TestGraphicRenderer.h"
+#include "PrimitivesRenderer.h"
 
 class PhysicsDemoScene : public Scene
 {
@@ -30,7 +31,8 @@ public:
 		, rigidbodyComponent(physicsBodyGameObject)
 		, softBodyComponent(physicsBodyGameObject)
 
-		, testGraphicComponent(testGraphic)
+		//, testGraphicComponent(testGraphic)
+		, primitivesRenderer(testGraphic)
 	{
 	}
 
@@ -50,12 +52,25 @@ protected:
 
 	virtual bool OnUpdate() override
 	{
+		/*
 		testGraphicComponent.SetWorldTransform
 		(
 			physicsDemoCameraComponent.GetWorldTransform(),
 			physicsDemoCameraComponent.GetViewTransform(),
 			physicsDemoCameraComponent.GetProjectionTransform()
 		);
+		*/
+
+		primitivesRenderer.SetWorldTransform
+		(
+			physicsDemoCameraComponent.GetWorldTransform(),
+			physicsDemoCameraComponent.GetViewTransform(),
+			physicsDemoCameraComponent.GetProjectionTransform()
+		);
+
+		primitivesRenderer.Clear();
+		primitivesRenderer.DrawGrid(-10.0f, 10.0f, 0.1f, ColorRGBA(0.5, 0.5, 0.5, 0.5));
+
 
 		return true;
 	}
@@ -86,7 +101,8 @@ private:
 
 
 	GameObject testGraphic;
-	TestGraphicComponent testGraphicComponent;
+	PrimitivesRenderer primitivesRenderer;
+	//TestGraphicComponent testGraphicComponent;
 };
 
 #endif

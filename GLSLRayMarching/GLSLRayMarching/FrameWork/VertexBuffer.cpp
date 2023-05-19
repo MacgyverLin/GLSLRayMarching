@@ -165,8 +165,6 @@ void VertexBuffer::Terminate()
 
 		glDeleteVertexArrays(1, &vao);
 		vao = 0;
-
-
 	}
 }
 

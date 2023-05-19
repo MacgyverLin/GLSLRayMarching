@@ -205,8 +205,8 @@ public:
 		{
 			quotient.m[0] = m[0];
 			quotient.m[1] = m[1];
-			quotient.m[2] = Math::MaxFloat;
-			quotient.m[3] = Math::MaxFloat;
+			quotient.m[2] = Math::MaxValue;
+			quotient.m[3] = Math::MaxValue;
 		}
 
 		return quotient;
@@ -254,8 +254,8 @@ public:
 		}
 		else
 		{
-			m[2] = Math::MaxFloat;
-			m[3] = Math::MaxFloat;
+			m[2] = Math::MaxValue;
+			m[3] = Math::MaxValue;
 		}
 
 		return *this;

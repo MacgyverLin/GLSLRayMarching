@@ -44,6 +44,9 @@ public:
 
 	static void Test2(int& lod, float& ratio, bool& wireframe, float& v);
 	static void UpdateShader(ShaderProgram& shaderProgram);
+
+
+	static void Test3(int& lod, float& ratio, bool& wireframe);
 };
 
 #endif

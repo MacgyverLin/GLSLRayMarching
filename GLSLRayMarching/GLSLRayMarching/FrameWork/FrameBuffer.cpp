@@ -246,7 +246,7 @@ void FrameBuffer::ClearColorAttachment(FrameBuffer::ColorAttachment colorAttachm
 
 	bool attachmentIsFloat = false;
 	if (attachmentIsFloat)
-		glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0, &color_[0]);
+		glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0, color_);
 	else
 		glClearBufferiv(GL_COLOR, GL_DRAW_BUFFER0, c);
 }

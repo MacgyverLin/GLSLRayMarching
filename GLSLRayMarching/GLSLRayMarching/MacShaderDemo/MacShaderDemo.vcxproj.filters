@@ -438,8 +438,14 @@
     <ClInclude Include="MeshIO.h">
       <Filter>PhysicsEngineDemoScene\MeshIO</Filter>
     </ClInclude>
-    <ClInclude Include="TestGraphicComponent.h">
-      <Filter>PhysicsEngineDemoScene\TestGraphicComponent</Filter>
+    <ClInclude Include="TestGraphicRenderer.h">
+      <Filter>PhysicsEngineDemoScene\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitivesRenderer.h">
+      <Filter>PhysicsEngineDemoScene\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>PhysicsEngineDemoScene\Renderers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -500,7 +506,7 @@
     <Filter Include="PhysicsEngineDemoScene\MeshIO\ObjIO">
       <UniqueIdentifier>{9fd10ffa-81f2-4546-9d89-0512e177a46b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PhysicsEngineDemoScene\TestGraphicComponent">
+    <Filter Include="PhysicsEngineDemoScene\Renderers">
       <UniqueIdentifier>{cc80733d-a97b-435e-aa66-9264f99a4efe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

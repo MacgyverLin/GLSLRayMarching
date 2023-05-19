@@ -208,10 +208,10 @@ public:
 		}
 		else
 		{
-			quotient.m[0] = Math::MaxFloat;
-			quotient.m[1] = Math::MaxFloat;
-			quotient.m[2] = Math::MaxFloat;
-			quotient.m[3] = Math::MaxFloat;
+			quotient.m[0] = Math::MaxValue;
+			quotient.m[1] = Math::MaxValue;
+			quotient.m[2] = Math::MaxValue;
+			quotient.m[3] = Math::MaxValue;
 		}
 
 		return quotient;
@@ -278,10 +278,10 @@ public:
 		}
 		else
 		{
-			m[0] = Math::MaxFloat;
-			m[1] = Math::MaxFloat;
-			m[2] = Math::MaxFloat;
-			m[3] = Math::MaxFloat;
+			m[0] = Math::MaxValue;
+			m[1] = Math::MaxValue;
+			m[2] = Math::MaxValue;
+			m[3] = Math::MaxValue;
 		}
 
 		return *this;

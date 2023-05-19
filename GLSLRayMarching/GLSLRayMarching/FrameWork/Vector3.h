@@ -297,9 +297,9 @@ public:
 		}
 		else
 		{
-			m[0] = Math::MaxFloat;
-			m[1] = Math::MaxFloat;
-			m[2] = Math::MaxFloat;
+			m[0] = Math::MaxValue;
+			m[1] = Math::MaxValue;
+			m[2] = Math::MaxValue;
 		}
 
 		return *this;

@@ -82,6 +82,27 @@ void GUI::Test2(int& lod, float& ratio, bool& wireframe, float& v)
 	ImGui::End();
 }
 
+void GUI::Test3(int& lod, float& ratio, bool& wireframe)
+{
+	if (ImGui::Begin("Physics"))
+	{
+		if (ImGui::CollapsingHeader("Lod"))
+		{
+			ImGui::SliderInt("Lod", &lod, 0, 7, "%d");
+		}
+		if (ImGui::CollapsingHeader("Ratio"))
+		{
+			ImGui::SliderFloat("Ratio", &ratio, 0.0, 100.0, "%f");
+		}
+		if (ImGui::CollapsingHeader("WireFrame?"))
+		{
+			ImGui::Checkbox("WireFrame", &wireframe);
+		}
+	}
+
+	ImGui::End();
+}
+
 void GUI::UpdateShader(ShaderProgram& shaderProgram)
 {
 	if (ImGui::Begin("ShaderProgram"))
