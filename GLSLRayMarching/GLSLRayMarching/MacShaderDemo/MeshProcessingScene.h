@@ -14,12 +14,23 @@
 
 #include "TetrahedronizedMeshGenerator.h"
 #include "ProxyInfoGenerator.h"
+
+
+
  
 class MeshProcessingScene : public Scene
 {
 public:
 	MeshProcessingScene()
 		: Scene()
+
+		, physicsDemoCameraComponent(physicsWorldGameObject)
+
+		, rigidbodyComponent(physicsBodyGameObject)
+		, softBodyComponent(physicsBodyGameObject)
+
+		, testGraphicComponent(testGraphic)
+		, primitivesRenderer(testGraphic)
 	{
 	}
 
@@ -46,6 +57,24 @@ protected:
 
 	virtual bool OnUpdate() override
 	{
+		testGraphicComponent.SetWorldTransform
+		(
+			physicsDemoCameraComponent.GetWorldTransform(),
+			physicsDemoCameraComponent.GetViewTransform(),
+			physicsDemoCameraComponent.GetProjectionTransform()
+		);
+
+		primitivesRenderer.SetWorldTransform
+		(
+			physicsDemoCameraComponent.GetWorldTransform(),
+			physicsDemoCameraComponent.GetViewTransform(),
+			physicsDemoCameraComponent.GetProjectionTransform()
+		);
+
+		primitivesRenderer.Clear();
+		primitivesRenderer.DrawGrid(-10.0f, 10.0f, 0.1f, ColorRGBA(0.5, 0.5, 0.5, 0.5));
+
+
 		return true;
 	}
 
@@ -105,6 +134,21 @@ protected:
 		return true;
 	}
 private:
+	GameObject physicsWorldGameObject;
+	PhysicsDemoCameraComponent physicsDemoCameraComponent;
+
+	GameObject physicsBodyGameObject;
+	Physics3D::RigidbodyComponent rigidbodyComponent;
+	Physics3D::SoftbodyComponent softBodyComponent;
+
+
+	GameObject testGraphic;
+	PrimitivesRenderer primitivesRenderer;
+	TestGraphicComponent testGraphicComponent;
+
+
+
+
 	Mesh visualMesh;
 	Mesh proxyMesh;
 

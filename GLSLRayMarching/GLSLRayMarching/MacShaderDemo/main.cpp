@@ -81,13 +81,11 @@ private:
 
 int main(int argc, char** argv)
 {
-	// ¿Óù˝DO SOMETHING
+	const char* name = "MeshProcessing";
+	//const char* name = "PhysicsDemo";
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
-	//if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "PhysicsDemo", "PhysicsDemo"))
-		//return -1;
-	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, "MeshProcessing", "MeshProcessing"))
-		return -1; 
-	
+	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, name, name))
+		return -1;
 
 	macShaderDemoApp.Start();
 

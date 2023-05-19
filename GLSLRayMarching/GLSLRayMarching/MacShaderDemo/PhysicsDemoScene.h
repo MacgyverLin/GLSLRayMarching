@@ -31,7 +31,7 @@ public:
 		, rigidbodyComponent(physicsBodyGameObject)
 		, softBodyComponent(physicsBodyGameObject)
 
-		//, testGraphicComponent(testGraphic)
+		, testGraphicComponent(testGraphic)
 		, primitivesRenderer(testGraphic)
 	{
 	}
@@ -52,14 +52,12 @@ protected:
 
 	virtual bool OnUpdate() override
 	{
-		/*
 		testGraphicComponent.SetWorldTransform
 		(
 			physicsDemoCameraComponent.GetWorldTransform(),
 			physicsDemoCameraComponent.GetViewTransform(),
 			physicsDemoCameraComponent.GetProjectionTransform()
 		);
-		*/
 
 		primitivesRenderer.SetWorldTransform
 		(
@@ -102,7 +100,7 @@ private:
 
 	GameObject testGraphic;
 	PrimitivesRenderer primitivesRenderer;
-	//TestGraphicComponent testGraphicComponent;
+	TestGraphicComponent testGraphicComponent;
 };
 
 #endif
