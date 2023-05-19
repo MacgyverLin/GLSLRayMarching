@@ -27,7 +27,11 @@ public:
 		: Scene()
 		, physicsDemoCameraComponent(physicsDemoCameraGameObject)
 		, physicsDemoGraphicComponent(physicsDemoGraphicGameObject)
+
+		, worldComponent(physicsWorldGameObject)
+		, softBodyProxyComponent(softBodyGameObject)
 	{
+		worldComponent.Add(softBodyProxyComponent);
 	}
 
 	virtual ~PhysicsDemoScene()
@@ -78,6 +82,14 @@ private:
 
 	GameObject physicsDemoGraphicGameObject;
 	PhysicsDemoGraphicComponent physicsDemoGraphicComponent;
+
+
+
+	GameObject physicsWorldGameObject;
+	Physics3D::WorldComponent worldComponent;
+
+	GameObject softBodyGameObject;
+	Physics3D::SoftBodyProxyComponent softBodyProxyComponent;
 };
 
 #endif
