@@ -109,15 +109,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../../3rdparty/zlib/zlib;../FrameWork;../../../3rdparty/stb/include;../../../3rdparty/rapidjson/include;   ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/fbxsdk/include;../../../3rdparty/zlib/zlib;../FrameWork;../../../3rdparty/stb/include;../../../3rdparty/rapidjson/include;   ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/ffmpeg/lib; ../../../3rdparty/zlib/build/Debug; ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FrameWork.lib; zlib.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);../../../3rdparty/fbxsdk/lib/vs2017/x64/$(Configuration);../../../3rdparty/ffmpeg/lib;../../../3rdparty/zlib/build/Debug;../../../3rdparty/glad/lib;../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;FrameWork.lib;zlib.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
     </Link>
@@ -155,7 +155,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../../3rdparty/zlib/zlib;../FrameWork;../../../3rdparty/stb/include;../../../3rdparty/rapidjson/include;    ../../../3rdparty/rapidjson/include; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../3rdparty/fbxsdk/include;../../../3rdparty/zlib/zlib;../FrameWork;../../../3rdparty/stb/include;../../../3rdparty/rapidjson/include;    ../../../3rdparty/rapidjson/include; ../FrameWork; ../../../3rdparty/stb/include; ../../../3rdparty/glad/include; ../../../3rdparty/glfw-3.3.2.bin.WIN64/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/DPTRDIFF_MAX=INTPTR_MAX %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -164,8 +164,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir); ../../../3rdparty/ffmpeg/lib; ../../../3rdparty/zlib/build/Release; ../../../3rdparty/glad/lib; ../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FrameWork.lib; zlib.lib; glfw3.lib; kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);../../../3rdparty/fbxsdk/lib/vs2017/x64;../../../3rdparty/ffmpeg/lib;../../../3rdparty/zlib/build/Release;../../../3rdparty/glad/lib;../../../3rdparty/glfw-3.3.2.bin.WIN64/lib-vc2019</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;FrameWork.lib;zlib.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
     </Link>
@@ -174,7 +174,28 @@
     <ClCompile Include="camera-array.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="DefaultScene.cpp" />
+    <ClCompile Include="DisplayAnimation.cxx" />
+    <ClCompile Include="DisplayCache.cxx" />
+    <ClCompile Include="DisplayCamera.cxx" />
+    <ClCompile Include="DisplayGenericInfo.cxx" />
+    <ClCompile Include="DisplayGlobalSettings.cxx" />
+    <ClCompile Include="DisplayHierarchy.cxx" />
+    <ClCompile Include="DisplayLight.cxx" />
+    <ClCompile Include="DisplayLink.cxx" />
+    <ClCompile Include="DisplayLodGroup.cxx" />
+    <ClCompile Include="DisplayMarker.cxx" />
+    <ClCompile Include="DisplayMaterial.cxx" />
+    <ClCompile Include="DisplayMesh.cxx" />
+    <ClCompile Include="DisplayNurb.cxx" />
+    <ClCompile Include="DisplayPatch.cxx" />
+    <ClCompile Include="DisplayPivotsAndLimits.cxx" />
+    <ClCompile Include="DisplayPose.cxx" />
+    <ClCompile Include="DisplayShape.cxx" />
+    <ClCompile Include="DisplaySkeleton.cxx" />
+    <ClCompile Include="DisplayTexture.cxx" />
+    <ClCompile Include="DisplayUserProperties.cxx" />
     <ClCompile Include="fbo.cpp" />
+    <ClCompile Include="FBX.cxx" />
     <ClCompile Include="IKShapes.cpp" />
     <ClCompile Include="light-field-renderer.cpp" />
     <ClCompile Include="LightFieldCamera.cpp" />
@@ -209,18 +230,48 @@
     <ClCompile Include="PathTraceComponent.cpp" />
     <ClCompile Include="ShaderToyCamera.cpp" />
     <ClCompile Include="ShaderToyComponent.cpp" />
+    <ClCompile Include="TetrahedronMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BVHTree.h" />
     <ClInclude Include="camera-array.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="DefaultScene.h" />
+    <ClInclude Include="DisplayAnimation.h" />
+    <ClInclude Include="DisplayCache.h" />
+    <ClInclude Include="DisplayCamera.h" />
+    <ClInclude Include="DisplayGenericInfo.h" />
+    <ClInclude Include="DisplayGlobalSettings.h" />
+    <ClInclude Include="DisplayHierarchy.h" />
+    <ClInclude Include="DisplayLight.h" />
+    <ClInclude Include="DisplayLink.h" />
+    <ClInclude Include="DisplayLodGroup.h" />
+    <ClInclude Include="DisplayMarker.h" />
+    <ClInclude Include="DisplayMaterial.h" />
+    <ClInclude Include="DisplayMesh.h" />
+    <ClInclude Include="DisplayNurb.h" />
+    <ClInclude Include="DisplayPatch.h" />
+    <ClInclude Include="DisplayPivotsAndLimits.h" />
+    <ClInclude Include="DisplayPose.h" />
+    <ClInclude Include="DisplayShape.h" />
+    <ClInclude Include="DisplaySkeleton.h" />
+    <ClInclude Include="DisplayTexture.h" />
+    <ClInclude Include="DisplayUserProperties.h" />
+    <ClInclude Include="Edge.h" />
     <ClInclude Include="fbo.h" />
+    <ClInclude Include="FBX.h" />
     <ClInclude Include="FlipFrameBuffer.h" />
+    <ClInclude Include="GeometryConverter.h" />
     <ClInclude Include="GeometryTextureScene.h" />
+    <ClInclude Include="GeoMipmap.h" />
     <ClInclude Include="GeoMipmapTerrainScene.h" />
+    <ClInclude Include="GeoMorph.h" />
     <ClInclude Include="GeoMorphTerrainScene.h" />
+    <ClInclude Include="Hash.h" />
+    <ClInclude Include="HitRecord.h" />
     <ClInclude Include="IKDemoScene.h" />
     <ClInclude Include="IKShapes.h" />
+    <ClInclude Include="Intersect.h" />
     <ClInclude Include="KeyboardTexture.h" />
     <ClInclude Include="light-field-renderer.h" />
     <ClInclude Include="LightFieldCamera.h" />
@@ -234,7 +285,11 @@
     <ClInclude Include="LPVLight.h" />
     <ClInclude Include="LPVMtlLoader.h" />
     <ClInclude Include="LPVObjLoader.h" />
-    <ClInclude Include="PhysicsDemoGraphicComponent.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshFBXIO.h" />
+    <ClInclude Include="MeshIO.h" />
+    <ClInclude Include="MeshObjIO.h" />
+    <ClInclude Include="TestGraphicComponent.h" />
     <ClInclude Include="PhysicsDemoCameraComponent.h" />
     <ClInclude Include="PhysicsDemoScene.h" />
     <ClInclude Include="PicoGL.h" />
@@ -244,6 +299,9 @@
     <ClInclude Include="MicrophoneTexture.h" />
     <ClInclude Include="n-sided-polygon.h" />
     <ClInclude Include="Pass.h" />
+    <ClInclude Include="Polygon.h" />
+    <ClInclude Include="PolygonMesh.h" />
+    <ClInclude Include="PolygonMeshObjIO.h" />
     <ClInclude Include="quad.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="ShaderToyConfig.h" />
@@ -254,9 +312,18 @@
     <ClInclude Include="PathTraceComponent.h" />
     <ClInclude Include="ShaderToyCamera.h" />
     <ClInclude Include="ShaderToyComponent.h" />
+    <ClInclude Include="SkinningInfo.h" />
     <ClInclude Include="SoundCloudTexture.h" />
     <ClInclude Include="TerrainCameraComponent.h" />
+    <ClInclude Include="TetGenObjIO.h" />
+    <ClInclude Include="TetrahedronMesh.h" />
+    <ClInclude Include="TetrahedronMeshObjIO.h" />
+    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="TriangleMesh.h" />
+    <ClInclude Include="TriangleMeshObjIO.h" />
     <ClInclude Include="util.h" />
+    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="VertexMerger.h" />
     <ClInclude Include="VideoTexture.h" />
     <ClInclude Include="WebcamTexture.h" />
   </ItemGroup>

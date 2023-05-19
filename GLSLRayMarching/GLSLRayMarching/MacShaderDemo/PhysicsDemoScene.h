@@ -18,20 +18,20 @@
 #include "GameObject.h"
 #include "Video.h"
 #include "PhysicsDemoCameraComponent.h"
-#include "PhysicsDemoGraphicComponent.h"
+#include "TestGraphicComponent.h"
 
 class PhysicsDemoScene : public Scene
 {
 public:
 	PhysicsDemoScene()
 		: Scene()
-		, physicsDemoCameraComponent(physicsDemoCameraGameObject)
-		, physicsDemoGraphicComponent(physicsDemoGraphicGameObject)
+		, physicsDemoCameraComponent(physicsWorldGameObject)
 
-		, worldComponent(physicsWorldGameObject)
-		, softBodyProxyComponent(softBodyGameObject)
+		, rigidbodyComponent(physicsBodyGameObject)
+		, softBodyComponent(physicsBodyGameObject)
+
+		, testGraphicComponent(testGraphic)
 	{
-		worldComponent.Add(softBodyProxyComponent);
 	}
 
 	virtual ~PhysicsDemoScene()
@@ -50,7 +50,7 @@ protected:
 
 	virtual bool OnUpdate() override
 	{
-		physicsDemoGraphicComponent.SetWorldTransform
+		testGraphicComponent.SetWorldTransform
 		(
 			physicsDemoCameraComponent.GetWorldTransform(),
 			physicsDemoCameraComponent.GetViewTransform(),
@@ -77,19 +77,16 @@ protected:
 	{
 	}
 private:
-	GameObject physicsDemoCameraGameObject;
+	GameObject physicsWorldGameObject;
 	PhysicsDemoCameraComponent physicsDemoCameraComponent;
 
-	GameObject physicsDemoGraphicGameObject;
-	PhysicsDemoGraphicComponent physicsDemoGraphicComponent;
+	GameObject physicsBodyGameObject;
+	Physics3D::RigidbodyComponent rigidbodyComponent;
+	Physics3D::SoftbodyComponent softBodyComponent;
 
 
-
-	GameObject physicsWorldGameObject;
-	Physics3D::WorldComponent worldComponent;
-
-	GameObject softBodyGameObject;
-	Physics3D::SoftBodyProxyComponent softBodyProxyComponent;
+	GameObject testGraphic;
+	TestGraphicComponent testGraphicComponent;
 };
 
 #endif

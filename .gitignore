@@ -1,6 +1,12 @@
-# Compiled source #
-###################
+# ignore folder
+GLSLRayMarching/.vs
+GLSLRayMarching/x64
+GLSLRayMarching/GLSLRayMarching/FrameWork/x64
+GLSLRayMarching/GLSLRayMarching/MacShaderDemo/x64
+
+# ignore file
 *.com
+*.tlog
 *.exe
 *.obj
 *.suo
