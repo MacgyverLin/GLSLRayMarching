@@ -491,8 +491,8 @@ glPrimitiveBoundingBox
 
 class Graphics
 {
-	class Impl;
 public:
+	class Impl;
 public:
 	Graphics();
 
@@ -570,13 +570,8 @@ public:
 
 	bool ShouldAppQuit() const;
 
-	static Graphics& GetInstance()
-	{
-		static Graphics instance;
+	static Graphics& GetInstance();
 
-		return instance;
-	}
-private:
 	Impl *impl;
 };
 

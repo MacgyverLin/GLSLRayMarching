@@ -19,7 +19,7 @@
 #include "imgui\imgui.h"
 #include "imgui\imgui_impl_glfw.h"
 #include "imgui\imgui_impl_opengl3.h"
-#include <vector>>
+#include <vector>
 
 std::vector<int> glfwKeyCodes =
 {
@@ -317,14 +317,13 @@ public:
 	{
 	}
 
-	void framebuffer_size_callback(void* win, int width_, int height_)
+	void framebuffer_size_callback(GLFWwindow* window, int width_, int height_)
 	{
-		GLFWwindow* window = (GLFWwindow*)win;
 		width = width_;
 		height = height_;
 	}
 
-	void glfw_error_callback(int error_code, const char* description)
+	void error_callback(int error_code, const char* description)
 	{
 		Debug("GLFW Error: [%d] %s\n", error_code, description);
 	}
@@ -371,10 +370,6 @@ public:
 		// Debug("%d %d %d %d\n", key, scancode, action, mods);
 	}
 
-
-
-	std::vector<Platform::InputEvent> inputEvents;
-
 	void mouse_button_callback(GLFWwindow* window, int key, int action, int mods)
 	{
 		Platform::InputEvent e;
@@ -397,20 +392,21 @@ public:
 			e.action = 2;
 			e.mods = mods;
 		}
+	
 		/*
-	if (button < mouseButtonCodeMaps.size())
-	{
-		int idx = (int)mouseButtonCodeMaps[button];
+		if (button < mouseButtonCodeMaps.size())
+		{
+			int idx = (int)mouseButtonCodeMaps[button];
 
-		oldkeystates[idx] = keystates[idx];
+			oldkeystates[idx] = keystates[idx];
 
-		if (action == GLFW_PRESS)
-			keystates[idx] = 0x01;
-		else// if (action == GLFW_RELEASE)
-			keystates[idx] = 0x02;
-	}
-	*/
-	// Debug("%d %d %d", button, action, mods);
+			if (action == GLFW_PRESS)
+				keystates[idx] = 0x01;
+			else// if (action == GLFW_RELEASE)
+				keystates[idx] = 0x02;
+		}
+		*/
+		// Debug("%d %d %d", button, action, mods);
 	}
 
 	void joystick_callback(int jid, int event)
@@ -460,24 +456,24 @@ public:
 
 
 	Vector4 viewport = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-    //DrawCall* currentDrawCalls = nullptr;
-    //ShaderProgram* emptyFragmentShader = nullptr;
+	//DrawCall* currentDrawCalls = nullptr;
+	//ShaderProgram* emptyFragmentShader = nullptr;
 
-    //RenderState* renderState = nullptr;
+	//RenderState* renderState = nullptr;
 
-    int clearBits = 0;
+	int clearBits = 0;
 
-    int cpuTime = 0;
-    int gpuTime = 0;
+	int cpuTime = 0;
+	int gpuTime = 0;
 
-    // Extensions
-    bool floatRenderTargetsEnabled = false;
-    bool linearFloatTexturesEnabled = false;
-    bool s3tcTexturesEnabled = false;
-    bool s3tcSRGBTexturesEnabled = false;
-    bool etcTexturesEnabled = false;
-    bool astcTexturesEnabled = false;
-    bool pvrtcTexturesEnabled = false;
+	// Extensions
+	bool floatRenderTargetsEnabled = false;
+	bool linearFloatTexturesEnabled = false;
+	bool s3tcTexturesEnabled = false;
+	bool s3tcSRGBTexturesEnabled = false;
+	bool etcTexturesEnabled = false;
+	bool astcTexturesEnabled = false;
+	bool pvrtcTexturesEnabled = false;
 
 
 	int maxTextureUnits = 0;
@@ -494,8 +490,6 @@ Graphics::Graphics()
 
 Graphics::~Graphics()
 {
-	Assert(impl);
-
 	if (impl)
 	{
 		delete impl;
@@ -505,8 +499,6 @@ Graphics::~Graphics()
 
 bool Graphics::Initialize(int width_, int height_, const char* appName_)
 {
-	Assert(impl);
-
 #if (PLATFORM == GLFW)
 	impl->currentTime = glfwGetTime();
 	impl->deltaTime = 0;
@@ -520,7 +512,7 @@ bool Graphics::Initialize(int width_, int height_, const char* appName_)
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 	impl->appName = appName_;
-	
+
 	impl->width = width_;
 	impl->height = height_;
 	impl->window = glfwCreateWindow(impl->width, impl->height, impl->appName.c_str(), NULL, NULL);
@@ -532,51 +524,56 @@ bool Graphics::Initialize(int width_, int height_, const char* appName_)
 	}
 
 	glfwMakeContextCurrent(impl->window);
-	
-
 
 	glfwSetErrorCallback
 	(
-		[](int, const char*) -> void
+		[](int error_code, const char* description) -> void
 		{
+			Graphics::GetInstance().impl->error_callback(error_code, description);
 		}
 	);
+
 	glfwSetFramebufferSizeCallback
 	(
 		impl->window,
-		[](GLFWwindow*, int, int) -> void
+		[](GLFWwindow* window, int width_, int height_) -> void
 		{
+			Graphics::GetInstance().impl->framebuffer_size_callback(window, width_, height_);
 		}
 	);
 
 	glfwSetKeyCallback
 	(
-		impl->window, 
-		[](GLFWwindow*, int, int, int, int) -> void
+		impl->window,
+		[](GLFWwindow* window, int key, int scancode, int action, int mods) -> void
 		{
+			Graphics::GetInstance().impl->key_callback(window, key, scancode, action, mods);
 		}
 	);
-	
+
 	glfwSetMouseButtonCallback
 	(
 		impl->window,
-		[](GLFWwindow*, int, int, int) -> void
+		[](GLFWwindow* window, int key, int action, int mods) -> void
 		{
+			Graphics::GetInstance().impl->mouse_button_callback(window, key, action, mods);
 		}
 	);
 
 	glfwSetJoystickCallback
 	(
-		[](int, int) -> void
+		[](int jid, int event) -> void
 		{
+			Graphics::GetInstance().impl->joystick_callback(jid, event);
 		}
 	);
 
 	glfwSetDropCallback
 	(
 		impl->window,
-		[](GLFWwindow*, int, const char* []) -> void
+		[](GLFWwindow* window, int count, const char** paths) -> void
 		{
+			Graphics::GetInstance().impl->drop_callback(window, count, paths);
 		}
 	);
 
@@ -994,4 +991,11 @@ void Graphics::QuitApp()
 bool Graphics::ShouldAppQuit() const
 {
 	return glfwWindowShouldClose(impl->window);
+}
+
+Graphics& Graphics::GetInstance()
+{
+	static Graphics instance;
+
+	return instance;
 }
