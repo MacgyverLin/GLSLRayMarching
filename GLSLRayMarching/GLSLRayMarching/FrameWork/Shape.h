@@ -121,7 +121,7 @@ public:
 		////////////////////////////////////////////////////////////
 		bool success = vertexBuffer
 			.Begin()
-			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, &vertices[0], vertices.size())
+			.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false, 0, 0, 0, &vertices[0], vertices.size())
 			.End();
 		if (!success)
 		{

@@ -25,13 +25,14 @@ public:
 	};
 
 	VertexAttribute();
-	VertexAttribute(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int divisor_ = 0, unsigned int stride_ = 0);
+	VertexAttribute(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int offset_ = 0, unsigned int stride_ = 0, unsigned int divisor_ = 0);
 
 	unsigned int index;
 	int elementCount;
 	int elementSize;
 	DataType dataType;
 	bool normalized;
+	unsigned int offset;
 	unsigned int stride;
 	unsigned int divisor;
 };
@@ -59,7 +60,7 @@ public:
 	virtual ~VertexBuffer();
 
 	VertexBuffer& Begin();
-	VertexBuffer& FillVertices(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int stride_, unsigned int divisor_, const void* vertices_, int verticesCount_);
+	VertexBuffer& FillVertices(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int offset_, unsigned int stride_, unsigned int divisor_, const void* vertices_, int verticesCount_);
 	VertexBuffer& FillIndices(const unsigned int* indices_, int indicesCount_);
 	bool End();
 	

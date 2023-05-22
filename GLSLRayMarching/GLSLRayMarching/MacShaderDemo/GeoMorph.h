@@ -218,7 +218,7 @@ public:
 		////////////////////////////////////////////////////////////
 		bool success = vertexBuffer
 			.Begin()
-			.FillVertices(0, 4, VertexAttribute::DataType::FLOAT, false, 0, 0, &vertices[0], vertices.size())
+			.FillVertices(0, 4, VertexAttribute::DataType::FLOAT, false, 0, 0, 0, &vertices[0], vertices.size())
 			.FillIndices(&indices[0], indices.size())
 			.End();
 		if (!success)

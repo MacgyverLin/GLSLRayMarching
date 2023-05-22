@@ -30,26 +30,24 @@ VertexAttribute::VertexAttribute()
 , elementCount(3)
 , dataType(DataType::FLOAT)
 , normalized(true)
+, offset(0)
 , stride(12)
 , divisor(1)
 , elementSize(0)
 {
 }
 
-VertexAttribute::VertexAttribute(unsigned int index_, int elementCount_, VertexAttribute::DataType dataType_, bool normalized_, unsigned int divisor_, unsigned int stride_)
+VertexAttribute::VertexAttribute(unsigned int index_, int elementCount_, VertexAttribute::DataType dataType_, bool normalized_, unsigned int offset_, unsigned int stride_, unsigned int divisor_)
 : index(index_)
 , elementCount(elementCount_)
 , dataType(dataType_)
 , normalized(normalized_)
+, offset(offset_)
 , stride(stride_)
 , divisor(divisor_)
 , elementSize(0)
 {
 	elementSize = vaElementSizes[(int)dataType];
-	if (stride)
-	{
-		stride = elementCount * elementSize;
-	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -92,11 +90,12 @@ VertexBuffer& VertexBuffer::Begin()
 	Assert(vao);
 
 	glBindVertexArray(vao);
+	vbos.clear();
 
 	return *this;	
 }
 
-VertexBuffer& VertexBuffer::FillVertices(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int stride_, unsigned int divisor_, const void* vertices_, int verticesCount_)
+VertexBuffer& VertexBuffer::FillVertices(unsigned int index_, int elementCount_, VertexAttribute::DataType type_, bool normalized_, unsigned int offset_, unsigned int stride_, unsigned int divisor_, const void* vertices_, int verticesCount_)
 {
 	if (vbos.find(index_) != vbos.end())
 	{
@@ -108,13 +107,13 @@ VertexBuffer& VertexBuffer::FillVertices(unsigned int index_, int elementCount_,
 	Assert(vbos[index_]);
 	unsigned int& vbo = vbos[index_];
 
-	vertexAttributes[index_] = VertexAttribute(index_, elementCount_, type_, normalized_, divisor_, stride_);
+	vertexAttributes[index_] = VertexAttribute(index_, elementCount_, type_, normalized_, offset_, stride_, divisor_);
 	VertexAttribute& v = vertexAttributes[index_];
-		
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, verticesCount_ * elementCount_* vaElementSizes[(int)v.dataType], vertices_, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticesCount_ * (elementCount_ * v.elementSize), vertices_, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(v.index);
-	glVertexAttribPointer(v.index, v.elementCount, vaDataTypes[(int)v.dataType], v.normalized, v.elementCount * v.elementSize, (void*)0);
+	glVertexAttribPointer(v.index, v.elementCount, vaDataTypes[(int)v.dataType], v.normalized, (v.stride * v.elementSize), (void*)(v.offset * v.elementSize));
 	glVertexAttribDivisor(v.index, v.divisor);
 
 	verticesCount = verticesCount_;

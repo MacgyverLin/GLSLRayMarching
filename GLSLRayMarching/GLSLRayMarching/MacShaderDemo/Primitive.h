@@ -12,11 +12,13 @@ public:
 	{
 	public:
 		Vector3 p;
-		ColorRGBA c;
+		Vector3 n;
 		Vector2 uv;
+		ColorRGBA c;
 
 		Vertex()
 			: p(Vector3::Zero)
+			, n(Vector3::Zero)
 			, c(ColorRGBA::Black)
 			, uv(Vector2::Zero)
 		{
@@ -27,6 +29,7 @@ public:
 			const ColorRGBA& c_,
 			const Vector2& uv_)
 			: p(p_)
+			, n(Vector3::Zero)
 			, c(c_)
 			, uv(uv_)
 		{
@@ -35,6 +38,7 @@ public:
 		Vertex(const Vertex& other)
 		{
 			p = other.p;
+			n = other.n;
 			c = other.c;
 			uv = other.uv;
 		}
@@ -42,6 +46,7 @@ public:
 		Vertex& operator = (const Vertex& other)
 		{
 			p = other.p;
+			n = other.n;
 			c = other.c;
 			uv = other.uv;
 
@@ -51,6 +56,7 @@ public:
 		Vertex& operator += (const Vertex& v)
 		{
 			p += v.p;
+			n += v.n;
 			c += v.c;
 			uv += v.uv;
 
@@ -60,6 +66,7 @@ public:
 		Vertex& operator -= (const Vertex& v)
 		{
 			p -= v.p;
+			n -= v.n;
 			c -= v.c;
 			uv -= v.uv;
 
@@ -69,6 +76,7 @@ public:
 		Vertex& operator *= (float scaler)
 		{
 			p *= scaler;
+			n *= scaler;
 			c *= scaler;
 			uv *= scaler;
 
@@ -78,6 +86,7 @@ public:
 		Vertex& operator /= (float scaler)
 		{
 			p /= scaler;
+			n /= scaler;
 			c /= scaler;
 			uv /= scaler;
 
@@ -89,6 +98,7 @@ public:
 			Vertex v;
 
 			v.p = v0.p + v1.p;
+			v.n = v0.n + v1.n;
 			v.c = v0.c + v1.c;
 			v.uv = v0.uv + v1.uv;
 
@@ -100,6 +110,7 @@ public:
 			Vertex v;
 
 			v.p = v0.p - v1.p;
+			v.n = v0.n - v1.n;
 			v.c = v0.c - v1.c;
 			v.uv = v0.uv - v1.uv;
 
@@ -111,6 +122,7 @@ public:
 			Vertex v;
 
 			v.p = v0.p * scaler;
+			v.n = v0.n * scaler;
 			v.c = v0.c * scaler;
 			v.uv = v0.uv * scaler;
 
@@ -122,6 +134,7 @@ public:
 			Vertex v;
 
 			v.p = v0.p / scaler;
+			v.n = v0.n / scaler;
 			v.c = v0.c / scaler;
 			v.uv = v0.uv / scaler;
 
@@ -137,13 +150,20 @@ public:
 			}
 			else if (p == other.p)
 			{
-				if (c < other.c)
+				if (n < other.n)
 				{
 					less = true;
 				}
-				else if (c == other.c)
+				else if (n == other.n)
 				{
-					return uv < other.uv;
+					if (uv < other.uv)
+					{
+						less = true;
+					}
+					else if (uv == other.uv)
+					{
+						return c < other.c;
+					}
 				}
 			}
 
@@ -153,10 +173,11 @@ public:
 		bool IsClose(const Vertex& other, float threshold) const
 		{
 			float dP = (p - other.p).SquaredLength();
+			float dN = (n - other.n).SquaredLength();
 			float dC = (c - other.c).SquaredLength();
 			float dUV = (uv - other.uv).SquaredLength();
 
-			return dP < threshold && dC < threshold && dUV;
+			return dP < threshold && dN < threshold && dC < threshold && dUV;
 		}
 	};
 

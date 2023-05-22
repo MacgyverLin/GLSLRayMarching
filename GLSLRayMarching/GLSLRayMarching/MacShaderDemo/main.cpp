@@ -81,7 +81,7 @@ private:
 
 int main(int argc, char** argv)
 {
-	const char* name = "MeshProcessing";
+	const char* name = "PhysicsDemo";
 	//const char* name = "PhysicsDemo";
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
 	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, name, name))

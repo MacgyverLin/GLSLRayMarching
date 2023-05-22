@@ -556,7 +556,7 @@ public:
 	static const std::vector<std::string>& GetJoystickNames();
 
 	static void GetDropPaths(std::vector<std::string>& dropPaths_);
-	static bool hasDropPath();
+	static bool HasDropPath();
 
 	static const char* GetClipBoardString();
 	static void SetClipBoard(const char* s);

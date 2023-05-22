@@ -71,6 +71,9 @@
     <Filter Include="Source Files\System\Services\Physics3D">
       <UniqueIdentifier>{e917b070-f97b-43c4-ac0d-84e12877eac0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\System\Services\Physics2D">
+      <UniqueIdentifier>{f6a83e47-dafe-4965-a7b8-e4a84f1ef8d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -187,9 +190,6 @@
     <ClCompile Include="Service.cpp">
       <Filter>Source Files\System\Services</Filter>
     </ClCompile>
-    <ClCompile Include="Physics2D.cpp">
-      <Filter>Source Files\System\Services</Filter>
-    </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>Source Files\System\GameObject</Filter>
     </ClCompile>
@@ -282,6 +282,9 @@
     </ClCompile>
     <ClCompile Include="Matrix3.cpp">
       <Filter>Source Files\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics2D.cpp">
+      <Filter>Source Files\System\Services\Physics2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -412,9 +415,6 @@
       <Filter>Source Files\RHI\Primitive</Filter>
     </ClInclude>
     <ClInclude Include="Service.h">
-      <Filter>Source Files\System\Services</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics2D.h">
       <Filter>Source Files\System\Services</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
@@ -569,6 +569,9 @@
     </ClInclude>
     <ClInclude Include="Matrix3.h">
       <Filter>Source Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics2D.h">
+      <Filter>Source Files\System\Services\Physics2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

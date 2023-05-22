@@ -47,6 +47,9 @@ protected:
 		if (!InitCloth("assets/hair1.FBX", "assets/hair1proxy.FBX", resolution, minQualityExp, scale))
 			return false;
 
+		primitivesRenderer.Clear();
+		primitivesRenderer.DrawGrid(-10.0f, 10.0f, 0.1f, ColorRGBA(0.5, 0.5, 0.5, 0.5));
+
 		return true;
 	}
 
@@ -71,8 +74,7 @@ protected:
 			physicsDemoCameraComponent.GetProjectionTransform()
 		);
 
-		primitivesRenderer.Clear();
-		primitivesRenderer.DrawGrid(-10.0f, 10.0f, 0.1f, ColorRGBA(0.5, 0.5, 0.5, 0.5));
+
 
 
 		return true;

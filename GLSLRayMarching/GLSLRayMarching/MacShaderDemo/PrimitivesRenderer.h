@@ -132,6 +132,22 @@ public:
 		{
 			vertexBuffer.Bind();
 
+			//layout(location = 0) in vec3 vPos;
+			//layout(location = 1) in vec3 vNormal;
+			//layout(location = 2) in vec4 vCol;
+			//layout(location = 3) in vec2 vUV;
+			bool success = vertexBuffer
+				.Begin()
+				.FillVertices(0, 3, VertexAttribute::DataType::FLOAT, false,   0, 12, 0, &primitive.vertices[0], primitive.vertices.size())
+				.FillVertices(1, 3, VertexAttribute::DataType::FLOAT, false,   3, 12, 0, &primitive.vertices[0], primitive.vertices.size())
+				.FillVertices(2, 4, VertexAttribute::DataType::FLOAT, false, 3+3, 12, 0, &primitive.vertices[0], primitive.vertices.size())
+				.FillVertices(3, 2, VertexAttribute::DataType::FLOAT, false, 3+4, 12, 0, &primitive.vertices[0], primitive.vertices.size())
+				.End();
+
+			if (!success)
+			{
+				return false;
+			}
 			/*
 			bool success = vertexBuffer
 				.Begin()

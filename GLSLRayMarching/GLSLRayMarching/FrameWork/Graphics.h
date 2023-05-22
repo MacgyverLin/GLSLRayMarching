@@ -489,4 +489,95 @@ glPatchParameteri
 glPrimitiveBoundingBox
 */
 
+class Graphics
+{
+	class Impl;
+public:
+public:
+	Graphics();
+
+	~Graphics();
+
+	bool Initialize(int width_, int height_, const char* appName_);
+
+	bool PreUpdate();
+
+	bool PostUpdate();
+
+	bool Pause();
+
+	void Resume();
+
+	void Terminate();
+
+	const std::string& GetAppName() const;
+	
+	int GetWidth() const;
+
+	int GetHeight() const;
+
+	double GetTime() const;
+
+	double GetDeltaTime() const;
+
+	int GetTotalFrameCounter() const;
+
+	int GetSceneFrameCounter() const;
+
+	void ResetSceneFrameCounter();
+
+	int GetKeyCount() const;
+
+	bool GetKeyDown(Platform::KeyCode code) const;
+
+	bool GetKeyUp(Platform::KeyCode code) const;
+
+	bool GetKeyHold(Platform::KeyCode code) const;
+
+	bool GetKey(Platform::KeyCode code) const;
+
+	Platform::Mouse GetMouse() const;
+
+	float GetMouseX() const;
+
+	float GetMouseY() const;
+
+	float GetMouseDX() const;
+
+	float GetMouseDY() const;
+
+	void EnableCursor();
+
+	void DisableCursor();
+
+	bool IsCursorEnabled() const;
+
+	bool IsJoyStickConnected(int i) const;
+
+	Platform::JoyStick GetJoyStick(int i) const;
+
+	const std::vector<std::string>& GetJoystickNames() const;
+
+	void GetDropPaths(std::vector<std::string>& dropPaths_) const;
+
+	bool hasDropPath() const;
+
+	const char* GetClipBoardString() const;
+
+	void SetClipBoard(const char* s);
+
+	void QuitApp();
+
+	bool ShouldAppQuit() const;
+
+	static Graphics& GetInstance()
+	{
+		static Graphics instance;
+
+		return instance;
+	}
+private:
+	Impl *impl;
+};
+
 #endif
