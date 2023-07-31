@@ -104,7 +104,7 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Scattering/RayleighMieDayNight");
 	//return shaderToyRenderer->Initiate("Demos/Scattering/RealySimpleAtmosphericScatter");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Cloudy Terrain");
-	return shaderToyRenderer->Initiate("Demos/Terrains/Desert Sand");
+	//return shaderToyRenderer->Initiate("Demos/Terrains/Desert Sand");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Elevated");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Lake in highland");
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Mountains");
@@ -112,8 +112,6 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/Terrains/Sirenian Dawn");
 	//return shaderToyRenderer->Initiate("Demos/SimpleTexture");	
 
-
-	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
 	//return shaderToyRenderer->Initiate("Demos/Waters/RiverGo");
 	//return shaderToyRenderer->Initiate("Demos/Waters/Oceanic");
 	//return shaderToyRenderer->Initiate("Demos/Waters/Ocean");
@@ -137,9 +135,9 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/6 PBR");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/5 Caustics");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/4 Bidirectional path tracing");
-	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
+	return shaderToyRenderer->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/2 Light Sampling");
-	////return shaderToyRenderer->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/9 Step By Step");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/10 Step By Step");
 	
