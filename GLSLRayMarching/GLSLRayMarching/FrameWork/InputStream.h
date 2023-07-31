@@ -10,9 +10,7 @@
 #define _InputStream_h_
 
 #include "Platform.h"
-
 #include "FileIO.h"
-#include "GZFileIO.h"
 
 	/**
 	* InputStream. The base class of All InputStream.
@@ -281,6 +279,8 @@ private:
 };
 
 #if 0
+#include "GZFileIO.h"
+
 class GZMemInputStream : public InputStream
 {
 public:
@@ -329,7 +329,6 @@ private:
 	unsigned int current;
 	unsigned int len;
 };
-#endif
 
 class GZFileInputStream : public InputStream
 {
@@ -391,6 +390,7 @@ private:
 
 	GZFileIO file;
 };
+#endif
 
 template<class T> inline InputStream& operator>>(InputStream& is, T& data)
 {

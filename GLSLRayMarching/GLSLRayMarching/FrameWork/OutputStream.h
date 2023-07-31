@@ -10,13 +10,11 @@
 #define _OutputStream_h_
 
 #include "Platform.h"
-
 #include "FileIO.h"
-#include "GZFileIO.h"
 
-	/**
-	* OutputStream. The base class of All OutputStream.
-	*/
+/**
+* OutputStream. The base class of All OutputStream.
+*/
 class OutputStream
 {
 public:
@@ -286,7 +284,8 @@ private:
 	void* handle;
 	int				level;
 };
-#endif
+
+#include "GZFileIO.h"
 class GZFileOutputStream : public OutputStream
 {
 public:
@@ -306,6 +305,7 @@ private:
 
 	GZFileIO file;
 };
+#endif
 
 template<class T> inline OutputStream& operator<<(OutputStream& os, const T& data)
 {

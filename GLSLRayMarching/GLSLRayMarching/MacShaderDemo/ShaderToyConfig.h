@@ -189,8 +189,8 @@ public:
 			if (!CreatePasses(shaderToyDoc, folder_))
 				return false;
 
-			if (!CreatePostprocessPasses())
-				return false;
+			//if (!CreatePostprocessPasses())
+//				return false;
 		}
 		catch (std::ifstream::failure&)
 		{

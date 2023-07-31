@@ -33,8 +33,6 @@ Service<Audio> AudioService("Audio");
 #include "GeoMorphTerrainScene.h"
 #include "LightFieldRendererScene.h"
 #include "LightPropagationVolumesScene.h"
-#include "PhysicsDemoScene.h"
-#include "MeshProcessingScene.h"
 
 Scene::Creator<DefaultScene> DefaultSceneCreator("Default");
 Scene::Creator<ShaderToyScene> MacScene1Creator("ShaderToy");
@@ -45,8 +43,6 @@ Scene::Creator<GeoMipmapTerrainScene> GeoMipmapTerrainSceneCreator("GeoMorphTerr
 Scene::Creator<GeoMorphTerrainScene> GeoMorphTerrainSceneCreator("GeoMorphTerrain");
 Scene::Creator<LightFieldRendererScene> LightFieldRendererSceneCreator("LightFieldRenderer");
 Scene::Creator<LightPropagationVolumesScene> LightPropagationVolumesSceneCreator("LightPropagationVolumes");
-Scene::Creator<PhysicsDemoScene> PhysicsDemoSceneCreator("PhysicsDemo");
-Scene::Creator<MeshProcessingScene> MeshProcessingSceneCreator("MeshProcessing");
 
 class MacShaderDemoApp : public FrameWork
 {
@@ -81,7 +77,7 @@ private:
 
 int main(int argc, char** argv)
 {
-	const char* name = "PhysicsDemo";
+	const char* name = "ShaderToy";
 	//const char* name = "PhysicsDemo";
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
 	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, name, name))

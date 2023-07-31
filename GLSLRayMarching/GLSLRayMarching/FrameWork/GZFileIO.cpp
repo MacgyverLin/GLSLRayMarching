@@ -27,92 +27,8 @@
 #include <errno.h>
 #endif
 
-#include <zlib/zlib.h>
-
 #if 0
-#include <stdio.h>
-
-static const char hello[] = "hello, hello!";
-void test_gzio(const char* fname, Byte* uncompr, uLong uncomprLen)
-{
-#ifdef NO_GZCOMPRESS
-	fprintf(stderr, "NO_GZCOMPRESS -- gz* functions cannot compress\n");
-#else
-	int err;
-	int len = (int)strlen(hello) + 1;
-	gzFile file;
-	off_t pos;
-
-	file = gzopen(fname, "wb");
-	if (file == NULL) {
-		fprintf(stderr, "gzopen error\n");
-		exit(1);
-	}
-	gzputc(file, 'h');
-	if (gzputs(file, "ello") != 4) {
-		fprintf(stderr, "gzputs err: %s\n", gzerror(file, &err));
-		exit(1);
-	}
-	if (gzprintf(file, ", %s!", "hello") != 8) {
-		fprintf(stderr, "gzprintf err: %s\n", gzerror(file, &err));
-		exit(1);
-	}
-	gzseek(file, 1L, SEEK_CUR); /* add one zero byte */
-	gzclose(file);
-
-	file = gzopen(fname, "rb");
-	if (file == NULL) {
-		fprintf(stderr, "gzopen error\n");
-		exit(1);
-	}
-	strcpy((char*)uncompr, "garbage");
-
-	if (gzread(file, uncompr, (unsigned)uncomprLen) != len) {
-		fprintf(stderr, "gzread err: %s\n", gzerror(file, &err));
-		exit(1);
-	}
-	if (strcmp((char*)uncompr, hello)) {
-		fprintf(stderr, "bad gzread: %s\n", (char*)uncompr);
-		exit(1);
-	}
-	else {
-		printf("gzread(): %s\n", (char*)uncompr);
-	}
-
-	pos = gzseek(file, -8L, SEEK_CUR);
-	if (pos != 6 || gztell(file) != pos) {
-		fprintf(stderr, "gzseek error, pos=%ld, gztell=%ld\n",
-			(long)pos, (long)gztell(file));
-		exit(1);
-	}
-
-	if (gzgetc(file) != ' ') {
-		fprintf(stderr, "gzgetc error\n");
-		exit(1);
-	}
-
-	if (gzungetc(' ', file) != ' ') {
-		fprintf(stderr, "gzungetc error\n");
-		exit(1);
-	}
-
-	gzgets(file, (char*)uncompr, (int)uncomprLen);
-	if (strlen((char*)uncompr) != 7) { /* " hello!" */
-		fprintf(stderr, "gzgets err after gzseek: %s\n", gzerror(file, &err));
-		exit(1);
-	}
-	if (strcmp((char*)uncompr, hello + 6)) {
-		fprintf(stderr, "bad gzgets after gzseek\n");
-		exit(1);
-	}
-	else {
-		printf("gzgets() after gzseek: %s\n", (char*)uncompr);
-	}
-
-	gzclose(file);
-#endif
-}
-#endif
+#include <zlib/zlib.h>
 
 typedef struct
 {
@@ -446,3 +362,5 @@ bool GZFileIO::Load(const std::string& path_, void* buf, int size, int offset)
 
 	return f.Read(buf, size);
 }
+
+#endif

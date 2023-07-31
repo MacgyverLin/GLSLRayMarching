@@ -13,6 +13,7 @@
 
 #include "IO.h"
 
+#if 0
 class GZFileIO : public IO
 {
 public:
@@ -64,5 +65,7 @@ public:
 private:
 	void* user;
 };
+
+#endif
 
 #endif

@@ -510,7 +510,7 @@ public:
 		}
 
 		std::string rendertargetname = passConfig.renderTarget;
-		if (rendertargetname == "backbuffer")
+		if (rendertargetname == "image")
 		{
 			pass.SetRenderTarget(nullptr);
 		}

@@ -323,7 +323,6 @@ int GZMemOutputStream::getCompressionLevel() const
 {
 	return level;
 }
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////
 GZFileOutputStream::GZFileOutputStream(const std::string& path_)
@@ -382,3 +381,4 @@ int GZFileOutputStream::GetCompressionLevel() const
 {
 	return file.GetCompressionLevel();
 }
+#endif

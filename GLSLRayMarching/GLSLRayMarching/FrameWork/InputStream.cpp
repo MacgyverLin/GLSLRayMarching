@@ -232,7 +232,6 @@ void GZMemInputStream::rewind()
 	data = data_head;
 	current = 0;
 }
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////
 GZFileInputStream::GZFileInputStream(const std::string& path_)
@@ -286,3 +285,4 @@ void GZFileInputStream::Rewind()
 {
 	file.Seek(IO::BEGIN, 0);
 }
+#endif
