@@ -280,7 +280,7 @@ bool FrameBuffer::IsframeBufferComplete() const
 {
 	Assert(impl);
 
-	return glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE;
+	return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 }
 
 ////////////////////////////////////////////////////////////
@@ -565,6 +565,16 @@ void TextureFrameBuffer1D::Flip()
 	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
 }
 
+Texture1D* TextureFrameBuffer1D::GetFrameBufferTexture()
+{
+	return &textures[1 - currentTexture];
+}
+
+const Texture1D* TextureFrameBuffer1D::GetFrameBufferTexture() const
+{
+	return &textures[1 - currentTexture];
+}
+
 Texture1D* TextureFrameBuffer1D::GetTexture()
 {
 	return &textures[currentTexture];
@@ -597,7 +607,7 @@ bool TextureFrameBuffer2D::Initiate(unsigned int width, unsigned int height, uns
 	if (!textures[1].Initiate(width, height, nrComponents, dynamicRange_, nullptr))
 		return false;
 
-	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetFrameBufferTexture(), FrameBuffer::PixelStorage::Store);
 
 	return true;
 }
@@ -614,7 +624,17 @@ void TextureFrameBuffer2D::Flip()
 {
 	currentTexture = 1 - currentTexture;
 
-	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetFrameBufferTexture(), FrameBuffer::PixelStorage::Store);
+}
+
+Texture2D* TextureFrameBuffer2D::GetFrameBufferTexture()
+{
+	return &textures[1 - currentTexture];
+}
+
+const Texture2D* TextureFrameBuffer2D::GetFrameBufferTexture() const
+{
+	return &textures[1 - currentTexture];
 }
 
 Texture2D* TextureFrameBuffer2D::GetTexture()
@@ -669,6 +689,16 @@ void TextureFrameBuffer3D::Flip()
 	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
 }
 
+Texture3D* TextureFrameBuffer3D::GetFrameBufferTexture()
+{
+	return &textures[1 - currentTexture];
+}
+
+const Texture3D* TextureFrameBuffer3D::GetFrameBufferTexture() const
+{
+	return &textures[1 - currentTexture];
+}
+
 Texture3D* TextureFrameBuffer3D::GetTexture()
 {
 	return &textures[currentTexture];
@@ -719,6 +749,16 @@ void TextureFrameBufferCubemap::Flip()
 	currentTexture = 1 - currentTexture;
 
 	SetColorAttachment(FrameBuffer::ColorAttachment::COLOR_ATTACHMENT0, GetTexture(), FrameBuffer::PixelStorage::Store);
+}
+
+TextureCubemap* TextureFrameBufferCubemap::GetFrameBufferTexture()
+{
+	return &textures[1 - currentTexture];
+}
+
+const TextureCubemap* TextureFrameBufferCubemap::GetFrameBufferTexture() const
+{
+	return &textures[1 - currentTexture];
 }
 
 TextureCubemap* TextureFrameBufferCubemap::GetTexture()

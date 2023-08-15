@@ -132,17 +132,22 @@ public:
 			}
 		}
 
-		for (int i = 0; i < 6; i++)
+		bool test;
+
+		for (int face = 0; face < faceCount; face++)
 		{
 			if (renderTarget)
 			{
 				if (renderTarget->GetType() == FrameBuffer::Type::TextureCubemap)
 				{
 					TextureFrameBufferCubemap* cubemapRenderTarget = (TextureFrameBufferCubemap*)renderTarget;
-					cubemapRenderTarget->SetCurrentFace(i);
+					cubemapRenderTarget->SetCurrentFace(face);
 				}
 
-				renderTarget->Bind();
+				test = renderTarget->Bind();
+			}
+			else
+			{
 			}
 
 			Vector3 resolution;
@@ -180,7 +185,7 @@ public:
 			////////////
 			// Bind Shader Uniform
 			shaderProgram.Bind();
-			shaderProgram.SetUniform1i("iFace", i);
+			shaderProgram.SetUniform1i("iFace", face);
 			shaderProgram.SetUniform3f("iResolution", resolution[0], resolution[1], resolution[2]);
 			shaderProgram.SetUniform1f("iTime", (float)time);
 			shaderProgram.SetUniform1f("iTimeDelta", (float)deltaTime);

@@ -26,7 +26,6 @@ Service<Audio> AudioService("Audio");
 /////////////////////////////////////////////////////////////////////
 #include "DefaultScene.h"
 #include "ShaderToyScene.h"
-#include "PathTraceScene.h"
 #include "IKDemoScene.h"
 #include "GeometryTextureScene.h"
 #include "GeoMipmapTerrainScene.h"
@@ -34,15 +33,18 @@ Service<Audio> AudioService("Audio");
 #include "LightFieldRendererScene.h"
 #include "LightPropagationVolumesScene.h"
 
+#include "PathTraceScene.h"
+
 Scene::Creator<DefaultScene> DefaultSceneCreator("Default");
-Scene::Creator<ShaderToyScene> MacScene1Creator("ShaderToy");
-Scene::Creator<PathTraceScene> MacScene2Creator("PathTrace");
+Scene::Creator<ShaderToyScene> ShaderToyCreator("ShaderToy");
 Scene::Creator<IKDemoScene> IKDemoSceneCreator("IKDemo");
 Scene::Creator<GeometryTextureScene> GeometryTextureSceneCreator("GeometryTexture");
 Scene::Creator<GeoMipmapTerrainScene> GeoMipmapTerrainSceneCreator("GeoMorphTerrain");
 Scene::Creator<GeoMorphTerrainScene> GeoMorphTerrainSceneCreator("GeoMorphTerrain");
 Scene::Creator<LightFieldRendererScene> LightFieldRendererSceneCreator("LightFieldRenderer");
 Scene::Creator<LightPropagationVolumesScene> LightPropagationVolumesSceneCreator("LightPropagationVolumes");
+
+Scene::Creator<PathTraceScene> PathTraceCreator("PathTrace");
 
 class MacShaderDemoApp : public FrameWork
 {
@@ -77,8 +79,9 @@ private:
 
 int main(int argc, char** argv)
 {
+	//const char* name = "PathTrace";
 	const char* name = "ShaderToy";
-	//const char* name = "PhysicsDemo";
+	
 	MacShaderDemoApp macShaderDemoApp(argc, argv);
 	if (!macShaderDemoApp.Instantiate(WIDTH, HEIGHT, name, name))
 		return -1;

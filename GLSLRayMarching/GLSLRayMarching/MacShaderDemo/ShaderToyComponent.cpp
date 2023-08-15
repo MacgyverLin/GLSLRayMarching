@@ -132,10 +132,10 @@ bool ShaderToyComponent::OnStart()
 
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/8 SubSurface");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/7 Disney Principled BRDF");
-	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/6 PBR");
+	return shaderToyRenderer->Initiate("Demos/PathTracings/Course/6 PBR");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/5 Caustics");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/4 Bidirectional path tracing");
-	return shaderToyRenderer->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/2 Light Sampling");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/9 Step By Step");

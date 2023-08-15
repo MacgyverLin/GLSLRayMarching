@@ -189,8 +189,8 @@ public:
 			if (!CreatePasses(shaderToyDoc, folder_))
 				return false;
 
-			//if (!CreatePostprocessPasses())
-//				return false;
+			if (!CreatePostprocessPasses())
+				return false;
 		}
 		catch (std::ifstream::failure&)
 		{
@@ -465,10 +465,10 @@ private:
 			return false;
 		*/
 		if (!CreatePostprocessPass(
-			{ "image", "easu", "rcas", "scaledimage" },
+			{ "image", "buffera", "buffera", "buffera" },
 			{ "linear", "linear" , "linear", "linear" },					// input filter
 			{ "clamp" , "clamp"   , "clamp"  , "clamp" },					// input wrap
-			"Demos/AMD_FSR/copy.glsl",
+			"Demos/Copy/copy.glsl",
 			"backbuffer"))
 			return false;
 

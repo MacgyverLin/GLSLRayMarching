@@ -40,11 +40,6 @@ public:
 		, cubeMapDFrameBuffer()
 
 		, imageFrameBuffer()
-		, scaledImageFrameBuffer()
-		, easuFrameBuffer()
-		, rcasFrameBuffer()
-		
-		, backBuffer()
 
 		, passes()
 
@@ -141,22 +136,6 @@ public:
 		else if (s == "image")
 		{
 			return &imageFrameBuffer;
-		}
-		else if (s == "scaledimage")
-		{
-			return &scaledImageFrameBuffer;
-		}
-		else if (s == "easu")
-		{
-			return &easuFrameBuffer;
-		}
-		else if (s == "rcas")
-		{
-			return &rcasFrameBuffer;
-		}
-		else if (s == "backbuffer")
-		{
-			return &backBuffer;
 		}
 		else
 			return nullptr;
@@ -317,15 +296,6 @@ public:
 			return false;
 
 		if (!imageFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!scaledImageFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!easuFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-		if (!rcasFrameBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
-			return false;
-
-		if (!backBuffer.Initiate(Platform::GetWidth(), Platform::GetHeight(), 4, Texture::DynamicRange::HIGH))
 			return false;
 
 		if (!CreatePasses(shaderToyConfig))
@@ -510,7 +480,7 @@ public:
 		}
 
 		std::string rendertargetname = passConfig.renderTarget;
-		if (rendertargetname == "image")
+		if (rendertargetname == "backbuffer")
 		{
 			pass.SetRenderTarget(nullptr);
 		}
@@ -620,11 +590,6 @@ public:
 		cubeMapDFrameBuffer.Terminate();
 
 		imageFrameBuffer.Terminate();
-		scaledImageFrameBuffer.Terminate();
-		easuFrameBuffer.Terminate();
-		rcasFrameBuffer.Terminate();
-
-		backBuffer.Terminate();
 	}
 protected:
 private:
@@ -647,11 +612,6 @@ private:
 	TextureFrameBufferCubemap cubeMapDFrameBuffer;
 
 	TextureFrameBuffer2D imageFrameBuffer;
-	TextureFrameBuffer2D scaledImageFrameBuffer;
-	TextureFrameBuffer2D easuFrameBuffer;
-	TextureFrameBuffer2D rcasFrameBuffer;
-
-	BackBuffer backBuffer;
 
 	std::vector<Pass> passes;
 

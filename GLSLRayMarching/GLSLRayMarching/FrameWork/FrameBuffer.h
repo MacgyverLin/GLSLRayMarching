@@ -116,6 +116,9 @@ public:
 
 	virtual bool Bind() override;
 
+	virtual Texture1D* GetFrameBufferTexture() = 0;
+	virtual const Texture1D* GetFrameBufferTexture() const = 0;
+
 	virtual Texture1D* GetTexture() = 0;
 	virtual const Texture1D* GetTexture() const = 0;
 private:
@@ -132,6 +135,9 @@ public:
 
 	virtual bool Bind() override;
 
+	virtual Texture2D* GetFrameBufferTexture() = 0;
+	virtual const Texture2D* GetFrameBufferTexture() const = 0;
+
 	virtual Texture2D* GetTexture() = 0;
 	virtual const Texture2D* GetTexture() const = 0;
 private:
@@ -147,6 +153,9 @@ public:
 	virtual void Terminate();
 
 	virtual bool Bind() override;
+
+	virtual Texture3D* GetFrameBufferTexture() = 0;
+	virtual const Texture3D* GetFrameBufferTexture() const = 0;
 
 	virtual Texture3D* GetTexture() = 0;
 	virtual const Texture3D* GetTexture() const = 0;
@@ -167,6 +176,9 @@ public:
 	void SetCurrentFace(int face);
 	int GetCurrentFace() const;
 
+	virtual TextureCubemap* GetFrameBufferTexture() = 0;
+	virtual const TextureCubemap* GetFrameBufferTexture() const = 0;
+
 	virtual TextureCubemap* GetTexture() = 0;
 	virtual const TextureCubemap* GetTexture() const = 0;
 private:
@@ -184,6 +196,10 @@ public:
 	virtual void Terminate();
 
 	void Flip();
+
+	virtual Texture1D* GetFrameBufferTexture() override;
+	virtual const Texture1D* GetFrameBufferTexture() const override;
+
 	virtual Texture1D* GetTexture() override;
 	virtual const Texture1D* GetTexture() const override;
 private:
@@ -201,6 +217,9 @@ public:
 	virtual void Terminate();
 
 	void Flip();
+
+	virtual Texture2D* GetFrameBufferTexture() override;
+	virtual const Texture2D* GetFrameBufferTexture() const override;
 
 	virtual Texture2D* GetTexture() override;
 	virtual const Texture2D* GetTexture() const override;
@@ -220,6 +239,9 @@ public:
 
 	void Flip();
 
+	virtual Texture3D* GetFrameBufferTexture() override;
+	virtual const Texture3D* GetFrameBufferTexture() const override;
+
 	virtual Texture3D* GetTexture() override;
 	virtual const Texture3D* GetTexture() const override;
 private:
@@ -237,6 +259,9 @@ public:
 	virtual void Terminate();
 
 	void Flip();
+
+	virtual TextureCubemap* GetFrameBufferTexture() override;
+	virtual const TextureCubemap* GetFrameBufferTexture() const override;
 
 	virtual TextureCubemap* GetTexture() override;
 	virtual const TextureCubemap* GetTexture() const override;
