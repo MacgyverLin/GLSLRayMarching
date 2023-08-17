@@ -132,7 +132,7 @@ bool ShaderToyComponent::OnStart()
 
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/8 SubSurface");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/7 Disney Principled BRDF");
-	return shaderToyRenderer->Initiate("Demos/PathTracings/Course/6 PBR");
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/6 PBR");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/5 Caustics");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/4 Bidirectional path tracing");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/3 Path Tracer MIS");
@@ -140,7 +140,8 @@ bool ShaderToyComponent::OnStart()
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/1 Simple Random Sampling");	
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/9 Step By Step");
 	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/10 Step By Step");
-	
+	//return shaderToyRenderer->Initiate("Demos/PathTracings/Course/11 Event Estimation");	
+	return shaderToyRenderer->Initiate("Demos/PathTracings/Course/12 Path tracing cornellbox with MIS");
 	
 	//return shaderToyRenderer->Initiate("Demos/Diamonds/Diamonds1");
 	//return shaderToyRenderer->Initiate("Demos/Hand-drawn Sketch");

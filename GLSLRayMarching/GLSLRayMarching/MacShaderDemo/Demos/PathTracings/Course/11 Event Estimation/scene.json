@@ -1,0 +1,40 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "buffera.glsl",
+      "channels": [
+      ],
+      "rendertarget": "buffera"
+    },
+    {
+      "shader": "bufferb.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "bufferb"
+    },
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "buffer": "bufferb",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}

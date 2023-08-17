@@ -1,0 +1,28 @@
+{
+  "common": {
+    "shader": "common.glsl"
+  },
+  "passes": [
+    {
+      "shader": "image.glsl",
+      "channels": [
+        {
+          "texture2d": "tex0.png",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texture2d": "tex1.png",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texture2d": "tex2.png",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "image"
+    }
+  ]
+}
