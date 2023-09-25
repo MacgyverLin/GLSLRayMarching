@@ -4,20 +4,36 @@
   },
   "passes": [
     {
+      "shader": "buffera.glsl",
+      "channels": [
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "buffer": "buffera",
+          "filter": "linear",
+          "wrap": "clamp"
+        },
+        {
+          "texturecubemap": "texa.jpg",
+          "filter": "linear",
+          "wrap": "clamp"
+        }
+      ],
+      "rendertarget": "buffera"
+    },
+    {
       "shader": "image.glsl",
       "channels": [
         {
-          "texture2d": "tex0.png",
-          "filter": "linear",
-          "wrap": "clamp"
-        },
-        {
-          "texture2d": "tex1.png",
-          "filter": "linear",
-          "wrap": "clamp"
-        },
-        {
-          "texture2d": "tex2.png",
+          "buffer": "buffera",
           "filter": "linear",
           "wrap": "clamp"
         }

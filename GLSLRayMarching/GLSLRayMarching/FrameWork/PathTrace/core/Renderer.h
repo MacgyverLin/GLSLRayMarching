@@ -49,7 +49,7 @@ namespace GLSLPT
             useConstantBg = false;
             RRDepth = 2;
             bgColor = Vec3(1.0f, 1.0f, 1.0f);
-            denoiserFrameCnt = 20;
+            denoiserFrameCnt = 60;
             enableDenoiser = true;
         }
         iVec2 resolution;
