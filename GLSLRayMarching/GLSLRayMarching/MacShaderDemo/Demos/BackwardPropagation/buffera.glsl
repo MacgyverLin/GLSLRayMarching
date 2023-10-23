@@ -1,9 +1,15 @@
-// Created by inigo quilez - iq/2013
-// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+#ifndef BUBBLE_IMAGE 
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+	float t = getT(iTime);
+#ifdef MOVABLE_IMAGE    
+	fragCoord.y += t * 100.0;
+#endif
+	vec2 uv = fragCoord / iResolution.xy;
 
-// example by iq, put any shader here
-// and switch out iTime with getT(iTime)
-
+	fragColor = texture(iChannel0, uv);
+}
+#else
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
 	float t = getT(iTime);
@@ -39,3 +45,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
 	fragColor = vec4(color, 1.0);
 }
+#endif

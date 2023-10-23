@@ -7,22 +7,7 @@
       "shader": "buffera.glsl",
       "channels": [
         {
-          "buffer": "buffera",
-          "filter": "linear",
-          "wrap": "clamp"
-        },
-        {
-          "buffer": "bufferb",
-          "filter": "linear",
-          "wrap": "clamp"
-        },
-        {
-          "buffer": "bufferc",
-          "filter": "linear",
-          "wrap": "clamp"
-        },
-        {
-          "buffer": "bufferd",
+          "texture2d": "tex0.png",
           "filter": "linear",
           "wrap": "clamp"
         }
